@@ -50,17 +50,8 @@ const BookManagement: React.FC = () => {
       />
 
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        {/* Header with expand/collapse button always visible */}
+        {/* Header with title only */}
         <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
-            onClick={() => setIsSheetOpen(true)}
-          >
-            <ChevronRight className="h-4 w-4" />
-            <span className="text-sm font-semibold">MỞ RỘNG</span>
-          </Button>
           <h2 className="text-lg font-semibold">Quản lý sách</h2>
           <div className="w-16" /> {/* Placeholder to balance flex */}
         </div>
@@ -71,14 +62,14 @@ const BookManagement: React.FC = () => {
         )}>
           {isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
-              <div className="flex items-center justify-end p-4 border-b">
+              <div className="flex items-center justify-start p-4 border-b">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsDesktopSubMenuOpen(false)}
-                  className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
+                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
                 >
-                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  <ChevronLeft className="h-4 w-4" />
                   <span className="text-sm font-medium">THU GỌN</span>
                 </Button>
               </div>
@@ -101,12 +92,58 @@ const BookManagement: React.FC = () => {
             </div>
           )}
 
+          {!isDesktopSubMenuOpen && (
+            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-14 overflow-x-hidden">
+              <div className="flex items-center justify-center p-4 border-b">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDesktopSubMenuOpen(true)}
+                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                  <span className="sr-only">Mở rộng menu</span>
+                </Button>
+              </div>
+              <nav className="flex flex-col items-center space-y-2 py-2">
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.value}
+                    variant="ghost"
+                    className={cn(
+                      "flex items-center justify-center rounded-lg p-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                    )}
+                    onClick={() => setActiveSubMenuItem(item.value)}
+                    title={item.label}
+                  >
+                    <item.icon className="h-5 w-5" />
+                  </Button>
+                ))}
+              </nav>
+            </div>
+          )}
+
           <div className="flex flex-col flex-1 w-full overflow-x-hidden">
             {renderContent()}
           </div>
         </div>
 
+        {/* Mobile content */}
         <div className="lg:hidden w-full overflow-x-hidden">
+          <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
+              onClick={() => setIsSheetOpen(true)}
+            >
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-sm font-semibold">MỞ RỘNG</span>
+            </Button>
+            <h2 className="text-lg font-semibold">Quản lý sách</h2>
+            <div className="w-16" /> {/* Placeholder */}
+          </div>
           {renderContent()}
         </div>
       </div>
