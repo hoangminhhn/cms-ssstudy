@@ -54,7 +54,7 @@ const BookManagement: React.FC = () => {
                 <span className="text-sm font-semibold">MỞ RỘNG</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
-              <h2 className="text-lg font-semibold">Quản lý sách</h2>
+              {/* Removed the redundant h2 title here */}
             </div>
           )}
           {renderContent()}
