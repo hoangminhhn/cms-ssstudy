@@ -43,14 +43,16 @@ const BookManagement: React.FC = () => {
   return (
     <Layout>
       <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" className="lg:hidden" onClick={() => setIsSheetOpen(true)}>
+        {/* Mobile header with toggle for sheet */}
+        <div className="flex items-center gap-4 lg:hidden">
+          <Button variant="outline" size="icon" onClick={() => setIsSheetOpen(true)}>
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle menu</span>
           </Button>
           <h1 className="text-2xl font-semibold">Quản lý sách</h1>
         </div>
         
+        {/* Mobile sub-menu sheet */}
         <BookSubMenuSheet
           isOpen={isSheetOpen}
           onOpenChange={setIsSheetOpen}
@@ -58,52 +60,60 @@ const BookManagement: React.FC = () => {
           activeItem={activeSubMenuItem}
         />
 
-        {/* Desktop sub-menu (always visible on large screens) */}
+        {/* Desktop layout */}
         <div className={cn(
           "hidden lg:grid gap-6",
-          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-[64px_1fr]" // Adjust grid columns based on collapse state
+          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1" // Adjust grid columns based on collapse state
         )}>
-          {/* Collapsible desktop sub-menu panel */}
-          <div className={cn(
-            "flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out",
-            isDesktopSubMenuOpen ? "w-[200px]" : "w-16 items-center" // Explicit width for transition
-          )}>
-            <div className="flex items-center justify-end p-4 border-b">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsDesktopSubMenuOpen(!isDesktopSubMenuOpen)}
-                className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
-              >
-                {isDesktopSubMenuOpen ? (
-                  <>
-                    <ChevronLeft className="h-4 w-4 mr-2" />
-                    <span className="text-sm font-medium">THU GỌN</span>
-                  </>
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-            <nav className="grid items-start px-2 text-sm font-medium py-2">
-              {menuItems.map((item) => (
+          {/* Collapsible desktop sub-menu panel (conditionally rendered) */}
+          {isDesktopSubMenuOpen && (
+            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px]">
+              <div className="flex items-center justify-end p-4 border-b">
                 <Button
-                  key={item.value}
                   variant="ghost"
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                    activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50",
-                    !isDesktopSubMenuOpen && "justify-center px-2" // Center icon, reduce padding when collapsed
-                  )}
-                  onClick={() => setActiveSubMenuItem(item.value)}
+                  size="sm"
+                  onClick={() => setIsDesktopSubMenuOpen(false)} // Collapse button
+                  className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
                 >
-                  <item.icon className="h-5 w-5" />
-                  {isDesktopSubMenuOpen && item.label}
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  <span className="text-sm font-medium">THU GỌN</span>
                 </Button>
-              ))}
-            </nav>
-          </div>
-          <div className="flex-1">
+              </div>
+              <nav className="grid items-start px-2 text-sm font-medium py-2">
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.value}
+                    variant="ghost"
+                    className={cn(
+                      "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                    )}
+                    onClick={() => setActiveSubMenuItem(item.value)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Button>
+                ))}
+              </nav>
+            </div>
+          )}
+
+          {/* Main content area for desktop */}
+          <div className="flex flex-col flex-1">
+            <div className="flex items-center gap-4 mb-4"> {/* Header for content area */}
+              {!isDesktopSubMenuOpen && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDesktopSubMenuOpen(true)} // Expand button
+                  className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
+                >
+                  <ChevronRight className="h-4 w-4 mr-2" />
+                  <span className="text-sm font-medium">MỞ RỘNG</span>
+                </Button>
+              )}
+              <h1 className="text-2xl font-semibold">Quản lý sách</h1>
+            </div>
             {renderContent()}
           </div>
         </div>
