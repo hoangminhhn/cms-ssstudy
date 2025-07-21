@@ -52,14 +52,8 @@ const BookManagement: React.FC = () => {
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
         <div className={cn(
           "hidden lg:grid gap-6 w-full overflow-x-hidden",
-          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
+          isDesktopSubMenuOpen ? "lg:grid-cols-1" : "lg:grid-cols-1"
         )}>
-          {isDesktopSubMenuOpen && (
-            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
-              {/* Menu items removed as requested */}
-            </div>
-          )}
-
           {!isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-14 overflow-x-hidden">
               <div className="flex items-center justify-center p-4 border-b">
