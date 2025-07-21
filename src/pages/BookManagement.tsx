@@ -4,13 +4,13 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true);
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // default closed to show toggle
 
   const renderContent = () => {
     switch (activeSubMenuItem) {
@@ -50,9 +50,24 @@ const BookManagement: React.FC = () => {
       />
 
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
+        <div className="flex flex-col lg:hidden px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
+          {!isDesktopSubMenuOpen && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 mb-2"
+              onClick={() => setIsDesktopSubMenuOpen(true)}
+            >
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-sm font-semibold">MỞ RỘNG MENU</span>
+            </Button>
+          )}
+          <h2 className="text-lg font-semibold">Quản lý sách</h2>
+        </div>
+
         <div className={cn(
           "hidden lg:grid gap-6 w-full overflow-x-hidden",
-          isDesktopSubMenuOpen ? "lg:grid-cols-1" : "lg:grid-cols-1"
+          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
         )}>
           {!isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-14 overflow-x-hidden">
@@ -86,27 +101,30 @@ const BookManagement: React.FC = () => {
             </div>
           )}
 
+          {isDesktopSubMenuOpen && (
+            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
+              <nav className="grid items-start px-2 text-sm font-medium py-2 overflow-x-hidden">
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.value}
+                    variant="ghost"
+                    className={cn(
+                      "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                    )}
+                    onClick={() => setActiveSubMenuItem(item.value)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Button>
+                ))}
+              </nav>
+            </div>
+          )}
+
           <div className="flex flex-col flex-1 w-full overflow-x-hidden">
             {renderContent()}
           </div>
-        </div>
-
-        {/* Mobile content */}
-        <div className="lg:hidden w-full overflow-x-hidden">
-          <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
-              onClick={() => setIsSheetOpen(true)}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-sm font-semibold">MỞ RỘNG</span>
-            </Button>
-            <h2 className="text-lg font-semibold">Quản lý sách</h2>
-            <div className="w-16" /> {/* Placeholder */}
-          </div>
-          {renderContent()}
         </div>
       </div>
       <MadeWithDyad />
