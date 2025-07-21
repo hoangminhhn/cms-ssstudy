@@ -56,22 +56,7 @@ const BookManagement: React.FC = () => {
         )}>
           {isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
-              <nav className="grid items-start px-2 text-sm font-medium py-2 overflow-x-hidden">
-                {menuItems.map((item) => (
-                  <Button
-                    key={item.value}
-                    variant="ghost"
-                    className={cn(
-                      "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-                    )}
-                    onClick={() => setActiveSubMenuItem(item.value)}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    {item.label}
-                  </Button>
-                ))}
-              </nav>
+              {/* Menu items removed as requested */}
             </div>
           )}
 
