@@ -70,8 +70,6 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="template-a">Template A (Kỳ thi THPT Quốc gia)</SelectItem>
                   <SelectItem value="template-b">Template B (Kỳ thi Học sinh giỏi)</SelectItem>
                   <SelectItem value="template-c">Template C (Đề kiểm tra định kỳ)</SelectItem>
-                  <SelectItem value="template-d">Template D (Kỳ thi tốt nghiệp THPT Quốc gia - Đầy đủ 3 phần)</SelectItem> {/* Updated label */}
-                  <SelectItem value="template-custom">Template Tùy chỉnh (Tải lên tự do)</SelectItem>
                   {/* Add more templates as needed */}
                 </SelectContent>
               </Select>
@@ -83,7 +81,7 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {(selectedTemplate === 'template-a' || selectedTemplate === 'template-d') && (
+      {selectedTemplate === 'template-a' && (
         <Card>
           <CardHeader>
             <CardTitle>Cấu trúc đề thi THPT Quốc gia</CardTitle>
@@ -109,21 +107,6 @@ const WordExamUpload: React.FC = () => {
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {selectedTemplate === 'template-custom' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Tải lên tự do</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Bạn đã chọn chế độ tải lên tự do. Hệ thống sẽ cố gắng phân tích cấu trúc file Word của bạn.
-              Tuy nhiên, bạn có thể cần cấu hình thủ công các câu hỏi và đáp án sau khi tải lên.
-            </p>
-            {/* Add any specific custom upload options here if needed */}
           </CardContent>
         </Card>
       )}
