@@ -47,7 +47,7 @@ const BookTable: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-col md:flex-row items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4"> {/* Added justify-between */}
           <div className="relative flex-1 w-full md:w-auto">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
