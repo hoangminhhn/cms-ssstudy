@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true);
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // Changed to false by default
 
   const renderContent = () => {
     switch (activeSubMenuItem) {
@@ -52,8 +52,40 @@ const BookManagement: React.FC = () => {
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
         <div className={cn(
           "hidden lg:grid gap-6 w-full overflow-x-hidden",
-          isDesktopSubMenuOpen ? "lg:grid-cols-1" : "lg:grid-cols-1"
+          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-[14px_1fr]" // Corrected grid layout
         )}>
+          {isDesktopSubMenuOpen && (
+            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
+              <div className="flex items-center justify-end p-4 border-b"> {/* Added collapse button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDesktopSubMenuOpen(false)}
+                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="sr-only">Thu gọn menu</span>
+                </Button>
+              </div>
+              <nav className="grid items-start px-2 text-sm font-medium py-2 overflow-x-hidden">
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.value}
+                    variant="ghost"
+                    className={cn(
+                      "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                    )}
+                    onClick={() => setActiveSubMenuItem(item.value)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Button>
+                ))}
+              </nav>
+            </div>
+          )}
+
           {!isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-14 overflow-x-hidden">
               <div className="flex items-center justify-center p-4 border-b">
@@ -87,6 +119,21 @@ const BookManagement: React.FC = () => {
           )}
 
           <div className="flex flex-col flex-1 w-full overflow-x-hidden">
+            {/* New header for desktop when menu is collapsed */}
+            {!isDesktopSubMenuOpen && (
+              <div className="px-4 py-2 border-b bg-gray-50 dark:bg-gray-800 lg:block hidden">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDesktopSubMenuOpen(true)}
+                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 mb-1"
+                >
+                  <span className="text-sm font-semibold">MỞ RỘNG</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <h2 className="text-lg font-semibold">Quản lý sách</h2>
+              </div>
+            )}
             {renderContent()}
           </div>
         </div>
