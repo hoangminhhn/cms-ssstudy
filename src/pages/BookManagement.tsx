@@ -50,12 +50,6 @@ const BookManagement: React.FC = () => {
       />
 
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        {/* Header with title only */}
-        <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
-          <h2 className="text-lg font-semibold">Quản lý sách</h2>
-          <div className="w-16" /> {/* Placeholder to balance flex */}
-        </div>
-
         <div className={cn(
           "hidden lg:grid gap-6 w-full overflow-x-hidden",
           isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
