@@ -2,7 +2,8 @@ import React from 'react';
 import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
-import BookSubMenu from './BookSubMenu'; // Import the new BookSubMenu
+import BookSubMenu from './BookSubMenu';
+import ExamSubMenu from './ExamSubMenu'; // Import the new ExamSubMenu
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -55,12 +56,15 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
 
-  // Automatically open 'books' submenu if current path is /books or /books?tab=...
+  // Automatically open submenu if current path starts with its base path
   React.useEffect(() => {
     if (location.pathname.startsWith('/books')) {
       setOpenSubMenu('books');
-    } else {
-      setOpenSubMenu(null); // Close submenu if navigating away from /books
+    } else if (location.pathname.startsWith('/exams')) {
+      setOpenSubMenu('exams');
+    }
+    else {
+      setOpenSubMenu(null); // Close submenu if navigating away from known sub-menu paths
     }
   }, [location.pathname]);
 
@@ -93,7 +97,18 @@ const Sidebar: React.FC = () => {
             {openSubMenu === 'books' && <BookSubMenu />} {/* Render submenu if open */}
 
             <NavItem icon={FileText} label="Mã form" to="/forms" />
-            <NavItem icon={LayoutDashboard} label="Đề thi" to="/exams" />
+            
+            {/* Parent item for Exams with submenu */}
+            <NavItem
+              icon={LayoutDashboard} // Using LayoutDashboard for Exams as per image
+              label="Đề thi"
+              onClick={() => handleParentClick('exams')}
+              isActive={location.pathname.startsWith('/exams')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'exams'}
+            />
+            {openSubMenu === 'exams' && <ExamSubMenu />} {/* Render submenu if open */}
+
             <NavItem icon={LayoutDashboard} label="Đề thi mới" to="/new-exams" />
             <NavItem icon={File} label="Bài học" to="/lessons" />
             <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" />
