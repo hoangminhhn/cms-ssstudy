@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import AddExamForm from '@/components/AddExamForm';
-import WordExamUpload from '@/components/WordExamUpload';
+// Removed import WordExamUpload from '@/components/WordExamUpload';
 
 const ExamManagement: React.FC = () => {
   const location = useLocation();
@@ -19,12 +19,7 @@ const ExamManagement: React.FC = () => {
         return <ExamTable />;
       case 'add-exam':
         return <AddExamForm />;
-      case 'word-exam-upload':
-        return <WordExamUpload />;
-      case 'question-bank':
-        return <div className="p-4">Nội dung cho "Ngân hàng câu hỏi" sẽ ở đây.</div>; // Placeholder for Question Bank
-      case 'create-template':
-        return <div className="p-4">Nội dung cho "Tạo template đề thi" sẽ ở đây.</div>; // Placeholder for Create Template
+      // Removed case 'word-exam-upload': return <WordExamUpload />;
       case 'exam-categories':
         return <div className="p-4">Nội dung cho "Danh mục đề" sẽ ở đây.</div>;
       case 'add-category':
