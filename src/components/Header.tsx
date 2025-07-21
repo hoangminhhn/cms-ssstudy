@@ -1,17 +1,24 @@
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, Menu } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
+  onToggleMenu?: () => void;
   title?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ title }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMenu, title }) => {
   return (
     <header className="flex items-center gap-4 border-b bg-gray-50/40 px-4 lg:px-6 dark:bg-gray-800/40 h-14 lg:h-[60px]">
-      <div className="flex-1">
+      {onToggleMenu && (
+        <Button variant="ghost" size="icon" className="lg:hidden" onClick={onToggleMenu}>
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      )}
+      <div className="flex-1 flex items-center">
         <h1 className="text-xl font-semibold">{title || ''}</h1>
       </div>
       <Button variant="ghost" size="icon" className="relative">
