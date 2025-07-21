@@ -2,9 +2,10 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import { useLocation } from 'react-router-dom'; // Import useLocation
-import { Button } from '@/components/ui/button'; // Keep this import as it's used in the mobile section
-import { ChevronRight } from 'lucide-react'; // Keep this import
+import { useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { ChevronRight } from 'lucide-react';
+import AddBookForm from '@/components/AddBookForm'; // Import the new AddBookForm
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -16,7 +17,7 @@ const BookManagement: React.FC = () => {
       case 'all-books':
         return <BookTable />;
       case 'add-book':
-        return <div className="p-4">Nội dung cho "Thêm sách" sẽ ở đây.</div>;
+        return <AddBookForm />; {/* Render AddBookForm here */}
       case 'book-categories':
         return <div className="p-4">Nội dung cho "Danh mục sách" sẽ ở đây.</div>;
       case 'add-category':
