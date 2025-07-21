@@ -11,7 +11,7 @@ import Header from '@/components/Header';
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true); // State for desktop sub-menu visibility
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true);
 
   const renderContent = () => {
     switch (activeSubMenuItem) {
@@ -43,7 +43,7 @@ const BookManagement: React.FC = () => {
 
   return (
     <Layout>
-      {/* Use Header with toggle menu button and title */}
+      {/* Header with menu toggle and title */}
       <Header onToggleMenu={() => setIsSheetOpen(true)} title="Quản lý sách" />
 
       <div className="flex flex-col gap-6">
@@ -58,16 +58,16 @@ const BookManagement: React.FC = () => {
         {/* Desktop layout */}
         <div className={cn(
           "hidden lg:grid gap-6",
-          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1" // Adjust grid columns based on collapse state
+          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
         )}>
-          {/* Collapsible desktop sub-menu panel (conditionally rendered) */}
+          {/* Desktop sub-menu */}
           {isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px]">
               <div className="flex items-center justify-end p-4 border-b">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsDesktopSubMenuOpen(false)} // Collapse button
+                  onClick={() => setIsDesktopSubMenuOpen(false)}
                   className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
@@ -93,26 +93,27 @@ const BookManagement: React.FC = () => {
             </div>
           )}
 
-          {/* Main content area for desktop */}
+          {/* Main content */}
           <div className="flex flex-col flex-1">
-            <div className="flex items-center gap-4 mb-4"> {/* Header for content area */}
-              {!isDesktopSubMenuOpen && (
+            {/* Top bar with expand button and title */}
+            {!isDesktopSubMenuOpen && (
+              <div className="flex items-center gap-2 mb-4 px-4 lg:px-0">
                 <Button
-                  variant="ghost"
+                  variant="link"
                   size="sm"
-                  onClick={() => setIsDesktopSubMenuOpen(true)} // Expand button
+                  onClick={() => setIsDesktopSubMenuOpen(true)}
                   className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
                 >
-                  <ChevronRight className="h-4 w-4 mr-2" />
-                  <span className="text-sm font-medium">MỞ RỘNG</span>
+                  MỞ RỘNG
                 </Button>
-              )}
-            </div>
+                <h1 className="text-xl font-semibold">Quản lý sách</h1>
+              </div>
+            )}
             {renderContent()}
           </div>
         </div>
 
-        {/* Mobile content (only content, sheet handles navigation) */}
+        {/* Mobile content */}
         <div className="lg:hidden">
           {renderContent()}
         </div>
