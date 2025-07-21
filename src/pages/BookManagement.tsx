@@ -43,11 +43,10 @@ const BookManagement: React.FC = () => {
 
   return (
     <Layout>
-      {/* Header with menu toggle and title */}
+      {/* Remove any extra header here, keep only one Header */}
       <Header onToggleMenu={() => setIsSheetOpen(true)} title="Quản lý sách" />
 
       <div className="flex flex-col gap-6">
-        {/* Mobile sub-menu sheet */}
         <BookSubMenuSheet
           isOpen={isSheetOpen}
           onOpenChange={setIsSheetOpen}
@@ -55,12 +54,10 @@ const BookManagement: React.FC = () => {
           activeItem={activeSubMenuItem}
         />
 
-        {/* Desktop layout */}
         <div className={cn(
           "hidden lg:grid gap-6",
           isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
         )}>
-          {/* Desktop sub-menu */}
           {isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px]">
               <div className="flex items-center justify-end p-4 border-b">
@@ -93,14 +90,11 @@ const BookManagement: React.FC = () => {
             </div>
           )}
 
-          {/* Main content */}
           <div className="flex flex-col flex-1">
-            {/* Removed duplicated title and expand button here */}
             {renderContent()}
           </div>
         </div>
 
-        {/* Mobile content */}
         <div className="lg:hidden">
           {renderContent()}
         </div>
