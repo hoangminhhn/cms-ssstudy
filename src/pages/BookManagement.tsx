@@ -2,112 +2,25 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import BookSubMenuSheet from '@/components/BookSubMenuSheet';
-import { Button } from '@/components/ui/button';
-import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+// Removed imports for BookSubMenuSheet and related icons as they are no longer needed
+// import { Button } from '@/components/ui/button';
+// import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
+// import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true);
+  // Removed all state related to submenu: isSheetOpen, activeSubMenuItem, isDesktopSubMenuOpen
 
-  const renderContent = () => {
-    switch (activeSubMenuItem) {
-      case 'all-books':
-        return <BookTable />;
-      case 'add-book':
-        return <div className="p-4">Nội dung cho "Thêm sách" sẽ ở đây.</div>;
-      case 'book-categories':
-        return <div className="p-4">Nội dung cho "Danh mục sách" sẽ ở đây.</div>;
-      case 'add-category':
-        return <div className="p-4">Nội dung cho "Thêm danh mục" sẽ ở đây.</div>;
-      case 'book-reviews':
-        return <div className="p-4">Nội dung cho "Đánh giá sách" sẽ ở đây.</div>;
-      case 'add-review':
-        return <div className="p-4">Nội dung cho "Thêm đánh giá sách" sẽ ở đây.</div>;
-      default:
-        return <BookTable />;
-    }
-  };
-
-  const menuItems = [
-    { value: 'all-books', label: 'Tất cả sách', icon: Book },
-    { value: 'add-book', label: 'Thêm sách', icon: PlusCircle },
-    { value: 'book-categories', label: 'Danh mục sách', icon: List },
-    { value: 'add-category', label: 'Thêm danh mục', icon: Tag },
-    { value: 'book-reviews', label: 'Đánh giá sách', icon: Star },
-    { value: 'add-review', label: 'Thêm đánh giá sách', icon: FilePlus },
-  ];
+  // Removed renderContent function as it's no longer needed
+  // Removed menuItems array as it's no longer needed
 
   return (
     <Layout>
-      <BookSubMenuSheet
-        isOpen={isSheetOpen}
-        onOpenChange={setIsSheetOpen}
-        onSelectMenuItem={setActiveSubMenuItem}
-        activeItem={activeSubMenuItem}
-      />
+      {/* Removed BookSubMenuSheet component */}
 
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        <div className={cn(
-          "hidden lg:grid gap-6 w-full overflow-x-hidden",
-          isDesktopSubMenuOpen ? "lg:grid-cols-1" : "lg:grid-cols-1"
-        )}>
-          {!isDesktopSubMenuOpen && (
-            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-14 overflow-x-hidden">
-              <div className="flex items-center justify-center p-4 border-b">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsDesktopSubMenuOpen(true)}
-                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                  <span className="sr-only">Mở rộng menu</span>
-                </Button>
-              </div>
-              <nav className="flex flex-col items-center space-y-2 py-2">
-                {menuItems.map((item) => (
-                  <Button
-                    key={item.value}
-                    variant="ghost"
-                    className={cn(
-                      "flex items-center justify-center rounded-lg p-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                      activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-                    )}
-                    onClick={() => setActiveSubMenuItem(item.value)}
-                    title={item.label}
-                  >
-                    <item.icon className="h-5 w-5" />
-                  </Button>
-                ))}
-              </nav>
-            </div>
-          )}
-
-          <div className="flex flex-col flex-1 w-full overflow-x-hidden">
-            {renderContent()}
-          </div>
-        </div>
-
-        {/* Mobile content */}
-        <div className="lg:hidden w-full overflow-x-hidden">
-          <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
-              onClick={() => setIsSheetOpen(true)}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-sm font-semibold">MỞ RỘNG</span>
-            </Button>
-            <h2 className="text-lg font-semibold">Quản lý sách</h2>
-            <div className="w-16" /> {/* Placeholder */}
-          </div>
-          {renderContent()}
-        </div>
+        {/* Removed all desktop submenu conditional rendering */}
+        {/* Removed all mobile submenu conditional rendering */}
+        <BookTable /> {/* Directly render BookTable */}
       </div>
       <MadeWithDyad />
     </Layout>
