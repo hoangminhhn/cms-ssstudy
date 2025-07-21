@@ -5,6 +5,7 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import CreateExamFromBankForm from '@/components/CreateExamFromBankForm'; // Import the new component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -15,6 +16,8 @@ const WordExamUploadPage: React.FC = () => {
     switch (activeTab) {
       case 'word-exam-upload':
         return <WordExamUpload />;
+      case 'create-from-bank':
+        return <CreateExamFromBankForm />; // Render the new component
       case 'question-bank':
         return <div className="p-4">Nội dung cho "Ngân hàng câu hỏi" sẽ ở đây.</div>;
       case 'create-template':

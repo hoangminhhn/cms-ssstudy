@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { List, LayoutTemplate } from 'lucide-react';
+import { List, LayoutTemplate, PlusCircle } from 'lucide-react'; // Added PlusCircle icon
 
 interface SubMenuItem {
   id: string;
@@ -11,7 +11,8 @@ interface SubMenuItem {
 }
 
 const subMenuItems: SubMenuItem[] = [
-  { id: 'word-exam-upload', label: 'Tải lên đề Word', icon: List, path: '/word-exam-upload?tab=word-exam-upload' },
+  { id: 'word-exam-upload', label: 'Tạo đề thi từ Word', icon: PlusCircle, path: '/word-exam-upload?tab=word-exam-upload' }, // Renamed and icon changed
+  { id: 'create-from-bank', label: 'Tạo đề thi từ Ngân hàng câu hỏi', icon: PlusCircle, path: '/word-exam-upload?tab=create-from-bank' }, // New item
   { id: 'question-bank', label: 'Ngân hàng câu hỏi', icon: List, path: '/word-exam-upload?tab=question-bank' },
   { id: 'create-template', label: 'Tạo template đề thi', icon: LayoutTemplate, path: '/word-exam-upload?tab=create-template' },
 ];
