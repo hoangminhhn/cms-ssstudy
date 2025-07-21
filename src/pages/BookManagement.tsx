@@ -2,72 +2,25 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import BookSubMenu from '@/components/BookSubMenu';
-import { Button } from '@/components/ui/button'; // Added this import
-import { ChevronRight } from 'lucide-react';
+// Removed imports for BookSubMenuSheet and related icons as they are no longer needed
+// import { Button } from '@/components/ui/button';
+// import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
+// import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // Default to collapsed
-  const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
+  // Removed all state related to submenu: isSheetOpen, activeSubMenuItem, isDesktopSubMenuOpen
 
-  const renderContent = () => {
-    switch (activeSubMenuItem) {
-      case 'all-books':
-        return <BookTable />;
-      case 'add-book':
-        return <div className="p-4">Nội dung cho "Thêm sách" sẽ ở đây.</div>;
-      case 'book-categories':
-        return <div className="p-4">Nội dung cho "Danh mục sách" sẽ ở đây.</div>;
-      case 'add-category':
-        return <div className="p-4">Nội dung cho "Thêm danh mục" sẽ ở đây.</div>;
-      case 'book-reviews':
-        return <div className="p-4">Nội dung cho "Đánh giá sách" sẽ ở đây.</div>;
-      case 'add-review':
-        return <div className="p-4">Nội dung cho "Thêm đánh giá sách" sẽ ở đây.</div>;
-      default:
-        return <BookTable />;
-    }
-  };
-
-  // Removed headerLeftAdornment as the toggle button is now inside BookSubMenu
+  // Removed renderContent function as it's no longer needed
+  // Removed menuItems array as it's no longer needed
 
   return (
-    <Layout headerTitle="Quản lý sách"> {/* Only pass headerTitle */}
-      <div className="flex flex-col gap-6 w-full overflow-x-hidden lg:grid" style={{ gridTemplateColumns: isDesktopSubMenuOpen ? '200px 1fr' : '56px 1fr' }}>
-        {/* Desktop Submenu */}
-        <BookSubMenu
-          isExpanded={isDesktopSubMenuOpen}
-          onToggle={() => setIsDesktopSubMenuOpen(!isDesktopSubMenuOpen)}
-          activeItem={activeSubMenuItem}
-          onSelectMenuItem={setActiveSubMenuItem}
-        />
+    <Layout>
+      {/* Removed BookSubMenuSheet component */}
 
-        {/* Main Content Area */}
-        <div className="flex flex-col flex-1 w-full overflow-x-hidden">
-          {/* Removed the redundant header div for "Mở rộng" button and title */}
-          {renderContent()}
-        </div>
-
-        {/* Mobile content - You might want to add a sheet/drawer for mobile submenu here if needed */}
-        {/* This mobile section still needs a proper mobile submenu implementation (e.g., using a Sheet/Drawer) */}
-        <div className="lg:hidden w-full overflow-x-hidden">
-          <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
-            {/* This button could open a mobile sheet/drawer for the submenu */}
-            {/* For now, it's just an alert */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => alert('Mobile submenu toggle (implement sheet/drawer)')}
-              className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-sm font-semibold">MỞ RỘNG</span>
-            </Button>
-            <h2 className="text-lg font-semibold">Quản lý sách</h2>
-            <div className="w-16" /> {/* Placeholder */}
-          </div>
-          {renderContent()}
-        </div>
+      <div className="flex flex-col gap-6 w-full overflow-x-hidden">
+        {/* Removed all desktop submenu conditional rendering */}
+        {/* Removed all mobile submenu conditional rendering */}
+        <BookTable /> {/* Directly render BookTable */}
       </div>
       <MadeWithDyad />
     </Layout>

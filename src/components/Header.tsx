@@ -7,10 +7,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 interface HeaderProps {
   onToggleMenu?: () => void;
   title?: string;
-  leftAdornment?: React.ReactNode; // New prop for content on the left of the title
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleMenu, title = "Quản lý sách", leftAdornment }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMenu, title = "Quản lý sách" }) => {
   return (
     <header className="flex items-center gap-4 border-b bg-gray-50/40 px-4 lg:px-6 dark:bg-gray-800/40 h-14 lg:h-[60px]">
       {onToggleMenu && (
@@ -19,7 +18,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, title = "Quản lý sách
           <span className="sr-only">Toggle menu</span>
         </Button>
       )}
-      {leftAdornment} {/* Render the new left adornment here */}
       <h1 className="text-xl font-semibold flex-1">{title}</h1>
       <Button variant="ghost" size="icon" className="relative">
         <Bell className="h-5 w-5" />
