@@ -4,12 +4,13 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Menu, Book, PlusCircle, List, Tag, Star, FilePlus } from 'lucide-react'; // Added Book, PlusCircle, List, Tag, Star, FilePlus
+import { Menu, Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(true); // State for desktop sub-menu visibility
 
   const renderContent = () => {
     switch (activeSubMenuItem) {
@@ -30,6 +31,15 @@ const BookManagement: React.FC = () => {
     }
   };
 
+  const menuItems = [
+    { value: 'all-books', label: 'Tất cả sách', icon: Book },
+    { value: 'add-book', label: 'Thêm sách', icon: PlusCircle },
+    { value: 'book-categories', label: 'Danh mục sách', icon: List },
+    { value: 'add-category', label: 'Thêm danh mục', icon: Tag },
+    { value: 'book-reviews', label: 'Đánh giá sách', icon: Star },
+    { value: 'add-review', label: 'Thêm đánh giá sách', icon: FilePlus },
+  ];
+
   return (
     <Layout>
       <div className="flex flex-col gap-6">
@@ -49,75 +59,50 @@ const BookManagement: React.FC = () => {
         />
 
         {/* Desktop sub-menu (always visible on large screens) */}
-        <div className="hidden lg:grid lg:grid-cols-[200px_1fr] gap-6">
-          <nav className="grid items-start px-2 text-sm font-medium">
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'all-books' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('all-books')}
-            >
-              <Book className="h-5 w-5" />
-              Tất cả sách
-            </Button>
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'add-book' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('add-book')}
-            >
-              <PlusCircle className="h-5 w-5" />
-              Thêm sách
-            </Button>
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'book-categories' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('book-categories')}
-            >
-              <List className="h-5 w-5" />
-              Danh mục sách
-            </Button>
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'add-category' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('add-category')}
-            >
-              <Tag className="h-5 w-5" />
-              Thêm danh mục
-            </Button>
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'book-reviews' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('book-reviews')}
-            >
-              <Star className="h-5 w-5" />
-              Đánh giá sách
-            </Button>
-            <Button
-              variant="ghost"
-              className={cn(
-                "flex items-center justify-start gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-                activeSubMenuItem === 'add-review' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-              )}
-              onClick={() => setActiveSubMenuItem('add-review')}
-            >
-              <FilePlus className="h-5 w-5" />
-              Thêm đánh giá sách
-            </Button>
-          </nav>
+        <div className={cn(
+          "hidden lg:grid gap-6",
+          isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-[64px_1fr]" // Adjust grid columns based on collapse state
+        )}>
+          {/* Collapsible desktop sub-menu panel */}
+          <div className={cn(
+            "flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out",
+            isDesktopSubMenuOpen ? "w-[200px]" : "w-16 items-center" // Explicit width for transition
+          )}>
+            <div className="flex items-center justify-end p-4 border-b">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsDesktopSubMenuOpen(!isDesktopSubMenuOpen)}
+                className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
+              >
+                {isDesktopSubMenuOpen ? (
+                  <>
+                    <ChevronLeft className="h-4 w-4 mr-2" />
+                    <span className="text-sm font-medium">THU GỌN</span>
+                  </>
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <nav className="grid items-start px-2 text-sm font-medium py-2">
+              {menuItems.map((item) => (
+                <Button
+                  key={item.value}
+                  variant="ghost"
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                    activeSubMenuItem === item.value && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50",
+                    !isDesktopSubMenuOpen && "justify-center px-2" // Center icon, reduce padding when collapsed
+                  )}
+                  onClick={() => setActiveSubMenuItem(item.value)}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {isDesktopSubMenuOpen && item.label}
+                </Button>
+              ))}
+            </nav>
+          </div>
           <div className="flex-1">
             {renderContent()}
           </div>
