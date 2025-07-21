@@ -3,7 +3,8 @@ import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenu from '@/components/BookSubMenu';
-// No longer need ChevronRight here as it's handled within BookSubMenu
+import { Button } from '@/components/ui/button'; // Added this import
+import { ChevronRight } from 'lucide-react';
 
 const BookManagement: React.FC = () => {
   const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // Default to collapsed
