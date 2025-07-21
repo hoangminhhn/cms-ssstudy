@@ -2,12 +2,12 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import BookSubMenu from '@/components/BookSubMenu'; // Import the new component
+import BookSubMenu from '@/components/BookSubMenu';
 import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react'; // Only ChevronRight needed for the main content header
+import { ChevronRight } from 'lucide-react';
 
 const BookManagement: React.FC = () => {
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // Default to collapsed
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false);
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
 
   const renderContent = () => {
@@ -29,8 +29,20 @@ const BookManagement: React.FC = () => {
     }
   };
 
+  const headerLeftAdornment = !isDesktopSubMenuOpen ? (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={() => setIsDesktopSubMenuOpen(true)}
+      className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
+    >
+      <span className="text-sm font-semibold">MỞ RỘNG</span>
+      <ChevronRight className="h-4 w-4" />
+    </Button>
+  ) : null;
+
   return (
-    <Layout>
+    <Layout headerTitle="Quản lý sách" headerLeftAdornment={headerLeftAdornment}>
       <div className="flex flex-col gap-6 w-full overflow-x-hidden lg:grid" style={{ gridTemplateColumns: isDesktopSubMenuOpen ? '200px 1fr' : '56px 1fr' }}>
         {/* Desktop Submenu */}
         <BookSubMenu
@@ -42,21 +54,7 @@ const BookManagement: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="flex flex-col flex-1 w-full overflow-x-hidden">
-          {/* Header for desktop when menu is collapsed */}
-          {!isDesktopSubMenuOpen && (
-            <div className="px-4 py-2 border-b bg-gray-50 dark:bg-gray-800 lg:block hidden">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsDesktopSubMenuOpen(true)}
-                className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 mb-1"
-              >
-                <span className="text-sm font-semibold">MỞ RỘNG</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              {/* Removed the redundant h2 title here */}
-            </div>
-          )}
+          {/* Removed the redundant header div here as content is now passed to Layout/Header */}
           {renderContent()}
         </div>
 
