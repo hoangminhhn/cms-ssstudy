@@ -1,30 +1,72 @@
 import React from 'react';
-import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2 } from 'lucide-react';
+import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
+import { Link, useLocation } from 'react-router-dom';
+import BookSubMenu from './BookSubMenu'; // Import the new BookSubMenu
 
 interface NavItemProps {
   icon: React.ElementType;
   label: string;
-  to: string; // Add 'to' prop for navigation path
+  to?: string; // Make 'to' optional for parent items
   isActive?: boolean;
+  onClick?: () => void; // Add onClick for parent items
+  hasSubMenu?: boolean; // Indicate if it's a parent with a submenu
+  isSubMenuOpen?: boolean; // Indicate if its submenu is open
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, to, isActive }) => (
-  <Link
-    to={to} // Use Link component for navigation
-    className={cn(
-      "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
-      isActive && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-    )}
-  >
-    <Icon className="h-5 w-5" />
-    {label}
-  </Link>
-);
+const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, to, isActive, onClick, hasSubMenu, isSubMenuOpen }) => {
+  const content = (
+    <>
+      <Icon className="h-5 w-5" />
+      {label}
+      {hasSubMenu && (isSubMenuOpen ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />)}
+    </>
+  );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className={cn(
+          "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-900 transition-all hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+          isActive && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+        )}
+      >
+        {content}
+      </Link>
+    );
+  } else {
+    return (
+      <div
+        onClick={onClick}
+        className={cn(
+          "flex items-center gap-3 rounded-lg px-3 py-2 cursor-pointer transition-all",
+          "text-gray-900 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+          isActive && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+        )}
+      >
+        {content}
+      </div>
+    );
+  }
+};
 
 const Sidebar: React.FC = () => {
-  const location = useLocation(); // Get current location
+  const location = useLocation();
+  const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
+
+  // Automatically open 'books' submenu if current path is /books or /books?tab=...
+  React.useEffect(() => {
+    if (location.pathname.startsWith('/books')) {
+      setOpenSubMenu('books');
+    } else {
+      setOpenSubMenu(null); // Close submenu if navigating away from /books
+    }
+  }, [location.pathname]);
+
+  const handleParentClick = (menuId: string) => {
+    setOpenSubMenu(openSubMenu === menuId ? null : menuId);
+  };
 
   return (
     <div className="hidden border-r bg-gray-50/40 lg:block dark:bg-gray-800/40 h-full">
@@ -38,7 +80,18 @@ const Sidebar: React.FC = () => {
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <NavItem icon={Home} label="Trang chủ" to="/" isActive={location.pathname === '/'} />
-            <NavItem icon={Book} label="Sách" to="/books" isActive={location.pathname === '/books'} />
+            
+            {/* Parent item for Books with submenu */}
+            <NavItem
+              icon={Book}
+              label="Sách"
+              onClick={() => handleParentClick('books')}
+              isActive={location.pathname.startsWith('/books')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'books'}
+            />
+            {openSubMenu === 'books' && <BookSubMenu />} {/* Render submenu if open */}
+
             <NavItem icon={FileText} label="Mã form" to="/forms" />
             <NavItem icon={LayoutDashboard} label="Đề thi" to="/exams" />
             <NavItem icon={LayoutDashboard} label="Đề thi mới" to="/new-exams" />
