@@ -6,7 +6,6 @@ import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
 import { Menu, Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Header from '@/components/Header';
 
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
@@ -43,9 +42,6 @@ const BookManagement: React.FC = () => {
 
   return (
     <Layout>
-      {/* Remove any extra header here, keep only one Header */}
-      <Header onToggleMenu={() => setIsSheetOpen(true)} title="Quản lý sách" />
-
       <div className="flex flex-col gap-6">
         <BookSubMenuSheet
           isOpen={isSheetOpen}
