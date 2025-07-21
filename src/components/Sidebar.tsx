@@ -1,18 +1,19 @@
 import React from 'react';
-import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react'; // Renamed FileText to FileTextIcon to avoid conflict
+import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import BookSubMenu from './BookSubMenu';
 import ExamSubMenu from './ExamSubMenu';
+import WordExamSubMenu from './WordExamSubMenu'; // Import the new submenu
 
 interface NavItemProps {
   icon: React.ElementType;
   label: string;
-  to?: string; // Make 'to' optional for parent items
+  to?: string;
   isActive?: boolean;
-  onClick?: () => void; // Add onClick for parent items
-  hasSubMenu?: boolean; // Indicate if it's a parent with a submenu
-  isSubMenuOpen?: boolean; // Indicate if its submenu is open
+  onClick?: () => void;
+  hasSubMenu?: boolean;
+  isSubMenuOpen?: boolean;
 }
 
 const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, to, isActive, onClick, hasSubMenu, isSubMenuOpen }) => {
@@ -56,15 +57,16 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
 
-  // Automatically open submenu if current path starts with its base path
   React.useEffect(() => {
     if (location.pathname.startsWith('/books')) {
       setOpenSubMenu('books');
     } else if (location.pathname.startsWith('/exams')) {
       setOpenSubMenu('exams');
+    } else if (location.pathname.startsWith('/word-exam-upload')) { // Handle new parent menu
+      setOpenSubMenu('word-exams');
     }
     else {
-      setOpenSubMenu(null); // Close submenu if navigating away from known sub-menu paths
+      setOpenSubMenu(null);
     }
   }, [location.pathname]);
 
@@ -85,7 +87,6 @@ const Sidebar: React.FC = () => {
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <NavItem icon={Home} label="Trang chủ" to="/" isActive={location.pathname === '/'} />
             
-            {/* Parent item for Books with submenu */}
             <NavItem
               icon={Book}
               label="Sách"
@@ -94,23 +95,33 @@ const Sidebar: React.FC = () => {
               hasSubMenu
               isSubMenuOpen={openSubMenu === 'books'}
             />
-            {openSubMenu === 'books' && <BookSubMenu />} {/* Render submenu if open */}
+            {openSubMenu === 'books' && <BookSubMenu />}
 
             <NavItem icon={FileTextIcon} label="Mã form" to="/forms" isActive={location.pathname === '/forms'} />
             
-            {/* Parent item for Exams with submenu */}
             <NavItem
-              icon={LayoutDashboard} // Using LayoutDashboard for Exams as per image
+              icon={LayoutDashboard}
               label="Đề thi"
               onClick={() => handleParentClick('exams')}
               isActive={location.pathname.startsWith('/exams')}
               hasSubMenu
               isSubMenuOpen={openSubMenu === 'exams'}
             />
-            {openSubMenu === 'exams' && <ExamSubMenu />} {/* Render submenu if open */}
+            {openSubMenu === 'exams' && <ExamSubMenu />}
 
             <NavItem icon={LayoutDashboard} label="Đề thi mới" to="/new-exams" isActive={location.pathname === '/new-exams'} />
-            <NavItem icon={FileTextIcon} label="Đề thi file word" to="/word-exam-upload" isActive={location.pathname === '/word-exam-upload'} /> {/* New top-level item */}
+            
+            {/* New parent item for Word Exam Upload with submenu */}
+            <NavItem
+              icon={FileTextIcon}
+              label="Đề thi file word"
+              onClick={() => handleParentClick('word-exams')}
+              isActive={location.pathname.startsWith('/word-exam-upload')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'word-exams'}
+            />
+            {openSubMenu === 'word-exams' && <WordExamSubMenu />}
+
             <NavItem icon={File} label="Bài học" to="/lessons" isActive={location.pathname === '/lessons'} />
             <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" isActive={location.pathname === '/quizzes'} />
             <NavItem icon={GraduationCap} label="Khóa học" to="/courses" isActive={location.pathname === '/courses'} />
