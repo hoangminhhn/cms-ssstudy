@@ -5,7 +5,8 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import AddExamForm from '@/components/AddExamForm'; // Import the new AddExamForm
+import AddExamForm from '@/components/AddExamForm';
+import WordExamUpload from '@/components/WordExamUpload'; // Import the new WordExamUpload component
 
 const ExamManagement: React.FC = () => {
   const location = useLocation();
@@ -17,7 +18,9 @@ const ExamManagement: React.FC = () => {
       case 'all-exams':
         return <ExamTable />;
       case 'add-exam':
-        return <AddExamForm />; {/* Render AddExamForm here */}
+        return <AddExamForm />;
+      case 'word-exam-upload':
+        return <WordExamUpload />; {/* Render WordExamUpload here */}
       case 'exam-categories':
         return <div className="p-4">Nội dung cho "Danh mục đề" sẽ ở đây.</div>;
       case 'add-category':
