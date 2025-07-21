@@ -1,9 +1,9 @@
 import React from 'react';
-import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react'; // Renamed FileText to FileTextIcon to avoid conflict
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import BookSubMenu from './BookSubMenu';
-import ExamSubMenu from './ExamSubMenu'; // Import the new ExamSubMenu
+import ExamSubMenu from './ExamSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -96,7 +96,7 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'books' && <BookSubMenu />} {/* Render submenu if open */}
 
-            <NavItem icon={FileText} label="Mã form" to="/forms" />
+            <NavItem icon={FileTextIcon} label="Mã form" to="/forms" isActive={location.pathname === '/forms'} />
             
             {/* Parent item for Exams with submenu */}
             <NavItem
@@ -109,21 +109,22 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'exams' && <ExamSubMenu />} {/* Render submenu if open */}
 
-            <NavItem icon={LayoutDashboard} label="Đề thi mới" to="/new-exams" />
-            <NavItem icon={File} label="Bài học" to="/lessons" />
-            <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" />
-            <NavItem icon={GraduationCap} label="Khóa học" to="/courses" />
-            <NavItem icon={File} label="Tài liệu" to="/documents" />
-            <NavItem icon={Users} label="Thành viên" to="/members" />
-            <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" />
-            <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" />
-            <NavItem icon={Newspaper} label="Tin tức" to="/news" />
-            <NavItem icon={Bell} label="Thông báo" to="/notifications" />
-            <NavItem icon={Settings} label="Quản lý trang" to="/page-management" />
-            <NavItem icon={DollarSign} label="Giao dịch" to="/transactions" />
-            <NavItem icon={CreditCard} label="Học phí" to="/tuition" />
-            <NavItem icon={FileText} label="Thẻ" to="/cards" />
-            <NavItem icon={Repeat2} label="Chuyển cần" to="/transfers" />
+            <NavItem icon={LayoutDashboard} label="Đề thi mới" to="/new-exams" isActive={location.pathname === '/new-exams'} />
+            <NavItem icon={FileTextIcon} label="Đề thi file word" to="/word-exam-upload" isActive={location.pathname === '/word-exam-upload'} /> {/* New top-level item */}
+            <NavItem icon={File} label="Bài học" to="/lessons" isActive={location.pathname === '/lessons'} />
+            <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" isActive={location.pathname === '/quizzes'} />
+            <NavItem icon={GraduationCap} label="Khóa học" to="/courses" isActive={location.pathname === '/courses'} />
+            <NavItem icon={File} label="Tài liệu" to="/documents" isActive={location.pathname === '/documents'} />
+            <NavItem icon={Users} label="Thành viên" to="/members" isActive={location.pathname === '/members'} />
+            <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" isActive={location.pathname === '/orders'} />
+            <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" isActive={location.pathname === '/promotions'} />
+            <NavItem icon={Newspaper} label="Tin tức" to="/news" isActive={location.pathname === '/news'} />
+            <NavItem icon={Bell} label="Thông báo" to="/notifications" isActive={location.pathname === '/notifications'} />
+            <NavItem icon={Settings} label="Quản lý trang" to="/page-management" isActive={location.pathname === '/page-management'} />
+            <NavItem icon={DollarSign} label="Giao dịch" to="/transactions" isActive={location.pathname === '/transactions'} />
+            <NavItem icon={CreditCard} label="Học phí" to="/tuition" isActive={location.pathname === '/tuition'} />
+            <NavItem icon={FileTextIcon} label="Thẻ" to="/cards" isActive={location.pathname === '/cards'} />
+            <NavItem icon={Repeat2} label="Chuyển cần" to="/transfers" isActive={location.pathname === '/transfers'} />
           </nav>
         </div>
       </div>

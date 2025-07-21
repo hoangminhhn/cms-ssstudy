@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { List, PlusCircle, LayoutGrid, AlertTriangle, Plus, FileText } from 'lucide-react'; // Added FileText icon
+import { List, PlusCircle, LayoutGrid, AlertTriangle, Plus } from 'lucide-react'; // Removed FileText icon
 
 interface SubMenuItem {
   id: string;
@@ -13,7 +13,7 @@ interface SubMenuItem {
 const subMenuItems: SubMenuItem[] = [
   { id: 'all-exams', label: 'Tất cả đề', icon: List, path: '/exams?tab=all-exams' },
   { id: 'add-exam', label: 'Thêm đề', icon: PlusCircle, path: '/exams?tab=add-exam' },
-  { id: 'word-exam-upload', label: 'Đề thi file word', icon: FileText, path: '/exams?tab=word-exam-upload' }, // New item
+  // Removed: { id: 'word-exam-upload', label: 'Đề thi file word', icon: FileText, path: '/exams?tab=word-exam-upload' },
   { id: 'exam-categories', label: 'Danh mục đề', icon: LayoutGrid, path: '/exams?tab=exam-categories' },
   { id: 'add-category', label: 'Thêm danh mục', icon: Plus, path: '/exams?tab=add-category' },
   { id: 'exam-reports', label: 'Báo lỗi', icon: AlertTriangle, path: '/exams?tab=exam-reports' },

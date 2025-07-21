@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookManagement from "./pages/BookManagement";
-import ExamManagement from "./pages/ExamManagement"; // Import the new ExamManagement page
+import ExamManagement from "./pages/ExamManagement";
+import WordExamUploadPage from "./pages/WordExamUploadPage"; // Import the new WordExamUploadPage
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/books" element={<BookManagement />} />
-          <Route path="/exams" element={<ExamManagement />} /> {/* New route for Exam Management */}
+          <Route path="/exams" element={<ExamManagement />} />
+          <Route path="/word-exam-upload" element={<WordExamUploadPage />} /> {/* New route for Word Exam Upload */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
