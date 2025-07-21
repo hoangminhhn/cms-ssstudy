@@ -56,17 +56,6 @@ const BookManagement: React.FC = () => {
         )}>
           {isDesktopSubMenuOpen && (
             <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
-              <div className="flex items-center justify-start p-4 border-b">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsDesktopSubMenuOpen(false)}
-                  className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="text-sm font-medium">THU GỌN</span>
-                </Button>
-              </div>
               <nav className="grid items-start px-2 text-sm font-medium py-2 overflow-x-hidden">
                 {menuItems.map((item) => (
                   <Button
