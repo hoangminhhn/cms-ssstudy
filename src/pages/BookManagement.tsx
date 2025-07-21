@@ -4,7 +4,7 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Menu, Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
@@ -42,7 +42,7 @@ const BookManagement: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 w-full overflow-x-hidden">
         <BookSubMenuSheet
           isOpen={isSheetOpen}
           onOpenChange={setIsSheetOpen}
@@ -51,11 +51,11 @@ const BookManagement: React.FC = () => {
         />
 
         <div className={cn(
-          "hidden lg:grid gap-6",
+          "hidden lg:grid gap-6 w-full overflow-x-hidden",
           isDesktopSubMenuOpen ? "lg:grid-cols-[200px_1fr]" : "lg:grid-cols-1"
         )}>
           {isDesktopSubMenuOpen && (
-            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px]">
+            <div className="flex flex-col border-r bg-gray-50/40 dark:bg-gray-800/40 transition-all duration-300 ease-in-out w-[200px] overflow-x-hidden">
               <div className="flex items-center justify-end p-4 border-b">
                 <Button
                   variant="ghost"
@@ -67,7 +67,7 @@ const BookManagement: React.FC = () => {
                   <span className="text-sm font-medium">THU GỌN</span>
                 </Button>
               </div>
-              <nav className="grid items-start px-2 text-sm font-medium py-2">
+              <nav className="grid items-start px-2 text-sm font-medium py-2 overflow-x-hidden">
                 {menuItems.map((item) => (
                   <Button
                     key={item.value}
@@ -86,12 +86,12 @@ const BookManagement: React.FC = () => {
             </div>
           )}
 
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 w-full overflow-x-hidden">
             {renderContent()}
           </div>
         </div>
 
-        <div className="lg:hidden">
+        <div className="lg:hidden w-full overflow-x-hidden">
           {renderContent()}
         </div>
       </div>
