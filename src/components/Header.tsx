@@ -26,19 +26,24 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, title = "Quản lý sách
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
+          <Button
+            variant="ghost"
+            className="relative flex items-center space-x-2 rounded-full px-2 py-1 min-w-[120px] max-w-[180px] overflow-hidden"
+          >
+            <Avatar className="h-8 w-8 flex-shrink-0">
               <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
               <AvatarFallback>PHM</AvatarFallback>
             </Avatar>
-            <span className="ml-2 font-medium hidden sm:inline">Phùng Hoàng Minh</span>
+            <span className="font-medium truncate text-ellipsis whitespace-nowrap overflow-hidden">
+              Phùng Hoàng Minh
+            </span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">Phùng Hoàng Minh</p>
-              <p className="text-xs leading-none text-muted-foreground">
+              <p className="text-sm font-medium leading-none truncate">Phùng Hoàng Minh</p>
+              <p className="text-xs leading-none text-muted-foreground truncate">
                 m@example.com
               </p>
             </div>
