@@ -9,7 +9,7 @@ interface HeaderProps {
   title?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleMenu, title }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMenu, title = "Quản lý sách" }) => {
   return (
     <header className="flex items-center gap-4 border-b bg-gray-50/40 px-4 lg:px-6 dark:bg-gray-800/40 h-14 lg:h-[60px]">
       {onToggleMenu && (
@@ -18,9 +18,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, title }) => {
           <span className="sr-only">Toggle menu</span>
         </Button>
       )}
-      <div className="flex-1 flex items-center">
-        <h1 className="text-xl font-semibold">{title || ''}</h1>
-      </div>
+      <h1 className="text-xl font-semibold flex-1">{title}</h1>
       <Button variant="ghost" size="icon" className="relative">
         <Bell className="h-5 w-5" />
         <span className="sr-only">View notifications</span>
