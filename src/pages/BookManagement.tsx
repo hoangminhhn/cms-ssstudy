@@ -95,20 +95,7 @@ const BookManagement: React.FC = () => {
 
           {/* Main content */}
           <div className="flex flex-col flex-1">
-            {/* Top bar with expand button and title */}
-            {!isDesktopSubMenuOpen && (
-              <div className="flex items-center gap-2 mb-4 px-4 lg:px-0">
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={() => setIsDesktopSubMenuOpen(true)}
-                  className="text-orange-600 hover:text-orange-700 dark:text-orange-50 dark:hover:text-orange-100"
-                >
-                  MỞ RỘNG
-                </Button>
-                <h1 className="text-xl font-semibold">Quản lý sách</h1>
-              </div>
-            )}
+            {/* Removed duplicated title and expand button here */}
             {renderContent()}
           </div>
         </div>
