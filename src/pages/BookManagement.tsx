@@ -3,11 +3,10 @@ import Layout from '@/components/Layout';
 import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenu from '@/components/BookSubMenu';
-import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react';
+// No longer need ChevronRight here as it's handled within BookSubMenu
 
 const BookManagement: React.FC = () => {
-  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false);
+  const [isDesktopSubMenuOpen, setIsDesktopSubMenuOpen] = React.useState(false); // Default to collapsed
   const [activeSubMenuItem, setActiveSubMenuItem] = React.useState('all-books');
 
   const renderContent = () => {
@@ -29,20 +28,10 @@ const BookManagement: React.FC = () => {
     }
   };
 
-  const headerLeftAdornment = !isDesktopSubMenuOpen ? (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => setIsDesktopSubMenuOpen(true)}
-      className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
-    >
-      <span className="text-sm font-semibold">MỞ RỘNG</span>
-      <ChevronRight className="h-4 w-4" />
-    </Button>
-  ) : null;
+  // Removed headerLeftAdornment as the toggle button is now inside BookSubMenu
 
   return (
-    <Layout headerTitle="Quản lý sách" headerLeftAdornment={headerLeftAdornment}>
+    <Layout headerTitle="Quản lý sách"> {/* Only pass headerTitle */}
       <div className="flex flex-col gap-6 w-full overflow-x-hidden lg:grid" style={{ gridTemplateColumns: isDesktopSubMenuOpen ? '200px 1fr' : '56px 1fr' }}>
         {/* Desktop Submenu */}
         <BookSubMenu
@@ -54,17 +43,19 @@ const BookManagement: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="flex flex-col flex-1 w-full overflow-x-hidden">
-          {/* Removed the redundant header div here as content is now passed to Layout/Header */}
+          {/* Removed the redundant header div for "Mở rộng" button and title */}
           {renderContent()}
         </div>
 
         {/* Mobile content - You might want to add a sheet/drawer for mobile submenu here if needed */}
+        {/* This mobile section still needs a proper mobile submenu implementation (e.g., using a Sheet/Drawer) */}
         <div className="lg:hidden w-full overflow-x-hidden">
           <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
+            {/* This button could open a mobile sheet/drawer for the submenu */}
+            {/* For now, it's just an alert */}
             <Button
               variant="ghost"
               size="sm"
-              // This button could open a mobile sheet/drawer for the submenu
               onClick={() => alert('Mobile submenu toggle (implement sheet/drawer)')}
               className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
             >
