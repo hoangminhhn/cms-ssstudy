@@ -4,7 +4,7 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft } from 'lucide-react';
+import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
@@ -42,13 +42,28 @@ const BookManagement: React.FC = () => {
 
   return (
     <Layout>
+      <BookSubMenuSheet
+        isOpen={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        onSelectMenuItem={setActiveSubMenuItem}
+        activeItem={activeSubMenuItem}
+      />
+
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        <BookSubMenuSheet
-          isOpen={isSheetOpen}
-          onOpenChange={setIsSheetOpen}
-          onSelectMenuItem={setActiveSubMenuItem}
-          activeItem={activeSubMenuItem}
-        />
+        {/* Mobile header with expand/collapse button */}
+        <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800 lg:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
+            onClick={() => setIsSheetOpen(true)}
+          >
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-sm font-semibold">MỞ RỘNG</span>
+          </Button>
+          <h2 className="text-lg font-semibold">Quản lý sách</h2>
+          <div className="w-16" /> {/* Placeholder to balance flex */}
+        </div>
 
         <div className={cn(
           "hidden lg:grid gap-6 w-full overflow-x-hidden",
