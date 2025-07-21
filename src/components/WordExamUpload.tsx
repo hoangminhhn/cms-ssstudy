@@ -70,8 +70,8 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="template-a">Template A (Kỳ thi THPT Quốc gia)</SelectItem>
                   <SelectItem value="template-b">Template B (Kỳ thi Học sinh giỏi)</SelectItem>
                   <SelectItem value="template-c">Template C (Đề kiểm tra định kỳ)</SelectItem>
-                  <SelectItem value="template-d">Template D (Đầy đủ 3 phần thi THPT Quốc gia)</SelectItem> {/* New item */}
-                  <SelectItem value="template-custom">Template Tùy chỉnh (Tải lên tự do)</SelectItem> {/* New item */}
+                  <SelectItem value="template-d">Template D (Kỳ thi tốt nghiệp THPT Quốc gia - Đầy đủ 3 phần)</SelectItem> {/* Updated label */}
+                  <SelectItem value="template-custom">Template Tùy chỉnh (Tải lên tự do)</SelectItem>
                   {/* Add more templates as needed */}
                 </SelectContent>
               </Select>
