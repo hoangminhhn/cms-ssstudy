@@ -4,8 +4,8 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
-import { cn } from '@/lib/utils'; // Import cn here
+import { Menu, Book, PlusCircle, List, Tag, Star, FilePlus } from 'lucide-react'; // Added Book, PlusCircle, List, Tag, Star, FilePlus
+import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
