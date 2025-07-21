@@ -4,7 +4,7 @@ import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import BookSubMenuSheet from '@/components/BookSubMenuSheet';
 import { Button } from '@/components/ui/button';
-import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { Book, PlusCircle, List, Tag, Star, FilePlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BookManagement: React.FC = () => {
@@ -50,8 +50,8 @@ const BookManagement: React.FC = () => {
       />
 
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        {/* Mobile header with expand/collapse button */}
-        <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800 lg:hidden">
+        {/* Header with expand/collapse button always visible */}
+        <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
           <Button
             variant="ghost"
             size="sm"
