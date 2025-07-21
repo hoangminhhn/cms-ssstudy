@@ -81,6 +81,36 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
+      {selectedTemplate === 'template-a' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Cấu trúc đề thi THPT Quốc gia</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+                <h3 className="font-semibold text-lg mb-2">Phần 1: Nghe hiểu</h3>
+                <p className="text-sm text-muted-foreground">
+                  (Placeholder cho các tùy chọn cấu hình hoặc thông tin về phần này)
+                </p>
+              </div>
+              <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+                <h3 className="font-semibold text-lg mb-2">Phần 2: Đọc hiểu</h3>
+                <p className="text-sm text-muted-foreground">
+                  (Placeholder cho các tùy chọn cấu hình hoặc thông tin về phần này)
+                </p>
+              </div>
+              <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+                <h3 className="font-semibold text-lg mb-2">Phần 3: Viết</h3>
+                <p className="text-sm text-muted-foreground">
+                  (Placeholder cho các tùy chọn cấu hình hoặc thông tin về phần này)
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline">HỦY</Button>
