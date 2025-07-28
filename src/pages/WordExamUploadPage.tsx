@@ -6,15 +6,17 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import CreateExamFromBankForm from '@/components/CreateExamFromBankForm';
-import TemplateBuilder from '@/components/TemplateBuilder/TemplateBuilder'; // Import the new TemplateBuilder
+import TemplateBuilder from '@/components/TemplateBuilder/TemplateBuilder';
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const activeTab = searchParams.get('tab') || 'word-exam-upload'; // Default to 'word-exam-upload'
+  const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
     switch (activeTab) {
+      case 'all-word-exams':
+        return 'Tất cả đề thi file Word';
       case 'word-exam-upload':
         return 'Tạo đề thi từ file Word';
       case 'create-from-bank':
@@ -30,6 +32,8 @@ const WordExamUploadPage: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'all-word-exams':
+        return <div className="p-4">Nội dung cho "Tất cả đề thi file Word" sẽ ở đây.</div>;
       case 'word-exam-upload':
         return <WordExamUpload />;
       case 'create-from-bank':
@@ -37,9 +41,9 @@ const WordExamUploadPage: React.FC = () => {
       case 'question-bank':
         return <div className="p-4">Nội dung cho "Ngân hàng câu hỏi" sẽ ở đây.</div>;
       case 'create-template':
-        return <TemplateBuilder />; // Render the new TemplateBuilder component
+        return <TemplateBuilder />;
       default:
-        return <WordExamUpload />;
+        return <div className="p-4">Nội dung cho "Tất cả đề thi file Word" sẽ ở đây.</div>;
     }
   };
 
