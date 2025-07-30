@@ -62,9 +62,8 @@ const WordExamUpload: React.FC = () => {
                   <SelectValue placeholder="Mặc định" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="default">Mặc định</SelectItem>
-                  <SelectItem value="group1">Nhóm 1</SelectItem>
-                  <SelectItem value="group2">Nhóm 2</SelectItem>
+                  <SelectItem value="default">Mặc Định</SelectItem>
+                  <SelectItem value="test">Thi Thử</SelectItem>
                 </SelectContent>
               </Select>
             </div>
