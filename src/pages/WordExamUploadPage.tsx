@@ -4,7 +4,8 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import ExamTable from '@/components/ExamTable'; // Import ExamTable
+import ExamTable from '@/components/ExamTable';
+import WordExamUpload from '@/components/WordExamUpload'; // Import the WordExamUpload component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -12,16 +13,17 @@ const WordExamUploadPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
-    // Changed the title to "Quản lý đề thi"
     return 'Quản lý đề thi';
   };
 
   const renderContent = () => {
     switch (activeTab) {
       case 'all-word-exams':
-        return <ExamTable />; // Render ExamTable here
+        return <ExamTable />;
+      case 'add-word-exam': // New case for the 'Thêm đề bằng file word' tab
+        return <WordExamUpload />;
       default:
-        return <ExamTable />; // Default to ExamTable
+        return <ExamTable />;
     }
   };
 
