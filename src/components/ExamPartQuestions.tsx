@@ -24,6 +24,7 @@ interface ExamPartQuestionsProps {
   parts: ExamPart[];
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
+  onDeletePart: (partId: string) => void; // New prop for deleting part
 }
 
 const ExamPartHeader: React.FC<{ onDeleteAll: () => void }> = ({ onDeleteAll }) => (
@@ -43,6 +44,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   parts,
   onDeleteAll,
   onDeleteQuestion,
+  onDeletePart,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
 
@@ -70,7 +72,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
               ))}
             </TabsList>
             {parts.map((part) => (
-              <TabsContent key={part.id} value={part.id} className="p-0">
+              <TabsContent key={part.id} value={part.id} className="p-0 relative">
+                {/* Delete part button */}
+                <div className="absolute top-2 right-2 z-10">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDeletePart(part.id)}
+                    aria-label={`Xóa phần thi ${part.name}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="ml-1 hidden sm:inline">Xóa phần thi</span>
+                  </Button>
+                </div>
                 {part.questions.length === 0 ? (
                   <p className="text-muted-foreground text-center py-8">
                     Chưa có câu hỏi nào trong phần này.

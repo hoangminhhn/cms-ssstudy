@@ -1,6 +1,5 @@
 import React from 'react';
 import ExamPartQuestions from './ExamPartQuestions';
-import { toast } from 'sonner';
 
 interface Question {
   id: string;
@@ -21,12 +20,14 @@ interface ManualWordExamQuestionsProps {
   parts: ExamPart[];
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
+  onDeletePart: (partId: string) => void; // New prop
 }
 
 const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
   parts,
   onDeleteAll,
   onDeleteQuestion,
+  onDeletePart,
 }) => {
   return (
     <div>
@@ -34,6 +35,7 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
         parts={parts}
         onDeleteAll={onDeleteAll}
         onDeleteQuestion={onDeleteQuestion}
+        onDeletePart={onDeletePart}
       />
     </div>
   );

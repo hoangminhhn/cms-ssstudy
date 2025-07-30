@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload } from 'lucide-react'; // Import Upload icon
-import ManualWordExamQuestions from './ManualWordExamQuestions'; // Import the new component
+import { Upload } from 'lucide-react';
+import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 
 interface Question {
@@ -43,7 +43,6 @@ const WordExamUpload: React.FC = () => {
   ]);
 
   const handleUploadClick = () => {
-    // Giả lập thêm câu hỏi mẫu vào từng phần thi
     const newQuestionsPart1: Question[] = [
       {
         id: `Q${Date.now()}1`,
@@ -106,6 +105,11 @@ const WordExamUpload: React.FC = () => {
     toast.success('Đã xóa câu hỏi.');
   };
 
+  const handleDeletePart = (partId: string) => {
+    setParts((prev) => prev.filter((part) => part.id !== partId));
+    toast.success('Đã xóa phần thi.');
+  };
+
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -114,7 +118,6 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* First row with 5 fields (added Phần thi) */}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
@@ -192,6 +195,7 @@ const WordExamUpload: React.FC = () => {
         parts={parts}
         onDeleteAll={handleDeleteAll}
         onDeleteQuestion={handleDeleteQuestion}
+        onDeletePart={handleDeletePart}
       />
 
       {/* Footer Buttons */}
