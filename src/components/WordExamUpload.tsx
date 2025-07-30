@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Upload } from 'lucide-react';
-import TemplateBuilder from './TemplateBuilder/TemplateBuilder'; // Import TemplateBuilder
+import { Upload } from 'lucide-react'; // Import Upload icon
+import ManualWordExamQuestions from './ManualWordExamQuestions'; // Import the new component
 
 const WordExamUpload: React.FC = () => {
   return (
@@ -120,15 +120,8 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Template Builder for Exam Structure */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cấu trúc đề thi</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <TemplateBuilder />
-        </CardContent>
-      </Card>
+      {/* Câu hỏi đề thi (Manual Input) */}
+      <ManualWordExamQuestions />
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
