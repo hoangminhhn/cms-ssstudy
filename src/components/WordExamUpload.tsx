@@ -17,8 +17,8 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* First row with 4 fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* First row with 5 fields (added Phần thi) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
@@ -38,6 +38,20 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="hsa">HSA</SelectItem>
                   <SelectItem value="tsa">TSA</SelectItem>
                   <SelectItem value="v-act">V-ACT</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full">
+                <SelectTrigger id="part-selection" className="max-w-sm">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
                 </SelectContent>
               </Select>
             </div>
