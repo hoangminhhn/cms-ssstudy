@@ -82,8 +82,8 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fixed inset-0 m-0 w-full max-w-full max-h-full p-0 rounded-none overflow-hidden">
-        <DialogHeader className="flex items-center justify-between border-b border-border p-4">
+      <DialogContent className="fixed inset-0 m-0 w-full max-w-full max-h-full p-0 rounded-none overflow-hidden flex flex-col">
+        <DialogHeader className="flex items-center justify-between border-b border-border p-4 flex-shrink-0">
           <DialogTitle>Chỉnh sửa đề thi Word</DialogTitle>
           <DialogClose asChild>
             <Button variant="ghost" size="icon" aria-label="Close">
@@ -91,11 +91,11 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
             </Button>
           </DialogClose>
         </DialogHeader>
-        <div className="flex h-[calc(100vh-64px)]">
+        <div className="flex flex-1 overflow-hidden">
           {/* Left panel */}
           <div className="w-1/2 flex flex-col border-r border-border overflow-auto p-4 bg-white">
             <Tabs value={selectedGroupId} onValueChange={setSelectedGroupId} className="flex flex-col h-full">
-              <TabsList className="mb-4">
+              <TabsList className="mb-4 flex-shrink-0">
                 {sampleData.map(group => (
                   <TabsTrigger key={group.id} value={group.id}>
                     {group.title}
@@ -137,7 +137,7 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
 
           {/* Right panel */}
           <div className="w-1/2 flex flex-col bg-white overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border p-2">
+            <div className="flex items-center justify-between border-b border-border p-2 flex-shrink-0">
               <div className="font-semibold">Nội dung thô</div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline">Upload File</Button>
@@ -149,7 +149,7 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
               value={rawText}
               onChange={(e) => setRawText(e.target.value)}
             />
-            <div className="border-t border-border p-2 text-xs text-muted-foreground">
+            <div className="border-t border-border p-2 text-xs text-muted-foreground flex-shrink-0">
               Nội dung mẫu: Mẫu 1 | Mẫu 2 | Mẫu 3 (Có điền từ) | Mẫu 4 | Mẫu 5 (Có câu Đúng-Sai)
             </div>
           </div>
