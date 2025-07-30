@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 // Mock data for an exam category (in a real app, this would come from an API)
@@ -44,11 +44,19 @@ const mockExamCategories: ExamFormCategory[] = [
 ];
 
 const EditExamFormCategory: React.FC = () => {
-  const { categoryId } = useParams<{ categoryId: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const categoryId = searchParams.get('categoryId');
+
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
 
   React.useEffect(() => {
+    if (!categoryId) {
+      toast.error('Không tìm thấy danh mục kỳ thi!');
+      navigate('/word-exam-upload?tab=exam-categories');
+      return;
+    }
     // Simulate fetching data based on categoryId
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
