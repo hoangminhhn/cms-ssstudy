@@ -73,17 +73,10 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
   return (
     <Layout headerTitle="Chỉnh sửa đề thi Word">
       <div className="flex h-[calc(100vh-120px)] gap-4">
-        {/* Left panel: vertical hierarchical question groups */}
+        {/* Left panel: vertical hierarchical question groups without group title and fix button */}
         <div className="w-1/2 flex flex-col border rounded-md bg-white overflow-y-auto p-4 space-y-6">
           {sampleData.map((group) => (
             <div key={group.id} className="border rounded p-4">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="outline">Tiêu đề nhóm</Button>
-                  <h3 className="font-semibold text-lg">{group.title}</h3>
-                </div>
-                <Button size="sm" variant="outline">Cố định câu hỏi trong nhóm</Button>
-              </div>
               <div className="space-y-4">
                 {group.questions.map((q, idx) => (
                   <div key={q.id} className="border rounded p-3">
