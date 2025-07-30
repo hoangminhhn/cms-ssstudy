@@ -1,46 +1,98 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import ExamPartQuestions from './ExamPartQuestions';
+import { toast } from 'sonner';
 
 const ManualWordExamQuestions: React.FC = () => {
+  // Giả định dữ liệu phần thi và câu hỏi
+  const [parts, setParts] = React.useState([
+    {
+      id: 'part1',
+      name: 'Phần 1',
+      questions: [
+        {
+          id: 'Q001',
+          correctAnswer: 'A',
+          solution: 'Giải thích câu hỏi 1',
+          documentLink: 'https://example.com/doc1.pdf',
+          videoLink: 'https://example.com/video1.mp4',
+          uploadDate: '01/07/2025',
+        },
+        {
+          id: 'Q002',
+          correctAnswer: 'B',
+          solution: 'Giải thích câu hỏi 2',
+          uploadDate: '02/07/2025',
+        },
+      ],
+    },
+    {
+      id: 'part2',
+      name: 'Phần 2',
+      questions: [
+        {
+          id: 'Q003',
+          correctAnswer: 'C',
+          solution: 'Giải thích câu hỏi 3',
+          uploadDate: '03/07/2025',
+        },
+      ],
+    },
+    {
+      id: 'part3',
+      name: 'Phần 3',
+      questions: [],
+    },
+  ]);
+
+  const handleDeleteAll = () => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tất cả câu hỏi?')) {
+      setParts((prev) =>
+        prev.map((part) => ({ ...part, questions: [] }))
+      );
+      toast.success('Đã xóa tất cả câu hỏi.');
+    }
+  };
+
+  const handleAddQuestion = (partId: string) => {
+    // Ví dụ thêm câu hỏi mới với id tự động
+    const newQuestionId = `Q${Math.floor(Math.random() * 10000)}`;
+    const newQuestion = {
+      id: newQuestionId,
+      correctAnswer: '',
+      solution: '',
+      uploadDate: new Date().toLocaleDateString('vi-VN'),
+    };
+    setParts((prev) =>
+      prev.map((part) =>
+        part.id === partId
+          ? { ...part, questions: [...part.questions, newQuestion] }
+          : part
+      )
+    );
+    toast.success(`Đã thêm câu hỏi mới vào ${partId}.`);
+  };
+
+  const handleDeleteQuestion = (partId: string, questionId: string) => {
+    setParts((prev) =>
+      prev.map((part) =>
+        part.id === partId
+          ? {
+              ...part,
+              questions: part.questions.filter((q) => q.id !== questionId),
+            }
+          : part
+      )
+    );
+    toast.success('Đã xóa câu hỏi.');
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Câu hỏi đề thi</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-between items-center mb-4">
-          <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700">
-            <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-          </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-            Tạo câu hỏi thủ công
-          </Button>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Mã câu hỏi</TableHead>
-              <TableHead>Đáp án đúng</TableHead>
-              <TableHead>Lời giải</TableHead>
-              <TableHead>Tài liệu</TableHead>
-              <TableHead>Video</TableHead>
-              <TableHead>Ngày tải lên</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                Chưa có câu hỏi nào!
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <ExamPartQuestions
+      parts={parts}
+      onDeleteAll={handleDeleteAll}
+      onAddQuestion={handleAddQuestion}
+      onDeleteQuestion={handleDeleteQuestion}
+    />
   );
 };
 
