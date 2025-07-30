@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import ExamTable from '@/components/ExamTable';
 import WordExamUpload from '@/components/WordExamUpload';
-import ManualWordExamQuestions from '@/components/ManualWordExamQuestions'; // Import the new component
+// Removed import ManualWordExamQuestions from '@/components/ManualWordExamQuestions';
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -19,8 +19,6 @@ const WordExamUploadPage: React.FC = () => {
         return 'Tất cả đề thi Word';
       case 'add-word-exam':
         return 'Thêm đề bằng file Word';
-      case 'manual-questions':
-        return 'Tạo câu hỏi thủ công';
       default:
         return 'Quản lý đề thi Word';
     }
@@ -32,8 +30,6 @@ const WordExamUploadPage: React.FC = () => {
         return <ExamTable />;
       case 'add-word-exam':
         return <WordExamUpload />;
-      case 'manual-questions': // New case for the 'Tạo câu hỏi thủ công' tab
-        return <ManualWordExamQuestions />;
       default:
         return <ExamTable />;
     }

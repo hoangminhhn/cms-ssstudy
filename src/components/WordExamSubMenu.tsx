@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { List, PlusCircle, Edit } from 'lucide-react'; // Import Edit icon
+import { List, PlusCircle } from 'lucide-react'; // Removed Edit icon as it's no longer needed
 
 interface SubMenuItem {
   id: string;
@@ -13,7 +13,6 @@ interface SubMenuItem {
 const subMenuItems: SubMenuItem[] = [
   { id: 'all-word-exams', label: 'Tất cả đề thi', icon: List, path: '/word-exam-upload?tab=all-word-exams' },
   { id: 'add-word-exam', label: 'Thêm đề bằng file word', icon: PlusCircle, path: '/word-exam-upload?tab=add-word-exam' },
-  { id: 'manual-questions', label: 'Tạo câu hỏi thủ công', icon: Edit, path: '/word-exam-upload?tab=manual-questions' }, // New item
 ];
 
 const WordExamSubMenu: React.FC = () => {
