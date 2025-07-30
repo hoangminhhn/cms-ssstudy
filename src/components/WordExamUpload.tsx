@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Plus } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react'; // Import Upload icon
 
 const WordExamUpload: React.FC = () => {
   return (
@@ -53,8 +53,8 @@ const WordExamUpload: React.FC = () => {
             </div>
           </div>
 
-          {/* Second row with 2 fields and 1 switch */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Second row with 3 fields and 1 switch */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
@@ -103,36 +103,19 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Phần thi */}
+      {/* Tải lên file Word */}
       <Card>
         <CardHeader>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white w-fit">
-            <Plus className="mr-2 h-4 w-4" />
-          </Button>
+          <CardTitle>Tải lên file Word</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="section-name">Tên phần thi</Label>
-              <Input id="section-name" placeholder="Nhập tên phần thi" className="max-w-sm" />
-            </div>
-            <div>
-              <Label htmlFor="section-type">Loại phần thi</Label>
-              <Select defaultValue="default">
-                <SelectTrigger id="section-type" className="max-w-sm">
-                  <SelectValue placeholder="Mặc định" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Mặc định</SelectItem>
-                  <SelectItem value="multiple-choice">Trắc nghiệm</SelectItem>
-                  <SelectItem value="essay">Tự luận</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <CardContent className="grid gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto">
+              <Upload className="mr-2 h-4 w-4" /> Tải lên
+            </Button>
           </div>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white w-fit">
-            <Plus className="mr-2 h-4 w-4" /> Thêm mới phần thi
-          </Button>
+          <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
         </CardContent>
       </Card>
 
