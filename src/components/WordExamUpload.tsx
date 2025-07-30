@@ -180,7 +180,7 @@ const WordExamUpload: React.FC = () => {
               className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
               onClick={handleUploadClick}
             >
-              <Upload className="mr-2 h-4 w-4" /> Tải lên
+              <Upload className="mr-2 h-4 w-4" /> TH Full 3 phần
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
