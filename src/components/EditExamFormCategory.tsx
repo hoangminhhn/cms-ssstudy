@@ -18,6 +18,12 @@ interface ExamFormCategory {
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
   multiChoiceScoringRule: 'all-correct' | 'partial-correct';
+  scoringPercentages?: {
+    oneCorrect: number;
+    twoCorrect: number;
+    threeCorrect: number;
+    fourCorrect: number;
+  };
 }
 
 const mockExamCategories: ExamFormCategory[] = [
@@ -30,6 +36,12 @@ const mockExamCategories: ExamFormCategory[] = [
     questionDisplay: 'one-per-screen',
     configureScoring: true,
     multiChoiceScoringRule: 'all-correct',
+    scoringPercentages: {
+      oneCorrect: 0,
+      twoCorrect: 0,
+      threeCorrect: 0,
+      fourCorrect: 0,
+    },
   },
   {
     id: '2',
@@ -40,6 +52,12 @@ const mockExamCategories: ExamFormCategory[] = [
     questionDisplay: 'all-at-once',
     configureScoring: false,
     multiChoiceScoringRule: 'partial-correct',
+    scoringPercentages: {
+      oneCorrect: 0,
+      twoCorrect: 0,
+      threeCorrect: 0,
+      fourCorrect: 0,
+    },
   },
 ];
 
@@ -82,6 +100,20 @@ const EditExamFormCategory: React.FC = () => {
   const handleSwitchChange = (checked: boolean, id: keyof ExamFormCategory) => {
     if (category) {
       setCategory({ ...category, [id]: checked });
+    }
+  };
+
+  const handleScoringPercentageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (category) {
+      const { id, value } = e.target;
+      const numValue = Number(value);
+      setCategory({
+        ...category,
+        scoringPercentages: {
+          ...category.scoringPercentages,
+          [id]: isNaN(numValue) ? 0 : numValue,
+        },
+      });
     }
   };
 
@@ -173,13 +205,71 @@ const EditExamFormCategory: React.FC = () => {
               </Select>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="configureScoring"
-                checked={category.configureScoring}
-                onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
-              />
-              <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="configureScoring"
+                  checked={category.configureScoring}
+                  onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
+                />
+                <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+              </div>
+              {category.configureScoring && (
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <Label className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
+                    <Input
+                      id="oneCorrect"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={category.scoringPercentages?.oneCorrect ?? 0}
+                      onChange={handleScoringPercentageChange}
+                      className="w-20"
+                    />
+                    <span>%</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Label className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
+                    <Input
+                      id="twoCorrect"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={category.scoringPercentages?.twoCorrect ?? 0}
+                      onChange={handleScoringPercentageChange}
+                      className="w-20"
+                    />
+                    <span>%</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Label className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
+                    <Input
+                      id="threeCorrect"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={category.scoringPercentages?.threeCorrect ?? 0}
+                      onChange={handleScoringPercentageChange}
+                      className="w-20"
+                    />
+                    <span>%</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Label className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
+                    <Input
+                      id="fourCorrect"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={category.scoringPercentages?.fourCorrect ?? 0}
+                      onChange={handleScoringPercentageChange}
+                      className="w-20"
+                    />
+                    <span>%</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
