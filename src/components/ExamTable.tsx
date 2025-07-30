@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Filter, Search, MoreHorizontal, Pencil, Trash2, Eye, Copy } from 'lucide-react';
+import { Filter, Search, MoreHorizontal, Pencil, Trash2, Eye, Copy, PieChart } from 'lucide-react'; // Import PieChart
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 interface Exam {
   id: string;
@@ -44,6 +45,7 @@ const mockExams: Exam[] = [
 const ExamTable: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const totalPages = Math.ceil(mockExams.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -57,6 +59,10 @@ const ExamTable: React.FC = () => {
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
     setCurrentPage(1); // Reset to first page when items per page changes
+  };
+
+  const handleReportScoreClick = (examId: string) => {
+    navigate(`/score-reports/${examId}`);
   };
 
   return (
@@ -128,6 +134,9 @@ const ExamTable: React.FC = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem className="flex items-center gap-2">
                         <Pencil className="h-4 w-4" /> Chỉnh sửa
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2" onClick={() => handleReportScoreClick(exam.id)}>
+                        <PieChart className="h-4 w-4" /> Báo cáo điểm
                       </DropdownMenuItem>
                       <DropdownMenuItem className="flex items-center gap-2">
                         <Copy className="h-4 w-4" /> Sao chép
