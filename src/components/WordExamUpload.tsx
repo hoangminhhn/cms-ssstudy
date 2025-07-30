@@ -6,8 +6,106 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react'; // Import Upload icon
 import ManualWordExamQuestions from './ManualWordExamQuestions'; // Import the new component
+import { toast } from 'sonner';
+
+interface Question {
+  id: string;
+  correctAnswer: string;
+  solution: string;
+  documentLink?: string;
+  videoLink?: string;
+  uploadDate: string;
+}
+
+interface ExamPart {
+  id: string;
+  name: string;
+  questions: Question[];
+}
 
 const WordExamUpload: React.FC = () => {
+  const [parts, setParts] = React.useState<ExamPart[]>([
+    {
+      id: 'part1',
+      name: 'Phần 1',
+      questions: [],
+    },
+    {
+      id: 'part2',
+      name: 'Phần 2',
+      questions: [],
+    },
+    {
+      id: 'part3',
+      name: 'Phần 3',
+      questions: [],
+    },
+  ]);
+
+  const handleUploadClick = () => {
+    // Giả lập thêm câu hỏi mẫu vào từng phần thi
+    const newQuestionsPart1: Question[] = [
+      {
+        id: `Q${Date.now()}1`,
+        correctAnswer: 'A',
+        solution: 'Giải thích câu hỏi mới 1',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
+    const newQuestionsPart2: Question[] = [
+      {
+        id: `Q${Date.now()}2`,
+        correctAnswer: 'B',
+        solution: 'Giải thích câu hỏi mới 2',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
+    const newQuestionsPart3: Question[] = [
+      {
+        id: `Q${Date.now()}3`,
+        correctAnswer: 'C',
+        solution: 'Giải thích câu hỏi mới 3',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
+
+    setParts((prevParts) =>
+      prevParts.map((part) => {
+        if (part.id === 'part1') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart1] };
+        }
+        if (part.id === 'part2') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart2] };
+        }
+        if (part.id === 'part3') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart3] };
+        }
+        return part;
+      }),
+    );
+
+    toast.success('Đã thêm câu hỏi mới vào các phần thi!');
+  };
+
+  const handleDeleteAll = () => {
+    setParts((prev) => prev.map((part) => ({ ...part, questions: [] })));
+    toast.success('Đã xóa tất cả câu hỏi.');
+  };
+
+  const handleDeleteQuestion = (partId: string, questionId: string) => {
+    setParts((prev) =>
+      prev.map((part) =>
+        part.id === partId
+          ? {
+              ...part,
+              questions: part.questions.filter((q) => q.id !== questionId),
+            }
+          : part,
+      ),
+    );
+    toast.success('Đã xóa câu hỏi.');
+  };
+
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -67,50 +165,6 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
           </div>
-
-          {/* Second row with 3 fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="exam-group">Nhóm đề</Label>
-              <Select defaultValue="default">
-                <SelectTrigger id="exam-group" className="max-w-sm">
-                  <SelectValue placeholder="Mặc định" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Mặc Định</SelectItem>
-                  <SelectItem value="test">Thi Thử</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="grade-level">Lớp học</Label>
-              <Select defaultValue="lop-hoc">
-                <SelectTrigger id="grade-level" className="max-w-sm">
-                  <SelectValue placeholder="-- Lớp học --" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="lop-hoc">-- Lớp học --</SelectItem>
-                  <SelectItem value="10">Lớp 10</SelectItem>
-                  <SelectItem value="11">Lớp 11</SelectItem>
-                  <SelectItem value="12">Lớp 12</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="subject">Môn học</Label>
-              <Select defaultValue="chon-mon-hoc">
-                <SelectTrigger id="subject" className="max-w-sm">
-                  <SelectValue placeholder="-- Chọn môn học --" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="chon-mon-hoc">-- Chọn môn học --</SelectItem>
-                  <SelectItem value="toan">Toán</SelectItem>
-                  <SelectItem value="van">Văn</SelectItem>
-                  <SelectItem value="anh">Tiếng Anh</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
@@ -122,7 +176,10 @@ const WordExamUpload: React.FC = () => {
         <CardContent className="grid gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto">
+            <Button
+              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
+              onClick={handleUploadClick}
+            >
               <Upload className="mr-2 h-4 w-4" /> Tải lên
             </Button>
           </div>
@@ -131,7 +188,11 @@ const WordExamUpload: React.FC = () => {
       </Card>
 
       {/* Câu hỏi đề thi (Manual Input) */}
-      <ManualWordExamQuestions />
+      <ManualWordExamQuestions
+        parts={parts}
+        onDeleteAll={handleDeleteAll}
+        onDeleteQuestion={handleDeleteQuestion}
+      />
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
