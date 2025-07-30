@@ -56,6 +56,8 @@ const WordExamUpload: React.FC = () => {
     },
   ]);
 
+  const [showQuestions, setShowQuestions] = React.useState(false);
+
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -99,6 +101,8 @@ const WordExamUpload: React.FC = () => {
         return part;
       }),
     );
+
+    setShowQuestions(true);
 
     toast.success('Đã thêm câu hỏi mới vào các phần thi!');
 
@@ -281,12 +285,14 @@ const WordExamUpload: React.FC = () => {
       </Card>
 
       {/* Câu hỏi đề thi (Manual Input) */}
-      <ManualWordExamQuestions
-        parts={parts}
-        onDeleteAll={handleDeleteAll}
-        onDeleteQuestion={handleDeleteQuestion}
-        onDeletePart={handleDeletePart}
-      />
+      {showQuestions && (
+        <ManualWordExamQuestions
+          parts={parts}
+          onDeleteAll={handleDeleteAll}
+          onDeleteQuestion={handleDeleteQuestion}
+          onDeletePart={handleDeletePart}
+        />
+      )}
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
