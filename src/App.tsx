@@ -8,7 +8,8 @@ import NotFound from "./pages/NotFound";
 import BookManagement from "./pages/BookManagement";
 import ExamManagement from "./pages/ExamManagement";
 import WordExamUploadPage from "./pages/WordExamUploadPage";
-import ScoreReportPage from "./pages/ScoreReportPage"; // Import the new ScoreReportPage
+import ScoreReportPage from "./pages/ScoreReportPage";
+import WordExamEditorPage from "./pages/WordExamEditorPage"; // New page import
 
 const queryClient = new QueryClient();
 
@@ -23,8 +24,8 @@ const App = () => (
           <Route path="/books" element={<BookManagement />} />
           <Route path="/exams" element={<ExamManagement />} />
           <Route path="/word-exam-upload" element={<WordExamUploadPage />} />
-          <Route path="/score-reports/:examId" element={<ScoreReportPage />} /> {/* New route for Score Report */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/word-exam-editor" element={<WordExamEditorPage />} /> {/* New route */}
+          <Route path="/score-reports/:examId" element={<ScoreReportPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

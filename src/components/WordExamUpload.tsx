@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface Question {
   id: string;
@@ -42,7 +43,10 @@ const WordExamUpload: React.FC = () => {
     },
   ]);
 
+  const navigate = useNavigate();
+
   const handleUploadClick = () => {
+    // Add sample questions to parts as before
     const newQuestionsPart1: Question[] = [
       {
         id: `Q${Date.now()}1`,
@@ -84,6 +88,9 @@ const WordExamUpload: React.FC = () => {
     );
 
     toast.success('Đã thêm câu hỏi mới vào các phần thi!');
+
+    // Navigate to editor page
+    navigate('/word-exam-editor');
   };
 
   const handleDeleteAll = () => {
@@ -118,7 +125,6 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Cập nhật grid-cols-1 md:grid-cols-4 lg:grid-cols-7 để đủ chỗ cho các trường */}
           <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
