@@ -148,7 +148,7 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 2: 4 dropdowns in 3 columns, last two share one column */}
+          {/* Row 2: 3 dropdowns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
@@ -190,8 +190,8 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 3: 1 dropdown, 1 switch, 1 dropdown */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          {/* Row 3: 1 dropdown */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
               <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
@@ -204,86 +204,88 @@ const EditExamFormCategory: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-            <div className="flex flex-col space-y-2">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="configureScoring"
-                  checked={category.configureScoring}
-                  onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
-                />
-                <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
-              </div>
-              {category.configureScoring && (
-                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Label className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
-                    <Input
-                      id="oneCorrect"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={category.scoringPercentages?.oneCorrect ?? 0}
-                      onChange={handleScoringPercentageChange}
-                      className="w-20"
-                    />
-                    <span>%</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
-                    <Input
-                      id="twoCorrect"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={category.scoringPercentages?.twoCorrect ?? 0}
-                      onChange={handleScoringPercentageChange}
-                      className="w-20"
-                    />
-                    <span>%</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
-                    <Input
-                      id="threeCorrect"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={category.scoringPercentages?.threeCorrect ?? 0}
-                      onChange={handleScoringPercentageChange}
-                      className="w-20"
-                    />
-                    <span>%</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
-                    <Input
-                      id="fourCorrect"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={category.scoringPercentages?.fourCorrect ?? 0}
-                      onChange={handleScoringPercentageChange}
-                      className="w-20"
-                    />
-                    <span>%</span>
-                  </div>
+          {/* Row 4: Cấu hình thang điểm đúng sai full width */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="configureScoring"
+                checked={category.configureScoring}
+                onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
+              />
+              <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+            </div>
+            {category.configureScoring && (
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                <div className="flex items-center space-x-2">
+                  <Label className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
+                  <Input
+                    id="oneCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.oneCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
                 </div>
-              )}
-            </div>
+                <div className="flex items-center space-x-2">
+                  <Label className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
+                  <Input
+                    id="twoCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.twoCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
+                  <Input
+                    id="threeCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.threeCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
+                  <Input
+                    id="fourCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.fourCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+              </div>
+            )}
+          </div>
 
-            <div>
-              <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
-              <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
-                <SelectTrigger id="multiChoiceScoringRule">
-                  <SelectValue placeholder="Chọn quy tắc" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
-                  <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Row 5: Quy tắc tính điểm nhiều ý */}
+          <div>
+            <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
+            <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
+              <SelectTrigger id="multiChoiceScoringRule">
+                <SelectValue placeholder="Chọn quy tắc" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
+                <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
