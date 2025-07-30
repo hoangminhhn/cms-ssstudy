@@ -73,10 +73,11 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
   return (
     <Layout headerTitle="Chỉnh sửa đề thi Word">
       <div className="flex h-[calc(100vh-120px)] gap-4">
-        {/* Left panel: vertical hierarchical question groups without group title and fix button */}
+        {/* Left panel: vertical hierarchical question groups with part titles only */}
         <div className="w-1/2 flex flex-col border rounded-md bg-white overflow-y-auto p-4 space-y-6">
           {sampleData.map((group) => (
             <div key={group.id} className="border rounded p-4">
+              <h3 className="font-semibold text-lg mb-4">{group.title}</h3>
               <div className="space-y-4">
                 {group.questions.map((q, idx) => (
                   <div key={q.id} className="border rounded p-3">
