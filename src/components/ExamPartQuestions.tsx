@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,6 +26,19 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
 }
 
+const ExamPartHeader: React.FC<{ onDeleteAll: () => void }> = ({ onDeleteAll }) => (
+  <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+    <h2 className="text-lg font-semibold truncate flex-grow m-0">Đề thi</h2>
+    <Button
+      variant="outline"
+      className="flex-shrink-0 whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 ml-4"
+      onClick={onDeleteAll}
+    >
+      <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
+    </Button>
+  </div>
+);
+
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   parts,
   onDeleteAll,
@@ -41,16 +54,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between px-4 py-2">
-        <h2 className="m-0 text-lg font-semibold truncate flex-1">Đề thi</h2>
-        <Button
-          variant="outline"
-          className="flex-shrink-0 whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 ml-4"
-          onClick={onDeleteAll}
-        >
-          <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-        </Button>
-      </CardHeader>
+      <ExamPartHeader onDeleteAll={onDeleteAll} />
       <CardContent>
         {parts.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
