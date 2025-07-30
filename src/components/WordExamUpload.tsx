@@ -148,16 +148,16 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-7 gap-4">
+            <div className="md:col-span-2">
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
             </div>
-            <div>
+            <div className="md:col-span-2">
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-sm" />
             </div>
-            <div>
+            <div className="md:col-span-1">
               <Label htmlFor="exam-type">Kỳ thi</Label>
               <Select defaultValue="tot-nghiep">
                 <SelectTrigger id="exam-type" className="max-w-sm">
@@ -171,7 +171,21 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="md:col-span-1">
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full">
+                <SelectTrigger id="part-selection" className="max-w-sm">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-1">
               <Label htmlFor="grade-level">Lớp</Label>
               <Select defaultValue="class1">
                 <SelectTrigger id="grade-level" className="max-w-sm">
@@ -186,7 +200,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="md:col-span-1">
               <Label htmlFor="subject">Môn học</Label>
               <Select defaultValue="toan">
                 <SelectTrigger id="subject" className="max-w-sm">
@@ -202,7 +216,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="md:col-span-1">
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
                 <SelectTrigger id="exam-group" className="max-w-sm">
@@ -214,21 +228,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full">
-                <SelectTrigger id="part-selection" className="max-w-sm">
-                  <SelectValue placeholder="Đầy đủ 3 phần" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                  <SelectItem value="part1">Phần 1</SelectItem>
-                  <SelectItem value="part2">Phần 2</SelectItem>
-                  <SelectItem value="part3">Phần 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
+            <div className="md:col-span-1">
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
               <Select defaultValue="no">
                 <SelectTrigger id="allow-retry" className="max-w-sm">
