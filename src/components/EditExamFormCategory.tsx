@@ -190,8 +190,8 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 3: 1 dropdown */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Row 3: 'Cách hiển thị câu hỏi' and 'Quy tắc tính điểm nhiều ý' */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <div>
               <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
               <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
@@ -201,6 +201,19 @@ const EditExamFormCategory: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
                   <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
+              <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
+                <SelectTrigger id="multiChoiceScoringRule">
+                  <SelectValue placeholder="Chọn quy tắc" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
+                  <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,20 +285,6 @@ const EditExamFormCategory: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Row 5: Quy tắc tính điểm nhiều ý */}
-          <div>
-            <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
-            <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
-              <SelectTrigger id="multiChoiceScoringRule">
-                <SelectValue placeholder="Chọn quy tắc" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
-                <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </CardContent>
       </Card>
