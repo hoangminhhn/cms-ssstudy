@@ -68,11 +68,23 @@ const ManualWordExamQuestions: React.FC = () => {
   };
 
   return (
-    <ExamPartQuestions
-      parts={parts}
-      onDeleteAll={handleDeleteAll}
-      onDeleteQuestion={handleDeleteQuestion}
-    />
+    <div>
+      <div className="flex items-center justify-between px-4 mb-4">
+        <h2 className="text-lg font-semibold truncate flex-1 min-w-0">Đề thi</h2>
+        <button
+          onClick={handleDeleteAll}
+          className="flex-shrink-0 whitespace-nowrap rounded border border-red-600 px-3 py-1 text-red-600 hover:bg-red-50 hover:text-red-700"
+          aria-label="Xóa tất cả câu hỏi"
+        >
+          Xóa tất cả
+        </button>
+      </div>
+      <ExamPartQuestions
+        parts={parts}
+        onDeleteAll={handleDeleteAll}
+        onDeleteQuestion={handleDeleteQuestion}
+      />
+    </div>
   );
 };
 
