@@ -4,8 +4,7 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-
-// Removed imports for WordExamUpload, CreateExamFromBankForm, TemplateBuilder as they are no longer directly rendered by default
+import ExamTable from '@/components/ExamTable'; // Import ExamTable
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -13,18 +12,16 @@ const WordExamUploadPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
-    // Since only 'all-word-exams' is expected, simplify the title logic
     return 'Tất cả đề thi file Word';
   };
 
   const renderContent = () => {
-    // Since only 'all-word-exams' is expected, provide a placeholder
-    return (
-      <div className="p-4">
-        <h3 className="text-xl font-semibold mb-4">Tất cả đề thi file Word</h3>
-        <p className="text-muted-foreground">Đây là nơi bạn sẽ phát triển lại nội dung cho mục "Tất cả đề thi file Word".</p>
-      </div>
-    );
+    switch (activeTab) {
+      case 'all-word-exams':
+        return <ExamTable />; // Render ExamTable here
+      default:
+        return <ExamTable />; // Default to ExamTable
+    }
   };
 
   return (
