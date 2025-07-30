@@ -79,31 +79,6 @@ const ExamCategoryManagement: React.FC = () => {
               <Input id="category-name" placeholder="" />
               <p className="text-xs text-muted-foreground mt-1">Tên là cách nó xuất hiện trên trang web của bạn.</p>
             </div>
-            <div>
-              <Label htmlFor="category-slug">Đường dẫn</Label>
-              <Input id="category-slug" placeholder="" />
-              <p className="text-xs text-muted-foreground mt-1">"slug" là đường dẫn thân thiện của tên. Nó thường chỉ bao gồm kí tự viết thường, số và dấu gạch ngang, không dùng tiếng Việt.</p>
-            </div>
-            <div>
-              <Label htmlFor="parent-category">Danh mục cha</Label>
-              <Select>
-                <SelectTrigger id="parent-category">
-                  <SelectValue placeholder="Không có" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Không có</SelectItem>
-                  {mockCategories.map(cat => (
-                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground mt-1">Chuyên mục khác với thẻ, bạn có thể sử dụng nhiều cấp chuyên mục. Ví dụ: Trong chuyên mục nhạc, bạn có chuyên mục con là nhạc Pop, nhạc Jazz. Việc này hoàn toàn là tùy theo ý bạn.</p>
-            </div>
-            <div>
-              <Label htmlFor="category-description">Mô tả</Label>
-              <Textarea id="category-description" placeholder="" />
-              <p className="text-xs text-muted-foreground mt-1">Thông thường mô tả này không được sử dụng trong các giao diện, tuy nhiên có vài giao diện có thể hiển thị mô tả này.</p>
-            </div>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white">Thêm Danh Mục</Button>
           </CardContent>
         </Card>
