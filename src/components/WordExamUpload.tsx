@@ -56,41 +56,53 @@ const WordExamUpload: React.FC = () => {
     },
   ]);
 
-  const [partCount, setPartCount] = React.useState(3);
-
   const navigate = useNavigate();
 
-  const addSampleQuestions = (count: number) => {
-    const newParts: ExamPart[] = [];
-    for (let i = 1; i <= count; i++) {
-      newParts.push({
-        id: `part${i}`,
-        name: `Phần ${i}`,
-        questions: [
-          {
-            id: `Q${Date.now()}${i}`,
-            correctAnswer: String.fromCharCode(64 + i), // A, B, C...
-            solution: `Giải thích câu hỏi mới ${i}`,
-            uploadDate: new Date().toLocaleDateString(),
-          },
-        ],
-      });
-    }
-    setParts(newParts);
-    console.log('Updated parts:', newParts);
-  };
+  const handleUploadClick = () => {
+    // Add sample questions to parts as before
+    const newQuestionsPart1: Question[] = [
+      {
+        id: `Q${Date.now()}1`,
+        correctAnswer: 'A',
+        solution: 'Giải thích câu hỏi mới 1',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
+    const newQuestionsPart2: Question[] = [
+      {
+        id: `Q${Date.now()}2`,
+        correctAnswer: 'B',
+        solution: 'Giải thích câu hỏi mới 2',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
+    const newQuestionsPart3: Question[] = [
+      {
+        id: `Q${Date.now()}3`,
+        correctAnswer: 'C',
+        solution: 'Giải thích câu hỏi mới 3',
+        uploadDate: new Date().toLocaleDateString(),
+      },
+    ];
 
-  const handleUploadFull3Parts = () => {
-    addSampleQuestions(3);
-    setPartCount(3);
-    toast.success('Đã thêm câu hỏi mới cho 3 phần thi!');
-    navigate('/word-exam-editor');
-  };
+    setParts((prevParts) =>
+      prevParts.map((part) => {
+        if (part.id === 'part1') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart1] };
+        }
+        if (part.id === 'part2') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart2] };
+        }
+        if (part.id === 'part3') {
+          return { ...part, questions: [...part.questions, ...newQuestionsPart3] };
+        }
+        return part;
+      }),
+    );
 
-  const handleUpload2Parts = () => {
-    addSampleQuestions(2);
-    setPartCount(2);
-    toast.success('Đã thêm câu hỏi mới cho 2 phần thi!');
+    toast.success('Đã thêm câu hỏi mới vào các phần thi!');
+
+    // Navigate to editor page
     navigate('/word-exam-editor');
   };
 
@@ -128,10 +140,6 @@ const WordExamUpload: React.FC = () => {
     toast.success(`Đang tải ${fileName}...`);
   };
 
-  React.useEffect(() => {
-    console.log('Current parts state:', parts);
-  }, [parts]);
-
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -140,16 +148,16 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-7 gap-4">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
             </div>
-            <div className="md:col-span-2">
+            <div>
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-sm" />
             </div>
-            <div className="md:col-span-1">
+            <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
               <Select defaultValue="tot-nghiep">
                 <SelectTrigger id="exam-type" className="max-w-sm">
@@ -163,21 +171,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="md:col-span-1">
-              <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full">
-                <SelectTrigger id="part-selection" className="max-w-sm">
-                  <SelectValue placeholder="Đầy đủ 3 phần" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                  <SelectItem value="part1">Phần 1</SelectItem>
-                  <SelectItem value="part2">Phần 2</SelectItem>
-                  <SelectItem value="part3">Phần 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="md:col-span-1">
+            <div>
               <Label htmlFor="grade-level">Lớp</Label>
               <Select defaultValue="class1">
                 <SelectTrigger id="grade-level" className="max-w-sm">
@@ -192,7 +186,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="md:col-span-1">
+            <div>
               <Label htmlFor="subject">Môn học</Label>
               <Select defaultValue="toan">
                 <SelectTrigger id="subject" className="max-w-sm">
@@ -208,7 +202,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="md:col-span-1">
+            <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
                 <SelectTrigger id="exam-group" className="max-w-sm">
@@ -220,7 +214,21 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="md:col-span-1">
+            <div>
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full">
+                <SelectTrigger id="part-selection" className="max-w-sm">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
               <Select defaultValue="no">
                 <SelectTrigger id="allow-retry" className="max-w-sm">
@@ -246,15 +254,9 @@ const WordExamUpload: React.FC = () => {
             <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
             <Button
               className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
-              onClick={handleUploadFull3Parts}
+              onClick={handleUploadClick}
             >
               <Upload className="mr-2 h-4 w-4" /> TH Full 3 phần
-            </Button>
-            <Button
-              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
-              onClick={handleUpload2Parts}
-            >
-              TH 2 Phần thi
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
