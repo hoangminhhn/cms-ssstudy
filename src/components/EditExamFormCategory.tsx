@@ -1,0 +1,192 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+
+// Mock data for an exam category (in a real app, this would come from an API)
+interface ExamFormCategory {
+  id: string;
+  examName: string;
+  displayMode: 'single-screen' | 'per-section';
+  navigationMode: 'free' | 'fixed';
+  questionSelection: 'any' | 'current-section-only';
+  questionDisplay: 'one-per-screen' | 'all-at-once';
+  configureScoring: boolean;
+  multiChoiceScoringRule: 'all-correct' | 'partial-correct';
+}
+
+const mockExamCategories: ExamFormCategory[] = [
+  {
+    id: '1',
+    examName: 'Kỳ thi HSA',
+    displayMode: 'single-screen',
+    navigationMode: 'free',
+    questionSelection: 'any',
+    questionDisplay: 'one-per-screen',
+    configureScoring: true,
+    multiChoiceScoringRule: 'all-correct',
+  },
+  {
+    id: '2',
+    examName: 'Kỳ thi TSA',
+    displayMode: 'per-section',
+    navigationMode: 'fixed',
+    questionSelection: 'current-section-only',
+    questionDisplay: 'all-at-once',
+    configureScoring: false,
+    multiChoiceScoringRule: 'partial-correct',
+  },
+];
+
+const EditExamFormCategory: React.FC = () => {
+  const { categoryId } = useParams<{ categoryId: string }>();
+  const navigate = useNavigate();
+  const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
+
+  React.useEffect(() => {
+    // Simulate fetching data based on categoryId
+    const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
+    if (foundCategory) {
+      setCategory(foundCategory);
+    } else {
+      toast.error('Không tìm thấy danh mục kỳ thi!');
+      navigate('/word-exam-upload?tab=exam-categories'); // Redirect if not found
+    }
+  }, [categoryId, navigate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (category) {
+      setCategory({ ...category, [e.target.id]: e.target.value });
+    }
+  };
+
+  const handleSelectChange = (value: string, id: keyof ExamFormCategory) => {
+    if (category) {
+      setCategory({ ...category, [id]: value as any }); // Type assertion for select values
+    }
+  };
+
+  const handleSwitchChange = (checked: boolean, id: keyof ExamFormCategory) => {
+    if (category) {
+      setCategory({ ...category, [id]: checked });
+    }
+  };
+
+  const handleSave = () => {
+    if (category) {
+      console.log('Lưu thay đổi cho danh mục kỳ thi:', category);
+      toast.success('Đã lưu thay đổi cho danh mục kỳ thi!');
+      navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
+    }
+  };
+
+  const handleCancel = () => {
+    navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
+  };
+
+  if (!category) {
+    return <div className="p-4 text-center text-muted-foreground">Đang tải...</div>;
+  }
+
+  return (
+    <div className="space-y-6 p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-6">
+          <div>
+            <Label htmlFor="examName">Tên kỳ thi</Label>
+            <Input id="examName" value={category.examName} onChange={handleChange} />
+          </div>
+
+          <div>
+            <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
+            <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
+              <SelectTrigger id="displayMode">
+                <SelectValue placeholder="Chọn hình thức" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="single-screen">1 màn hình</SelectItem>
+                <SelectItem value="per-section">Từng phần</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="navigationMode">Cách di chuyển giữa các phần thi</Label>
+            <Select value={category.navigationMode} onValueChange={(value) => handleSelectChange(value, 'navigationMode')}>
+              <SelectTrigger id="navigationMode">
+                <SelectValue placeholder="Chọn cách di chuyển" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="free">Tự do</SelectItem>
+                <SelectItem value="fixed">Cố định</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="questionSelection">Cách chọn câu hỏi</Label>
+            <Select value={category.questionSelection} onValueChange={(value) => handleSelectChange(value, 'questionSelection')}>
+              <SelectTrigger id="questionSelection">
+                <SelectValue placeholder="Chọn cách chọn câu hỏi" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Làm bất kỳ</SelectItem>
+                <SelectItem value="current-section-only">Chỉ phần hiện tại</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
+            <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
+              <SelectTrigger id="questionDisplay">
+                <SelectValue placeholder="Chọn cách hiển thị" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
+                <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="configureScoring"
+              checked={category.configureScoring}
+              onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
+            />
+            <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+          </div>
+
+          <div>
+            <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
+            <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
+              <SelectTrigger id="multiChoiceScoringRule">
+                <SelectValue placeholder="Chọn quy tắc" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
+                <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
+        <Button variant="outline" onClick={handleCancel}>HỦY</Button>
+        <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU THAY ĐỔI</Button>
+      </div>
+    </div>
+  );
+};
+
+export default EditExamFormCategory;

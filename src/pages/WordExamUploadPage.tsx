@@ -7,7 +7,7 @@ import { ChevronRight } from 'lucide-react';
 import ExamTable from '@/components/ExamTable';
 import WordExamUpload from '@/components/WordExamUpload';
 import ExamCategoryManagement from '@/components/ExamCategoryManagement';
-import EditExamCategoryForm from '@/components/EditExamCategoryForm'; // Import the new component
+import EditExamFormCategory from '@/components/EditExamFormCategory'; // Import the new component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -39,7 +39,7 @@ const WordExamUploadPage: React.FC = () => {
       case 'exam-categories':
         return <ExamCategoryManagement />;
       case 'edit-category':
-        return <EditExamCategoryForm />; // Render the new component here
+        return <EditExamFormCategory />; // Render the new component here
       default:
         return <ExamTable />;
     }
