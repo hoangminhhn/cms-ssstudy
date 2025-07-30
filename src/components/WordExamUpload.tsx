@@ -118,7 +118,8 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {/* Cập nhật grid-cols-1 md:grid-cols-4 lg:grid-cols-6 để đủ chỗ cho các trường */}
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
@@ -138,6 +139,37 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="hsa">HSA</SelectItem>
                   <SelectItem value="tsa">TSA</SelectItem>
                   <SelectItem value="v-act">V-ACT</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="grade-level">Lớp</Label>
+              <Select defaultValue="class1">
+                <SelectTrigger id="grade-level" className="max-w-sm">
+                  <SelectValue placeholder="Chọn lớp" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="class1">Lớp 1</SelectItem>
+                  <SelectItem value="class2">Lớp 2</SelectItem>
+                  <SelectItem value="class3">Lớp 3</SelectItem>
+                  <SelectItem value="class4">Lớp 4</SelectItem>
+                  <SelectItem value="class5">Lớp 5</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="subject">Môn học</Label>
+              <Select defaultValue="toan">
+                <SelectTrigger id="subject" className="max-w-sm">
+                  <SelectValue placeholder="Chọn môn học" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="toan">Toán</SelectItem>
+                  <SelectItem value="van">Văn</SelectItem>
+                  <SelectItem value="anh">Tiếng Anh</SelectItem>
+                  <SelectItem value="ly">Vật lí</SelectItem>
+                  <SelectItem value="hoa">Hóa học</SelectItem>
+                  <SelectItem value="sinh">Sinh học</SelectItem>
                 </SelectContent>
               </Select>
             </div>
