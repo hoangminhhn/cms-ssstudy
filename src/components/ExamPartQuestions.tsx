@@ -47,7 +47,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         </div>
         <Button
           variant="outline"
-          className="flex-shrink-0 text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 whitespace-nowrap ml-4"
+          className="flex-shrink-0 whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 ml-4"
           onClick={onDeleteAll}
         >
           <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
