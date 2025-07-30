@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Trash2 } from 'lucide-react';
 
-// Mock data for an exam category (in a real app, this would come from an API)
 interface ExamFormCategory {
   id: string;
   examName: string;
@@ -18,13 +19,18 @@ interface ExamFormCategory {
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
   multiChoiceScoringRule: 'all-correct' | 'partial-correct';
-  partSelection: 'full' | 'part1' | 'part2' | 'part3'; // New field for "Phần thi"
+  partSelection: 'full' | 'part1' | 'part2' | 'part3';
   scoringPercentages?: {
     oneCorrect: number;
     twoCorrect: number;
     threeCorrect: number;
     fourCorrect: number;
   };
+}
+
+interface PartItem {
+  id: string;
+  name: string;
 }
 
 const mockExamCategories: ExamFormCategory[] = [
@@ -71,6 +77,12 @@ const EditExamFormCategory: React.FC = () => {
   const categoryId = searchParams.get('categoryId');
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
+  const [parts, setParts] = React.useState<PartItem[]>([
+    { id: 'part1', name: 'Phần thi 1' },
+    { id: 'part2', name: 'Phần thi 2' },
+    { id: 'part3', name: 'Phần thi 3' },
+  ]);
+  const [newPartName, setNewPartName] = React.useState('');
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -78,13 +90,12 @@ const EditExamFormCategory: React.FC = () => {
       navigate('/word-exam-upload?tab=exam-categories');
       return;
     }
-    // Simulate fetching data based on categoryId
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
       setCategory(foundCategory);
     } else {
       toast.error('Không tìm thấy danh mục kỳ thi!');
-      navigate('/word-exam-upload?tab=exam-categories'); // Redirect if not found
+      navigate('/word-exam-upload?tab=exam-categories');
     }
   }, [categoryId, navigate]);
 
@@ -96,7 +107,7 @@ const EditExamFormCategory: React.FC = () => {
 
   const handleSelectChange = (value: string, id: keyof ExamFormCategory) => {
     if (category) {
-      setCategory({ ...category, [id]: value as any }); // Type assertion for select values
+      setCategory({ ...category, [id]: value as any });
     }
   };
 
@@ -120,16 +131,41 @@ const EditExamFormCategory: React.FC = () => {
     }
   };
 
+  const handleAddPart = () => {
+    const trimmedName = newPartName.trim();
+    if (!trimmedName) {
+      toast.error('Tên phần thi không được để trống.');
+      return;
+    }
+    if (parts.some(p => p.name.toLowerCase() === trimmedName.toLowerCase())) {
+      toast.error('Phần thi đã tồn tại.');
+      return;
+    }
+    const newPart: PartItem = {
+      id: `part-${Date.now()}`,
+      name: trimmedName,
+    };
+    setParts(prev => [...prev, newPart]);
+    setNewPartName('');
+    toast.success('Đã thêm phần thi mới.');
+  };
+
+  const handleDeletePart = (id: string) => {
+    setParts(prev => prev.filter(p => p.id !== id));
+    toast.success('Đã xóa phần thi.');
+  };
+
   const handleSave = () => {
     if (category) {
       console.log('Lưu thay đổi cho danh mục kỳ thi:', category);
+      console.log('Danh sách phần thi:', parts);
       toast.success('Đã lưu thay đổi cho danh mục kỳ thi!');
-      navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
+      navigate('/word-exam-upload?tab=exam-categories');
     }
   };
 
   const handleCancel = () => {
-    navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
+    navigate('/word-exam-upload?tab=exam-categories');
   };
 
   if (!category) {
@@ -304,6 +340,64 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* New Section: Parts management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quản lý Phần thi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2 mb-4">
+            <Input
+              placeholder="Nhập tên phần thi mới"
+              value={newPartName}
+              onChange={(e) => setNewPartName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPart();
+                }
+              }}
+            />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+              Thêm
+            </Button>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tên phần thi</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {parts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
+                    Chưa có phần thi nào.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                parts.map((part) => (
+                  <TableRow key={part.id}>
+                    <TableCell>{part.name}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        className="text-red-600 hover:bg-red-50"
+                        onClick={() => handleDeletePart(part.id)}
+                        aria-label={`Xóa phần thi ${part.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
