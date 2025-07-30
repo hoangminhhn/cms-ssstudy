@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Upload } from 'lucide-react'; // Import Upload icon
 import ManualWordExamQuestions from './ManualWordExamQuestions'; // Import the new component
 
@@ -69,8 +68,8 @@ const WordExamUpload: React.FC = () => {
             </div>
           </div>
 
-          {/* Second row with 3 fields and 1 switch */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Second row with 3 fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
@@ -110,10 +109,6 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="anh">Tiếng Anh</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className="flex items-center space-x-2 mt-6">
-              <Switch id="configure-scoring" />
-              <Label htmlFor="configure-scoring">Cấu hình thang điểm câu hỏi đúng sai</Label>
             </div>
           </div>
         </CardContent>
