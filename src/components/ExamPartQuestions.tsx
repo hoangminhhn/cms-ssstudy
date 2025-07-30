@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -41,10 +41,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between px-4">
-        <div className="flex-1 min-w-0">
-          <CardTitle className="m-0 truncate">Đề thi</CardTitle>
-        </div>
+      <CardHeader className="flex items-center justify-between px-4 py-2">
+        <h2 className="m-0 text-lg font-semibold truncate flex-1">Đề thi</h2>
         <Button
           variant="outline"
           className="flex-shrink-0 whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 ml-4"
