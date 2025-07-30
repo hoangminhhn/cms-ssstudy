@@ -5,7 +5,8 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import ExamTable from '@/components/ExamTable';
-import WordExamUpload from '@/components/WordExamUpload'; // Import the WordExamUpload component
+import WordExamUpload from '@/components/WordExamUpload';
+import ManualWordExamQuestions from '@/components/ManualWordExamQuestions'; // Import the new component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -13,15 +14,26 @@ const WordExamUploadPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
-    return 'Quản lý đề thi';
+    switch (activeTab) {
+      case 'all-word-exams':
+        return 'Tất cả đề thi Word';
+      case 'add-word-exam':
+        return 'Thêm đề bằng file Word';
+      case 'manual-questions':
+        return 'Tạo câu hỏi thủ công';
+      default:
+        return 'Quản lý đề thi Word';
+    }
   };
 
   const renderContent = () => {
     switch (activeTab) {
       case 'all-word-exams':
         return <ExamTable />;
-      case 'add-word-exam': // New case for the 'Thêm đề bằng file word' tab
+      case 'add-word-exam':
         return <WordExamUpload />;
+      case 'manual-questions': // New case for the 'Tạo câu hỏi thủ công' tab
+        return <ManualWordExamQuestions />;
       default:
         return <ExamTable />;
     }
