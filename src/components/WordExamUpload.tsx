@@ -77,6 +77,7 @@ const WordExamUpload: React.FC = () => {
       });
     }
     setParts(newParts);
+    console.log('Updated parts:', newParts);
   };
 
   const handleUploadFull3Parts = () => {
@@ -126,6 +127,10 @@ const WordExamUpload: React.FC = () => {
     document.body.removeChild(link);
     toast.success(`Đang tải ${fileName}...`);
   };
+
+  React.useEffect(() => {
+    console.log('Current parts state:', parts);
+  }, [parts]);
 
   return (
     <div className="space-y-6">
