@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { List, LayoutTemplate, PlusCircle } from 'lucide-react';
+import { List } from 'lucide-react'; // Only List icon is needed now
 
 interface SubMenuItem {
   id: string;
@@ -11,11 +11,7 @@ interface SubMenuItem {
 }
 
 const subMenuItems: SubMenuItem[] = [
-  { id: 'all-word-exams', label: 'Tất cả đề thi', icon: List, path: '/word-exam-upload?tab=all-word-exams' }, // New item
-  { id: 'word-exam-upload', label: 'Tạo đề thi từ Word', icon: PlusCircle, path: '/word-exam-upload?tab=word-exam-upload' },
-  { id: 'create-from-bank', label: 'Tạo đề thi từ Ngân hàng câu hỏi', icon: PlusCircle, path: '/word-exam-upload?tab=create-from-bank' },
-  { id: 'question-bank', label: 'Ngân hàng câu hỏi', icon: List, path: '/word-exam-upload?tab=question-bank' },
-  { id: 'create-template', label: 'Tạo template đề thi', icon: LayoutTemplate, path: '/word-exam-upload?tab=create-template' },
+  { id: 'all-word-exams', label: 'Tất cả đề thi', icon: List, path: '/word-exam-upload?tab=all-word-exams' },
 ];
 
 const WordExamSubMenu: React.FC = () => {

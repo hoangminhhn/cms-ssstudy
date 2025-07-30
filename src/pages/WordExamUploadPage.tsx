@@ -1,12 +1,11 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import WordExamUpload from '@/components/WordExamUpload';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import CreateExamFromBankForm from '@/components/CreateExamFromBankForm';
-import TemplateBuilder from '@/components/TemplateBuilder/TemplateBuilder';
+
+// Removed imports for WordExamUpload, CreateExamFromBankForm, TemplateBuilder as they are no longer directly rendered by default
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -14,37 +13,18 @@ const WordExamUploadPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
-    switch (activeTab) {
-      case 'all-word-exams':
-        return 'Tất cả đề thi file Word';
-      case 'word-exam-upload':
-        return 'Tạo đề thi từ file Word';
-      case 'create-from-bank':
-        return 'Tạo đề thi từ Ngân hàng câu hỏi';
-      case 'question-bank':
-        return 'Ngân hàng câu hỏi';
-      case 'create-template':
-        return 'Tạo template đề thi';
-      default:
-        return 'Đề thi file word';
-    }
+    // Since only 'all-word-exams' is expected, simplify the title logic
+    return 'Tất cả đề thi file Word';
   };
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'all-word-exams':
-        return <div className="p-4">Nội dung cho "Tất cả đề thi file Word" sẽ ở đây.</div>;
-      case 'word-exam-upload':
-        return <WordExamUpload />;
-      case 'create-from-bank':
-        return <CreateExamFromBankForm />;
-      case 'question-bank':
-        return <div className="p-4">Nội dung cho "Ngân hàng câu hỏi" sẽ ở đây.</div>;
-      case 'create-template':
-        return <TemplateBuilder />;
-      default:
-        return <div className="p-4">Nội dung cho "Tất cả đề thi file Word" sẽ ở đây.</div>;
-    }
+    // Since only 'all-word-exams' is expected, provide a placeholder
+    return (
+      <div className="p-4">
+        <h3 className="text-xl font-semibold mb-4">Tất cả đề thi file Word</h3>
+        <p className="text-muted-foreground">Đây là nơi bạn sẽ phát triển lại nội dung cho mục "Tất cả đề thi file Word".</p>
+      </div>
+    );
   };
 
   return (
