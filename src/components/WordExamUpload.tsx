@@ -118,8 +118,8 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Cập nhật grid-cols-1 md:grid-cols-4 lg:grid-cols-6 để đủ chỗ cho các trường */}
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {/* Cập nhật grid-cols-1 md:grid-cols-4 lg:grid-cols-7 để đủ chỗ cho các trường */}
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
@@ -170,6 +170,18 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="ly">Vật lí</SelectItem>
                   <SelectItem value="hoa">Hóa học</SelectItem>
                   <SelectItem value="sinh">Sinh học</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="exam-group">Nhóm đề</Label>
+              <Select defaultValue="default">
+                <SelectTrigger id="exam-group" className="max-w-sm">
+                  <SelectValue placeholder="Mặc định" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Mặc định</SelectItem>
+                  <SelectItem value="test">Thi thử</SelectItem>
                 </SelectContent>
               </Select>
             </div>
