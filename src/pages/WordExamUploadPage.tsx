@@ -19,6 +19,8 @@ const WordExamUploadPage: React.FC = () => {
         return 'Tất cả đề thi Word';
       case 'add-word-exam':
         return 'Thêm đề bằng file Word';
+      case 'exam-categories': // New case for the 'Danh mục kỳ thi' tab
+        return 'Danh mục kỳ thi';
       default:
         return 'Quản lý đề thi Word';
     }
@@ -30,6 +32,8 @@ const WordExamUploadPage: React.FC = () => {
         return <ExamTable />;
       case 'add-word-exam':
         return <WordExamUpload />;
+      case 'exam-categories': // New case for the 'Danh mục kỳ thi' tab
+        return <div className="p-4">Nội dung cho "Danh mục kỳ thi" sẽ ở đây.</div>;
       default:
         return <ExamTable />;
     }
