@@ -16,7 +16,8 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* First row with 4 fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
@@ -38,9 +39,6 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
               <Select defaultValue="no">
@@ -53,6 +51,10 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          {/* Second row with 4 fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
@@ -80,9 +82,6 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="subject">Môn học</Label>
               <Select defaultValue="chon-mon-hoc">
@@ -101,13 +100,14 @@ const WordExamUpload: React.FC = () => {
               <Label htmlFor="exam-time">Thời gian (phút)</Label>
               <Input id="exam-time" type="number" defaultValue={90} className="max-w-sm" />
             </div>
+          </div>
+
+          {/* Third row with 2 fields and 1 switch */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="exam-pdf-link">Link đề thi PDF</Label>
               <Input id="exam-pdf-link" placeholder="Nhập link đề thi PDF" className="max-w-sm" />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="answer-pdf-link">Link đáp án PDF</Label>
               <Input id="answer-pdf-link" placeholder="Nhập link đáp án PDF" className="max-w-sm" />
