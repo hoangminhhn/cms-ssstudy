@@ -12,8 +12,8 @@ const WordExamUploadPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
 
   const getHeaderTitle = () => {
-    // Changed the title to "Quản lý đề thi file Word"
-    return 'Quản lý đề thi file Word';
+    // Changed the title to "Quản lý đề thi"
+    return 'Quản lý đề thi';
   };
 
   const renderContent = () => {
