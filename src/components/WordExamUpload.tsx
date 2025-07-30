@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Trash2 } from 'lucide-react'; // Import Upload and Trash2 icons
+import { Upload } from 'lucide-react'; // Import Upload icon
 import ManualWordExamQuestions from './ManualWordExamQuestions'; // Import the new component
 import { toast } from 'sonner';
 
@@ -106,11 +106,6 @@ const WordExamUpload: React.FC = () => {
     toast.success('Đã xóa câu hỏi.');
   };
 
-  const handleDeletePart = (partId: string) => {
-    setParts((prev) => prev.filter((part) => part.id !== partId));
-    toast.success('Đã xóa phần thi.');
-  };
-
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -189,34 +184,6 @@ const WordExamUpload: React.FC = () => {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
-        </CardContent>
-      </Card>
-
-      {/* Quản lý phần thi với nút xóa */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản lý Phần thi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {parts.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</p>
-          ) : (
-            <ul className="space-y-2">
-              {parts.map((part) => (
-                <li key={part.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-700">
-                  <span>{part.name}</span>
-                  <Button
-                    variant="ghost"
-                    className="text-red-600 hover:bg-red-50"
-                    onClick={() => handleDeletePart(part.id)}
-                    aria-label={`Xóa phần thi ${part.name}`}
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
         </CardContent>
       </Card>
 
