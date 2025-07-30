@@ -8,7 +8,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -28,30 +28,25 @@ interface ExamPart {
 interface ExamPartQuestionsProps {
   parts: ExamPart[];
   onDeleteAll: () => void;
-  onAddQuestion: (partId: string) => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
 }
 
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   parts,
   onDeleteAll,
-  onAddQuestion,
   onDeleteQuestion,
 }) => {
   return (
     <Card>
       <CardHeader className="flex justify-between items-center">
         <CardTitle>Câu hỏi đề thi</CardTitle>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
-            onClick={onDeleteAll}
-          >
-            <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-          </Button>
-          {/* Optionally, a global add question button could be here */}
-        </div>
+        <Button
+          variant="outline"
+          className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
+          onClick={onDeleteAll}
+        >
+          <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
+        </Button>
       </CardHeader>
       <CardContent>
         <Accordion type="multiple" className="space-y-4">
@@ -66,15 +61,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   {part.name} ({part.questions.length} câu hỏi)
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="mb-4 flex justify-end">
-                    <Button
-                      size="sm"
-                      className="bg-orange-500 hover:bg-orange-600 text-white"
-                      onClick={() => onAddQuestion(part.id)}
-                    >
-                      <Plus className="mr-1 h-4 w-4" /> Thêm câu hỏi
-                    </Button>
-                  </div>
                   {part.questions.length === 0 ? (
                     <p className="text-muted-foreground text-center py-8">
                       Chưa có câu hỏi nào trong phần này.

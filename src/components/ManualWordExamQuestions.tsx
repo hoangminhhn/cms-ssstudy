@@ -53,25 +53,6 @@ const ManualWordExamQuestions: React.FC = () => {
     }
   };
 
-  const handleAddQuestion = (partId: string) => {
-    // Ví dụ thêm câu hỏi mới với id tự động
-    const newQuestionId = `Q${Math.floor(Math.random() * 10000)}`;
-    const newQuestion = {
-      id: newQuestionId,
-      correctAnswer: '',
-      solution: '',
-      uploadDate: new Date().toLocaleDateString('vi-VN'),
-    };
-    setParts((prev) =>
-      prev.map((part) =>
-        part.id === partId
-          ? { ...part, questions: [...part.questions, newQuestion] }
-          : part
-      )
-    );
-    toast.success(`Đã thêm câu hỏi mới vào ${partId}.`);
-  };
-
   const handleDeleteQuestion = (partId: string, questionId: string) => {
     setParts((prev) =>
       prev.map((part) =>
@@ -90,7 +71,6 @@ const ManualWordExamQuestions: React.FC = () => {
     <ExamPartQuestions
       parts={parts}
       onDeleteAll={handleDeleteAll}
-      onAddQuestion={handleAddQuestion}
       onDeleteQuestion={handleDeleteQuestion}
     />
   );
