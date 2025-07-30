@@ -41,11 +41,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between">
-        <CardTitle>Đề thi</CardTitle>
+      <CardHeader className="flex items-center justify-between gap-4">
+        <CardTitle className="flex-1 m-0">Đề thi</CardTitle>
         <Button
           variant="outline"
-          className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
+          className="flex-shrink-0 text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
           onClick={onDeleteAll}
         >
           <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
