@@ -28,15 +28,16 @@ const WordExamUpload: React.FC = () => {
               <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-sm" />
             </div>
             <div>
-              <Label htmlFor="exam-type">Loại đề thi</Label>
+              <Label htmlFor="exam-type">Kỳ thi</Label>
               <Select defaultValue="tot-nghiep">
                 <SelectTrigger id="exam-type" className="max-w-sm">
                   <SelectValue placeholder="Tốt nghiệp" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tot-nghiep">Tốt nghiệp</SelectItem>
-                  <SelectItem value="kiem-tra">Kiểm tra</SelectItem>
-                  <SelectItem value="on-tap">Ôn tập</SelectItem>
+                  <SelectItem value="hsa">HSA</SelectItem>
+                  <SelectItem value="tsa">TSA</SelectItem>
+                  <SelectItem value="v-act">V-ACT</SelectItem>
                 </SelectContent>
               </Select>
             </div>
