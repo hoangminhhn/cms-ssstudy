@@ -41,8 +41,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   return (
     <Card>
-      <CardHeader className="flex justify-between items-center px-4">
-        <CardTitle className="m-0 flex-grow truncate">Đề thi</CardTitle>
+      <CardHeader className="flex items-center justify-between px-4">
+        <div className="flex-1 min-w-0">
+          <CardTitle className="m-0 truncate">Đề thi</CardTitle>
+        </div>
         <Button
           variant="outline"
           className="flex-shrink-0 text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 whitespace-nowrap ml-4"
