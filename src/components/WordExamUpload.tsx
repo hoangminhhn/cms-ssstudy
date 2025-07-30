@@ -4,10 +4,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Download } from 'lucide-react';
+import { Upload, Download, ChevronDown } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 interface Question {
   id: string;
@@ -23,6 +29,13 @@ interface ExamPart {
   name: string;
   questions: Question[];
 }
+
+const sampleFiles = [
+  { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
+  { label: 'Đề thi HSA', fileName: 'sample-hsa.docx' },
+  { label: 'Đề thi TSA', fileName: 'sample-tsa.docx' },
+  { label: 'Đề thi V-ACT', fileName: 'sample-v-act.docx' },
+];
 
 const WordExamUpload: React.FC = () => {
   const [parts, setParts] = React.useState<ExamPart[]>([
@@ -117,14 +130,14 @@ const WordExamUpload: React.FC = () => {
     toast.success('Đã xóa phần thi.');
   };
 
-  const handleDownloadSample = () => {
+  const handleDownloadSample = (fileName: string) => {
     const link = document.createElement('a');
-    link.href = '/sample-exam.docx'; // Đường dẫn file mẫu trong thư mục public
-    link.download = 'DeThiMau.docx';
+    link.href = `/${fileName}`; // Đường dẫn file mẫu trong thư mục public
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success('Đang tải đề thi mẫu...');
+    toast.success(`Đang tải ${fileName}...`);
   };
 
   return (
@@ -245,13 +258,23 @@ const WordExamUpload: React.FC = () => {
             >
               <Upload className="mr-2 h-4 w-4" /> TH Full 3 phần
             </Button>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 w-full sm:w-auto"
-              onClick={handleDownloadSample}
-            >
-              <Download className="h-4 w-4" /> Tải đề thi mẫu
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
+                  <Download className="h-4 w-4" /> Tải đề thi mẫu <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {sampleFiles.map((file) => (
+                  <DropdownMenuItem
+                    key={file.fileName}
+                    onClick={() => handleDownloadSample(file.fileName)}
+                  >
+                    {file.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
         </CardContent>
