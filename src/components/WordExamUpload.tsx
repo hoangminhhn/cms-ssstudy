@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -117,6 +117,16 @@ const WordExamUpload: React.FC = () => {
     toast.success('Đã xóa phần thi.');
   };
 
+  const handleDownloadSample = () => {
+    const link = document.createElement('a');
+    link.href = '/sample-exam.docx'; // Đường dẫn file mẫu trong thư mục public
+    link.download = 'DeThiMau.docx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Đang tải đề thi mẫu...');
+  };
+
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -221,7 +231,7 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Tải lên file Word */}
+      {/* Tải lên file Word và tải đề thi mẫu */}
       <Card>
         <CardHeader>
           <CardTitle>Tải lên file Word</CardTitle>
@@ -234,6 +244,13 @@ const WordExamUpload: React.FC = () => {
               onClick={handleUploadClick}
             >
               <Upload className="mr-2 h-4 w-4" /> TH Full 3 phần
+            </Button>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 w-full sm:w-auto"
+              onClick={handleDownloadSample}
+            >
+              <Download className="h-4 w-4" /> Tải đề thi mẫu
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
