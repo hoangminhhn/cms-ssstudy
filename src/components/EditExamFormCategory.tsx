@@ -18,6 +18,7 @@ interface ExamFormCategory {
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
   multiChoiceScoringRule: 'all-correct' | 'partial-correct';
+  partSelection: 'full' | 'part1' | 'part2' | 'part3'; // New field for "Phần thi"
   scoringPercentages?: {
     oneCorrect: number;
     twoCorrect: number;
@@ -36,6 +37,7 @@ const mockExamCategories: ExamFormCategory[] = [
     questionDisplay: 'one-per-screen',
     configureScoring: true,
     multiChoiceScoringRule: 'all-correct',
+    partSelection: 'full',
     scoringPercentages: {
       oneCorrect: 0,
       twoCorrect: 0,
@@ -52,6 +54,7 @@ const mockExamCategories: ExamFormCategory[] = [
     questionDisplay: 'all-at-once',
     configureScoring: false,
     multiChoiceScoringRule: 'partial-correct',
+    partSelection: 'full',
     scoringPercentages: {
       oneCorrect: 0,
       twoCorrect: 0,
@@ -190,7 +193,7 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 3: 'Cách hiển thị câu hỏi' and 'Quy tắc tính điểm nhiều ý' */}
+          {/* Row 3: 'Cách hiển thị câu hỏi', 'Quy tắc tính điểm nhiều ý', and 'Phần thi' */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <div>
               <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
@@ -214,6 +217,21 @@ const EditExamFormCategory: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
                   <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="partSelection">Phần thi</Label>
+              <Select value={category.partSelection} onValueChange={(value) => handleSelectChange(value, 'partSelection')}>
+                <SelectTrigger id="partSelection">
+                  <SelectValue placeholder="Chọn phần thi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần thi</SelectItem>
+                  <SelectItem value="part1">Phần thi 1</SelectItem>
+                  <SelectItem value="part2">Phần thi 2</SelectItem>
+                  <SelectItem value="part3">Phần thi 3</SelectItem>
                 </SelectContent>
               </Select>
             </div>
