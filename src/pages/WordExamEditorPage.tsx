@@ -84,13 +84,11 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-semibold text-sm">Câu {idx + 1}.</div>
                       <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                        <Button size="xs" variant="outline">Nhập điểm</Button>
                         {q.audioUrl && <Button size="xs" variant="outline">Audio</Button>}
                         <select className="border rounded px-2 py-1 text-xs">
                           <option>Trắc nghiệm</option>
                           <option>Tự luận</option>
                         </select>
-                        <Button size="xs" variant="outline">Đổi câu khác</Button>
                         <Button size="xs" variant="outline">...</Button>
                       </div>
                     </div>
