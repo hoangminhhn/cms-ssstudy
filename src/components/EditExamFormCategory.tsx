@@ -108,83 +108,92 @@ const EditExamFormCategory: React.FC = () => {
           <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div>
-            <Label htmlFor="examName">Tên kỳ thi</Label>
-            <Input id="examName" value={category.examName} onChange={handleChange} />
+          {/* Row 1: Tên kỳ thi */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-3">
+              <Label htmlFor="examName">Tên kỳ thi</Label>
+              <Input id="examName" value={category.examName} onChange={handleChange} />
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
-            <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
-              <SelectTrigger id="displayMode">
-                <SelectValue placeholder="Chọn hình thức" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="single-screen">1 màn hình</SelectItem>
-                <SelectItem value="per-section">Từng phần</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Row 2: 4 dropdowns in 3 columns, last two share one column */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
+              <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
+                <SelectTrigger id="displayMode">
+                  <SelectValue placeholder="Chọn hình thức" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="single-screen">1 màn hình</SelectItem>
+                  <SelectItem value="per-section">Từng phần</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="navigationMode">Cách di chuyển giữa các phần thi</Label>
+              <Select value={category.navigationMode} onValueChange={(value) => handleSelectChange(value, 'navigationMode')}>
+                <SelectTrigger id="navigationMode">
+                  <SelectValue placeholder="Chọn cách di chuyển" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="free">Tự do</SelectItem>
+                  <SelectItem value="fixed">Cố định</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="questionSelection">Cách chọn câu hỏi</Label>
+              <Select value={category.questionSelection} onValueChange={(value) => handleSelectChange(value, 'questionSelection')}>
+                <SelectTrigger id="questionSelection">
+                  <SelectValue placeholder="Chọn cách chọn câu hỏi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Làm bất kỳ</SelectItem>
+                  <SelectItem value="current-section-only">Chỉ phần hiện tại</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="navigationMode">Cách di chuyển giữa các phần thi</Label>
-            <Select value={category.navigationMode} onValueChange={(value) => handleSelectChange(value, 'navigationMode')}>
-              <SelectTrigger id="navigationMode">
-                <SelectValue placeholder="Chọn cách di chuyển" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="free">Tự do</SelectItem>
-                <SelectItem value="fixed">Cố định</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Row 3: 1 dropdown, 1 switch, 1 dropdown */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            <div>
+              <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
+              <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
+                <SelectTrigger id="questionDisplay">
+                  <SelectValue placeholder="Chọn cách hiển thị" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
+                  <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div>
-            <Label htmlFor="questionSelection">Cách chọn câu hỏi</Label>
-            <Select value={category.questionSelection} onValueChange={(value) => handleSelectChange(value, 'questionSelection')}>
-              <SelectTrigger id="questionSelection">
-                <SelectValue placeholder="Chọn cách chọn câu hỏi" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Làm bất kỳ</SelectItem>
-                <SelectItem value="current-section-only">Chỉ phần hiện tại</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="configureScoring"
+                checked={category.configureScoring}
+                onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
+              />
+              <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+            </div>
 
-          <div>
-            <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
-            <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
-              <SelectTrigger id="questionDisplay">
-                <SelectValue placeholder="Chọn cách hiển thị" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
-                <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="configureScoring"
-              checked={category.configureScoring}
-              onCheckedChange={(checked) => handleSwitchChange(checked, 'configureScoring')}
-            />
-            <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
-          </div>
-
-          <div>
-            <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
-            <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
-              <SelectTrigger id="multiChoiceScoringRule">
-                <SelectValue placeholder="Chọn quy tắc" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
-                <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
-              </SelectContent>
-            </Select>
+            <div>
+              <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
+              <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
+                <SelectTrigger id="multiChoiceScoringRule">
+                  <SelectValue placeholder="Chọn quy tắc" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
+                  <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
