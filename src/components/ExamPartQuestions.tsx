@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trash2 } from 'lucide-react';
 
 interface Question {
@@ -36,6 +31,14 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onDeleteAll,
   onDeleteQuestion,
 }) => {
+  const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
+
+  React.useEffect(() => {
+    if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
+      setSelectedTab(parts[0].id);
+    }
+  }, [parts, selectedTab]);
+
   return (
     <Card>
       <CardHeader className="flex justify-between items-center">
@@ -49,80 +52,82 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         </Button>
       </CardHeader>
       <CardContent>
-        <Accordion type="multiple" className="space-y-4">
-          {parts.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">
-              Chưa có phần thi nào.
-            </div>
-          ) : (
-            parts.map((part) => (
-              <AccordionItem key={part.id} value={part.id}>
-                <AccordionTrigger className="text-lg font-semibold">
-                  {part.name} ({part.questions.length} câu hỏi)
-                </AccordionTrigger>
-                <AccordionContent>
-                  {part.questions.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">
-                      Chưa có câu hỏi nào trong phần này.
-                    </p>
-                  ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Mã câu hỏi</TableHead>
-                          <TableHead>Đáp án đúng</TableHead>
-                          <TableHead>Lời giải</TableHead>
-                          <TableHead>Tài liệu</TableHead>
-                          <TableHead>Video</TableHead>
-                          <TableHead>Ngày tải lên</TableHead>
-                          <TableHead className="text-right">Thao tác</TableHead>
+        {parts.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8">
+            Chưa có phần thi nào.
+          </div>
+        ) : (
+          <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
+            <TabsList className="mb-4 overflow-x-auto">
+              {parts.map((part) => (
+                <TabsTrigger key={part.id} value={part.id} className="whitespace-nowrap">
+                  {part.name} ({part.questions.length})
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {parts.map((part) => (
+              <TabsContent key={part.id} value={part.id} className="p-0">
+                {part.questions.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">
+                    Chưa có câu hỏi nào trong phần này.
+                  </p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Mã câu hỏi</TableHead>
+                        <TableHead>Đáp án đúng</TableHead>
+                        <TableHead>Lời giải</TableHead>
+                        <TableHead>Tài liệu</TableHead>
+                        <TableHead>Video</TableHead>
+                        <TableHead>Ngày tải lên</TableHead>
+                        <TableHead className="text-right">Thao tác</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {part.questions.map((q) => (
+                        <TableRow key={q.id}>
+                          <TableCell>{q.id}</TableCell>
+                          <TableCell>{q.correctAnswer}</TableCell>
+                          <TableCell>{q.solution}</TableCell>
+                          <TableCell>
+                            {q.documentLink ? (
+                              <a href={q.documentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                Tài liệu
+                              </a>
+                            ) : (
+                              '-'
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {q.videoLink ? (
+                              <a href={q.videoLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                Video
+                              </a>
+                            ) : (
+                              '-'
+                            )}
+                          </TableCell>
+                          <TableCell>{q.uploadDate}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => onDeleteQuestion(part.id, q.id)}
+                              aria-label={`Xóa câu hỏi ${q.id}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {part.questions.map((q) => (
-                          <TableRow key={q.id}>
-                            <TableCell>{q.id}</TableCell>
-                            <TableCell>{q.correctAnswer}</TableCell>
-                            <TableCell>{q.solution}</TableCell>
-                            <TableCell>
-                              {q.documentLink ? (
-                                <a href={q.documentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                  Tài liệu
-                                </a>
-                              ) : (
-                                '-'
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {q.videoLink ? (
-                                <a href={q.videoLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                  Video
-                                </a>
-                              ) : (
-                                '-'
-                              )}
-                            </TableCell>
-                            <TableCell>{q.uploadDate}</TableCell>
-                            <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                className="text-red-600 hover:bg-red-50"
-                                onClick={() => onDeleteQuestion(part.id, q.id)}
-                                aria-label={`Xóa câu hỏi ${q.id}`}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            ))
-          )}
-        </Accordion>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </CardContent>
     </Card>
   );
