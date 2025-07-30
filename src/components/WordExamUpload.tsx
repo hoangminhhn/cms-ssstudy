@@ -19,16 +19,16 @@ const WordExamUpload: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
-              <Input id="exam-code" placeholder="Nhập mã đề thi" />
+              <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
             </div>
             <div>
               <Label htmlFor="exam-name">Tên đề thi</Label>
-              <Input id="exam-name" placeholder="Nhập tên đề thi" />
+              <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-sm" />
             </div>
             <div>
               <Label htmlFor="exam-type">Loại đề thi</Label>
               <Select defaultValue="tot-nghiep">
-                <SelectTrigger id="exam-type">
+                <SelectTrigger id="exam-type" className="max-w-sm">
                   <SelectValue placeholder="Tốt nghiệp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -44,7 +44,7 @@ const WordExamUpload: React.FC = () => {
             <div>
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
               <Select defaultValue="no">
-                <SelectTrigger id="allow-retry">
+                <SelectTrigger id="allow-retry" className="max-w-sm">
                   <SelectValue placeholder="Không cho phép" />
                 </SelectTrigger>
                 <SelectContent>
@@ -56,7 +56,7 @@ const WordExamUpload: React.FC = () => {
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select defaultValue="default">
-                <SelectTrigger id="exam-group">
+                <SelectTrigger id="exam-group" className="max-w-sm">
                   <SelectValue placeholder="Mặc định" />
                 </SelectTrigger>
                 <SelectContent>
@@ -69,7 +69,7 @@ const WordExamUpload: React.FC = () => {
             <div>
               <Label htmlFor="grade-level">Lớp học</Label>
               <Select defaultValue="lop-hoc">
-                <SelectTrigger id="grade-level">
+                <SelectTrigger id="grade-level" className="max-w-sm">
                   <SelectValue placeholder="-- Lớp học --" />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,7 +86,7 @@ const WordExamUpload: React.FC = () => {
             <div>
               <Label htmlFor="subject">Môn học</Label>
               <Select defaultValue="chon-mon-hoc">
-                <SelectTrigger id="subject">
+                <SelectTrigger id="subject" className="max-w-sm">
                   <SelectValue placeholder="-- Chọn môn học --" />
                 </SelectTrigger>
                 <SelectContent>
@@ -99,18 +99,18 @@ const WordExamUpload: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="exam-time">Thời gian (phút)</Label>
-              <Input id="exam-time" type="number" defaultValue={90} />
+              <Input id="exam-time" type="number" defaultValue={90} className="max-w-sm" />
             </div>
             <div>
               <Label htmlFor="exam-pdf-link">Link đề thi PDF</Label>
-              <Input id="exam-pdf-link" placeholder="Nhập link đề thi PDF" />
+              <Input id="exam-pdf-link" placeholder="Nhập link đề thi PDF" className="max-w-sm" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="answer-pdf-link">Link đáp án PDF</Label>
-              <Input id="answer-pdf-link" placeholder="Nhập link đáp án PDF" />
+              <Input id="answer-pdf-link" placeholder="Nhập link đáp án PDF" className="max-w-sm" />
             </div>
             <div className="flex items-center space-x-2 mt-6">
               <Switch id="configure-scoring" />
@@ -131,12 +131,12 @@ const WordExamUpload: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="section-name">Tên phần thi</Label>
-              <Input id="section-name" placeholder="Nhập tên phần thi" />
+              <Input id="section-name" placeholder="Nhập tên phần thi" className="max-w-sm" />
             </div>
             <div>
               <Label htmlFor="section-type">Loại phần thi</Label>
               <Select defaultValue="default">
-                <SelectTrigger id="section-type">
+                <SelectTrigger id="section-type" className="max-w-sm">
                   <SelectValue placeholder="Mặc định" />
                 </SelectTrigger>
                 <SelectContent>
