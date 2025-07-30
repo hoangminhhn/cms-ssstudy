@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import ExamTable from '@/components/ExamTable';
 import WordExamUpload from '@/components/WordExamUpload';
-import ExamCategoryManagement from '@/components/ExamCategoryManagement'; // Import the new component
+import ExamCategoryManagement from '@/components/ExamCategoryManagement';
+import EditExamCategoryForm from '@/components/EditExamCategoryForm'; // Import the new component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
+  const categoryId = searchParams.get('categoryId'); // Get categoryId for editing
 
   const getHeaderTitle = () => {
     switch (activeTab) {
@@ -21,6 +23,8 @@ const WordExamUploadPage: React.FC = () => {
         return 'Thêm đề bằng file Word';
       case 'exam-categories':
         return 'Danh mục kỳ thi';
+      case 'edit-category':
+        return `Chỉnh sửa danh mục #${categoryId}`;
       default:
         return 'Quản lý đề thi Word';
     }
@@ -33,7 +37,9 @@ const WordExamUploadPage: React.FC = () => {
       case 'add-word-exam':
         return <WordExamUpload />;
       case 'exam-categories':
-        return <ExamCategoryManagement />; // Render the new component here
+        return <ExamCategoryManagement />;
+      case 'edit-category':
+        return <EditExamCategoryForm />; // Render the new component here
       default:
         return <ExamTable />;
     }

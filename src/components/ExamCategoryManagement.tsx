@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Search, ChevronDown, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 interface ExamCategory {
   id: string;
@@ -27,6 +28,7 @@ const ExamCategoryManagement: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = React.useState(10); // Default items per page
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const filteredCategories = mockCategories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -60,6 +62,10 @@ const ExamCategoryManagement: React.FC = () => {
     } else {
       setSelectedCategories(prev => prev.filter(catId => catId !== id));
     }
+  };
+
+  const handleEditCategory = (categoryId: string) => {
+    navigate(`/word-exam-upload?tab=edit-category&categoryId=${categoryId}`);
   };
 
   return (
@@ -148,7 +154,7 @@ const ExamCategoryManagement: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="flex items-center gap-2">
+                          <DropdownMenuItem className="flex items-center gap-2" onClick={() => handleEditCategory(category.id)}>
                             <Pencil className="h-4 w-4" /> Chỉnh sửa
                           </DropdownMenuItem>
                           <DropdownMenuItem className="flex items-center gap-2 text-red-600">
