@@ -48,8 +48,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
 
+  // Fix: Update selectedTab when parts change
   React.useEffect(() => {
-    if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
+    if (parts.length === 0) {
+      setSelectedTab('');
+    } else if (!parts.find(p => p.id === selectedTab)) {
       setSelectedTab(parts[0].id);
     }
   }, [parts, selectedTab]);
