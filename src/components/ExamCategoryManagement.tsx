@@ -1,0 +1,245 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Search, ChevronDown, ChevronUp } from 'lucide-react';
+
+interface ExamCategory {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  count: number;
+}
+
+const mockCategories: ExamCategory[] = [
+  { id: '1', name: 'Kỳ thi HSA', description: '-', slug: 'ky-thi-hsa', count: 12 },
+  { id: '2', name: 'Kỳ thi TSA', description: '-', slug: 'ky-thi-tsa', count: 8 },
+  { id: '3', name: 'Kỳ thi Tốt Nghiệp', description: '-', slug: 'ky-thi-tot-nghiep', count: 25 },
+  { id: '4', name: 'Kỳ thi V-ACT', description: '-', slug: 'ky-thi-v-act', count: 5 },
+];
+
+const ExamCategoryManagement: React.FC = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage, setItemsPerPage] = React.useState(10); // Default items per page
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+
+  const filteredCategories = mockCategories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentCategories = filteredCategories.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
+  };
+
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelectedCategories(currentCategories.map(cat => cat.id));
+    } else {
+      setSelectedCategories([]);
+    }
+  };
+
+  const handleSelectCategory = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedCategories(prev => [...prev, id]);
+    } else {
+      setSelectedCategories(prev => prev.filter(catId => catId !== id));
+    }
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-6 p-4">
+      {/* Left Section: Add New Category Form */}
+      <div className="lg:w-1/3">
+        <Card>
+          <CardHeader>
+            <CardTitle>Thêm Danh Mục</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div>
+              <Label htmlFor="category-name">Tên</Label>
+              <Input id="category-name" placeholder="" />
+              <p className="text-xs text-muted-foreground mt-1">Tên là cách nó xuất hiện trên trang web của bạn.</p>
+            </div>
+            <div>
+              <Label htmlFor="category-slug">Đường dẫn</Label>
+              <Input id="category-slug" placeholder="" />
+              <p className="text-xs text-muted-foreground mt-1">"slug" là đường dẫn thân thiện của tên. Nó thường chỉ bao gồm kí tự viết thường, số và dấu gạch ngang, không dùng tiếng Việt.</p>
+            </div>
+            <div>
+              <Label htmlFor="parent-category">Danh mục cha</Label>
+              <Select>
+                <SelectTrigger id="parent-category">
+                  <SelectValue placeholder="Không có" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Không có</SelectItem>
+                  {mockCategories.map(cat => (
+                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">Chuyên mục khác với thẻ, bạn có thể sử dụng nhiều cấp chuyên mục. Ví dụ: Trong chuyên mục nhạc, bạn có chuyên mục con là nhạc Pop, nhạc Jazz. Việc này hoàn toàn là tùy theo ý bạn.</p>
+            </div>
+            <div>
+              <Label htmlFor="category-description">Mô tả</Label>
+              <Textarea id="category-description" placeholder="" />
+              <p className="text-xs text-muted-foreground mt-1">Thông thường mô tả này không được sử dụng trong các giao diện, tuy nhiên có vài giao diện có thể hiển thị mô tả này.</p>
+            </div>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white">Thêm Danh Mục</Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Right Section: Categories Table */}
+      <div className="lg:w-2/3">
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="relative flex-1 w-full sm:w-auto">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Tìm kiếm danh mục"
+                  className="w-full pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center gap-2">
+                      Hành động hàng loạt <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>Xóa</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Áp dụng</Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">
+                    <Input
+                      type="checkbox"
+                      checked={selectedCategories.length === currentCategories.length && currentCategories.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </TableHead>
+                  <TableHead>Tên <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                  <TableHead>Mô tả <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                  <TableHead>Đường dẫn <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                  <TableHead>Lượt <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentCategories.map((category) => (
+                  <TableRow key={category.id}>
+                    <TableCell>
+                      <Input
+                        type="checkbox"
+                        checked={selectedCategories.includes(category.id)}
+                        onChange={(e) => handleSelectCategory(category.id, e.target.checked)}
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium">{category.name}</TableCell>
+                    <TableCell>{category.description}</TableCell>
+                    <TableCell>{category.slug}</TableCell>
+                    <TableCell>{category.count}</TableCell>
+                  </TableRow>
+                ))}
+                {currentCategories.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                      Không tìm thấy danh mục nào.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                Hiển thị
+                <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+                  <SelectTrigger className="w-[70px] h-8">
+                    <SelectValue placeholder={itemsPerPage} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                từ {startIndex + 1} đến {Math.min(endIndex, filteredCategories.length)} trong tổng số {filteredCategories.length}
+              </div>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) handlePageChange(currentPage - 1);
+                      }}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === i + 1}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(i + 1);
+                        }}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                      }}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default ExamCategoryManagement;
