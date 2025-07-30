@@ -4,25 +4,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, ChevronDown, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 
 interface ExamCategory {
   id: string;
   name: string;
-  description: string;
-  slug: string;
-  count: number;
+  lastUpdated: string; // New field
 }
 
 const mockCategories: ExamCategory[] = [
-  { id: '1', name: 'Kỳ thi HSA', description: '-', slug: 'ky-thi-hsa', count: 12 },
-  { id: '2', name: 'Kỳ thi TSA', description: '-', slug: 'ky-thi-tsa', count: 8 },
-  { id: '3', name: 'Kỳ thi Tốt Nghiệp', description: '-', slug: 'ky-thi-tot-nghiep', count: 25 },
-  { id: '4', name: 'Kỳ thi V-ACT', description: '-', slug: 'ky-thi-v-act', count: 5 },
+  { id: '1', name: 'Kỳ thi HSA', lastUpdated: '28/07/2025 10:00' },
+  { id: '2', name: 'Kỳ thi TSA', lastUpdated: '27/07/2025 14:30' },
+  { id: '3', name: 'Kỳ thi Tốt Nghiệp', lastUpdated: '26/07/2025 09:15' },
+  { id: '4', name: 'Kỳ thi V-ACT', lastUpdated: '25/07/2025 16:45' },
 ];
 
 const ExamCategoryManagement: React.FC = () => {
@@ -126,9 +123,8 @@ const ExamCategoryManagement: React.FC = () => {
                     />
                   </TableHead>
                   <TableHead>Tên <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
-                  <TableHead>Mô tả <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
-                  <TableHead>Đường dẫn <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
-                  <TableHead>Lượt <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                  <TableHead>Thời gian cập nhật <ChevronDown className="inline-block h-3 w-3 ml-1" /></TableHead>
+                  <TableHead className="text-right">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -142,14 +138,30 @@ const ExamCategoryManagement: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell>{category.description}</TableCell>
-                    <TableCell>{category.slug}</TableCell>
-                    <TableCell>{category.count}</TableCell>
+                    <TableCell>{category.lastUpdated}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem className="flex items-center gap-2">
+                            <Pencil className="h-4 w-4" /> Chỉnh sửa
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="flex items-center gap-2 text-red-600">
+                            <Trash2 className="h-4 w-4" /> Xóa
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {currentCategories.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
                       Không tìm thấy danh mục nào.
                     </TableCell>
                   </TableRow>
