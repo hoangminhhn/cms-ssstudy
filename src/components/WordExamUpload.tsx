@@ -159,8 +159,8 @@ const WordExamUpload: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
-              <Select defaultValue="tot-nghiep">
-                <SelectTrigger id="exam-type" className="max-w-sm">
+              <Select defaultValue="tot-nghiep" className="max-w-sm">
+                <SelectTrigger id="exam-type">
                   <SelectValue placeholder="Tốt nghiệp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,9 +172,23 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
             <div>
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full" className="max-w-sm">
+                <SelectTrigger id="part-selection">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label htmlFor="grade-level">Lớp</Label>
-              <Select defaultValue="class1">
-                <SelectTrigger id="grade-level" className="max-w-sm">
+              <Select defaultValue="class1" className="max-w-sm">
+                <SelectTrigger id="grade-level">
                   <SelectValue placeholder="Chọn lớp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -188,8 +202,8 @@ const WordExamUpload: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="subject">Môn học</Label>
-              <Select defaultValue="toan">
-                <SelectTrigger id="subject" className="max-w-sm">
+              <Select defaultValue="toan" className="max-w-sm">
+                <SelectTrigger id="subject">
                   <SelectValue placeholder="Chọn môn học" />
                 </SelectTrigger>
                 <SelectContent>
@@ -203,35 +217,9 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="exam-group">Nhóm đề</Label>
-              <Select defaultValue="default">
-                <SelectTrigger id="exam-group" className="max-w-sm">
-                  <SelectValue placeholder="Mặc định" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Mặc định</SelectItem>
-                  <SelectItem value="test">Thi thử</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full">
-                <SelectTrigger id="part-selection" className="max-w-sm">
-                  <SelectValue placeholder="Đầy đủ 3 phần" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                  <SelectItem value="part1">Phần 1</SelectItem>
-                  <SelectItem value="part2">Phần 2</SelectItem>
-                  <SelectItem value="part3">Phần 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
-              <Select defaultValue="no">
-                <SelectTrigger id="allow-retry" className="max-w-sm">
+              <Select defaultValue="no" className="max-w-sm">
+                <SelectTrigger id="allow-retry">
                   <SelectValue placeholder="Không cho phép" />
                 </SelectTrigger>
                 <SelectContent>
