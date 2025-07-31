@@ -223,7 +223,7 @@ const WordExamUpload: React.FC = () => {
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2">
               <Label htmlFor="exam-type">Kỳ thi</Label>
               <Select
                 value={selectedExamType}
@@ -241,7 +241,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2">
               <Label htmlFor="part-selection">Phần thi</Label>
               <Select defaultValue="full" className="max-w-full">
                 <SelectTrigger id="part-selection">
@@ -255,7 +255,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-4">
+            <div className="col-span-2">
               <Label htmlFor="test-type">Loại bài kiểm tra</Label>
               <Select
                 value={selectedTestType}
