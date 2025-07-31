@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Pencil } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -24,7 +24,7 @@ interface ExamPartQuestionsProps {
   parts: ExamPart[];
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
-  onDeletePart: (partId: string) => void; // New prop for deleting part
+  onDeletePart: (partId: string) => void;
 }
 
 const ExamPartHeader: React.FC<{ onDeleteAll: () => void }> = ({ onDeleteAll }) => (
@@ -93,9 +93,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-[50px]">#</TableHead>
                         <TableHead>Mã câu hỏi</TableHead>
-                        <TableHead>Đáp án đúng</TableHead>
-                        <TableHead>Lời giải</TableHead>
+                        <TableHead>Đáp án</TableHead>
+                        <TableHead>Loại câu hỏi</TableHead>
                         <TableHead>Tài liệu</TableHead>
                         <TableHead>Video</TableHead>
                         <TableHead>Ngày tải lên</TableHead>
@@ -103,33 +104,56 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {part.questions.map((q) => (
+                      {part.questions.map((q, index) => (
                         <TableRow key={q.id}>
+                          <TableCell>{`Câu ${index + 1}`}</TableCell>
                           <TableCell>{q.id}</TableCell>
                           <TableCell>{q.correctAnswer}</TableCell>
-                          <TableCell>{q.solution}</TableCell>
+                          <TableCell>TRẮC NGHIỆM</TableCell>
                           <TableCell>
                             {q.documentLink ? (
-                              <a href={q.documentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                Tài liệu
+                              <a
+                                href={q.documentLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
+                              >
+                                Có
                               </a>
                             ) : (
-                              '-'
+                              <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
+                                Chưa có
+                              </span>
                             )}
                           </TableCell>
                           <TableCell>
                             {q.videoLink ? (
-                              <a href={q.videoLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                Video
+                              <a
+                                href={q.videoLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
+                              >
+                                Có
                               </a>
                             ) : (
-                              '-'
+                              <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
+                                Chưa có
+                              </span>
                             )}
                           </TableCell>
                           <TableCell>{q.uploadDate}</TableCell>
-                          <TableCell className="text-right">
+                          <TableCell className="text-right flex justify-end gap-2">
                             <Button
                               variant="ghost"
+                              size="icon"
+                              aria-label={`Chỉnh sửa câu hỏi ${q.id}`}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               className="text-red-600 hover:bg-red-50"
                               onClick={() => onDeleteQuestion(part.id, q.id)}
                               aria-label={`Xóa câu hỏi ${q.id}`}
