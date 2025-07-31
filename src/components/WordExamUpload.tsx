@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Download, ChevronDown, Trash2, Edit } from 'lucide-react';
+import { Upload, Download, ChevronDown } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -103,22 +103,14 @@ const WordExamUpload: React.FC = () => {
     );
 
     toast.success('Đã thêm câu hỏi mẫu cho 3 phần thi.');
+
+    // Navigate to editor page if needed
+    // navigate('/word-exam-editor');
   };
 
   const handleDeleteAll = () => {
     setParts((prev) => prev.map((part) => ({ ...part, questions: [] })));
     toast.success('Đã xóa tất cả câu hỏi.');
-  };
-
-  // New handler: create manual question (adds a new part "Mặc Định" if not exists)
-  const handleCreateManualQuestion = () => {
-    const exists = parts.find(p => p.name.toLowerCase() === 'mặc định');
-    if (exists) {
-      toast.error('Phần thi "Mặc Định" đã tồn tại.');
-      return;
-    }
-    setParts(prev => [...prev, { id: `part-default-${Date.now()}`, name: 'Mặc Định', questions: [] }]);
-    toast.success('Đã tạo phần thi "Mặc Định" thủ công.');
   };
 
   const handleDeleteQuestion = (partId: string, questionId: string) => {
@@ -305,37 +297,13 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Manual question controls above question list */}
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Đề thi</CardTitle>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-1"
-              onClick={handleDeleteAll}
-            >
-              <Trash2 className="h-4 w-4" /> Xóa tất cả
-            </Button>
-            <Button
-              size="sm"
-              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1"
-              onClick={handleCreateManualQuestion}
-            >
-              <Edit className="h-4 w-4" /> Tạo câu hỏi thủ công
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <ManualWordExamQuestions
-            parts={parts}
-            onDeleteAll={handleDeleteAll}
-            onDeleteQuestion={handleDeleteQuestion}
-            onDeletePart={handleDeletePart}
-          />
-        </CardContent>
-      </Card>
+      {/* Câu hỏi đề thi (Manual Input) */}
+      <ManualWordExamQuestions
+        parts={parts}
+        onDeleteAll={handleDeleteAll}
+        onDeleteQuestion={handleDeleteQuestion}
+        onDeletePart={handleDeletePart}
+      />
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
