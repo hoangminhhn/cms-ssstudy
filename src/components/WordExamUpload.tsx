@@ -250,7 +250,7 @@ const WordExamUpload: React.FC = () => {
           </div>
 
           {/* Second row */}
-          <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 gap-4">
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select
@@ -312,8 +312,8 @@ const WordExamUpload: React.FC = () => {
             </div>
           </div>
 
-          {/* Third row: Thành phố */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* Third row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
             <div>
               <Label htmlFor="city-select">Thành phố</Label>
               <Select
