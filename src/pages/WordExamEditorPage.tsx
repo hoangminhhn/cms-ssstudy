@@ -10,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
 interface Question {
   id: string;
@@ -204,6 +205,20 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
     );
   };
 
+  const handleGroupPromptIdChange = (groupId: string, questionId: string, newGroupPromptId: string | undefined) => {
+    setSampleData((prevData) =>
+      prevData.map((group) => {
+        if (group.id !== groupId) return group;
+        return {
+          ...group,
+          questions: group.questions.map((q) =>
+            q.id === questionId ? { ...q, groupPromptId: newGroupPromptId === 'none' ? undefined : newGroupPromptId } : q
+          ),
+        };
+      }),
+    );
+  };
+
   return (
     <Layout headerTitle="Chỉnh sửa đề thi Word">
       <div className="flex h-[calc(100vh-120px)] gap-4">
@@ -286,6 +301,30 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                               Xem video giải
                             </a>
                           )}
+                        </div>
+                        {/* Dropdown to select groupPromptId */}
+                        <div className="mt-2">
+                          <label htmlFor={`group-prompt-select-${q.id}`} className="block text-xs font-medium text-muted-foreground mb-1">
+                            Nhóm đề bài chùm
+                          </label>
+                          <Select
+                            id={`group-prompt-select-${q.id}`}
+                            value={q.groupPromptId ?? 'none'}
+                            onValueChange={(value) => handleGroupPromptIdChange(group.id, q.id, value)}
+                            className="max-w-xs"
+                          >
+                            <SelectTrigger>
+                              <SelectValue>{q.groupPromptId ? (group.groupPrompts?.find(gp => gp.id === q.groupPromptId)?.text ?? 'Chọn nhóm') : 'Không thuộc nhóm'}</SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="none">Không thuộc nhóm</SelectItem>
+                              {group.groupPrompts?.map((gp) => (
+                                <SelectItem key={gp.id} value={gp.id}>
+                                  {`Đề bài chùm (câu ${gp.startQuestionIndex + 1} - ${gp.endQuestionIndex + 1})`}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                       {/* Insert group prompt block after question if applicable */}
