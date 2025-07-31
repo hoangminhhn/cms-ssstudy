@@ -57,6 +57,7 @@ const WordExamUpload: React.FC = () => {
   ]);
 
   const [selectedExamType, setSelectedExamType] = React.useState<string>('');
+  const [selectedExamGroup, setSelectedExamGroup] = React.useState<string>('default');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -149,7 +150,7 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-9 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -193,6 +194,24 @@ const WordExamUpload: React.FC = () => {
                     <SelectItem value="part1">Phần 1</SelectItem>
                     <SelectItem value="part2">Phần 2</SelectItem>
                     <SelectItem value="part3">Phần 3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {selectedExamType && (
+              <div>
+                <Label htmlFor="exam-group">Nhóm đề</Label>
+                <Select
+                  value={selectedExamGroup}
+                  onValueChange={(value) => setSelectedExamGroup(value)}
+                  className="max-w-sm"
+                >
+                  <SelectTrigger id="exam-group">
+                    <SelectValue placeholder="Mặc định" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Mặc định</SelectItem>
+                    <SelectItem value="mock">Thi thử</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
