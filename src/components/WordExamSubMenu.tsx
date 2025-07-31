@@ -13,8 +13,7 @@ interface SubMenuItem {
 const subMenuItems: SubMenuItem[] = [
   { id: 'all-word-exams', label: 'Tất cả đề thi', icon: List, path: '/word-exam-upload?tab=all-word-exams' },
   { id: 'add-word-exam', label: 'Thêm đề bằng file word', icon: PlusCircle, path: '/word-exam-upload?tab=add-word-exam' },
-  { id: 'exam-categories', label: 'Danh mục kỳ thi', icon: LayoutGrid, path: '/word-exam-upload?tab=exam-categories' },
-  { id: 'test-categories', label: 'Danh mục bài kiểm tra', icon: LayoutGrid, path: '/word-exam-upload?tab=test-categories' }, // New submenu item
+  { id: 'exam-categories', label: 'Danh mục kỳ thi', icon: LayoutGrid, path: '/word-exam-upload?tab=exam-categories' }, // New item
 ];
 
 const WordExamSubMenu: React.FC = () => {
