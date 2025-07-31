@@ -60,6 +60,7 @@ const cities = [
 ];
 
 const testTypes = [
+  "Không",
   "Thi giữa kỳ 1",
   "Thi cuối kỳ 1",
   "Thi giữa kỳ 2",
@@ -88,7 +89,7 @@ const WordExamUpload: React.FC = () => {
   const [selectedExamType, setSelectedExamType] = React.useState<string>('');
   const [selectedExamGroup, setSelectedExamGroup] = React.useState<string>('default');
   const [selectedCity, setSelectedCity] = React.useState<string>('');
-  const [selectedTestType, setSelectedTestType] = React.useState<string>('');
+  const [selectedTestType, setSelectedTestType] = React.useState<string>('Không');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -262,16 +263,11 @@ const WordExamUpload: React.FC = () => {
                 onValueChange={(value) => setSelectedTestType(value)}
                 className="max-w-full"
               >
-                <SelectTrigger id="test-type">
-                  <SelectValue placeholder="Chọn loại bài kiểm tra" />
-                </SelectTrigger>
-                <SelectContent>
-                  {testTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                {testTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
               </Select>
             </div>
           </div>
