@@ -59,6 +59,13 @@ const cities = [
   "Bình Dương",
 ];
 
+const testTypes = [
+  "Thi giữa kỳ 1",
+  "Thi cuối kỳ 1",
+  "Thi giữa kỳ 2",
+  "Thi cuối kỳ 2",
+];
+
 const WordExamUpload: React.FC = () => {
   const [parts, setParts] = React.useState<ExamPart[]>([
     {
@@ -81,6 +88,7 @@ const WordExamUpload: React.FC = () => {
   const [selectedExamType, setSelectedExamType] = React.useState<string>('');
   const [selectedExamGroup, setSelectedExamGroup] = React.useState<string>('default');
   const [selectedCity, setSelectedCity] = React.useState<string>('');
+  const [selectedTestType, setSelectedTestType] = React.useState<string>('');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -201,7 +209,7 @@ const WordExamUpload: React.FC = () => {
         </CardHeader>
         <CardContent className="grid gap-6">
           {/* First row */}
-          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-7 lg:grid-cols-10 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -244,6 +252,29 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="part1">Phần 1</SelectItem>
                   <SelectItem value="part2">Phần 2</SelectItem>
                   <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* New field row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="test-type">Loại bài kiểm tra</Label>
+              <Select
+                value={selectedTestType}
+                onValueChange={(value) => setSelectedTestType(value)}
+                className="max-w-sm"
+              >
+                <SelectTrigger id="test-type">
+                  <SelectValue placeholder="Chọn loại bài kiểm tra" />
+                </SelectTrigger>
+                <SelectContent>
+                  {testTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
