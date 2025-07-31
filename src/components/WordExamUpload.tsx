@@ -192,27 +192,6 @@ const WordExamUpload: React.FC = () => {
     );
   };
 
-  // New handlers for adding parts
-  const handleAddDefaultPart = () => {
-    const newPart: ExamPart = {
-      id: `part-${Date.now()}`,
-      name: `Phần mặc định ${parts.length + 1}`,
-      questions: [],
-    };
-    setParts((prev) => [...prev, newPart]);
-    toast.success('Đã thêm phần thi mặc định.');
-  };
-
-  const handleAddGroupPart = () => {
-    const newPart: ExamPart = {
-      id: `group-part-${Date.now()}`,
-      name: `Phần nhóm chủ đề ${parts.length + 1}`,
-      questions: [],
-    };
-    setParts((prev) => [...prev, newPart]);
-    toast.success('Đã thêm phần thi nhóm chủ đề.');
-  };
-
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -292,56 +271,9 @@ const WordExamUpload: React.FC = () => {
                 </Select>
               </div>
             )}
-            <div>
-              <Label htmlFor="exam-group">Nhóm đề</Label>
-              <Select
-                value={selectedExamGroup}
-                onValueChange={(value) => setSelectedExamGroup(value)}
-                className="max-w-sm"
-              >
-                <SelectTrigger id="exam-group">
-                  <SelectValue placeholder="Mặc định" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Mặc định</SelectItem>
-                  <SelectItem value="mock">Thi thử</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="grade-level">Lớp</Label>
-              <Select defaultValue="class1" className="max-w-sm">
-                <SelectTrigger id="grade-level">
-                  <SelectValue placeholder="Chọn lớp" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="class1">Lớp 1</SelectItem>
-                  <SelectItem value="class2">Lớp 2</SelectItem>
-                  <SelectItem value="class3">Lớp 3</SelectItem>
-                  <SelectItem value="class4">Lớp 4</SelectItem>
-                  <SelectItem value="class5">Lớp 5</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="subject">Môn học</Label>
-              <Select defaultValue="toan" className="max-w-sm">
-                <SelectTrigger id="subject">
-                  <SelectValue placeholder="Chọn môn học" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="toan">Toán</SelectItem>
-                  <SelectItem value="van">Văn</SelectItem>
-                  <SelectItem value="anh">Tiếng Anh</SelectItem>
-                  <SelectItem value="ly">Vật lí</SelectItem>
-                  <SelectItem value="hoa">Hóa học</SelectItem>
-                  <SelectItem value="sinh">Sinh học</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
+            <div className="min-w-[160px]"> {/* Ensure enough width */}
               <Label htmlFor="allow-retry">Cho phép làm lại</Label>
-              <Select defaultValue="no" className="max-w-sm">
+              <Select defaultValue="no" className="max-w-full">
                 <SelectTrigger id="allow-retry">
                   <SelectValue placeholder="Không cho phép" />
                 </SelectTrigger>
@@ -398,8 +330,24 @@ const WordExamUpload: React.FC = () => {
         onDeleteQuestion={handleDeleteQuestion}
         onDeletePart={handleDeletePart}
         renderPartHeader={renderPartHeader}
-        onAddDefaultPart={handleAddDefaultPart}
-        onAddGroupPart={handleAddGroupPart}
+        onAddDefaultPart={() => {
+          const newPart = {
+            id: `part-${Date.now()}`,
+            name: `Phần mặc định ${parts.length + 1}`,
+            questions: [],
+          };
+          setParts((prev) => [...prev, newPart]);
+          toast.success('Đã thêm phần thi mặc định.');
+        }}
+        onAddGroupPart={() => {
+          const newPart = {
+            id: `group-part-${Date.now()}`,
+            name: `Phần nhóm chủ đề ${parts.length + 1}`,
+            questions: [],
+          };
+          setParts((prev) => [...prev, newPart]);
+          toast.success('Đã thêm phần thi nhóm chủ đề.');
+        }}
       />
 
       {/* Footer Buttons */}
