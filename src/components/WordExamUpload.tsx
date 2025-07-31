@@ -162,7 +162,7 @@ const WordExamUpload: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="exam-name">Tên đề thi</Label>
-              <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-sm" />
+              <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-lg" />
             </div>
             <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
