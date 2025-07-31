@@ -57,7 +57,6 @@ const WordExamUpload: React.FC = () => {
   ]);
 
   const [selectedExamType, setSelectedExamType] = React.useState<string>('');
-  const [selectedGroup, setSelectedGroup] = React.useState<string>('default');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -242,28 +241,6 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Nhóm đề - tách riêng */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Nhóm đề</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Select
-            value={selectedGroup}
-            onValueChange={(value) => setSelectedGroup(value)}
-            className="max-w-sm"
-          >
-            <SelectTrigger id="group-selection">
-              <SelectValue placeholder="Mặc định" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Mặc định</SelectItem>
-              <SelectItem value="thi-thu">Thi thử</SelectItem>
-            </SelectContent>
-          </Select>
         </CardContent>
       </Card>
 
