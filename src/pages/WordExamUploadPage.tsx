@@ -8,6 +8,7 @@ import ExamTable from '@/components/ExamTable';
 import WordExamUpload from '@/components/WordExamUpload';
 import ExamCategoryManagement from '@/components/ExamCategoryManagement';
 import EditExamFormCategory from '@/components/EditExamFormCategory'; // Import the new component
+import TestCategoryManagement from '@/components/TestCategoryManagement'; // Import new test category management
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -23,6 +24,8 @@ const WordExamUploadPage: React.FC = () => {
         return 'Thêm đề bằng file Word';
       case 'exam-categories':
         return 'Danh mục kỳ thi';
+      case 'test-categories':
+        return 'Danh mục bài kiểm tra';
       case 'edit-category':
         return `Chỉnh sửa danh mục #${categoryId}`;
       default:
@@ -38,6 +41,8 @@ const WordExamUploadPage: React.FC = () => {
         return <WordExamUpload />;
       case 'exam-categories':
         return <ExamCategoryManagement />;
+      case 'test-categories':
+        return <TestCategoryManagement />;
       case 'edit-category':
         return <EditExamFormCategory />; // Render the new component here
       default:
