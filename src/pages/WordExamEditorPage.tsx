@@ -33,7 +33,7 @@ interface QuestionGroup {
   id: string;
   title: string;
   questions: Question[];
-  groupPrompts: GroupPrompt[]; // List of group prompts in this group
+  groupPrompts?: GroupPrompt[]; // Make optional
 }
 
 const sampleDataInitial: QuestionGroup[] = [
@@ -127,7 +127,7 @@ const sampleDataInitial: QuestionGroup[] = [
         videoUrl: '',
       },
     ],
-    groupPrompts: [],
+    groupPrompts: [], // Ensure defined as empty array
   },
 ];
 
@@ -196,7 +196,7 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
         if (group.id !== groupId) return group;
         return {
           ...group,
-          groupPrompts: group.groupPrompts.map((gp) =>
+          groupPrompts: (group.groupPrompts ?? []).map((gp) =>
             gp.id === promptId ? { ...gp, text: value } : gp
           ),
         };
@@ -214,7 +214,7 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
               <h3 className="font-semibold text-lg mb-4">{group.title}</h3>
               <div className="space-y-4 flex-grow">
                 {/* Render group prompts */}
-                {group.groupPrompts.map((gp) => (
+                {(group.groupPrompts ?? []).map((gp) => (
                   <div
                     key={gp.id}
                     className="mb-4 rounded border border-orange-400 bg-orange-50 p-3 text-sm text-orange-700"
@@ -233,7 +233,7 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                 {group.questions.map((q, idx) => {
                   // Check if question belongs to a group prompt
                   const groupPrompt = q.groupPromptId
-                    ? group.groupPrompts.find((gp) => gp.id === q.groupPromptId)
+                    ? (group.groupPrompts ?? []).find((gp) => gp.id === q.groupPromptId)
                     : null;
 
                   return (
