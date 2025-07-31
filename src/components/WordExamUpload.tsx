@@ -220,33 +220,20 @@ const WordExamUpload: React.FC = () => {
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6 grid-cols-1 md:grid-cols-6 lg:grid-cols-10">
-          <div>
-            <Label htmlFor="exam-code">Mã đề thi</Label>
-            <Input
-              id="exam-code"
-              placeholder="Tự động"
-              readOnly
-              className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-            />
-          </div>
-          <div className="lg:col-span-4">
-            <Label htmlFor="exam-name">Tên đề thi</Label>
-            <Input id="exam-name" placeholder="Nhập tên đề thi" />
-          </div>
-          {/* Removed Thành phố from here */}
-          <div className="md:col-span-2 lg:col-span-2 grid grid-cols-2 gap-4 items-end">
+        <CardContent className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 gap-4">
             <div>
-              <Label htmlFor="allow-retry">Cho phép làm lại</Label>
-              <Select defaultValue="no" className="max-w-full">
-                <SelectTrigger id="allow-retry">
-                  <SelectValue placeholder="Không cho phép" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="yes">Có</SelectItem>
-                  <SelectItem value="no">Không cho phép</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="exam-code">Mã đề thi</Label>
+              <Input
+                id="exam-code"
+                placeholder="Tự động"
+                readOnly
+                className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
+              />
+            </div>
+            <div className="lg:col-span-4">
+              <Label htmlFor="exam-name">Tên đề thi</Label>
+              <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
             <div>
               <Label htmlFor="city-select">Thành phố</Label>
@@ -255,7 +242,6 @@ const WordExamUpload: React.FC = () => {
                 onValueChange={setSelectedCity}
                 name="city-select"
                 aria-label="Chọn thành phố"
-                className="max-w-full"
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn thành phố" />
@@ -272,53 +258,99 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div>
-            <Label htmlFor="exam-group">Nhóm đề</Label>
-            <Select
-              value={selectedExamGroup}
-              onValueChange={(value) => setSelectedExamGroup(value)}
-              className="max-w-sm"
-            >
-              <SelectTrigger id="exam-group">
-                <SelectValue placeholder="Mặc định" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="default">Mặc định</SelectItem>
-                <SelectItem value="mock">Thi thử</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="grade-level">Lớp</Label>
-            <Select defaultValue="class1" className="max-w-sm">
-              <SelectTrigger id="grade-level">
-                <SelectValue placeholder="Chọn lớp" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="class1">Lớp 1</SelectItem>
-                <SelectItem value="class2">Lớp 2</SelectItem>
-                <SelectItem value="class3">Lớp 3</SelectItem>
-                <SelectItem value="class4">Lớp 4</SelectItem>
-                <SelectItem value="class5">Lớp 5</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="subject">Môn học</Label>
-            <Select defaultValue="toan" className="max-w-sm">
-              <SelectTrigger id="subject">
-                <SelectValue placeholder="Chọn môn học" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="toan">Toán</SelectItem>
-                <SelectItem value="van">Văn</SelectItem>
-                <SelectItem value="anh">Tiếng Anh</SelectItem>
-                <SelectItem value="ly">Vật lí</SelectItem>
-                <SelectItem value="hoa">Hóa học</SelectItem>
-                <SelectItem value="sinh">Sinh học</SelectItem>
-              </SelectContent>
-            </Select>
+            <div>
+              <Label htmlFor="exam-type">Kỳ thi</Label>
+              <Select
+                value={selectedExamType}
+                onValueChange={(value) => setSelectedExamType(value)}
+                className="max-w-sm"
+              >
+                <SelectTrigger id="exam-type">
+                  <SelectValue placeholder="Chọn kỳ thi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tot-nghiep">Tốt nghiệp</SelectItem>
+                  <SelectItem value="hsa">HSA</SelectItem>
+                  <SelectItem value="tsa">TSA</SelectItem>
+                  <SelectItem value="v-act">V-ACT</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {selectedExamType && (
+              <div>
+                <Label htmlFor="part-selection">Phần thi</Label>
+                <Select defaultValue="full" className="max-w-sm">
+                  <SelectTrigger id="part-selection">
+                    <SelectValue placeholder="Đầy đủ 3 phần" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                    <SelectItem value="part1">Phần 1</SelectItem>
+                    <SelectItem value="part2">Phần 2</SelectItem>
+                    <SelectItem value="part3">Phần 3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div>
+              <Label htmlFor="exam-group">Nhóm đề</Label>
+              <Select
+                value={selectedExamGroup}
+                onValueChange={(value) => setSelectedExamGroup(value)}
+                className="max-w-sm"
+              >
+                <SelectTrigger id="exam-group">
+                  <SelectValue placeholder="Mặc định" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Mặc định</SelectItem>
+                  <SelectItem value="mock">Thi thử</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="grade-level">Lớp</Label>
+              <Select defaultValue="class1" className="max-w-sm">
+                <SelectTrigger id="grade-level">
+                  <SelectValue placeholder="Chọn lớp" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="class1">Lớp 1</SelectItem>
+                  <SelectItem value="class2">Lớp 2</SelectItem>
+                  <SelectItem value="class3">Lớp 3</SelectItem>
+                  <SelectItem value="class4">Lớp 4</SelectItem>
+                  <SelectItem value="class5">Lớp 5</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="subject">Môn học</Label>
+              <Select defaultValue="toan" className="max-w-sm">
+                <SelectTrigger id="subject">
+                  <SelectValue placeholder="Chọn môn học" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="toan">Toán</SelectItem>
+                  <SelectItem value="van">Văn</SelectItem>
+                  <SelectItem value="anh">Tiếng Anh</SelectItem>
+                  <SelectItem value="ly">Vật lí</SelectItem>
+                  <SelectItem value="hoa">Hóa học</SelectItem>
+                  <SelectItem value="sinh">Sinh học</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="allow-retry">Cho phép làm lại</Label>
+              <Select defaultValue="no" className="max-w-sm">
+                <SelectTrigger id="allow-retry">
+                  <SelectValue placeholder="Không cho phép" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yes">Có</SelectItem>
+                  <SelectItem value="no">Không cho phép</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -366,24 +398,8 @@ const WordExamUpload: React.FC = () => {
         onDeleteQuestion={handleDeleteQuestion}
         onDeletePart={handleDeletePart}
         renderPartHeader={renderPartHeader}
-        onAddDefaultPart={() => {
-          const newPart = {
-            id: `part-${Date.now()}`,
-            name: `Phần mặc định ${parts.length + 1}`,
-            questions: [],
-          };
-          setParts((prev) => [...prev, newPart]);
-          toast.success('Đã thêm phần thi mặc định.');
-        }}
-        onAddGroupPart={() => {
-          const newPart = {
-            id: `group-part-${Date.now()}`,
-            name: `Phần nhóm chủ đề ${parts.length + 1}`,
-            questions: [],
-          };
-          setParts((prev) => [...prev, newPart]);
-          toast.success('Đã thêm phần thi nhóm chủ đề.');
-        }}
+        onAddDefaultPart={handleAddDefaultPart}
+        onAddGroupPart={handleAddGroupPart}
       />
 
       {/* Footer Buttons */}
