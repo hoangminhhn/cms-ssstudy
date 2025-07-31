@@ -100,7 +100,7 @@ const WordExamUpload: React.FC = () => {
       }),
     );
 
-    toast.success('Đã thêm câu hỏi mới vào các phần thi!');
+    // Removed toast.success here
 
     // Navigate to editor page
     navigate('/word-exam-editor');
