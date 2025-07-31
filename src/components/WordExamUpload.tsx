@@ -152,7 +152,12 @@ const WordExamUpload: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
-              <Input id="exam-code" placeholder="Nhập mã đề thi" className="max-w-sm" />
+              <Input
+                id="exam-code"
+                placeholder="Tự động"
+                readOnly
+                className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
+              />
             </div>
             <div>
               <Label htmlFor="exam-name">Tên đề thi</Label>
