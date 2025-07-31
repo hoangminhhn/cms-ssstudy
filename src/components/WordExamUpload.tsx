@@ -233,9 +233,9 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="lg:col-span-2">
               <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full" className="max-w-sm">
+              <Select defaultValue="full" className="max-w-full">
                 <SelectTrigger id="part-selection">
                   <SelectValue placeholder="Đầy đủ 3 phần" />
                 </SelectTrigger>
