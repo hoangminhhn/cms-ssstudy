@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -263,11 +261,16 @@ const WordExamUpload: React.FC = () => {
                 onValueChange={(value) => setSelectedTestType(value)}
                 className="max-w-full"
               >
-                {testTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
+                <SelectTrigger id="test-type">
+                  <SelectValue placeholder="Chọn loại bài kiểm tra" />
+                </SelectTrigger>
+                <SelectContent>
+                  {testTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
           </div>
