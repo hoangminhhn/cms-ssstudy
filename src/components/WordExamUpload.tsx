@@ -209,7 +209,7 @@ const WordExamUpload: React.FC = () => {
         </CardHeader>
         <CardContent className="grid gap-6">
           {/* First row */}
-          <div className="grid grid-cols-1 md:grid-cols-7 lg:grid-cols-10 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -219,7 +219,7 @@ const WordExamUpload: React.FC = () => {
                 className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
               />
             </div>
-            <div className="lg:col-span-4">
+            <div className="lg:col-span-3">
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
@@ -241,24 +241,6 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="lg:col-span-2">
-              <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full" className="max-w-full">
-                <SelectTrigger id="part-selection">
-                  <SelectValue placeholder="Đầy đủ 3 phần" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                  <SelectItem value="part1">Phần 1</SelectItem>
-                  <SelectItem value="part2">Phần 2</SelectItem>
-                  <SelectItem value="part3">Phần 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* New field row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="test-type">Loại bài kiểm tra</Label>
               <Select
@@ -275,6 +257,20 @@ const WordExamUpload: React.FC = () => {
                       {type}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="lg:col-span-1">
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full" className="max-w-full">
+                <SelectTrigger id="part-selection">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
                 </SelectContent>
               </Select>
             </div>
