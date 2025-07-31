@@ -127,7 +127,7 @@ const sampleDataInitial: QuestionGroup[] = [
         videoUrl: '',
       },
     ],
-    groupPrompts: [], // Ensure defined as empty array
+    groupPrompts: [],
   },
 ];
 
@@ -213,93 +213,99 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
             <div key={group.id} className="border rounded p-4 flex flex-col">
               <h3 className="font-semibold text-lg mb-4">{group.title}</h3>
               <div className="space-y-4 flex-grow">
-                {/* Render group prompts */}
-                {(group.groupPrompts ?? []).map((gp) => (
-                  <div
-                    key={gp.id}
-                    className="mb-4 rounded border border-orange-400 bg-orange-50 p-3 text-sm text-orange-700"
-                  >
-                    <label className="block font-semibold mb-1">Đề bài chùm (áp dụng câu {gp.startQuestionIndex + 1} đến câu {gp.endQuestionIndex + 1})</label>
-                    <Textarea
-                      value={gp.text}
-                      onChange={(e) => handleGroupPromptChange(group.id, gp.id, e.target.value)}
-                      className="text-sm"
-                      rows={3}
-                    />
-                  </div>
-                ))}
-
-                {/* Render questions */}
+                {/* Render questions with group prompt inserted after question 1 if applicable */}
                 {group.questions.map((q, idx) => {
-                  // Check if question belongs to a group prompt
+                  const groupPrompts = group.groupPrompts ?? [];
+                  // Find if a group prompt starts at next question index (idx + 1)
+                  const promptAfter = groupPrompts.find(gp => gp.startQuestionIndex === idx + 1);
+
+                  // Find if question belongs to a group prompt
                   const groupPrompt = q.groupPromptId
-                    ? (group.groupPrompts ?? []).find((gp) => gp.id === q.groupPromptId)
+                    ? groupPrompts.find((gp) => gp.id === q.groupPromptId)
                     : null;
 
                   return (
-                    <div
-                      key={q.id}
-                      className={cn(
-                        "border rounded p-3",
-                        groupPrompt ? "border-orange-400 bg-orange-50" : "border-gray-300 bg-white"
-                      )}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold text-sm">Câu {idx + 1}.</div>
-                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                          {q.audioUrl && <Button size="xs" variant="outline">Audio</Button>}
-                          <select className="border rounded px-2 py-1 text-xs">
-                            <option>Trắc nghiệm</option>
-                            <option>Tự luận</option>
-                          </select>
-                          <Button size="xs" variant="outline">...</Button>
+                    <React.Fragment key={q.id}>
+                      <div
+                        className={cn(
+                          "border rounded p-3",
+                          groupPrompt ? "border-orange-400 bg-orange-50" : "border-gray-300 bg-white"
+                        )}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="font-semibold text-sm">Câu {idx + 1}.</div>
+                          <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                            {q.audioUrl && <Button size="xs" variant="outline">Audio</Button>}
+                            <select className="border rounded px-2 py-1 text-xs">
+                              <option>Trắc nghiệm</option>
+                              <option>Tự luận</option>
+                            </select>
+                            <Button size="xs" variant="outline">...</Button>
+                          </div>
+                        </div>
+                        <Input value={q.text} readOnly className="mb-2" />
+                        <div className="grid grid-cols-2 gap-2">
+                          {q.answers.map((a) => (
+                            <button
+                              key={a.label}
+                              className={cn(
+                                "border rounded p-2 text-left text-xs",
+                                a.isCorrect ? "border-blue-600 bg-blue-100" : "border-gray-300"
+                              )}
+                            >
+                              <strong>{a.label}</strong>. {a.text}
+                            </button>
+                          ))}
+                        </div>
+                        {q.explanation && (
+                          <>
+                            <div className="mt-2 text-orange-600 font-semibold text-xs text-center">HƯỚNG DẪN GIẢI</div>
+                            <div className="text-xs text-muted-foreground">{q.explanation}</div>
+                          </>
+                        )}
+                        {/* Video solution input and display */}
+                        <div className="mt-2">
+                          <label htmlFor={`video-url-${q.id}`} className="block text-xs font-medium text-muted-foreground mb-1">
+                            Link video giải
+                          </label>
+                          <Input
+                            id={`video-url-${q.id}`}
+                            type="url"
+                            placeholder="Nhập link video giải"
+                            value={q.videoUrl || ''}
+                            onChange={(e) => handleVideoUrlChange(group.id, q.id, e.target.value)}
+                            className="text-xs"
+                          />
+                          {q.videoUrl && (
+                            <a
+                              href={q.videoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline text-xs mt-1 block"
+                            >
+                              Xem video giải
+                            </a>
+                          )}
                         </div>
                       </div>
-                      <Input value={q.text} readOnly className="mb-2" />
-                      <div className="grid grid-cols-2 gap-2">
-                        {q.answers.map((a) => (
-                          <button
-                            key={a.label}
-                            className={cn(
-                              "border rounded p-2 text-left text-xs",
-                              a.isCorrect ? "border-blue-600 bg-blue-100" : "border-gray-300"
-                            )}
-                          >
-                            <strong>{a.label}</strong>. {a.text}
-                          </button>
-                        ))}
-                      </div>
-                      {q.explanation && (
-                        <>
-                          <div className="mt-2 text-orange-600 font-semibold text-xs text-center">HƯỚNG DẪN GIẢI</div>
-                          <div className="text-xs text-muted-foreground">{q.explanation}</div>
-                        </>
+                      {/* Insert group prompt block after question if applicable */}
+                      {promptAfter && (
+                        <div
+                          key={promptAfter.id}
+                          className="mb-4 rounded border border-orange-400 bg-orange-50 p-3 text-sm text-orange-700"
+                        >
+                          <label className="block font-semibold mb-1">
+                            Đề bài chùm (áp dụng câu {promptAfter.startQuestionIndex + 1} đến câu {promptAfter.endQuestionIndex + 1})
+                          </label>
+                          <Textarea
+                            value={promptAfter.text}
+                            onChange={(e) => handleGroupPromptChange(group.id, promptAfter.id, e.target.value)}
+                            className="text-sm"
+                            rows={3}
+                          />
+                        </div>
                       )}
-                      {/* Video solution input and display */}
-                      <div className="mt-2">
-                        <label htmlFor={`video-url-${q.id}`} className="block text-xs font-medium text-muted-foreground mb-1">
-                          Link video giải
-                        </label>
-                        <Input
-                          id={`video-url-${q.id}`}
-                          type="url"
-                          placeholder="Nhập link video giải"
-                          value={q.videoUrl || ''}
-                          onChange={(e) => handleVideoUrlChange(group.id, q.id, e.target.value)}
-                          className="text-xs"
-                        />
-                        {q.videoUrl && (
-                          <a
-                            href={q.videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline text-xs mt-1 block"
-                          >
-                            Xem video giải
-                          </a>
-                        )}
-                      </div>
-                    </div>
+                    </React.Fragment>
                   );
                 })}
               </div>
