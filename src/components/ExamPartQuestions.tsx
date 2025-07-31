@@ -90,81 +90,104 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     Chưa có câu hỏi nào trong phần này.
                   </p>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[80px]">#</TableHead>
-                        <TableHead>Mã câu hỏi</TableHead>
-                        <TableHead>Đáp án</TableHead>
-                        <TableHead>Loại câu hỏi</TableHead>
-                        <TableHead>Lời giải</TableHead>
-                        <TableHead>Video</TableHead>
-                        <TableHead>Ngày tải lên</TableHead>
-                        <TableHead className="text-right">Thao tác</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {part.questions.map((q, index) => (
-                        <TableRow key={q.id}>
-                          <TableCell>{`Câu ${index + 1}`}</TableCell>
-                          <TableCell>{q.id.slice(0, 6)}</TableCell>
-                          <TableCell>{q.correctAnswer}</TableCell>
-                          <TableCell>TRẮC NGHIỆM</TableCell>
-                          <TableCell>
-                            {q.documentLink ? (
-                              <a
-                                href={q.documentLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
-                              >
-                                Có
-                              </a>
-                            ) : (
-                              <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
-                                Chưa có
-                              </span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {q.videoLink ? (
-                              <a
-                                href={q.videoLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
-                              >
-                                Có
-                              </a>
-                            ) : (
-                              <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
-                                Chưa có
-                              </span>
-                            )}
-                          </TableCell>
-                          <TableCell>{q.uploadDate}</TableCell>
-                          <TableCell className="text-right flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              aria-label={`Chỉnh sửa câu hỏi ${q.id}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-red-600 hover:bg-red-50"
-                              onClick={() => onDeleteQuestion(part.id, q.id)}
-                              aria-label={`Xóa câu hỏi ${q.id}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
+                  <>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[80px]">#</TableHead>
+                          <TableHead>Mã câu hỏi</TableHead>
+                          <TableHead>Đáp án</TableHead>
+                          <TableHead>Loại câu hỏi</TableHead>
+                          <TableHead>Lời giải</TableHead>
+                          <TableHead>Video</TableHead>
+                          <TableHead>Ngày tải lên</TableHead>
+                          <TableHead className="text-right">Thao tác</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {part.questions.map((q, index) => (
+                          <TableRow key={q.id}>
+                            <TableCell>{`Câu ${index + 1}`}</TableCell>
+                            <TableCell>{q.id.slice(0, 6)}</TableCell>
+                            <TableCell>{q.correctAnswer}</TableCell>
+                            <TableCell>TRẮC NGHIỆM</TableCell>
+                            <TableCell>
+                              {q.documentLink ? (
+                                <a
+                                  href={q.documentLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
+                                >
+                                  Có
+                                </a>
+                              ) : (
+                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
+                                  Chưa có
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {q.videoLink ? (
+                                <a
+                                  href={q.videoLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
+                                >
+                                  Có
+                                </a>
+                              ) : (
+                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
+                                  Chưa có
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell>{q.uploadDate}</TableCell>
+                            <TableCell className="text-right flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                aria-label={`Chỉnh sửa câu hỏi ${q.id}`}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-red-600 hover:bg-red-50"
+                                onClick={() => onDeleteQuestion(part.id, q.id)}
+                                aria-label={`Xóa câu hỏi ${q.id}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    {/* Manual question type buttons row */}
+                    <div className="flex flex-wrap gap-2 mt-4 px-2">
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +TRẮC NGHIỆM
+                      </Button>
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +TRẮC NGHIỆM ĐÚNG SAI
+                      </Button>
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +ĐIỀN SỐ/TRẢ LỜI NGẮN
+                      </Button>
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +KÉO THẢ
+                      </Button>
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +TN NHIỀU ĐÁP ÁN
+                      </Button>
+                      <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                        +ĐÚNG/SAI
+                      </Button>
+                    </div>
+                  </>
                 )}
               </TabsContent>
             ))}
