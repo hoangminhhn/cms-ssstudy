@@ -160,9 +160,9 @@ const WordExamUpload: React.FC = () => {
                 className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
               />
             </div>
-            <div>
+            <div className="lg:col-span-4">
               <Label htmlFor="exam-name">Tên đề thi</Label>
-              <Input id="exam-name" placeholder="Nhập tên đề thi" className="max-w-lg" />
+              <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
             <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
