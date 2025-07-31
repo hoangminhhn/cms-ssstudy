@@ -11,7 +11,7 @@ interface Question {
   answers: { label: string; text: string; isCorrect: boolean }[];
   explanation?: string;
   audioUrl?: string;
-  videoUrl?: string; // Added videoUrl
+  videoUrl?: string;
 }
 
 interface QuestionGroup {
@@ -35,7 +35,7 @@ const sampleDataInitial: QuestionGroup[] = [
           { label: 'D', text: 'Số 2 không là số nguyên tố.', isCorrect: true },
         ],
         explanation: 'A đúng vì...',
-        videoUrl: '', // Initialize empty
+        videoUrl: '',
       },
     ],
   },
@@ -89,15 +89,34 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
     );
   };
 
+  const handleAddQuestion = (groupId: string) => {
+    setSampleData((prevData) =>
+      prevData.map((group) => {
+        if (group.id !== groupId) return group;
+        const newQuestion: Question = {
+          id: `q${Date.now()}`,
+          text: 'Câu hỏi mới',
+          answers: [],
+          explanation: '',
+          videoUrl: '',
+        };
+        return {
+          ...group,
+          questions: [...group.questions, newQuestion],
+        };
+      }),
+    );
+  };
+
   return (
     <Layout headerTitle="Chỉnh sửa đề thi Word">
       <div className="flex h-[calc(100vh-120px)] gap-4">
         {/* Left panel: vertical hierarchical question groups with part titles only */}
         <div className="w-1/2 flex flex-col border rounded-md bg-white overflow-y-auto p-4 space-y-6">
           {sampleData.map((group) => (
-            <div key={group.id} className="border rounded p-4">
+            <div key={group.id} className="border rounded p-4 flex flex-col">
               <h3 className="font-semibold text-lg mb-4">{group.title}</h3>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-grow">
                 {group.questions.map((q, idx) => (
                   <div key={q.id} className="border rounded p-3">
                     <div className="flex items-center justify-between mb-2">
@@ -157,6 +176,11 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-4">
+                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" onClick={() => handleAddQuestion(group.id)}>
+                  Thêm câu hỏi
+                </Button>
               </div>
             </div>
           ))}
