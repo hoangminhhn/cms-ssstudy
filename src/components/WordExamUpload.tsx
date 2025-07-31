@@ -142,6 +142,27 @@ const WordExamUpload: React.FC = () => {
     toast.success(`Đang tải ${fileName}...`);
   };
 
+  // New handlers for manual part creation
+  const handleCreateDefaultPart = () => {
+    const exists = parts.find(p => p.name.toLowerCase() === 'mặc định');
+    if (exists) {
+      toast.error('Phần thi "Mặc Định" đã tồn tại.');
+      return;
+    }
+    setParts(prev => [...prev, { id: `part-default-${Date.now()}`, name: 'Mặc Định', questions: [] }]);
+    toast.success('Đã tạo phần thi "Mặc Định" thủ công.');
+  };
+
+  const handleCreateTopicGroupPart = () => {
+    const exists = parts.find(p => p.name.toLowerCase() === 'nhóm chủ đề');
+    if (exists) {
+      toast.error('Phần thi "Nhóm chủ đề" đã tồn tại.');
+      return;
+    }
+    setParts(prev => [...prev, { id: `part-topic-group-${Date.now()}`, name: 'Nhóm chủ đề', questions: [] }]);
+    toast.success('Đã tạo phần thi "Nhóm chủ đề" thủ công.');
+  };
+
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -294,6 +315,21 @@ const WordExamUpload: React.FC = () => {
             </DropdownMenu>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
+        </CardContent>
+      </Card>
+
+      {/* New manual exam part creation section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Tạo phần thi thủ công</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-4">
+          <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1" onClick={handleCreateDefaultPart}>
+            Mặc Định
+          </Button>
+          <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1" onClick={handleCreateTopicGroupPart}>
+            Nhóm chủ đề
+          </Button>
         </CardContent>
       </Card>
 
