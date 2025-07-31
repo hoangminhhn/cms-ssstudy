@@ -56,6 +56,7 @@ const WordExamUpload: React.FC = () => {
     },
   ]);
 
+  const [selectedExamType, setSelectedExamType] = React.useState<string>('');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -159,9 +160,13 @@ const WordExamUpload: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
-              <Select defaultValue="tot-nghiep" className="max-w-sm">
+              <Select
+                value={selectedExamType}
+                onValueChange={(value) => setSelectedExamType(value)}
+                className="max-w-sm"
+              >
                 <SelectTrigger id="exam-type">
-                  <SelectValue placeholder="Tốt nghiệp" />
+                  <SelectValue placeholder="Chọn kỳ thi" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tot-nghiep">Tốt nghiệp</SelectItem>
@@ -171,20 +176,22 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="part-selection">Phần thi</Label>
-              <Select defaultValue="full" className="max-w-sm">
-                <SelectTrigger id="part-selection">
-                  <SelectValue placeholder="Đầy đủ 3 phần" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                  <SelectItem value="part1">Phần 1</SelectItem>
-                  <SelectItem value="part2">Phần 2</SelectItem>
-                  <SelectItem value="part3">Phần 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {selectedExamType && (
+              <div>
+                <Label htmlFor="part-selection">Phần thi</Label>
+                <Select defaultValue="full" className="max-w-sm">
+                  <SelectTrigger id="part-selection">
+                    <SelectValue placeholder="Đầy đủ 3 phần" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                    <SelectItem value="part1">Phần 1</SelectItem>
+                    <SelectItem value="part2">Phần 2</SelectItem>
+                    <SelectItem value="part3">Phần 3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div>
               <Label htmlFor="grade-level">Lớp</Label>
               <Select defaultValue="class1" className="max-w-sm">
