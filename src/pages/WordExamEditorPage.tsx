@@ -4,10 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 interface Question {
   id: string;
   text: string;
+  type?: string; // Added type field for question type
   answers: { label: string; text: string; isCorrect: boolean }[];
   explanation?: string;
   audioUrl?: string;
@@ -28,6 +35,7 @@ const sampleDataInitial: QuestionGroup[] = [
       {
         id: 'q1',
         text: 'Mệnh đề toán học nào sau đây là mệnh đề sai?',
+        type: 'trac-nghiem',
         answers: [
           { label: 'A', text: 'Số 2 là số nguyên.', isCorrect: false },
           { label: 'B', text: 'Số 2 là số hữu tỉ.', isCorrect: false },
@@ -46,6 +54,7 @@ const sampleDataInitial: QuestionGroup[] = [
       {
         id: 'q2',
         text: 'Một cuộc thi bản cung có 20 người tham gia. Trong lần bản đầu tiên có 18 người bắn trúng mục tiêu. Trong lần bản thứ hai có 15 người bắn trúng mục tiêu. Trong lần bản thứ ba chỉ còn 10 người bắn trúng mục tiêu.',
+        type: 'trac-nghiem-dung-sai',
         answers: [
           { label: 'a)', text: 'Số người bắn trượt mục tiêu trong lần đầu tiên là 2.', isCorrect: true },
           { label: 'b)', text: 'Số người bắn trượt mục tiêu trong lần bản thứ hai là 6.', isCorrect: false },
@@ -58,6 +67,15 @@ const sampleDataInitial: QuestionGroup[] = [
     ],
   },
 ];
+
+const questionTypeLabels: Record<string, string> = {
+  'trac-nghiem': 'Trắc nghiệm',
+  'trac-nghiem-dung-sai': 'Trắc nghiệm đúng sai',
+  'dien-so': 'Điền số (trả lời ngắn)',
+  'keo-tha': 'Kéo thả',
+  'tn-nhieu-dapan': 'Trắc nghiệm nhiều đáp án',
+  'dung-sai': 'Đúng (Sai)',
+};
 
 const WordExamEditorPage: React.FC = () => {
   const [sampleData, setSampleData] = useState<QuestionGroup[]>(sampleDataInitial);
@@ -89,13 +107,14 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
     );
   };
 
-  const handleAddQuestion = (groupId: string) => {
+  const handleAddQuestion = (groupId: string, questionType: string) => {
     setSampleData((prevData) =>
       prevData.map((group) => {
         if (group.id !== groupId) return group;
         const newQuestion: Question = {
           id: `q${Date.now()}`,
           text: 'Câu hỏi mới',
+          type: questionType,
           answers: [],
           explanation: '',
           videoUrl: '',
@@ -178,9 +197,20 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                 ))}
               </div>
               <div className="mt-4">
-                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" onClick={() => handleAddQuestion(group.id)}>
-                  Thêm câu hỏi
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                      Thêm câu hỏi
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {Object.entries(questionTypeLabels).map(([key, label]) => (
+                      <DropdownMenuItem key={key} onClick={() => handleAddQuestion(group.id, key)}>
+                        {label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           ))}
