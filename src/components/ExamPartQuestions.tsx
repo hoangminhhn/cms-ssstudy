@@ -25,8 +25,8 @@ interface ExamPartQuestionsProps {
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
-  onAddDefaultPart: () => void; // New prop for adding default part
-  onAddGroupPart: () => void;   // New prop for adding group part
+  onAddDefaultPart: () => void;
+  onAddGroupPart: () => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
 }
 
@@ -50,7 +50,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   return (
     <Card>
       <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-        <div className="flex gap-2">
+        <h2 className="text-lg font-semibold truncate">Đề thi</h2>
+        <div className="flex items-center gap-2">
           <Button
             className="bg-cyan-500 hover:bg-cyan-600 text-white"
             onClick={onAddDefaultPart}
@@ -63,14 +64,14 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
           >
             + Phần thi nhóm chủ đề
           </Button>
+          <Button
+            variant="outline"
+            className="whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
+            onClick={onDeleteAll}
+          >
+            <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          className="whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
-          onClick={onDeleteAll}
-        >
-          <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-        </Button>
       </div>
       <CardContent>
         {parts.length === 0 ? (
