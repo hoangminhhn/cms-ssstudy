@@ -209,7 +209,7 @@ const WordExamUpload: React.FC = () => {
         </CardHeader>
         <CardContent className="grid gap-6">
           {/* First row */}
-          <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
+          <div className="grid grid-cols-10 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -219,16 +219,16 @@ const WordExamUpload: React.FC = () => {
                 className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
               />
             </div>
-            <div className="lg:col-span-3">
+            <div className="col-span-3">
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
-            <div>
+            <div className="col-span-1">
               <Label htmlFor="exam-type">Kỳ thi</Label>
               <Select
                 value={selectedExamType}
                 onValueChange={(value) => setSelectedExamType(value)}
-                className="max-w-sm"
+                className="max-w-full"
               >
                 <SelectTrigger id="exam-type">
                   <SelectValue placeholder="Chọn kỳ thi" />
@@ -241,26 +241,7 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="test-type">Loại bài kiểm tra</Label>
-              <Select
-                value={selectedTestType}
-                onValueChange={(value) => setSelectedTestType(value)}
-                className="max-w-sm"
-              >
-                <SelectTrigger id="test-type">
-                  <SelectValue placeholder="Chọn loại bài kiểm tra" />
-                </SelectTrigger>
-                <SelectContent>
-                  {testTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="lg:col-span-1">
+            <div className="col-span-1">
               <Label htmlFor="part-selection">Phần thi</Label>
               <Select defaultValue="full" className="max-w-full">
                 <SelectTrigger id="part-selection">
@@ -271,6 +252,25 @@ const WordExamUpload: React.FC = () => {
                   <SelectItem value="part1">Phần 1</SelectItem>
                   <SelectItem value="part2">Phần 2</SelectItem>
                   <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="col-span-4">
+              <Label htmlFor="test-type">Loại bài kiểm tra</Label>
+              <Select
+                value={selectedTestType}
+                onValueChange={(value) => setSelectedTestType(value)}
+                className="max-w-full"
+              >
+                <SelectTrigger id="test-type">
+                  <SelectValue placeholder="Chọn loại bài kiểm tra" />
+                </SelectTrigger>
+                <SelectContent>
+                  {testTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
