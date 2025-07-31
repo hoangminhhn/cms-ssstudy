@@ -97,7 +97,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                         <TableHead>Mã câu hỏi</TableHead>
                         <TableHead>Đáp án</TableHead>
                         <TableHead>Loại câu hỏi</TableHead>
-                        <TableHead>Tài liệu</TableHead>
+                        <TableHead>Lời giải</TableHead>
                         <TableHead>Video</TableHead>
                         <TableHead>Ngày tải lên</TableHead>
                         <TableHead className="text-right">Thao tác</TableHead>
