@@ -25,6 +25,7 @@ interface ExamPartQuestionsProps {
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
+  renderPartHeader?: (partId: string) => React.ReactNode; // New prop for custom header per part
 }
 
 const ExamPartHeader: React.FC<{ onDeleteAll: () => void }> = ({ onDeleteAll }) => (
@@ -45,6 +46,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onDeleteAll,
   onDeleteQuestion,
   onDeletePart,
+  renderPartHeader,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
 
@@ -73,6 +75,12 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </TabsList>
             {parts.map((part) => (
               <TabsContent key={part.id} value={part.id} className="p-0 relative">
+                {/* Custom header per part (upload file) */}
+                {renderPartHeader && (
+                  <div className="p-4 border-b border-border">
+                    {renderPartHeader(part.id)}
+                  </div>
+                )}
                 {/* Delete part button */}
                 <div className="absolute top-2 right-2 z-10">
                   <Button

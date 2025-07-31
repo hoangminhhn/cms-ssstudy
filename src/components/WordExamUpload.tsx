@@ -10,11 +10,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { Upload, Download, ChevronDown } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +36,7 @@ interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
+  uploadedFileName?: string; // Store uploaded file name per part
 }
 
 const sampleFiles = [
@@ -47,7 +46,7 @@ const sampleFiles = [
   { label: 'Đề thi V-ACT', fileName: 'sample-v-act.docx' },
 ];
 
-// Sample city list (you can expand this list)
+// Sample city list
 const cities = [
   "Hà Nội",
   "Hồ Chí Minh",
@@ -167,6 +166,40 @@ const WordExamUpload: React.FC = () => {
     toast.success(`Đang tải ${fileName}...`);
   };
 
+  // Handle file upload per part
+  const handleFileChange = (partId: string, file: File | null) => {
+    if (!file) return;
+    // For demo, just store file name in state
+    setParts((prev) =>
+      prev.map((part) =>
+        part.id === partId ? { ...part, uploadedFileName: file.name } : part
+      )
+    );
+    toast.success(`Đã tải lên file "${file.name}" cho ${partId}`);
+  };
+
+  // Render upload file input for each part
+  const renderPartHeader = (partId: string) => {
+    const part = parts.find(p => p.id === partId);
+    return (
+      <div className="flex items-center gap-4">
+        <Label htmlFor={`upload-${partId}`} className="min-w-[120px]">Tải lên file Word</Label>
+        <Input
+          id={`upload-${partId}`}
+          type="file"
+          accept=".doc,.docx"
+          onChange={(e) => handleFileChange(partId, e.target.files ? e.target.files[0] : null)}
+          className="max-w-xs"
+        />
+        {part?.uploadedFileName && (
+          <span className="text-sm text-muted-foreground truncate max-w-xs" title={part.uploadedFileName}>
+            Đã tải lên: {part.uploadedFileName}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Thông tin đề thi */}
@@ -196,8 +229,6 @@ const WordExamUpload: React.FC = () => {
                 onValueChange={setSelectedCity}
                 name="city-select"
                 aria-label="Chọn thành phố"
-                // Enable searchable combobox behavior
-                // Note: shadcn/ui Select does not have built-in search, so we simulate with filtering items
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn thành phố" />
@@ -353,6 +384,7 @@ const WordExamUpload: React.FC = () => {
         onDeleteAll={handleDeleteAll}
         onDeleteQuestion={handleDeleteQuestion}
         onDeletePart={handleDeletePart}
+        renderPartHeader={renderPartHeader}
       />
 
       {/* Footer Buttons */}
