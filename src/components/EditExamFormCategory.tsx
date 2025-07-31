@@ -18,7 +18,7 @@ interface ExamFormCategory {
   questionSelection: 'any' | 'current-section-only';
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
-  multiChoiceScoringRule: 'all-correct' | 'partial-correct';
+  // Removed multiChoiceScoringRule
   partSelection: 'full' | 'part1' | 'part2' | 'part3';
   scoringPercentages?: {
     oneCorrect: number;
@@ -42,7 +42,6 @@ const mockExamCategories: ExamFormCategory[] = [
     questionSelection: 'any',
     questionDisplay: 'one-per-screen',
     configureScoring: true,
-    multiChoiceScoringRule: 'all-correct',
     partSelection: 'full',
     scoringPercentages: {
       oneCorrect: 0,
@@ -59,7 +58,6 @@ const mockExamCategories: ExamFormCategory[] = [
     questionSelection: 'current-section-only',
     questionDisplay: 'all-at-once',
     configureScoring: false,
-    multiChoiceScoringRule: 'partial-correct',
     partSelection: 'full',
     scoringPercentages: {
       oneCorrect: 0,
@@ -229,7 +227,7 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 3: 'Cách hiển thị câu hỏi', 'Quy tắc tính điểm nhiều ý', and 'Phần thi' */}
+          {/* Row 3: 'Cách hiển thị câu hỏi' and 'Phần thi' */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <div>
               <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
@@ -244,18 +242,7 @@ const EditExamFormCategory: React.FC = () => {
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="multiChoiceScoringRule">Quy tắc tính điểm nhiều ý</Label>
-              <Select value={category.multiChoiceScoringRule} onValueChange={(value) => handleSelectChange(value, 'multiChoiceScoringRule')}>
-                <SelectTrigger id="multiChoiceScoringRule">
-                  <SelectValue placeholder="Chọn quy tắc" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all-correct">Có điểm khi đúng toàn bộ</SelectItem>
-                  <SelectItem value="partial-correct">Cho phép tính điểm theo số đáp án đúng</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Removed multiChoiceScoringRule field */}
 
             <div>
               <Label htmlFor="partSelection">Phần thi</Label>
