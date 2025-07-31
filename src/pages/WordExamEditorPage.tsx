@@ -11,6 +11,7 @@ interface Question {
   answers: { label: string; text: string; isCorrect: boolean }[];
   explanation?: string;
   audioUrl?: string;
+  videoUrl?: string; // Added videoUrl
 }
 
 interface QuestionGroup {
@@ -19,7 +20,7 @@ interface QuestionGroup {
   questions: Question[];
 }
 
-const sampleData: QuestionGroup[] = [
+const sampleDataInitial: QuestionGroup[] = [
   {
     id: 'group1',
     title: 'PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn.',
@@ -34,6 +35,7 @@ const sampleData: QuestionGroup[] = [
           { label: 'D', text: 'Số 2 không là số nguyên tố.', isCorrect: true },
         ],
         explanation: 'A đúng vì...',
+        videoUrl: '', // Initialize empty
       },
     ],
   },
@@ -51,12 +53,14 @@ const sampleData: QuestionGroup[] = [
           { label: 'd)', text: 'Số người bắn trúng mục tiêu trong cả ba lần bản ít nhất là 3.', isCorrect: true },
         ],
         explanation: '',
+        videoUrl: '',
       },
     ],
   },
 ];
 
 const WordExamEditorPage: React.FC = () => {
+  const [sampleData, setSampleData] = useState<QuestionGroup[]>(sampleDataInitial);
   const [rawText, setRawText] = useState<string>(`[!b:$PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn.$]
 Câu 1. Mệnh đề toán học nào sau đây là mệnh đề sai?
 A. Số 2 là số nguyên.  B. Số 2 là số hữu tỉ.
@@ -69,6 +73,21 @@ b) [2,NB] Số người bắn trượt mục tiêu trong lần bản thứ hai l
 c) [0,TH] Số người bắn trượt mục tiêu trong lần bản thứ nhất và thứ hai nhiều nhất là 8.
 d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít nhất là 3.
 `);
+
+  const handleVideoUrlChange = (groupId: string, questionId: string, value: string) => {
+    setSampleData((prevData) =>
+      prevData.map((group) => {
+        if (group.id !== groupId) return group;
+        return {
+          ...group,
+          questions: group.questions.map((q) => {
+            if (q.id !== questionId) return q;
+            return { ...q, videoUrl: value };
+          }),
+        };
+      }),
+    );
+  };
 
   return (
     <Layout headerTitle="Chỉnh sửa đề thi Word">
@@ -112,6 +131,30 @@ d) [2,TH] Số người bắn trúng mục tiêu trong cả ba lần bản ít n
                         <div className="text-xs text-muted-foreground">{q.explanation}</div>
                       </>
                     )}
+                    {/* Video solution input and display */}
+                    <div className="mt-2">
+                      <label htmlFor={`video-url-${q.id}`} className="block text-xs font-medium text-muted-foreground mb-1">
+                        Link video giải
+                      </label>
+                      <Input
+                        id={`video-url-${q.id}`}
+                        type="url"
+                        placeholder="Nhập link video giải"
+                        value={q.videoUrl || ''}
+                        onChange={(e) => handleVideoUrlChange(group.id, q.id, e.target.value)}
+                        className="text-xs"
+                      />
+                      {q.videoUrl && (
+                        <a
+                          href={q.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline text-xs mt-1 block"
+                        >
+                          Xem video giải
+                        </a>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
