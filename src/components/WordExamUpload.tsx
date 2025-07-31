@@ -252,29 +252,6 @@ const WordExamUpload: React.FC = () => {
           {/* Second row */}
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 gap-4">
             <div>
-              <Label htmlFor="city-select">Thành phố</Label>
-              <Select
-                value={selectedCity}
-                onValueChange={setSelectedCity}
-                name="city-select"
-                aria-label="Chọn thành phố"
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn thành phố" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Thành phố</SelectLabel>
-                    {cities.map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select
                 value={selectedExamGroup}
@@ -330,6 +307,30 @@ const WordExamUpload: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="yes">Có</SelectItem>
                   <SelectItem value="no">Không cho phép</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="city-select">Thành phố</Label>
+              <Select
+                value={selectedCity}
+                onValueChange={setSelectedCity}
+                name="city-select"
+                aria-label="Chọn thành phố"
+                className="max-w-sm"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn thành phố" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Thành phố</SelectLabel>
+                    {cities.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
