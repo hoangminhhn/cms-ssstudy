@@ -150,7 +150,7 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -183,38 +183,20 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
             {selectedExamType && (
-              <>
-                <div>
-                  <Label htmlFor="part-selection">Phần thi</Label>
-                  <Select defaultValue="full" className="max-w-sm">
-                    <SelectTrigger id="part-selection">
-                      <SelectValue placeholder="Đầy đủ 3 phần" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                      <SelectItem value="part1">Phần 1</SelectItem>
-                      <SelectItem value="part2">Phần 2</SelectItem>
-                      <SelectItem value="part3">Phần 3</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="group-selection">Nhóm đề</Label>
-                  <Select
-                    value={selectedGroup}
-                    onValueChange={(value) => setSelectedGroup(value)}
-                    className="max-w-sm"
-                  >
-                    <SelectTrigger id="group-selection">
-                      <SelectValue placeholder="Mặc định" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">Mặc định</SelectItem>
-                      <SelectItem value="thi-thu">Thi thử</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </>
+              <div>
+                <Label htmlFor="part-selection">Phần thi</Label>
+                <Select defaultValue="full" className="max-w-sm">
+                  <SelectTrigger id="part-selection">
+                    <SelectValue placeholder="Đầy đủ 3 phần" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                    <SelectItem value="part1">Phần 1</SelectItem>
+                    <SelectItem value="part2">Phần 2</SelectItem>
+                    <SelectItem value="part3">Phần 3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             )}
             <div>
               <Label htmlFor="grade-level">Lớp</Label>
@@ -260,6 +242,28 @@ const WordExamUpload: React.FC = () => {
               </Select>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Nhóm đề - tách riêng */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Nhóm đề</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select
+            value={selectedGroup}
+            onValueChange={(value) => setSelectedGroup(value)}
+            className="max-w-sm"
+          >
+            <SelectTrigger id="group-selection">
+              <SelectValue placeholder="Mặc định" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Mặc định</SelectItem>
+              <SelectItem value="thi-thu">Thi thử</SelectItem>
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
