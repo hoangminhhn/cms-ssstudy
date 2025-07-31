@@ -200,7 +200,8 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 gap-4">
+          {/* First row */}
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-9 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -214,6 +215,42 @@ const WordExamUpload: React.FC = () => {
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
+            <div>
+              <Label htmlFor="exam-type">Kỳ thi</Label>
+              <Select
+                value={selectedExamType}
+                onValueChange={(value) => setSelectedExamType(value)}
+                className="max-w-sm"
+              >
+                <SelectTrigger id="exam-type">
+                  <SelectValue placeholder="Chọn kỳ thi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tot-nghiep">Tốt nghiệp</SelectItem>
+                  <SelectItem value="hsa">HSA</SelectItem>
+                  <SelectItem value="tsa">TSA</SelectItem>
+                  <SelectItem value="v-act">V-ACT</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="part-selection">Phần thi</Label>
+              <Select defaultValue="full" className="max-w-sm">
+                <SelectTrigger id="part-selection">
+                  <SelectValue placeholder="Đầy đủ 3 phần" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
+                  <SelectItem value="part1">Phần 1</SelectItem>
+                  <SelectItem value="part2">Phần 2</SelectItem>
+                  <SelectItem value="part3">Phần 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Second row */}
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 gap-4">
             <div>
               <Label htmlFor="city-select">Thành phố</Label>
               <Select
@@ -237,40 +274,6 @@ const WordExamUpload: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="exam-type">Kỳ thi</Label>
-              <Select
-                value={selectedExamType}
-                onValueChange={(value) => setSelectedExamType(value)}
-                className="max-w-sm"
-              >
-                <SelectTrigger id="exam-type">
-                  <SelectValue placeholder="Chọn kỳ thi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="tot-nghiep">Tốt nghiệp</SelectItem>
-                  <SelectItem value="hsa">HSA</SelectItem>
-                  <SelectItem value="tsa">TSA</SelectItem>
-                  <SelectItem value="v-act">V-ACT</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {selectedExamType && (
-              <div>
-                <Label htmlFor="part-selection">Phần thi</Label>
-                <Select defaultValue="full" className="max-w-sm">
-                  <SelectTrigger id="part-selection">
-                    <SelectValue placeholder="Đầy đủ 3 phần" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="full">Đầy đủ 3 phần</SelectItem>
-                    <SelectItem value="part1">Phần 1</SelectItem>
-                    <SelectItem value="part2">Phần 2</SelectItem>
-                    <SelectItem value="part3">Phần 3</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
             <div>
               <Label htmlFor="exam-group">Nhóm đề</Label>
               <Select
