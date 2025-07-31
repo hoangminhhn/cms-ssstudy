@@ -198,24 +198,22 @@ const WordExamUpload: React.FC = () => {
                 </Select>
               </div>
             )}
-            {selectedExamType && (
-              <div>
-                <Label htmlFor="exam-group">Nhóm đề</Label>
-                <Select
-                  value={selectedExamGroup}
-                  onValueChange={(value) => setSelectedExamGroup(value)}
-                  className="max-w-sm"
-                >
-                  <SelectTrigger id="exam-group">
-                    <SelectValue placeholder="Mặc định" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Mặc định</SelectItem>
-                    <SelectItem value="mock">Thi thử</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div>
+              <Label htmlFor="exam-group">Nhóm đề</Label>
+              <Select
+                value={selectedExamGroup}
+                onValueChange={(value) => setSelectedExamGroup(value)}
+                className="max-w-sm"
+              >
+                <SelectTrigger id="exam-group">
+                  <SelectValue placeholder="Mặc định" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Mặc định</SelectItem>
+                  <SelectItem value="mock">Thi thử</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div>
               <Label htmlFor="grade-level">Lớp</Label>
               <Select defaultValue="class1" className="max-w-sm">
