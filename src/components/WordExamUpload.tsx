@@ -59,7 +59,7 @@ const WordExamUpload: React.FC = () => {
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
-    // Add sample questions to parts as before
+    // Add sample questions to parts
     const newQuestionsPart1: Question[] = [
       {
         id: `Q${Date.now()}1`,
@@ -100,10 +100,10 @@ const WordExamUpload: React.FC = () => {
       }),
     );
 
-    // Removed toast.success here
+    toast.success('Đã thêm câu hỏi mẫu cho 3 phần thi.');
 
-    // Navigate to editor page
-    navigate('/word-exam-editor');
+    // Navigate to editor page if needed
+    // navigate('/word-exam-editor');
   };
 
   const handleDeleteAll = () => {
