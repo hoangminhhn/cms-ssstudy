@@ -93,7 +93,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[50px]">#</TableHead>
+                        <TableHead className="w-[80px]">#</TableHead>
                         <TableHead>Mã câu hỏi</TableHead>
                         <TableHead>Đáp án</TableHead>
                         <TableHead>Loại câu hỏi</TableHead>
@@ -107,7 +107,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       {part.questions.map((q, index) => (
                         <TableRow key={q.id}>
                           <TableCell>{`Câu ${index + 1}`}</TableCell>
-                          <TableCell>{q.id}</TableCell>
+                          <TableCell>{q.id.slice(0, 6)}</TableCell>
                           <TableCell>{q.correctAnswer}</TableCell>
                           <TableCell>TRẮC NGHIỆM</TableCell>
                           <TableCell>
