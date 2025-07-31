@@ -21,7 +21,9 @@ interface ManualWordExamQuestionsProps {
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
-  renderPartHeader?: (partId: string) => React.ReactNode; // New prop
+  renderPartHeader?: (partId: string) => React.ReactNode;
+  onAddDefaultPart: () => void;
+  onAddGroupPart: () => void;
 }
 
 const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
@@ -30,6 +32,8 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
   onDeleteQuestion,
   onDeletePart,
   renderPartHeader,
+  onAddDefaultPart,
+  onAddGroupPart,
 }) => {
   return (
     <div>
@@ -39,6 +43,8 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
         onDeleteQuestion={onDeleteQuestion}
         onDeletePart={onDeletePart}
         renderPartHeader={renderPartHeader}
+        onAddDefaultPart={onAddDefaultPart}
+        onAddGroupPart={onAddGroupPart}
       />
     </div>
   );

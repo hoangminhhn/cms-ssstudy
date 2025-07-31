@@ -36,7 +36,7 @@ interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
-  uploadedFileName?: string; // Store uploaded file name per part
+  uploadedFileName?: string;
 }
 
 const sampleFiles = [
@@ -46,7 +46,6 @@ const sampleFiles = [
   { label: 'Đề thi V-ACT', fileName: 'sample-v-act.docx' },
 ];
 
-// Sample city list
 const cities = [
   "Hà Nội",
   "Hồ Chí Minh",
@@ -85,7 +84,6 @@ const WordExamUpload: React.FC = () => {
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
-    // Add sample questions to parts
     const newQuestionsPart1: Question[] = [
       {
         id: `Q${Date.now()}1`,
@@ -127,9 +125,6 @@ const WordExamUpload: React.FC = () => {
     );
 
     toast.success('Đã thêm câu hỏi mẫu cho 3 phần thi.');
-
-    // Navigate to editor page if needed
-    // navigate('/word-exam-editor');
   };
 
   const handleDeleteAll = () => {
@@ -158,7 +153,7 @@ const WordExamUpload: React.FC = () => {
 
   const handleDownloadSample = (fileName: string) => {
     const link = document.createElement('a');
-    link.href = `/${fileName}`; // Đường dẫn file mẫu trong thư mục public
+    link.href = `/${fileName}`;
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
@@ -166,10 +161,8 @@ const WordExamUpload: React.FC = () => {
     toast.success(`Đang tải ${fileName}...`);
   };
 
-  // Handle file upload per part
   const handleFileChange = (partId: string, file: File | null) => {
     if (!file) return;
-    // For demo, just store file name in state
     setParts((prev) =>
       prev.map((part) =>
         part.id === partId ? { ...part, uploadedFileName: file.name } : part
@@ -178,7 +171,6 @@ const WordExamUpload: React.FC = () => {
     toast.success(`Đã tải lên file "${file.name}" cho ${partId}`);
   };
 
-  // Render upload file input for each part
   const renderPartHeader = (partId: string) => {
     const part = parts.find(p => p.id === partId);
     return (
@@ -198,6 +190,27 @@ const WordExamUpload: React.FC = () => {
         )}
       </div>
     );
+  };
+
+  // New handlers for adding parts
+  const handleAddDefaultPart = () => {
+    const newPart: ExamPart = {
+      id: `part-${Date.now()}`,
+      name: `Phần mặc định ${parts.length + 1}`,
+      questions: [],
+    };
+    setParts((prev) => [...prev, newPart]);
+    toast.success('Đã thêm phần thi mặc định.');
+  };
+
+  const handleAddGroupPart = () => {
+    const newPart: ExamPart = {
+      id: `group-part-${Date.now()}`,
+      name: `Phần nhóm chủ đề ${parts.length + 1}`,
+      questions: [],
+    };
+    setParts((prev) => [...prev, newPart]);
+    toast.success('Đã thêm phần thi nhóm chủ đề.');
   };
 
   return (
@@ -385,6 +398,8 @@ const WordExamUpload: React.FC = () => {
         onDeleteQuestion={handleDeleteQuestion}
         onDeletePart={handleDeletePart}
         renderPartHeader={renderPartHeader}
+        onAddDefaultPart={handleAddDefaultPart}
+        onAddGroupPart={handleAddGroupPart}
       />
 
       {/* Footer Buttons */}

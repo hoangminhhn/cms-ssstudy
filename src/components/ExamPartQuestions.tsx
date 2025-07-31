@@ -25,27 +25,18 @@ interface ExamPartQuestionsProps {
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
-  renderPartHeader?: (partId: string) => React.ReactNode; // New prop for custom header per part
+  onAddDefaultPart: () => void; // New prop for adding default part
+  onAddGroupPart: () => void;   // New prop for adding group part
+  renderPartHeader?: (partId: string) => React.ReactNode;
 }
-
-const ExamPartHeader: React.FC<{ onDeleteAll: () => void }> = ({ onDeleteAll }) => (
-  <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-    <h2 className="text-lg font-semibold truncate flex-grow m-0">Đề thi</h2>
-    <Button
-      variant="outline"
-      className="flex-shrink-0 whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 ml-4"
-      onClick={onDeleteAll}
-    >
-      <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-    </Button>
-  </div>
-);
 
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   parts,
   onDeleteAll,
   onDeleteQuestion,
   onDeletePart,
+  onAddDefaultPart,
+  onAddGroupPart,
   renderPartHeader,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
@@ -58,7 +49,29 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   return (
     <Card>
-      <ExamPartHeader onDeleteAll={onDeleteAll} />
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+        <div className="flex gap-2">
+          <Button
+            className="bg-cyan-500 hover:bg-cyan-600 text-white"
+            onClick={onAddDefaultPart}
+          >
+            + Phần thi mặc định
+          </Button>
+          <Button
+            className="bg-cyan-500 hover:bg-cyan-600 text-white"
+            onClick={onAddGroupPart}
+          >
+            + Phần thi nhóm chủ đề
+          </Button>
+        </div>
+        <Button
+          variant="outline"
+          className="whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
+          onClick={onDeleteAll}
+        >
+          <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
+        </Button>
+      </div>
       <CardContent>
         {parts.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
@@ -75,13 +88,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </TabsList>
             {parts.map((part) => (
               <TabsContent key={part.id} value={part.id} className="p-0 relative">
-                {/* Custom header per part (upload file) */}
                 {renderPartHeader && (
                   <div className="p-4 border-b border-border">
                     {renderPartHeader(part.id)}
                   </div>
                 )}
-                {/* Delete part button */}
                 <div className="absolute top-2 right-2 z-10">
                   <Button
                     variant="destructive"
@@ -174,7 +185,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     </TableBody>
                   </Table>
                 )}
-                {/* Manual question type buttons row - always visible */}
                 <div className="flex flex-wrap gap-2 mt-4 px-2">
                   <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
                     +TRẮC NGHIỆM
