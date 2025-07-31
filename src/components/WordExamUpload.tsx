@@ -2,9 +2,19 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Download, ChevronDown } from 'lucide-react';
+import { Upload, Download, ChevronDown, ChevronUp } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +47,20 @@ const sampleFiles = [
   { label: 'Đề thi V-ACT', fileName: 'sample-v-act.docx' },
 ];
 
+// Sample city list (you can expand this list)
+const cities = [
+  "Hà Nội",
+  "Hồ Chí Minh",
+  "Đà Nẵng",
+  "Hải Phòng",
+  "Cần Thơ",
+  "Nha Trang",
+  "Huế",
+  "Vũng Tàu",
+  "Quảng Ninh",
+  "Bình Dương",
+];
+
 const WordExamUpload: React.FC = () => {
   const [parts, setParts] = React.useState<ExamPart[]>([
     {
@@ -58,6 +82,7 @@ const WordExamUpload: React.FC = () => {
 
   const [selectedExamType, setSelectedExamType] = React.useState<string>('');
   const [selectedExamGroup, setSelectedExamGroup] = React.useState<string>('default');
+  const [selectedCity, setSelectedCity] = React.useState<string>('');
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -150,7 +175,7 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-9 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-10 gap-4">
             <div>
               <Label htmlFor="exam-code">Mã đề thi</Label>
               <Input
@@ -163,6 +188,31 @@ const WordExamUpload: React.FC = () => {
             <div className="lg:col-span-4">
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
+            </div>
+            <div>
+              <Label htmlFor="city-select">Thành phố</Label>
+              <Select
+                value={selectedCity}
+                onValueChange={setSelectedCity}
+                name="city-select"
+                aria-label="Chọn thành phố"
+                // Enable searchable combobox behavior
+                // Note: shadcn/ui Select does not have built-in search, so we simulate with filtering items
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn thành phố" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Thành phố</SelectLabel>
+                    {cities.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label htmlFor="exam-type">Kỳ thi</Label>
