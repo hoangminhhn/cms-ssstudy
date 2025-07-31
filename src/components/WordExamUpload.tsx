@@ -185,17 +185,19 @@ const WordExamUpload: React.FC = () => {
                 className="max-w-[120px] bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
               />
             </div>
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-4">
               <Label htmlFor="exam-name">Tên đề thi</Label>
               <Input id="exam-name" placeholder="Nhập tên đề thi" />
             </div>
-            <div className="lg:col-span-4">
+            <div>
               <Label htmlFor="city-select">Thành phố</Label>
               <Select
                 value={selectedCity}
                 onValueChange={setSelectedCity}
                 name="city-select"
                 aria-label="Chọn thành phố"
+                // Enable searchable combobox behavior
+                // Note: shadcn/ui Select does not have built-in search, so we simulate with filtering items
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn thành phố" />
