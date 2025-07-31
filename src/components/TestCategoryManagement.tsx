@@ -17,10 +17,10 @@ interface TestCategory {
 }
 
 const mockTestCategories: TestCategory[] = [
-  { id: '1', name: 'Bài kiểm tra 1', lastUpdated: '28/07/2025 10:00' },
-  { id: '2', name: 'Bài kiểm tra 2', lastUpdated: '27/07/2025 14:30' },
-  { id: '3', name: 'Bài kiểm tra 3', lastUpdated: '26/07/2025 09:15' },
-  { id: '4', name: 'Bài kiểm tra 4', lastUpdated: '25/07/2025 16:45' },
+  { id: '1', name: 'Thi giữa kỳ 1', lastUpdated: '28/07/2025 10:00' },
+  { id: '2', name: 'Thi cuối kỳ 1', lastUpdated: '27/07/2025 14:30' },
+  { id: '3', name: 'Thi giữa kỳ 2', lastUpdated: '26/07/2025 09:15' },
+  { id: '4', name: 'Thi cuối kỳ 2', lastUpdated: '25/07/2025 16:45' },
 ];
 
 const TestCategoryManagement: React.FC = () => {
