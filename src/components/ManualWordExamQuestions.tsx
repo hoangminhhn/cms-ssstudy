@@ -24,6 +24,7 @@ interface ManualWordExamQuestionsProps {
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddDefaultPart: () => void;
   onAddGroupPart: () => void;
+  onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
 
 const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
@@ -34,6 +35,7 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
   renderPartHeader,
   onAddDefaultPart,
   onAddGroupPart,
+  onAddOrUpdateQuestion,
 }) => {
   return (
     <div>
@@ -45,6 +47,7 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
         renderPartHeader={renderPartHeader}
         onAddDefaultPart={onAddDefaultPart}
         onAddGroupPart={onAddGroupPart}
+        onAddOrUpdateQuestion={onAddOrUpdateQuestion} // Pass down
       />
     </div>
   );

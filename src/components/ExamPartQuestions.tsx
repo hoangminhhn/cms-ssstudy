@@ -31,6 +31,7 @@ interface ExamPartQuestionsProps {
   onAddDefaultPart: () => void;
   onAddGroupPart: () => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
+  onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
 
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
@@ -41,6 +42,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onAddDefaultPart,
   onAddGroupPart,
   renderPartHeader,
+  onAddOrUpdateQuestion,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -71,7 +73,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const handleSaveQuestion = (question: MultipleChoiceQuestion) => {
     if (!editingPartId) return;
 
-    // Convert MultipleChoiceQuestion to Question type used in parts
     const newQuestion: Question = {
       id: editingQuestionIndex !== null && parts.find(p => p.id === editingPartId)?.questions[editingQuestionIndex]
         ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
@@ -83,26 +84,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
       documentLink: undefined,
     };
 
-    // Update parts state immutably
-    const partIndex = parts.findIndex(p => p.id === editingPartId);
-    if (partIndex === -1) return;
-
-    const updatedParts = [...parts];
-    const questions = [...updatedParts[partIndex].questions];
-
-    if (editingQuestionIndex !== null) {
-      // Edit existing question
-      questions[editingQuestionIndex] = newQuestion;
-    } else {
-      // Add new question
-      questions.push(newQuestion);
-    }
-
-    updatedParts[partIndex] = { ...updatedParts[partIndex], questions };
-
-    // Since parts is prop, we cannot update here directly.
-    // So we alert user to save changes externally.
-    alert("Câu hỏi đã được cập nhật. Vui lòng lưu lại để cập nhật.");
+    onAddOrUpdateQuestion(editingPartId, editingQuestionIndex !== null ? newQuestion.id : null, newQuestion);
 
     handleModalClose();
   };
@@ -113,13 +95,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     const question = part.questions[questionIndex];
     if (!question) return;
 
-    // Map Question to MultipleChoiceQuestion for modal
     const options = Array(5).fill("");
     const correctOptionIndex = question.correctAnswer.charCodeAt(0) - 65;
 
-    // We don't have questionText stored, so set empty or placeholder
     const editingQ: MultipleChoiceQuestion = {
-      questionText: "", // Could be improved if questionText is stored
+      questionText: "", // No question text stored
       options,
       correctOptionIndex: correctOptionIndex >= 0 && correctOptionIndex < 5 ? correctOptionIndex : 0,
       difficulty: "Nhận biết",
