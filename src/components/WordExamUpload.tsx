@@ -5,14 +5,12 @@ import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Upload, Download, ChevronDown } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 
@@ -79,10 +77,10 @@ const WordExamUpload: React.FC = () => {
     },
   ]);
 
-  const [selectedExamType, setSelectedExamType] = React.useState<string>('');
-  const [selectedExamGroup, setSelectedExamGroup] = React.useState<string>('default');
-  const [selectedCity, setSelectedCity] = React.useState<string>('');
-  const [selectedTestType, setSelectedTestType] = React.useState<string>('Không');
+  const [examName, setExamName] = React.useState('');
+  const [examGroup, setExamGroup] = React.useState('default');
+  const [city, setCity] = React.useState('');
+  const [testType, setTestType] = React.useState('Không');
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
@@ -188,8 +186,55 @@ const WordExamUpload: React.FC = () => {
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6">
-          {/* ... (giữ nguyên phần form thông tin đề thi) */}
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="exam-name">Tên đề thi</Label>
+            <Input
+              id="exam-name"
+              placeholder="Nhập tên đề thi"
+              value={examName}
+              onChange={(e) => setExamName(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="exam-group">Nhóm đề</Label>
+            <Select value={examGroup} onValueChange={setExamGroup}>
+              <SelectTrigger id="exam-group">
+                <SelectValue>{examGroup === 'default' ? 'Mặc định' : examGroup}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Mặc định</SelectItem>
+                <SelectItem value="group1">Nhóm 1</SelectItem>
+                <SelectItem value="group2">Nhóm 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="city">Thành phố</Label>
+            <Select value={city} onValueChange={setCity}>
+              <SelectTrigger id="city">
+                <SelectValue>{city || 'Chọn thành phố'}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {cities.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="test-type">Loại bài kiểm tra</Label>
+            <Select value={testType} onValueChange={setTestType}>
+              <SelectTrigger id="test-type">
+                <SelectValue>{testType}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {testTypes.map((t) => (
+                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
