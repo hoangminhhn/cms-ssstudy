@@ -237,6 +237,7 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-8 gap-4">
+          {/* Row 1 */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
             <Input id="exam-code" value={examCode} disabled />
@@ -272,8 +273,8 @@ const WordExamUpload: React.FC = () => {
             </Select>
           </div>
 
-          {/* Các trường còn lại sẽ xuống hàng tiếp theo, bạn có thể giữ nguyên hoặc yêu cầu chia cột tiếp */}
-          <div>
+          {/* Row 2 */}
+          <div className="col-span-1">
             <Label htmlFor="test-type">Loại bài kiểm tra</Label>
             <Select value={testType} onValueChange={setTestType}>
               <SelectTrigger id="test-type">
@@ -286,7 +287,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-1">
             <Label htmlFor="group">Nhóm đề</Label>
             <Select value={group} onValueChange={setGroup}>
               <SelectTrigger id="group">
@@ -299,7 +300,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-1">
             <Label htmlFor="class-level">Lớp</Label>
             <Select value={classLevel} onValueChange={setClassLevel}>
               <SelectTrigger id="class-level">
@@ -312,7 +313,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-2">
             <Label htmlFor="subject">Môn học</Label>
             <Select value={subject} onValueChange={setSubject}>
               <SelectTrigger id="subject">
@@ -325,7 +326,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-1">
             <Label htmlFor="allow-retry">Cho phép làm lại</Label>
             <Select value={allowRetry} onValueChange={setAllowRetry}>
               <SelectTrigger id="allow-retry">
@@ -338,7 +339,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-2">
             <Label htmlFor="city">Thành phố</Label>
             <Select value={city} onValueChange={setCity}>
               <SelectTrigger id="city">
