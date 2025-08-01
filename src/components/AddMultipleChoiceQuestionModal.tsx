@@ -46,7 +46,6 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
   };
 
   const handleSave = () => {
-    // Validate at least question text and one option filled
     if (!questionText.trim()) {
       alert("Vui lòng nhập nội dung câu hỏi.");
       return;
@@ -63,7 +62,6 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       explanation,
       videoLink,
     });
-    // Reset form
     setQuestionText("");
     setOptions(defaultOptions);
     setCorrectOptionIndex(0);
@@ -75,55 +73,54 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-3xl w-full overflow-y-auto max-h-[90vh]">
+      <DialogContent className="max-w-3xl w-full overflow-y-auto max-h-[90vh] p-6 space-y-6">
         <DialogHeader>
-          <DialogTitle>Câu {questionNumber} - Trắc nghiệm</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Câu {questionNumber} - Trắc nghiệm</DialogTitle>
         </DialogHeader>
+
         <div className="space-y-4">
           <div>
-            <Label htmlFor="question-text" className="mb-1 block">Câu hỏi</Label>
+            <Label htmlFor="question-text" className="mb-1 block font-medium">Câu hỏi</Label>
             <ReactQuill
               theme="snow"
               value={questionText}
               onChange={setQuestionText}
               placeholder="Nhập nội dung câu hỏi..."
-              className="h-32"
+              className="h-32 rounded-md border border-gray-300 dark:border-gray-600"
             />
           </div>
 
           <div>
-            <Label className="mb-1 block">Các lựa chọn</Label>
+            <Label className="mb-2 block font-medium">Các lựa chọn</Label>
             <RadioGroup
               value={String(correctOptionIndex)}
               onValueChange={(val) => setCorrectOptionIndex(Number(val))}
-              className="space-y-2"
+              className="space-y-3"
             >
               {options.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-2">
+                <div key={idx} className="flex items-center gap-3">
                   <RadioGroupItem value={String(idx)} id={`option-${idx}`} />
-                  <Label htmlFor={`option-${idx}`} className="flex-1">
-                    <input
-                      type="text"
-                      value={opt}
-                      onChange={(e) => handleOptionChange(idx, e.target.value)}
-                      placeholder={`Lựa chọn ${String.fromCharCode(65 + idx)}`}
-                      className="w-full rounded border border-gray-300 px-2 py-1 dark:border-gray-600 dark:bg-gray-700"
-                    />
-                  </Label>
+                  <input
+                    type="text"
+                    value={opt}
+                    onChange={(e) => handleOptionChange(idx, e.target.value)}
+                    placeholder={`Lựa chọn ${String.fromCharCode(65 + idx)}`}
+                    className="flex-1 rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
+                  />
                 </div>
               ))}
             </RadioGroup>
           </div>
 
           <div>
-            <Label className="mb-1 block">Độ khó</Label>
+            <Label className="mb-2 block font-medium">Độ khó</Label>
             <RadioGroup
               value={difficulty}
               onValueChange={(val) => setDifficulty(val as MultipleChoiceQuestion["difficulty"])}
-              className="flex space-x-4"
+              className="flex space-x-6"
             >
               {["Nhận biết", "Thông hiểu", "Vận dụng", "Vận dụng cao"].map((level) => (
-                <div key={level} className="flex items-center gap-1">
+                <div key={level} className="flex items-center gap-2">
                   <RadioGroupItem value={level} id={`difficulty-${level}`} />
                   <Label htmlFor={`difficulty-${level}`}>{level}</Label>
                 </div>
@@ -132,29 +129,30 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
 
           <div>
-            <Label htmlFor="explanation" className="mb-1 block">Lời giải</Label>
+            <Label htmlFor="explanation" className="mb-1 block font-medium">Lời giải</Label>
             <ReactQuill
               theme="snow"
               value={explanation}
               onChange={setExplanation}
               placeholder="Nhập lời giải..."
-              className="h-24"
+              className="h-24 rounded-md border border-gray-300 dark:border-gray-600"
             />
           </div>
 
           <div>
-            <Label htmlFor="video-link" className="mb-1 block">Video tham khảo</Label>
+            <Label htmlFor="video-link" className="mb-1 block font-medium">Video tham khảo</Label>
             <input
               id="video-link"
               type="text"
               value={videoLink}
               onChange={(e) => setVideoLink(e.target.value)}
               placeholder="Nhập link video tham khảo"
-              className="w-full rounded border border-gray-300 px-2 py-1 dark:border-gray-600 dark:bg-gray-700"
+              className="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
             />
           </div>
         </div>
-        <DialogFooter className="mt-4 flex justify-end gap-2">
+
+        <DialogFooter className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button variant="outline" onClick={onClose}>Hủy</Button>
           <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">Cập nhật</Button>
         </DialogFooter>
