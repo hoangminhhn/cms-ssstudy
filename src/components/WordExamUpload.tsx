@@ -236,16 +236,16 @@ const WordExamUpload: React.FC = () => {
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
+        <CardContent className="grid grid-cols-8 gap-4">
+          <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
             <Input id="exam-code" value={examCode} disabled />
           </div>
-          <div>
+          <div className="col-span-3">
             <Label htmlFor="exam-name">Tên đề thi</Label>
             <Input id="exam-name" value={examName} onChange={(e) => setExamName(e.target.value)} placeholder="Nhập tên đề thi" />
           </div>
-          <div>
+          <div className="col-span-2">
             <Label htmlFor="exam-period">Kỳ thi</Label>
             <Select value={examPeriod} onValueChange={setExamPeriod}>
               <SelectTrigger id="exam-period">
@@ -258,7 +258,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="col-span-2">
             <Label htmlFor="part">Phần thi</Label>
             <Select value={part} onValueChange={setPart}>
               <SelectTrigger id="part">
@@ -271,6 +271,8 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Các trường còn lại sẽ xuống hàng tiếp theo, bạn có thể giữ nguyên hoặc yêu cầu chia cột tiếp */}
           <div>
             <Label htmlFor="test-type">Loại bài kiểm tra</Label>
             <Select value={testType} onValueChange={setTestType}>
