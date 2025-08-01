@@ -16,7 +16,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = (props) => {
           +TRẮC NGHIỆM
         </Button>
         <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
-          {/* ... other button content */}
+          {/* Giữ nguyên nội dung nút thứ hai nếu có */}
+          {/* Nếu bạn có nội dung cụ thể cho nút này, vui lòng cung cấp để tôi giữ nguyên */}
         </Button>
       </div>
       {/* ... other content */}
