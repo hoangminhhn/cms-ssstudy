@@ -73,89 +73,116 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-3xl w-full overflow-y-auto max-h-[90vh] p-6 space-y-8">
+      <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Câu {questionNumber} - Trắc nghiệm</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            Câu {questionNumber} - Trắc nghiệm
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div>
-            <Label htmlFor="question-text" className="mb-2 block font-medium">Câu hỏi</Label>
-            <ReactQuill
-              theme="snow"
-              value={questionText}
-              onChange={setQuestionText}
-              placeholder="Nhập nội dung câu hỏi..."
-              className="h-36 rounded-md border border-gray-300 dark:border-gray-600"
-            />
-          </div>
+        {/* Câu hỏi */}
+        <section className="space-y-2">
+          <Label htmlFor="question-text" className="text-lg font-medium text-gray-700 dark:text-gray-300">
+            Câu hỏi
+          </Label>
+          <ReactQuill
+            theme="snow"
+            value={questionText}
+            onChange={setQuestionText}
+            placeholder="Nhập nội dung câu hỏi..."
+            className="h-40 rounded-md border border-gray-300 dark:border-gray-600 shadow-sm"
+          />
+        </section>
 
-          <div>
-            {/* Remove border from label */}
-            <Label className="mb-3 block font-medium border-none">Các lựa chọn</Label>
-            <RadioGroup
-              value={String(correctOptionIndex)}
-              onValueChange={(val) => setCorrectOptionIndex(Number(val))}
-              className="space-y-4"
-            >
-              {options.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-4">
-                  <RadioGroupItem value={String(idx)} id={`option-${idx}`} className="shrink-0" />
-                  <input
-                    type="text"
-                    value={opt}
-                    onChange={(e) => handleOptionChange(idx, e.target.value)}
-                    placeholder={`Lựa chọn ${String.fromCharCode(65 + idx)}`}
-                    className="flex-1 rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+        {/* Các lựa chọn */}
+        <section className="space-y-3">
+          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">
+            Các lựa chọn
+          </Label>
+          <RadioGroup
+            value={String(correctOptionIndex)}
+            onValueChange={(val) => setCorrectOptionIndex(Number(val))}
+            className="space-y-4"
+          >
+            {options.map((opt, idx) => (
+              <div key={idx} className="flex items-center gap-4">
+                <RadioGroupItem
+                  value={String(idx)}
+                  id={`option-${idx}`}
+                  className="shrink-0 h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
+                />
+                <input
+                  type="text"
+                  value={opt}
+                  onChange={(e) => handleOptionChange(idx, e.target.value)}
+                  placeholder={`Lựa chọn ${String.fromCharCode(65 + idx)}`}
+                  className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                />
+              </div>
+            ))}
+          </RadioGroup>
+        </section>
 
-          <div>
-            <Label className="mb-3 block font-medium">Độ khó</Label>
-            <RadioGroup
-              value={difficulty}
-              onValueChange={(val) => setDifficulty(val as MultipleChoiceQuestion["difficulty"])}
-              className="flex space-x-8"
-            >
-              {["Nhận biết", "Thông hiểu", "Vận dụng", "Vận dụng cao"].map((level) => (
-                <div key={level} className="flex items-center gap-2">
-                  <RadioGroupItem value={level} id={`difficulty-${level}`} />
-                  <Label htmlFor={`difficulty-${level}`}>{level}</Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+        {/* Độ khó */}
+        <section className="space-y-2">
+          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">
+            Độ khó
+          </Label>
+          <RadioGroup
+            value={difficulty}
+            onValueChange={(val) => setDifficulty(val as MultipleChoiceQuestion["difficulty"])}
+            className="flex flex-wrap gap-8"
+          >
+            {["Nhận biết", "Thông hiểu", "Vận dụng", "Vận dụng cao"].map((level) => (
+              <div key={level} className="flex items-center gap-2">
+                <RadioGroupItem
+                  value={level}
+                  id={`difficulty-${level}`}
+                  className="h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
+                />
+                <Label htmlFor={`difficulty-${level}`} className="cursor-pointer select-none text-gray-900 dark:text-gray-100">
+                  {level}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </section>
 
-          <div>
-            <Label htmlFor="explanation" className="mb-2 block font-medium">Lời giải</Label>
-            <ReactQuill
-              theme="snow"
-              value={explanation}
-              onChange={setExplanation}
-              placeholder="Nhập lời giải..."
-              className="h-28 rounded-md border border-gray-300 dark:border-gray-600"
-            />
-          </div>
+        {/* Lời giải */}
+        <section className="space-y-2">
+          <Label htmlFor="explanation" className="text-lg font-medium text-gray-700 dark:text-gray-300">
+            Lời giải
+          </Label>
+          <ReactQuill
+            theme="snow"
+            value={explanation}
+            onChange={setExplanation}
+            placeholder="Nhập lời giải..."
+            className="h-32 rounded-md border border-gray-300 dark:border-gray-600 shadow-sm"
+          />
+        </section>
 
-          <div>
-            <Label htmlFor="video-link" className="mb-2 block font-medium">Video tham khảo</Label>
-            <input
-              id="video-link"
-              type="text"
-              value={videoLink}
-              onChange={(e) => setVideoLink(e.target.value)}
-              placeholder="Nhập link video tham khảo"
-              className="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
-            />
-          </div>
-        </div>
+        {/* Video tham khảo */}
+        <section className="space-y-2">
+          <Label htmlFor="video-link" className="text-lg font-medium text-gray-700 dark:text-gray-300">
+            Video tham khảo
+          </Label>
+          <input
+            id="video-link"
+            type="text"
+            value={videoLink}
+            onChange={(e) => setVideoLink(e.target.value)}
+            placeholder="Nhập link video tham khảo"
+            className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
+        </section>
 
+        {/* Nút hành động */}
         <DialogFooter className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
           <Button variant="outline" onClick={onClose}>Hủy</Button>
-          <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">Cập nhật</Button>
+          <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">
+            Cập nhật
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
