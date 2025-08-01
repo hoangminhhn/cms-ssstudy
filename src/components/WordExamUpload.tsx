@@ -434,6 +434,20 @@ const WordExamUpload: React.FC = () => {
         <Button variant="outline">HỦY</Button>
         <Button className="bg-orange-500 hover:bg-orange-600 text-white">LƯU</Button>
       </div>
+
+      {/* Nút lựa chọn câu hỏi trên 1 hàng 10 cột, 6 nút ở giữa */}
+      <div className="grid grid-cols-10 gap-2 mt-6">
+        <div /> {/* empty col 1 */}
+        <div /> {/* empty col 2 */}
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+TRẮC NGHIỆM</Button>
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+TRẮC NGHIỆM ĐÚNG SAI</Button>
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+ĐIỀN SỐ/TRẢ LỜI NGẮN</Button>
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+KÉO THẢ</Button>
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+TN NHIỀU ĐÁP ÁN</Button>
+        <Button className="col-span-1 bg-cyan-500 hover:bg-cyan-600 text-white">+ĐÚNG/SAI</Button>
+        <div /> {/* empty col 9 */}
+        <div /> {/* empty col 10 */}
+      </div>
     </div>
   );
 };
