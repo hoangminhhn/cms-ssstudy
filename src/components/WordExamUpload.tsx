@@ -311,7 +311,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-3">
             <Label htmlFor="subject">Môn học</Label>
             <Select value={subject} onValueChange={setSubject}>
               <SelectTrigger id="subject">
@@ -324,7 +324,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-3">
             <Label htmlFor="allow-retry">Cho phép làm lại</Label>
             <Select value={allowRetry} onValueChange={setAllowRetry}>
               <SelectTrigger id="allow-retry">
