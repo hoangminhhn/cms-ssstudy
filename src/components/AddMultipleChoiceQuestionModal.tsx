@@ -102,24 +102,30 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           <RadioGroup
             value={String(correctOptionIndex)}
             onValueChange={(val) => setCorrectOptionIndex(Number(val))}
-            className="space-y-4"
+            className="space-y-3"
           >
-            {options.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-4">
-                <RadioGroupItem
-                  value={String(idx)}
-                  id={`option-${idx}`}
-                  className="shrink-0 h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
-                />
-                <input
-                  type="text"
-                  value={opt}
-                  onChange={(e) => handleOptionChange(idx, e.target.value)}
-                  placeholder={`Lựa chọn ${String.fromCharCode(65 + idx)}`}
-                  className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
-                />
-              </div>
-            ))}
+            {options.map((opt, idx) => {
+              const letter = String.fromCharCode(65 + idx);
+              return (
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 min-w-[3.5rem]">
+                    <RadioGroupItem
+                      value={String(idx)}
+                      id={`option-${idx}`}
+                      className="h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
+                    />
+                    <span className="select-none font-semibold text-gray-700 dark:text-gray-300">{letter}.</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={opt}
+                    onChange={(e) => handleOptionChange(idx, e.target.value)}
+                    placeholder={`Lựa chọn ${letter}`}
+                    className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                  />
+                </div>
+              );
+            })}
           </RadioGroup>
         </section>
 
