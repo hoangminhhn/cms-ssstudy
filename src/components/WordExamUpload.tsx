@@ -46,8 +46,7 @@ const testTypes = [
 
 const groups = [
   'Mặc định',
-  'Nhóm 1',
-  'Nhóm 2',
+  'Thi thử',
 ];
 
 const classes = [
@@ -294,9 +293,8 @@ const WordExamUpload: React.FC = () => {
                 <SelectValue placeholder="Chọn nhóm đề" />
               </SelectTrigger>
               <SelectContent>
-                {groups.map((g) => (
-                  <SelectItem key={g} value={g}>{g}</SelectItem>
-                ))}
+                <SelectItem value="Mặc định">Mặc định</SelectItem>
+                <SelectItem value="Thi thử">Thi thử</SelectItem>
               </SelectContent>
             </Select>
           </div>
