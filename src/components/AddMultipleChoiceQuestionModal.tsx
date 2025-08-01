@@ -73,33 +73,33 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-3xl w-full overflow-y-auto max-h-[90vh] p-6 space-y-6">
+      <DialogContent className="max-w-3xl w-full overflow-y-auto max-h-[90vh] p-6 space-y-8">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">Câu {questionNumber} - Trắc nghiệm</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <Label htmlFor="question-text" className="mb-1 block font-medium">Câu hỏi</Label>
+            <Label htmlFor="question-text" className="mb-2 block font-medium">Câu hỏi</Label>
             <ReactQuill
               theme="snow"
               value={questionText}
               onChange={setQuestionText}
               placeholder="Nhập nội dung câu hỏi..."
-              className="h-32 rounded-md border border-gray-300 dark:border-gray-600"
+              className="h-36 rounded-md border border-gray-300 dark:border-gray-600"
             />
           </div>
 
           <div>
-            <Label className="mb-2 block font-medium">Các lựa chọn</Label>
+            <Label className="mb-3 block font-medium">Các lựa chọn</Label>
             <RadioGroup
               value={String(correctOptionIndex)}
               onValueChange={(val) => setCorrectOptionIndex(Number(val))}
-              className="space-y-3"
+              className="space-y-4"
             >
               {options.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <RadioGroupItem value={String(idx)} id={`option-${idx}`} />
+                <div key={idx} className="flex items-center gap-4">
+                  <RadioGroupItem value={String(idx)} id={`option-${idx}`} className="shrink-0" />
                   <input
                     type="text"
                     value={opt}
@@ -113,11 +113,11 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
 
           <div>
-            <Label className="mb-2 block font-medium">Độ khó</Label>
+            <Label className="mb-3 block font-medium">Độ khó</Label>
             <RadioGroup
               value={difficulty}
               onValueChange={(val) => setDifficulty(val as MultipleChoiceQuestion["difficulty"])}
-              className="flex space-x-6"
+              className="flex space-x-8"
             >
               {["Nhận biết", "Thông hiểu", "Vận dụng", "Vận dụng cao"].map((level) => (
                 <div key={level} className="flex items-center gap-2">
@@ -129,18 +129,18 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
 
           <div>
-            <Label htmlFor="explanation" className="mb-1 block font-medium">Lời giải</Label>
+            <Label htmlFor="explanation" className="mb-2 block font-medium">Lời giải</Label>
             <ReactQuill
               theme="snow"
               value={explanation}
               onChange={setExplanation}
               placeholder="Nhập lời giải..."
-              className="h-24 rounded-md border border-gray-300 dark:border-gray-600"
+              className="h-28 rounded-md border border-gray-300 dark:border-gray-600"
             />
           </div>
 
           <div>
-            <Label htmlFor="video-link" className="mb-1 block font-medium">Video tham khảo</Label>
+            <Label htmlFor="video-link" className="mb-2 block font-medium">Video tham khảo</Label>
             <input
               id="video-link"
               type="text"
@@ -152,7 +152,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
         </div>
 
-        <DialogFooter className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <DialogFooter className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
           <Button variant="outline" onClick={onClose}>Hủy</Button>
           <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">Cập nhật</Button>
         </DialogFooter>
