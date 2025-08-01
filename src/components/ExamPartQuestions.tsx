@@ -58,7 +58,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     documentLink: string;
     videoLink: string;
   }) => {
-    // Add new question to the currently selected part
     const newQuestion: Question = {
       id: `Q${Date.now()}`,
       correctAnswer: question.correctAnswer,
@@ -72,9 +71,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     if (partIndex === -1) return;
 
     parts[partIndex].questions.push(newQuestion);
-    // Force update by setting state (assuming parts is managed outside, so here we just call onAddDefaultPart or you can add a callback prop)
-    // For demo, we just alert or console log
-    // In real app, you should lift state up or use context
     alert(`Đã thêm câu hỏi số ${question.questionNumber} vào phần ${parts[partIndex].name}`);
     setModalOpen(false);
   };
@@ -225,26 +221,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       </TableBody>
                     </Table>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-4 px-2">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]" onClick={() => setModalOpen(true)}>
-                      +TRẮC NGHIỆM
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
-                      +TRẮC NGHIỆM ĐÚNG SAI
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
-                      +ĐIỀN SỐ/TRẢ LỜI NGẮN
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
-                      +KÉO THẢ
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
-                      +TN NHIỀU ĐÁP ÁN
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
-                      +ĐÚNG/SAI
-                    </Button>
-                  </div>
+                  {/* Removed duplicate buttons here */}
                 </TabsContent>
               ))}
             </Tabs>
