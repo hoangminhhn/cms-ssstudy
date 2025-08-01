@@ -44,6 +44,9 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
+  const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
+  const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
@@ -52,17 +55,27 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   }, [parts, selectedTab]);
 
   const handleAddMultipleChoice = () => {
+    setEditingQuestion(null);
+    setEditingQuestionIndex(null);
+    setEditingPartId(selectedTab);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    setEditingQuestion(null);
+    setEditingQuestionIndex(null);
+    setEditingPartId(null);
   };
 
   const handleSaveQuestion = (question: MultipleChoiceQuestion) => {
+    if (!editingPartId) return;
+
     // Convert MultipleChoiceQuestion to Question type used in parts
     const newQuestion: Question = {
-      id: `Q${Date.now()}`,
+      id: editingQuestionIndex !== null && parts.find(p => p.id === editingPartId)?.questions[editingQuestionIndex]
+        ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
+        : `Q${Date.now()}`,
       correctAnswer: String.fromCharCode(65 + question.correctOptionIndex),
       solution: question.explanation,
       videoLink: question.videoLink,
@@ -70,20 +83,54 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
       documentLink: undefined,
     };
 
-    // Add new question to current selected part
-    const partIndex = parts.findIndex(p => p.id === selectedTab);
+    // Update parts state immutably
+    const partIndex = parts.findIndex(p => p.id === editingPartId);
     if (partIndex === -1) return;
 
-    parts[partIndex].questions.push(newQuestion);
+    const updatedParts = [...parts];
+    const questions = [...updatedParts[partIndex].questions];
 
-    // Force update by calling onDeleteAll and onAddDefaultPart workaround or better lift state up
-    // But since parts is prop, we cannot mutate directly here.
-    // So we expect parent to handle state update, so we can add a new prop onAddQuestion(partId, question)
-    // For now, just alert success and close modal.
+    if (editingQuestionIndex !== null) {
+      // Edit existing question
+      questions[editingQuestionIndex] = newQuestion;
+    } else {
+      // Add new question
+      questions.push(newQuestion);
+    }
 
-    alert("Câu hỏi trắc nghiệm đã được thêm. Vui lòng lưu lại để cập nhật.");
+    updatedParts[partIndex] = { ...updatedParts[partIndex], questions };
 
-    setIsModalOpen(false);
+    // Since parts is prop, we cannot update here directly.
+    // So we alert user to save changes externally.
+    alert("Câu hỏi đã được cập nhật. Vui lòng lưu lại để cập nhật.");
+
+    handleModalClose();
+  };
+
+  const handleEditQuestion = (partId: string, questionIndex: number) => {
+    const part = parts.find(p => p.id === partId);
+    if (!part) return;
+    const question = part.questions[questionIndex];
+    if (!question) return;
+
+    // Map Question to MultipleChoiceQuestion for modal
+    const options = Array(5).fill("");
+    const correctOptionIndex = question.correctAnswer.charCodeAt(0) - 65;
+
+    // We don't have questionText stored, so set empty or placeholder
+    const editingQ: MultipleChoiceQuestion = {
+      questionText: "", // Could be improved if questionText is stored
+      options,
+      correctOptionIndex: correctOptionIndex >= 0 && correctOptionIndex < 5 ? correctOptionIndex : 0,
+      difficulty: "Nhận biết",
+      explanation: question.solution || "",
+      videoLink: question.videoLink || "",
+    };
+
+    setEditingQuestion(editingQ);
+    setEditingQuestionIndex(questionIndex);
+    setEditingPartId(partId);
+    setIsModalOpen(true);
   };
 
   return (
@@ -208,6 +255,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                                 variant="ghost"
                                 size="icon"
                                 aria-label={`Chỉnh sửa câu hỏi ${q.id}`}
+                                onClick={() => handleEditQuestion(part.id, index)}
                               >
                                 <Pencil className="h-4 w-4" />
                               </Button>
@@ -257,7 +305,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onSave={handleSaveQuestion}
-        questionNumber={1}
+        questionNumber={editingQuestionIndex !== null ? editingQuestionIndex + 1 : parts.findIndex(p => p.id === editingPartId) + 1}
+        {...(editingQuestion ? { ...editingQuestion } : {})}
       />
     </>
   );

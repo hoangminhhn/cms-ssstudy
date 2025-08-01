@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,14 @@ interface AddMultipleChoiceQuestionModalProps {
   onClose: () => void;
   onSave: (question: MultipleChoiceQuestion) => void;
   questionNumber: number;
+
+  // New props for editing existing question
+  questionText?: string;
+  options?: string[];
+  correctOptionIndex?: number;
+  difficulty?: "Nhận biết" | "Thông hiểu" | "Vận dụng" | "Vận dụng cao";
+  explanation?: string;
+  videoLink?: string;
 }
 
 export interface MultipleChoiceQuestion {
@@ -31,13 +39,31 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
   onClose,
   onSave,
   questionNumber,
+  questionText: initialQuestionText = "",
+  options: initialOptions = defaultOptions,
+  correctOptionIndex: initialCorrectOptionIndex = 0,
+  difficulty: initialDifficulty = "Nhận biết",
+  explanation: initialExplanation = "",
+  videoLink: initialVideoLink = "",
 }) => {
-  const [questionText, setQuestionText] = useState<string>("");
-  const [options, setOptions] = useState<string[]>(defaultOptions);
-  const [correctOptionIndex, setCorrectOptionIndex] = useState<number>(0);
-  const [difficulty, setDifficulty] = useState<MultipleChoiceQuestion["difficulty"]>("Nhận biết");
-  const [explanation, setExplanation] = useState<string>("");
-  const [videoLink, setVideoLink] = useState<string>("");
+  const [questionText, setQuestionText] = useState<string>(initialQuestionText);
+  const [options, setOptions] = useState<string[]>(initialOptions);
+  const [correctOptionIndex, setCorrectOptionIndex] = useState<number>(initialCorrectOptionIndex);
+  const [difficulty, setDifficulty] = useState<MultipleChoiceQuestion["difficulty"]>(initialDifficulty);
+  const [explanation, setExplanation] = useState<string>(initialExplanation);
+  const [videoLink, setVideoLink] = useState<string>(initialVideoLink);
+
+  // Reset state when modal opens or initial props change
+  useEffect(() => {
+    if (isOpen) {
+      setQuestionText(initialQuestionText);
+      setOptions(initialOptions);
+      setCorrectOptionIndex(initialCorrectOptionIndex);
+      setDifficulty(initialDifficulty);
+      setExplanation(initialExplanation);
+      setVideoLink(initialVideoLink);
+    }
+  }, [isOpen, initialQuestionText, initialOptions, initialCorrectOptionIndex, initialDifficulty, initialExplanation, initialVideoLink]);
 
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...options];
@@ -62,13 +88,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       explanation,
       videoLink,
     });
-    setQuestionText("");
-    setOptions(defaultOptions);
-    setCorrectOptionIndex(0);
-    setDifficulty("Nhận biết");
-    setExplanation("");
-    setVideoLink("");
-    onClose();
+    // Reset handled by parent on close
   };
 
   return (
