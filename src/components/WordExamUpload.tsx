@@ -130,7 +130,7 @@ const WordExamUpload: React.FC = () => {
     const now = new Date().toLocaleDateString();
     const newQuestionsPart1: Question[] = [
       {
-        id: `Q${Date.now()}1`,
+        id: Date.now().toString() + "1",
         correctAnswer: 'A',
         solution: 'Giải thích câu hỏi mới 1',
         uploadDate: now,
@@ -138,7 +138,7 @@ const WordExamUpload: React.FC = () => {
     ];
     const newQuestionsPart2: Question[] = [
       {
-        id: `Q${Date.now()}2`,
+        id: Date.now().toString() + "2",
         correctAnswer: 'B',
         solution: 'Giải thích câu hỏi mới 2',
         uploadDate: now,
@@ -146,7 +146,7 @@ const WordExamUpload: React.FC = () => {
     ];
     const newQuestionsPart3: Question[] = [
       {
-        id: `Q${Date.now()}3`,
+        id: Date.now().toString() + "3",
         correctAnswer: 'C',
         solution: 'Giải thích câu hỏi mới 3',
         uploadDate: now,

@@ -76,7 +76,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     const newQuestion: Question = {
       id: editingQuestionIndex !== null && parts.find(p => p.id === editingPartId)?.questions[editingQuestionIndex]
         ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
-        : `Q${Date.now()}`,
+        : Date.now().toString(),
       correctAnswer: String.fromCharCode(65 + question.correctOptionIndex),
       solution: question.explanation,
       videoLink: question.videoLink,
@@ -194,7 +194,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                         {part.questions.map((q, index) => (
                           <TableRow key={q.id}>
                             <TableCell>{`Câu ${index + 1}`}</TableCell>
-                            <TableCell>{q.id.slice(0, 6)}</TableCell>
+                            <TableCell>{q.id}</TableCell>
                             <TableCell>{q.correctAnswer}</TableCell>
                             <TableCell>TRẮC NGHIỆM</TableCell>
                             <TableCell>
