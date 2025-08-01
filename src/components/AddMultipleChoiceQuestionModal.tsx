@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = React.lazy(() => import("react-quill"));
 import "react-quill/dist/quill.snow.css";
 
 interface AddMultipleChoiceQuestionModalProps {
@@ -85,12 +84,14 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
           <div>
             <Label>Lời giải</Label>
-            <ReactQuill
-              theme="snow"
-              value={solution}
-              onChange={setSolution}
-              className="h-40"
-            />
+            <Suspense fallback={<div>Đang tải trình soạn thảo...</div>}>
+              <ReactQuill
+                theme="snow"
+                value={solution}
+                onChange={setSolution}
+                className="h-40"
+              />
+            </Suspense>
           </div>
           <div>
             <Label htmlFor="document-link">Tài liệu tham khảo</Label>
