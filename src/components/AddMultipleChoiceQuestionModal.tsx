@@ -91,7 +91,8 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </div>
 
           <div>
-            <Label className="mb-3 block font-medium">Các lựa chọn</Label>
+            {/* Remove border from label */}
+            <Label className="mb-3 block font-medium border-none">Các lựa chọn</Label>
             <RadioGroup
               value={String(correctOptionIndex)}
               onValueChange={(val) => setCorrectOptionIndex(Number(val))}
