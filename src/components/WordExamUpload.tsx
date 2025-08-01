@@ -365,7 +365,7 @@ const WordExamUpload: React.FC = () => {
               className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
               onClick={handleUploadClick}
             >
-              <Upload className="mr-2 h-4 w-4" /> TH Full 3 phần
+              <Upload className="mr-2 h-4 w-4" /> Tải lên
             </Button>
             <Button
               variant="outline"
