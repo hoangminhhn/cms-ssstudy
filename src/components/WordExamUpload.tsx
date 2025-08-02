@@ -124,6 +124,7 @@ const WordExamUpload: React.FC = () => {
   const [examName, setExamName] = React.useState('');
   const [examPeriod, setExamPeriod] = React.useState('');
   const [part, setPart] = React.useState('full');
+  const [pdfLink, setPdfLink] = React.useState(''); // New state for PDF link
   const [testType, setTestType] = React.useState('Không');
   const [group, setGroup] = React.useState('Mặc định');
   const [classLevel, setClassLevel] = React.useState('Lớp 1');
@@ -236,7 +237,7 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-8 gap-4">
-          {/* Row 1 */}
+          {/* Row 1: Mã đề thi/Tên đề thi/ Kỳ thi / Phần thi/ Đề thi pdf */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
             <Input id="exam-code" value={examCode} disabled />
@@ -258,7 +259,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-1">
             <Label htmlFor="part">Phần thi</Label>
             <Select value={part} onValueChange={setPart}>
               <SelectTrigger id="part">
@@ -271,8 +272,12 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+          <div className="col-span-1">
+            <Label htmlFor="pdf-link">Đề thi PDF</Label>
+            <Input id="pdf-link" value={pdfLink} onChange={(e) => setPdfLink(e.target.value)} placeholder="Nhập URL PDF" />
+          </div>
 
-          {/* Row 2 */}
+          {/* Row 2: Loại bài kiểm tra/Nhóm đề/Lớp/Môn học/ Cho phép làm lại/Thành phố */}
           <div className="col-span-1">
             <Label htmlFor="test-type">Loại bài kiểm tra</Label>
             <Select value={testType} onValueChange={setTestType}>
