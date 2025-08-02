@@ -123,6 +123,7 @@ const WordExamUpload: React.FC = () => {
   const [examCode] = React.useState('Tự động');
   const [examName, setExamName] = React.useState('');
   const [examPeriod, setExamPeriod] = React.useState('');
+  const [pdfUrl, setPdfUrl] = React.useState('');
   const [part, setPart] = React.useState('full');
   const [testType, setTestType] = React.useState('Không');
   const [group, setGroup] = React.useState('Mặc định');
@@ -235,7 +236,7 @@ const WordExamUpload: React.FC = () => {
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-8 gap-4">
+        <CardContent className="grid grid-cols-12 gap-4">
           {/* Row 1 */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
@@ -244,6 +245,10 @@ const WordExamUpload: React.FC = () => {
           <div className="col-span-3">
             <Label htmlFor="exam-name">Tên đề thi</Label>
             <Input id="exam-name" value={examName} onChange={(e) => setExamName(e.target.value)} placeholder="Nhập tên đề thi" />
+          </div>
+          <div className="col-span-3">
+            <Label htmlFor="pdf-url">Đề thi PDF</Label>
+            <Input id="pdf-url" value={pdfUrl} onChange={(e) => setPdfUrl(e.target.value)} placeholder="Nhập URL đề thi PDF" />
           </div>
           <div className="col-span-2">
             <Label htmlFor="exam-period">Kỳ thi</Label>
