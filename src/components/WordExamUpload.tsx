@@ -13,6 +13,10 @@ import { Label } from '@/components/ui/label';
 import { Upload, Download } from 'lucide-react';
 import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -131,6 +135,8 @@ const WordExamUpload: React.FC = () => {
   const [subject, setSubject] = React.useState('Toán');
   const [allowRetry, setAllowRetry] = React.useState('Không cho phép');
   const [city, setCity] = React.useState('Chọn thành phố');
+  const [openCitySelect, setOpenCitySelect] = React.useState(false);
+
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
@@ -236,7 +242,7 @@ const WordExamUpload: React.FC = () => {
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-8 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
           {/* Row 1: Mã đề thi/Tên đề thi/ Kỳ thi / Phần thi/ Đề thi pdf */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
@@ -344,16 +350,47 @@ const WordExamUpload: React.FC = () => {
           </div>
           <div className="col-span-2">
             <Label htmlFor="city">Thành phố</Label>
-            <Select value={city} onValueChange={setCity}>
-              <SelectTrigger id="city">
-                <SelectValue placeholder="Chọn thành phố" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={openCitySelect} onOpenChange={setOpenCitySelect}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={openCitySelect}
+                  className="w-full justify-between"
+                >
+                  {city
+                    ? cities.find((c) => c === city)
+                    : "Chọn thành phố..."}
+                  <Check className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <Command>
+                  <CommandInput placeholder="Tìm kiếm thành phố..." />
+                  <CommandEmpty>Không tìm thấy thành phố.</CommandEmpty>
+                  <CommandGroup>
+                    {cities.map((c) => (
+                      <CommandItem
+                        key={c}
+                        value={c}
+                        onSelect={(currentValue) => {
+                          setCity(currentValue === city ? "" : currentValue);
+                          setOpenCitySelect(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            city === c ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {c}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
         </CardContent>
       </Card>
