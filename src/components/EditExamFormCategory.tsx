@@ -18,7 +18,6 @@ interface ExamFormCategory {
   questionSelection: 'any' | 'current-section-only';
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
-  // Removed multiChoiceScoringRule
   partSelection: 'full' | 'part1' | 'part2' | 'part3';
   scoringPercentages?: {
     oneCorrect: number;
@@ -194,7 +193,7 @@ const EditExamFormCategory: React.FC = () => {
                   <SelectValue placeholder="Chọn hình thức" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="single-screen">1 màn hình</SelectItem>
+                  <SelectItem value="single-screen">Toàn bộ phần thi</SelectItem>
                   <SelectItem value="per-section">Từng phần</SelectItem>
                 </SelectContent>
               </Select>
@@ -241,8 +240,6 @@ const EditExamFormCategory: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Removed multiChoiceScoringRule field */}
 
             <div>
               <Label htmlFor="partSelection">Phần thi</Label>
