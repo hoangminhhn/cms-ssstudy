@@ -365,7 +365,6 @@ const EditExamFormCategory: React.FC = () => {
         return part;
       }),
     );
-    // Clear the select value after adding
     setNewSubSubjectNames(prev => {
       const key = `${partId}-${subPartId}`;
       return { ...prev, [key]: '' };
@@ -742,42 +741,32 @@ const EditExamFormCategory: React.FC = () => {
                                         </div>
                                         <div>
                                           <Label className="mb-1 block font-medium">Môn học con</Label>
-                                          {subPart.subSubjects && subPart.subSubjects.length > 0 ? (
-                                            subPart.subSubjects.map((subSubject) => (
-                                              <div key={subSubject.id} className="flex items-center gap-2 mb-1">
-                                                <Input
-                                                  value={subSubject.name}
-                                                  onChange={(e) => handleSubSubjectNameChange(part.id, subPart.id, subSubject.id, e.target.value)}
-                                                  placeholder="Tên môn học con"
-                                                  className="flex-1"
-                                                />
-                                                <Button
-                                                  variant="ghost"
-                                                  className="text-red-600 hover:bg-red-50"
-                                                  onClick={() => handleDeleteSubSubject(part.id, subPart.id, subSubject.id)}
-                                                  size="sm"
-                                                  aria-label="Xóa môn học con"
-                                                >
-                                                  <X className="h-5 w-5" />
-                                                </Button>
-                                              </div>
-                                            ))
-                                          ) : (
-                                            <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
-                                          )}
-                                          <div className="flex gap-2 mt-1">
+                                          {subPart.type === 'Một môn' ? (
                                             <Select
-                                              value={newSubSubjectNames[subSubjectKey] || ''}
-                                              onValueChange={(val) => setNewSubSubjectNames(prev => ({ ...prev, [subSubjectKey]: val }))}
-                                              onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                  e.preventDefault();
-                                                  handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '');
-                                                }
+                                              value={subPart.subSubjects.length > 0 ? subPart.subSubjects[0].name : ''}
+                                              onValueChange={(val) => {
+                                                // Update single subSubject or add if none
+                                                setParts(prev =>
+                                                  prev.map(part => {
+                                                    if (part.id === part.id) {
+                                                      const updatedSubParts = (part.subParts || []).map(sp => {
+                                                        if (sp.id === subPart.id) {
+                                                          const newSubSubjects = val
+                                                            ? [{ id: `subsubject-${Date.now()}`, name: val }]
+                                                            : [];
+                                                          return { ...sp, subSubjects: newSubSubjects };
+                                                        }
+                                                        return sp;
+                                                      });
+                                                      return { ...part, subParts: updatedSubParts };
+                                                    }
+                                                    return part;
+                                                  }),
+                                                );
                                               }}
-                                              className="flex-1"
+                                              className="w-full"
                                             >
-                                              <SelectTrigger className="w-full">
+                                              <SelectTrigger>
                                                 <SelectValue placeholder="Lựa chọn môn" />
                                               </SelectTrigger>
                                               <SelectContent>
@@ -788,14 +777,64 @@ const EditExamFormCategory: React.FC = () => {
                                                 ))}
                                               </SelectContent>
                                             </Select>
-                                            <Button
-                                              className="bg-green-500 hover:bg-green-600 text-white"
-                                              onClick={() => handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '')}
-                                              size="sm"
-                                            >
-                                              + Thêm môn
-                                            </Button>
-                                          </div>
+                                          ) : (
+                                            <>
+                                              {subPart.subSubjects && subPart.subSubjects.length > 0 ? (
+                                                subPart.subSubjects.map((subSubject) => (
+                                                  <div key={subSubject.id} className="flex items-center gap-2 mb-1">
+                                                    <Input
+                                                      value={subSubject.name}
+                                                      onChange={(e) => handleSubSubjectNameChange(part.id, subPart.id, subSubject.id, e.target.value)}
+                                                      placeholder="Tên môn học con"
+                                                      className="flex-1"
+                                                    />
+                                                    <Button
+                                                      variant="ghost"
+                                                      className="text-red-600 hover:bg-red-50"
+                                                      onClick={() => handleDeleteSubSubject(part.id, subPart.id, subSubject.id)}
+                                                      size="sm"
+                                                      aria-label="Xóa môn học con"
+                                                    >
+                                                      <X className="h-5 w-5" />
+                                                    </Button>
+                                                  </div>
+                                                ))
+                                              ) : (
+                                                <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
+                                              )}
+                                              <div className="flex gap-2 mt-1">
+                                                <Select
+                                                  value={newSubSubjectNames[subSubjectKey] || ''}
+                                                  onValueChange={(val) => setNewSubSubjectNames(prev => ({ ...prev, [subSubjectKey]: val }))}
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                      e.preventDefault();
+                                                      handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '');
+                                                    }
+                                                  }}
+                                                  className="flex-1"
+                                                >
+                                                  <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Lựa chọn môn" />
+                                                  </SelectTrigger>
+                                                  <SelectContent>
+                                                    {availableSubjects.map((subject) => (
+                                                      <SelectItem key={subject} value={subject}>
+                                                        {subject}
+                                                      </SelectItem>
+                                                    ))}
+                                                  </SelectContent>
+                                                </Select>
+                                                <Button
+                                                  className="bg-green-500 hover:bg-green-600 text-white"
+                                                  onClick={() => handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '')}
+                                                  size="sm"
+                                                >
+                                                  + Thêm môn
+                                                </Button>
+                                              </div>
+                                            </>
+                                          )}
                                         </div>
                                       </div>
                                     );
