@@ -21,6 +21,7 @@ interface SubPart {
   type: 'Một môn' | 'Nhiều môn';
   subSubjects: SubSubject[];
   maxSubGroupsSelected?: number;
+  allowSubGroups?: boolean; // Add allowSubGroups here for sub-parts
 }
 
 interface PartItem {
@@ -131,6 +132,7 @@ const EditExamFormCategory: React.FC = () => {
           name: 'Khoa học',
           type: 'Nhiều môn',
           subSubjects: [],
+          allowSubGroups: true,
         },
       ],
       splitIntoSubParts: false,
@@ -246,18 +248,39 @@ const EditExamFormCategory: React.FC = () => {
 
   const handleAllowSubGroupsChange = (partId: string, checked: boolean) => {
     setParts(prev =>
-      prev.map(part => (part.id === partId ? { ...part, allowSubGroups: checked } : part))
+      prev.map(part => {
+        if (part.id === partId) {
+          // Update allowSubGroups for part
+          const updatedPart = { ...part, allowSubGroups: checked };
+          // If splitIntoSubParts is enabled, sync allowSubGroups for all subParts
+          if (updatedPart.splitIntoSubParts && updatedPart.subParts) {
+            updatedPart.subParts = updatedPart.subParts.map(sp => ({ ...sp, allowSubGroups: checked }));
+          }
+          return updatedPart;
+        }
+        return part;
+      })
     );
-    if (!checked) {
-      setParts(prev =>
-        prev.map(part => (part.id === partId ? { ...part, subParts: [] } : part))
-      );
-    }
   };
 
   const handleSplitIntoSubPartsChange = (partId: string, checked: boolean) => {
     setParts(prev =>
-      prev.map(part => (part.id === partId ? { ...part, splitIntoSubParts: checked } : part))
+      prev.map(part => {
+        if (part.id === partId) {
+          let updatedSubParts = part.subParts || [];
+          // If enabling splitIntoSubParts, auto rename subParts to "Phần x.1", "Phần x.2", ...
+          if (checked && updatedSubParts.length > 0) {
+            const parentIndex = prev.findIndex(p => p.id === partId) + 1;
+            updatedSubParts = updatedSubParts.map((sp, idx) => ({
+              ...sp,
+              name: `Phần ${parentIndex}.${idx + 1}`,
+              allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
+            }));
+          }
+          return { ...part, splitIntoSubParts: checked, subParts: updatedSubParts };
+        }
+        return part;
+      }),
     );
   };
 
@@ -295,6 +318,7 @@ const EditExamFormCategory: React.FC = () => {
       name: 'Nhóm chủ đề mới',
       type: 'Nhiều môn',
       subSubjects: [],
+      allowSubGroups: false,
     };
     setParts(prev =>
       prev.map(part => {
@@ -443,6 +467,7 @@ const EditExamFormCategory: React.FC = () => {
       name: `Phần con ${Date.now()}`,
       type: 'Nhiều môn',
       subSubjects: [],
+      allowSubGroups: false,
     };
     setParts(prev =>
       prev.map(part => {
@@ -493,6 +518,7 @@ const EditExamFormCategory: React.FC = () => {
             const renamedSubParts = part.subParts.map((sp, idx) => ({
               ...sp,
               name: `Phần ${parentIndex}.${idx + 1}`,
+              allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
             }));
             return { ...part, splitIntoSubParts: checked, subParts: renamedSubParts };
           }
@@ -746,7 +772,7 @@ const EditExamFormCategory: React.FC = () => {
                               <input
                                 type="checkbox"
                                 checked={!!part.splitIntoSubParts}
-                                onChange={(e) => handleSplitIntoSubPartsToggle(part.id, e.target.checked)}
+                                onChange={(e) => handleSplitIntoSubPartsChange(part.id, e.target.checked)}
                                 className="form-checkbox h-4 w-4 text-orange-600"
                               />
                               <span>Chia thành các phần con</span>
@@ -765,7 +791,24 @@ const EditExamFormCategory: React.FC = () => {
                                     <input
                                       type="checkbox"
                                       checked={!!subPart.allowSubGroups}
-                                      onChange={(e) => handleAllowSubGroupsToggle(part.id, e.target.checked)}
+                                      onChange={(e) => {
+                                        // When user toggles subPart allowSubGroups, update only that subPart
+                                        const checkedVal = e.target.checked;
+                                        setParts(prev =>
+                                          prev.map(p => {
+                                            if (p.id === part.id) {
+                                              const updatedSubParts = (p.subParts || []).map(sp => {
+                                                if (sp.id === subPart.id) {
+                                                  return { ...sp, allowSubGroups: checkedVal };
+                                                }
+                                                return sp;
+                                              });
+                                              return { ...p, subParts: updatedSubParts };
+                                            }
+                                            return p;
+                                          }),
+                                        );
+                                      }}
                                       className="form-checkbox h-4 w-4 text-orange-600"
                                     />
                                     <span>Cho phép chọn nhóm chủ đề</span>
@@ -812,7 +855,12 @@ const EditExamFormCategory: React.FC = () => {
                                   type="number"
                                   min={1}
                                   value={part.maxSubGroupsSelected ?? 1}
-                                  onChange={(e) => handleMaxSubGroupsSelectedChange(part.id, Number(e.target.value))}
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    setParts(prev =>
+                                      prev.map(p => (p.id === part.id ? { ...p, maxSubGroupsSelected: val } : p))
+                                    );
+                                  }}
                                   className="w-24"
                                 />
                               </div>
