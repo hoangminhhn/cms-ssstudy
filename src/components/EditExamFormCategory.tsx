@@ -741,6 +741,41 @@ const EditExamFormCategory: React.FC = () => {
                                             <X className="h-5 w-5" />
                                           </Button>
                                         </div>
+                                        {/* New field for 'Chọn tối đa' only for 'Nhiều môn' */}
+                                        {subPart.type === 'Nhiều môn' && (
+                                          <div className="mb-4">
+                                            <Label htmlFor={`maxSubGroupsSelected-${subPart.id}`} className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                              Chọn tối đa
+                                            </Label>
+                                            <Input
+                                              id={`maxSubGroupsSelected-${subPart.id}`}
+                                              type="number"
+                                              min={1}
+                                              value={subPart.maxSubGroupsSelected ?? part.maxSubGroupsSelected ?? 1}
+                                              onChange={(e) => {
+                                                const val = Number(e.target.value);
+                                                setParts(prev =>
+                                                  prev.map(p => {
+                                                    if (p.id === part.id) {
+                                                      const updatedSubParts = (p.subParts || []).map(sp => {
+                                                        if (sp.id === subPart.id) {
+                                                          return { ...sp, maxSubGroupsSelected: val };
+                                                        }
+                                                        return sp;
+                                                      });
+                                                      return { ...p, subParts: updatedSubParts };
+                                                    }
+                                                    return p;
+                                                  }),
+                                                );
+                                              }}
+                                              className="w-24"
+                                            />
+                                            <p className="text-sm text-muted-foreground mt-1">
+                                              Chọn {subPart.maxSubGroupsSelected ?? part.maxSubGroupsSelected ?? 1} trong {subPart.subSubjects.length + (newSubSubjectNames[subSubjectKey] ? 1 : 0)} môn
+                                            </p>
+                                          </div>
+                                        )}
                                         <div>
                                           <Label className="mb-1 block font-medium">Môn học con</Label>
                                           {subPart.type === 'Một môn' ? (
