@@ -97,6 +97,17 @@ const mockExamCategories: ExamFormCategory[] = [
 
 const groupTypeOptions = ['Một môn', 'Nhiều môn'] as const;
 
+const availableSubjects = [
+  'Toán',
+  'Văn',
+  'Tiếng Anh',
+  'Vật lí',
+  'Sinh học',
+  'Hóa học',
+  'Lịch sử',
+  'Địa lý',
+];
+
 const EditExamFormCategory: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -275,7 +286,6 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   const handleAddSubPart = (partId: string) => {
-    // When adding a new group, create with default name and type
     const newSubPart: SubPart = {
       id: `subpart-${Date.now()}`,
       name: 'Nhóm chủ đề mới',
@@ -327,11 +337,9 @@ const EditExamFormCategory: React.FC = () => {
     );
   };
 
-  const handleAddSubSubject = (partId: string, subPartId: string) => {
-    const key = `${partId}-${subPartId}`;
-    const name = newSubSubjectNames[key]?.trim();
-    if (!name) {
-      toast.error('Tên môn học con không được để trống.');
+  const handleAddSubSubject = (partId: string, subPartId: string, selectedSubject: string) => {
+    if (!selectedSubject) {
+      toast.error('Vui lòng chọn môn học.');
       return;
     }
     setParts(prev =>
@@ -340,13 +348,13 @@ const EditExamFormCategory: React.FC = () => {
           const updatedSubParts = (part.subParts || []).map(sp => {
             if (sp.id === subPartId) {
               const existingSubSubjects = sp.subSubjects || [];
-              if (existingSubSubjects.some(ss => ss.name.toLowerCase() === name.toLowerCase())) {
+              if (existingSubSubjects.some(ss => ss.name.toLowerCase() === selectedSubject.toLowerCase())) {
                 toast.error('Môn học con đã tồn tại.');
                 return sp;
               }
               const newSubSubject: SubSubject = {
                 id: `subsubject-${Date.now()}`,
-                name,
+                name: selectedSubject,
               };
               return { ...sp, subSubjects: [...existingSubSubjects, newSubSubject] };
             }
@@ -357,7 +365,11 @@ const EditExamFormCategory: React.FC = () => {
         return part;
       }),
     );
-    setNewSubSubjectNames(prev => ({ ...prev, [key]: '' }));
+    // Clear the select value after adding
+    setNewSubSubjectNames(prev => {
+      const key = `${partId}-${subPartId}`;
+      return { ...prev, [key]: '' };
+    });
     toast.success('Đã thêm môn học con mới.');
   };
 
@@ -754,21 +766,31 @@ const EditExamFormCategory: React.FC = () => {
                                             <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
                                           )}
                                           <div className="flex gap-2 mt-1">
-                                            <Input
-                                              placeholder="Nhập tên môn học con"
+                                            <Select
                                               value={newSubSubjectNames[subSubjectKey] || ''}
-                                              onChange={(e) => setNewSubSubjectNames(prev => ({ ...prev, [subSubjectKey]: e.target.value }))}
+                                              onValueChange={(val) => setNewSubSubjectNames(prev => ({ ...prev, [subSubjectKey]: val }))}
                                               onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                   e.preventDefault();
-                                                  handleAddSubSubject(part.id, subPart.id);
+                                                  handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '');
                                                 }
                                               }}
                                               className="flex-1"
-                                            />
+                                            >
+                                              <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Lựa chọn môn" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                {availableSubjects.map((subject) => (
+                                                  <SelectItem key={subject} value={subject}>
+                                                    {subject}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
                                             <Button
                                               className="bg-green-500 hover:bg-green-600 text-white"
-                                              onClick={() => handleAddSubSubject(part.id, subPart.id)}
+                                              onClick={() => handleAddSubSubject(part.id, subPart.id, newSubSubjectNames[subSubjectKey] || '')}
                                               size="sm"
                                             >
                                               + Thêm môn
