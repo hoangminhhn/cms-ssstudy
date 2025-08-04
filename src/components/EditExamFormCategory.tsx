@@ -37,7 +37,6 @@ interface ExamFormCategory {
   id: string;
   examName: string;
   displayMode: 'single-screen' | 'per-section';
-  // Removed navigationMode and questionSelection fields
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
   partSelection: 'full' | 'part1' | 'part2' | 'part3';
@@ -550,63 +549,42 @@ const EditExamFormCategory: React.FC = () => {
         <CardHeader>
           <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6">
-          {/* Row 1: Tên kỳ thi */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-3">
-              <Label htmlFor="examName">Tên kỳ thi</Label>
-              <Input id="examName" value={category.examName} onChange={handleChange} />
-            </div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Row with 3 fields in one line */}
+          <div>
+            <Label htmlFor="examName">Tên kỳ thi</Label>
+            <Input id="examName" value={category.examName} onChange={handleChange} />
           </div>
 
-          {/* Row 2: Only 'Hình thức hiển thị phần thi' remains */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
-              <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
-                <SelectTrigger id="displayMode">
-                  <SelectValue placeholder="Chọn hình thức" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single-screen">Toàn bộ phần thi</SelectItem>
-                  <SelectItem value="per-section">Lần lượt từng phần thi</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
+            <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
+              <SelectTrigger id="displayMode">
+                <SelectValue placeholder="Chọn hình thức" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="single-screen">Toàn bộ phần thi</SelectItem>
+                <SelectItem value="per-section">Lần lượt từng phần thi</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Row 3: 'Cách hiển thị câu hỏi' and 'Phần thi' */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-            <div>
-              <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
-              <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
-                <SelectTrigger id="questionDisplay">
-                  <SelectValue placeholder="Chọn cách hiển thị" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
-                  <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="partSelection">Phần thi</Label>
-              <Select value={category.partSelection} onValueChange={(value) => handleSelectChange(value, 'partSelection')}>
-                <SelectTrigger id="partSelection">
-                  <SelectValue placeholder="Chọn phần thi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Đầy đủ 3 phần thi</SelectItem>
-                  <SelectItem value="part1">Phần thi 1</SelectItem>
-                  <SelectItem value="part2">Phần thi 2</SelectItem>
-                  <SelectItem value="part3">Phần thi 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
+            <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
+              <SelectTrigger id="questionDisplay">
+                <SelectValue placeholder="Chọn cách hiển thị" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="one-per-screen">1 câu trong màn</SelectItem>
+                <SelectItem value="all-at-once">Tất cả cùng lúc</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </CardContent>
 
-          {/* Row 4: Cấu hình thang điểm đúng sai full width */}
+        {/* Row 4: Cấu hình thang điểm đúng sai full width */}
+        <CardContent>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Switch
