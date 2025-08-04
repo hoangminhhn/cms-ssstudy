@@ -482,6 +482,17 @@ const EditExamFormCategory: React.FC = () => {
                   <Clock className="h-5 w-5 text-blue-600" /> Thời gian tổng
                 </span>
                 <span className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</span>
+                {category.timeSettingMode === 'total' && (
+                  <Input
+                    id="totalTimeMinutes"
+                    type="number"
+                    min={0}
+                    value={category.totalTimeMinutes ?? 0}
+                    onChange={handleTotalTimeChange}
+                    className="mt-2 w-32"
+                    placeholder="Nhập thời gian tổng (phút)"
+                  />
+                )}
               </Label>
             </div>
             <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
@@ -518,22 +529,6 @@ const EditExamFormCategory: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-              {category.timeSettingMode === 'total' && (
-                <div className="mt-4 rounded-md bg-blue-50 p-4 dark:bg-blue-900">
-                  <Label htmlFor="totalTimeMinutes" className="font-semibold text-blue-700 dark:text-blue-400 mb-1 block">
-                    Thời gian tổng (phút)
-                  </Label>
-                  <Input
-                    id="totalTimeMinutes"
-                    type="number"
-                    min={0}
-                    value={category.totalTimeMinutes ?? 0}
-                    onChange={handleTotalTimeChange}
-                    className="w-32"
-                  />
-                  <span className="ml-2 text-muted-foreground">Thời gian hiển thị</span>
                 </div>
               )}
             </div>
