@@ -194,7 +194,7 @@ const EditExamFormCategory: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="single-screen">Toàn bộ phần thi</SelectItem>
-                  <SelectItem value="per-section">Từng phần</SelectItem>
+                  <SelectItem value="per-section">Lần lượt từng phần thi</SelectItem>
                 </SelectContent>
               </Select>
             </div>
