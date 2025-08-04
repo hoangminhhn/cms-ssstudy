@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Clock, Target, PlusCircle, MinusCircle } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
@@ -19,6 +18,7 @@ interface SubPart {
 interface PartItem {
   id: string;
   name: string;
+  allowSubGroups?: boolean; // New property to track if sub-groups allowed
   subParts?: SubPart[];
 }
 
@@ -95,11 +95,12 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1' },
-    { id: 'part2', name: 'Phần thi 2' },
+    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false },
+    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false },
     {
       id: 'part3',
       name: 'Phần thi 3',
+      allowSubGroups: true,
       subParts: [
         { id: 'subpart1', name: 'Khoa học (3 trong 5 môn)' },
         { id: 'subpart2', name: 'Tiếng Anh' },
@@ -176,6 +177,7 @@ const EditExamFormCategory: React.FC = () => {
     const newPart: PartItem = {
       id: `part-${Date.now()}`,
       name: trimmedName,
+      allowSubGroups: false,
     };
     setParts(prev => [...prev, newPart]);
     if (category?.timeSettingMode === 'per-part') {
@@ -202,6 +204,18 @@ const EditExamFormCategory: React.FC = () => {
       setCategory(prev => prev ? { ...prev, perPartTimes: newTimes } : prev);
     }
     toast.success('Đã xóa phần thi.');
+  };
+
+  const handleAllowSubGroupsChange = (partId: string, checked: boolean) => {
+    setParts(prev =>
+      prev.map(part => (part.id === partId ? { ...part, allowSubGroups: checked } : part))
+    );
+    // Optionally clear subParts if unchecked
+    if (!checked) {
+      setParts(prev =>
+        prev.map(part => (part.id === partId ? { ...part, subParts: [] } : part))
+      );
+    }
   };
 
   const handleSubPartNameChange = (partId: string, value: string) => {
@@ -507,6 +521,17 @@ const EditExamFormCategory: React.FC = () => {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
+                    <div className="mb-2">
+                      <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={!!part.allowSubGroups}
+                          onChange={(e) => handleAllowSubGroupsChange(part.id, e.target.checked)}
+                          className="form-checkbox h-4 w-4 text-orange-600"
+                        />
+                        <span>Cho phép chọn nhóm chủ đề</span>
+                      </label>
+                    </div>
                     {/* SubParts management */}
                     <div className="space-y-2">
                       {(part.subParts && part.subParts.length > 0) ? (
@@ -525,29 +550,33 @@ const EditExamFormCategory: React.FC = () => {
                           </div>
                         ))
                       ) : (
-                        <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
+                        part.allowSubGroups ? (
+                          <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
+                        ) : null
                       )}
-                      <div className="flex gap-2 mt-2">
-                        <Input
-                          placeholder="Nhập tên nhóm chủ đề mới"
-                          value={newSubPartNames[part.id] || ''}
-                          onChange={(e) => handleSubPartNameChange(part.id, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              handleAddSubPart(part.id);
-                            }
-                          }}
-                          className="flex-1"
-                        />
-                        <Button
-                          className="bg-green-500 hover:bg-green-600 text-white"
-                          onClick={() => handleAddSubPart(part.id)}
-                          size="sm"
-                        >
-                          <PlusCircle className="h-4 w-4 mr-1" /> Thêm nhóm
-                        </Button>
-                      </div>
+                      {part.allowSubGroups && (
+                        <div className="flex gap-2 mt-2">
+                          <Input
+                            placeholder="Nhập tên nhóm chủ đề mới"
+                            value={newSubPartNames[part.id] || ''}
+                            onChange={(e) => handleSubPartNameChange(part.id, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddSubPart(part.id);
+                              }
+                            }}
+                            className="flex-1"
+                          />
+                          <Button
+                            className="bg-green-500 hover:bg-green-600 text-white"
+                            onClick={() => handleAddSubPart(part.id)}
+                            size="sm"
+                          >
+                            <PlusCircle className="h-4 w-4 mr-1" /> Thêm nhóm
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
