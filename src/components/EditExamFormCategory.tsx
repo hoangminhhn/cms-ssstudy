@@ -277,6 +277,10 @@ const EditExamFormCategory: React.FC = () => {
               allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
             }));
           }
+          // When enabling splitIntoSubParts, uncheck allowSubGroups on parent
+          if (checked) {
+            setCategory(prev => prev ? { ...prev, allowSubGroups: false } : prev);
+          }
           return { ...part, splitIntoSubParts: checked, subParts: updatedSubParts };
         }
         return part;
@@ -520,6 +524,8 @@ const EditExamFormCategory: React.FC = () => {
               name: `Phần ${parentIndex}.${idx + 1}`,
               allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
             }));
+            // Uncheck allowSubGroups on parent when enabling splitIntoSubParts
+            setCategory(prev => prev ? { ...prev, allowSubGroups: false } : prev);
             return { ...part, splitIntoSubParts: checked, subParts: renamedSubParts };
           }
           return { ...part, splitIntoSubParts: checked };
