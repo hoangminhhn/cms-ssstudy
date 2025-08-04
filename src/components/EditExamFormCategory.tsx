@@ -18,8 +18,8 @@ interface SubSubject {
 interface SubPart {
   id: string;
   name: string;
-  type: 'Một môn' | 'Nhiều môn'; // Added type for group
-  subSubjects: SubSubject[]; // Môn học con
+  type: 'Một môn' | 'Nhiều môn';
+  subSubjects: SubSubject[];
 }
 
 interface PartItem {
@@ -690,7 +690,18 @@ const EditExamFormCategory: React.FC = () => {
                                 />
                               </div>
                               <div className="space-y-4 border rounded-md p-4 bg-blue-50 dark:bg-blue-900">
-                                <Label className="font-semibold">Nhóm chủ đề</Label>
+                                <Label className="font-semibold flex justify-between items-center">
+                                  Nhóm chủ đề
+                                  {(!part.subParts || part.subParts.length === 0) && (
+                                    <Button
+                                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                                      onClick={() => handleAddSubPart(part.id)}
+                                      size="sm"
+                                    >
+                                      + Thêm nhóm
+                                    </Button>
+                                  )}
+                                </Label>
                                 {part.subParts && part.subParts.length > 0 ? (
                                   part.subParts.map((subPart) => {
                                     const subSubjectKey = `${part.id}-${subPart.id}`;
@@ -776,16 +787,16 @@ const EditExamFormCategory: React.FC = () => {
                                       </div>
                                     );
                                   })
-                                ) : (
-                                  <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
+                                ) : null}
+                                {part.subParts && part.subParts.length > 0 && (
+                                  <Button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    onClick={() => handleAddSubPart(part.id)}
+                                    size="sm"
+                                  >
+                                    + Thêm nhóm
+                                  </Button>
                                 )}
-                                <Button
-                                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                                  onClick={() => handleAddSubPart(part.id)}
-                                  size="sm"
-                                >
-                                  + Thêm nhóm
-                                </Button>
                               </div>
                             </>
                           )}
