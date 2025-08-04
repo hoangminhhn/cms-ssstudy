@@ -275,31 +275,22 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   const handleAddSubPart = (partId: string) => {
-    const name = newSubPartNames[partId]?.trim();
-    if (!name) {
-      toast.error('Tên nhóm chủ đề không được để trống.');
-      return;
-    }
+    // When adding a new group, create with default name and type
+    const newSubPart: SubPart = {
+      id: `subpart-${Date.now()}`,
+      name: 'Nhóm chủ đề mới',
+      type: 'Nhiều môn',
+      subSubjects: [],
+    };
     setParts(prev =>
       prev.map(part => {
         if (part.id === partId) {
           const existingSubParts = part.subParts || [];
-          if (existingSubParts.some(sp => sp.name.toLowerCase() === name.toLowerCase())) {
-            toast.error('Nhóm chủ đề đã tồn tại.');
-            return part;
-          }
-          const newSubPart: SubPart = {
-            id: `subpart-${Date.now()}`,
-            name,
-            type: 'Một môn',
-            subSubjects: [],
-          };
           return { ...part, subParts: [...existingSubParts, newSubPart] };
         }
         return part;
       }),
     );
-    setNewSubPartNames(prev => ({ ...prev, [partId]: '' }));
     toast.success('Đã thêm nhóm chủ đề mới.');
   };
 
