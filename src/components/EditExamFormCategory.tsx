@@ -21,7 +21,7 @@ interface SubPart {
   type: 'Một môn' | 'Nhiều môn';
   subSubjects: SubSubject[];
   maxSubGroupsSelected?: number;
-  allowSubGroups?: boolean; // Add allowSubGroups here for sub-parts
+  // Removed allowSubGroups from sub-parts as requested
 }
 
 interface PartItem {
@@ -132,7 +132,7 @@ const EditExamFormCategory: React.FC = () => {
           name: 'Khoa học',
           type: 'Nhiều môn',
           subSubjects: [],
-          allowSubGroups: true,
+          // Removed allowSubGroups here
         },
       ],
       splitIntoSubParts: false,
@@ -251,12 +251,7 @@ const EditExamFormCategory: React.FC = () => {
       prev.map(part => {
         if (part.id === partId) {
           // Update allowSubGroups for part
-          const updatedPart = { ...part, allowSubGroups: checked };
-          // If splitIntoSubParts is enabled, sync allowSubGroups for all subParts
-          if (updatedPart.splitIntoSubParts && updatedPart.subParts) {
-            updatedPart.subParts = updatedPart.subParts.map(sp => ({ ...sp, allowSubGroups: checked }));
-          }
-          return updatedPart;
+          return { ...part, allowSubGroups: checked };
         }
         return part;
       })
@@ -274,7 +269,6 @@ const EditExamFormCategory: React.FC = () => {
             updatedSubParts = updatedSubParts.map((sp, idx) => ({
               ...sp,
               name: `Phần ${parentIndex}.${idx + 1}`,
-              allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
             }));
           }
           // When enabling splitIntoSubParts, uncheck allowSubGroups on parent
@@ -322,7 +316,6 @@ const EditExamFormCategory: React.FC = () => {
       name: 'Nhóm chủ đề mới',
       type: 'Nhiều môn',
       subSubjects: [],
-      allowSubGroups: false,
     };
     setParts(prev =>
       prev.map(part => {
@@ -471,7 +464,6 @@ const EditExamFormCategory: React.FC = () => {
       name: `Phần con ${Date.now()}`,
       type: 'Nhiều môn',
       subSubjects: [],
-      allowSubGroups: false,
     };
     setParts(prev =>
       prev.map(part => {
@@ -522,7 +514,6 @@ const EditExamFormCategory: React.FC = () => {
             const renamedSubParts = part.subParts.map((sp, idx) => ({
               ...sp,
               name: `Phần ${parentIndex}.${idx + 1}`,
-              allowSubGroups: part.allowSubGroups ?? false, // sync allowSubGroups from parent
             }));
             // Uncheck allowSubGroups on parent when enabling splitIntoSubParts
             setCategory(prev => prev ? { ...prev, allowSubGroups: false } : prev);
@@ -793,32 +784,7 @@ const EditExamFormCategory: React.FC = () => {
                                     readOnly
                                     className="mb-2 cursor-not-allowed bg-gray-100 dark:bg-gray-700"
                                   />
-                                  <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
-                                    <input
-                                      type="checkbox"
-                                      checked={!!subPart.allowSubGroups}
-                                      onChange={(e) => {
-                                        // When user toggles subPart allowSubGroups, update only that subPart
-                                        const checkedVal = e.target.checked;
-                                        setParts(prev =>
-                                          prev.map(p => {
-                                            if (p.id === part.id) {
-                                              const updatedSubParts = (p.subParts || []).map(sp => {
-                                                if (sp.id === subPart.id) {
-                                                  return { ...sp, allowSubGroups: checkedVal };
-                                                }
-                                                return sp;
-                                              });
-                                              return { ...p, subParts: updatedSubParts };
-                                            }
-                                            return p;
-                                          }),
-                                        );
-                                      }}
-                                      className="form-checkbox h-4 w-4 text-orange-600"
-                                    />
-                                    <span>Cho phép chọn nhóm chủ đề</span>
-                                  </label>
+                                  {/* Removed 'Cho phép chọn nhóm chủ đề' checkbox here as requested */}
                                   <Button
                                     variant="ghost"
                                     className="absolute top-2 right-2 text-red-600 hover:bg-red-50"
