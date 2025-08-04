@@ -485,7 +485,21 @@ const EditExamFormCategory: React.FC = () => {
 
   const handleSplitIntoSubPartsToggle = (partId: string, checked: boolean) => {
     setParts(prev =>
-      prev.map(part => (part.id === partId ? { ...part, splitIntoSubParts: checked } : part))
+      prev.map(part => {
+        if (part.id === partId) {
+          // If enabling splitIntoSubParts, auto rename subParts to "Phần x.1", "Phần x.2", ...
+          if (checked && part.subParts && part.subParts.length > 0) {
+            const parentIndex = prev.findIndex(p => p.id === partId) + 1;
+            const renamedSubParts = part.subParts.map((sp, idx) => ({
+              ...sp,
+              name: `Phần ${parentIndex}.${idx + 1}`,
+            }));
+            return { ...part, splitIntoSubParts: checked, subParts: renamedSubParts };
+          }
+          return { ...part, splitIntoSubParts: checked };
+        }
+        return part;
+      }),
     );
   };
 
@@ -698,7 +712,7 @@ const EditExamFormCategory: React.FC = () => {
               <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
             ) : (
               <div className="space-y-6">
-                {parts.map((part) => {
+                {parts.map((part, partIndex) => {
                   const isExpanded = expandedParts[part.id] || false;
                   return (
                     <div key={part.id} className="border rounded-md p-4">
@@ -732,7 +746,7 @@ const EditExamFormCategory: React.FC = () => {
                               <input
                                 type="checkbox"
                                 checked={!!part.splitIntoSubParts}
-                                onChange={(e) => handleSplitIntoSubPartsChange(part.id, e.target.checked)}
+                                onChange={(e) => handleSplitIntoSubPartsToggle(part.id, e.target.checked)}
                                 className="form-checkbox h-4 w-4 text-orange-600"
                               />
                               <span>Chia thành các phần con</span>
@@ -740,13 +754,12 @@ const EditExamFormCategory: React.FC = () => {
                           </div>
                           {part.splitIntoSubParts && (
                             <div className="space-y-4 mb-4 border rounded-md p-4 bg-yellow-50 dark:bg-yellow-900">
-                              {(part.subParts || []).map((subPart) => (
+                              {(part.subParts || []).map((subPart, subIndex) => (
                                 <div key={subPart.id} className="relative border rounded-md p-4 bg-white dark:bg-gray-800">
                                   <Input
-                                    value={subPart.name}
-                                    onChange={(e) => handleSubPartChildNameChange(part.id, subPart.id, e.target.value)}
-                                    placeholder="Tên phần con"
-                                    className="mb-2"
+                                    value={`Phần ${partIndex + 1}.${subIndex + 1}`}
+                                    readOnly
+                                    className="mb-2 cursor-not-allowed bg-gray-100 dark:bg-gray-700"
                                   />
                                   <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
                                     <input
