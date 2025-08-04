@@ -8,7 +8,9 @@ import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Clock, Target } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 
 interface ExamFormCategory {
   id: string;
@@ -25,6 +27,9 @@ interface ExamFormCategory {
     threeCorrect: number;
     fourCorrect: number;
   };
+  timeSettingMode?: 'total' | 'per-part';
+  totalTimeMinutes?: number;
+  perPartTimes?: Record<string, number>;
 }
 
 interface PartItem {
@@ -48,6 +53,13 @@ const mockExamCategories: ExamFormCategory[] = [
       threeCorrect: 0,
       fourCorrect: 0,
     },
+    timeSettingMode: 'per-part',
+    totalTimeMinutes: 120,
+    perPartTimes: {
+      part1: 30,
+      part2: 30,
+      part3: 60,
+    },
   },
   {
     id: '2',
@@ -64,6 +76,9 @@ const mockExamCategories: ExamFormCategory[] = [
       threeCorrect: 0,
       fourCorrect: 0,
     },
+    timeSettingMode: 'total',
+    totalTimeMinutes: 90,
+    perPartTimes: {},
   },
 ];
 
@@ -90,11 +105,19 @@ const EditExamFormCategory: React.FC = () => {
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
       setCategory(foundCategory);
+      // Initialize perPartTimes if missing
+      if (!foundCategory.perPartTimes) {
+        const initialTimes: Record<string, number> = {};
+        parts.forEach(p => {
+          initialTimes[p.id] = 30;
+        });
+        setCategory(prev => prev ? { ...prev, perPartTimes: initialTimes } : prev);
+      }
     } else {
       toast.error('Không tìm thấy danh mục kỳ thi!');
       navigate('/word-exam-upload?tab=exam-categories');
     }
-  }, [categoryId, navigate]);
+  }, [categoryId, navigate, parts]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (category) {
@@ -143,13 +166,73 @@ const EditExamFormCategory: React.FC = () => {
       name: trimmedName,
     };
     setParts(prev => [...prev, newPart]);
+    // Also add default time for new part if per-part mode
+    if (category?.timeSettingMode === 'per-part') {
+      setCategory(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          perPartTimes: {
+            ...prev.perPartTimes,
+            [newPart.id]: 30,
+          },
+        };
+      });
+    }
     setNewPartName('');
     toast.success('Đã thêm phần thi mới.');
   };
 
   const handleDeletePart = (id: string) => {
     setParts(prev => prev.filter(p => p.id !== id));
+    if (category?.perPartTimes) {
+      const newTimes = { ...category.perPartTimes };
+      delete newTimes[id];
+      setCategory(prev => prev ? { ...prev, perPartTimes: newTimes } : prev);
+    }
     toast.success('Đã xóa phần thi.');
+  };
+
+  const handleTimeSettingModeChange = (value: 'total' | 'per-part') => {
+    if (category) {
+      setCategory({
+        ...category,
+        timeSettingMode: value,
+      });
+    }
+  };
+
+  const handleTotalTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value);
+    if (category) {
+      setCategory({
+        ...category,
+        totalTimeMinutes: isNaN(val) ? 0 : val,
+      });
+    }
+  };
+
+  const handlePerPartTimeChange = (partId: string, value: number) => {
+    if (category) {
+      setCategory({
+        ...category,
+        perPartTimes: {
+          ...category.perPartTimes,
+          [partId]: value,
+        },
+      });
+    }
+  };
+
+  const totalPerPartTime = React.useMemo(() => {
+    if (!category?.perPartTimes) return 0;
+    return Object.values(category.perPartTimes).reduce((acc, cur) => acc + (cur || 0), 0);
+  }, [category?.perPartTimes]);
+
+  const formatTime = (minutes: number) => {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}h ${m}m`;
   };
 
   const handleSave = () => {
@@ -382,6 +465,79 @@ const EditExamFormCategory: React.FC = () => {
               )}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      {/* New Section: Time Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Cài đặt thời gian</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={handleTimeSettingModeChange} className="space-y-4">
+            <div className="flex items-center gap-3 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+              <RadioGroupItem value="total" id="time-total" className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
+              <Label htmlFor="time-total" className="flex flex-col cursor-pointer">
+                <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-blue-600" /> Thời gian tổng
+                </span>
+                <span className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</span>
+              </Label>
+            </div>
+            <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+              <div className="flex items-center gap-3">
+                <RadioGroupItem value="per-part" id="time-per-part" className="h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-400" />
+                <Label htmlFor="time-per-part" className="flex flex-col cursor-pointer">
+                  <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <Target className="h-5 w-5 text-green-600" /> Theo phần thi
+                  </span>
+                  <span className="text-sm text-muted-foreground">Mỗi phần có thời gian riêng</span>
+                </Label>
+              </div>
+              {category.timeSettingMode === 'per-part' && (
+                <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900">
+                  <div className="mb-2 flex justify-between font-semibold text-green-700 dark:text-green-400">
+                    <span>Thời gian từng phần thi</span>
+                    <span>Tổng: {formatTime(totalPerPartTime)}</span>
+                  </div>
+                  <div className="space-y-3">
+                    {parts.map((part, index) => (
+                      <div key={part.id} className="flex items-center gap-4">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">{part.name}</div>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={category.perPartTimes?.[part.id] ?? 0}
+                          onChange={(e) => handlePerPartTimeChange(part.id, Number(e.target.value))}
+                          className="w-20"
+                        />
+                        <span>phút</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {category.timeSettingMode === 'total' && (
+                <div className="mt-4 rounded-md bg-blue-50 p-4 dark:bg-blue-900">
+                  <Label htmlFor="totalTimeMinutes" className="font-semibold text-blue-700 dark:text-blue-400 mb-1 block">
+                    Thời gian tổng (phút)
+                  </Label>
+                  <Input
+                    id="totalTimeMinutes"
+                    type="number"
+                    min={0}
+                    value={category.totalTimeMinutes ?? 0}
+                    onChange={handleTotalTimeChange}
+                    className="w-32"
+                  />
+                  <span className="ml-2 text-muted-foreground">Thời gian hiển thị</span>
+                </div>
+              )}
+            </div>
+          </RadioGroup>
         </CardContent>
       </Card>
 
