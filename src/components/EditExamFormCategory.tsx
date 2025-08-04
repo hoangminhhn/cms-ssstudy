@@ -268,7 +268,6 @@ const EditExamFormCategory: React.FC = () => {
                           size="sm"
                           className="bg-blue-600 hover:bg-blue-700 text-white"
                           onClick={() => {
-                            // You can implement modal or other logic here
                             const newName = prompt('Nhập tên nhóm chủ đề mới:');
                             if (newName && newName.trim() !== '') {
                               setParts(prev =>
