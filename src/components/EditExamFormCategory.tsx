@@ -20,6 +20,7 @@ interface SubPart {
   name: string;
   type: 'Một môn' | 'Nhiều môn';
   subSubjects: SubSubject[];
+  maxSubGroupsSelected?: number;
 }
 
 interface PartItem {
@@ -28,6 +29,7 @@ interface PartItem {
   allowSubGroups?: boolean;
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
+  splitIntoSubParts?: boolean; // New field for "Chia thành các phần con"
 }
 
 interface ExamFormCategory {
@@ -116,8 +118,8 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [] },
-    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [] },
+    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
     {
       id: 'part3',
       name: 'Phần thi 3',
@@ -131,6 +133,7 @@ const EditExamFormCategory: React.FC = () => {
           subSubjects: [],
         },
       ],
+      splitIntoSubParts: false,
     },
   ]);
   const [newPartName, setNewPartName] = React.useState('');
@@ -212,6 +215,7 @@ const EditExamFormCategory: React.FC = () => {
       allowSubGroups: false,
       maxSubGroupsSelected: 1,
       subParts: [],
+      splitIntoSubParts: false,
     };
     setParts(prev => [...prev, newPart]);
     if (category?.timeSettingMode === 'per-part') {
@@ -251,9 +255,9 @@ const EditExamFormCategory: React.FC = () => {
     }
   };
 
-  const handleMaxSubGroupsSelectedChange = (partId: string, value: number) => {
+  const handleSplitIntoSubPartsChange = (partId: string, checked: boolean) => {
     setParts(prev =>
-      prev.map(part => (part.id === partId ? { ...part, maxSubGroupsSelected: value } : part))
+      prev.map(part => (part.id === partId ? { ...part, splitIntoSubParts: checked } : part))
     );
   };
 
@@ -431,6 +435,64 @@ const EditExamFormCategory: React.FC = () => {
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
     return `${h}h ${m}m`;
+  };
+
+  const handleAddSubPartChild = (partId: string) => {
+    const newSubPartChild: SubPart = {
+      id: `subpartchild-${Date.now()}`,
+      name: `Phần con ${Date.now()}`,
+      type: 'Nhiều môn',
+      subSubjects: [],
+    };
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const existingSubParts = part.subParts || [];
+          return { ...part, subParts: [...existingSubParts, newSubPartChild] };
+        }
+        return part;
+      }),
+    );
+    toast.success('Đã thêm phần con mới.');
+  };
+
+  const handleDeleteSubPartChild = (partId: string, subPartId: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const filteredSubParts = (part.subParts || []).filter(sp => sp.id !== subPartId);
+          return { ...part, subParts: filteredSubParts };
+        }
+        return part;
+      }),
+    );
+    toast.success('Đã xóa phần con.');
+  };
+
+  const handleSubPartChildNameChange = (partId: string, subPartId: string, value: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp =>
+            sp.id === subPartId ? { ...sp, name: value } : sp
+          );
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      })
+    );
+  };
+
+  const handleSplitIntoSubPartsToggle = (partId: string, checked: boolean) => {
+    setParts(prev =>
+      prev.map(part => (part.id === partId ? { ...part, splitIntoSubParts: checked } : part))
+    );
+  };
+
+  const handleAllowSubGroupsToggle = (partId: string, checked: boolean) => {
+    setParts(prev =>
+      prev.map(part => (part.id === partId ? { ...part, allowSubGroups: checked } : part))
+    );
   };
 
   const handleSave = () => {
@@ -665,6 +727,56 @@ const EditExamFormCategory: React.FC = () => {
                       </div>
                       {isExpanded && (
                         <>
+                          <div className="mb-4">
+                            <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={!!part.splitIntoSubParts}
+                                onChange={(e) => handleSplitIntoSubPartsChange(part.id, e.target.checked)}
+                                className="form-checkbox h-4 w-4 text-orange-600"
+                              />
+                              <span>Chia thành các phần con</span>
+                            </label>
+                          </div>
+                          {part.splitIntoSubParts && (
+                            <div className="space-y-4 mb-4 border rounded-md p-4 bg-yellow-50 dark:bg-yellow-900">
+                              {(part.subParts || []).map((subPart) => (
+                                <div key={subPart.id} className="relative border rounded-md p-4 bg-white dark:bg-gray-800">
+                                  <Input
+                                    value={subPart.name}
+                                    onChange={(e) => handleSubPartChildNameChange(part.id, subPart.id, e.target.value)}
+                                    placeholder="Tên phần con"
+                                    className="mb-2"
+                                  />
+                                  <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
+                                    <input
+                                      type="checkbox"
+                                      checked={!!subPart.allowSubGroups}
+                                      onChange={(e) => handleAllowSubGroupsToggle(part.id, e.target.checked)}
+                                      className="form-checkbox h-4 w-4 text-orange-600"
+                                    />
+                                    <span>Cho phép chọn nhóm chủ đề</span>
+                                  </label>
+                                  <Button
+                                    variant="ghost"
+                                    className="absolute top-2 right-2 text-red-600 hover:bg-red-50"
+                                    onClick={() => handleDeleteSubPartChild(part.id, subPart.id)}
+                                    size="sm"
+                                    aria-label="Xóa phần con"
+                                  >
+                                    <X className="h-5 w-5" />
+                                  </Button>
+                                </div>
+                              ))}
+                              <Button
+                                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                                onClick={() => handleAddSubPartChild(part.id)}
+                                size="sm"
+                              >
+                                + Thêm phần con
+                              </Button>
+                            </div>
+                          )}
                           <div className="mb-2">
                             <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
                               <input
