@@ -37,8 +37,7 @@ interface ExamFormCategory {
   id: string;
   examName: string;
   displayMode: 'single-screen' | 'per-section';
-  navigationMode: 'free' | 'fixed';
-  questionSelection: 'any' | 'current-section-only';
+  // Removed navigationMode and questionSelection fields
   questionDisplay: 'one-per-screen' | 'all-at-once';
   configureScoring: boolean;
   partSelection: 'full' | 'part1' | 'part2' | 'part3';
@@ -58,8 +57,6 @@ const mockExamCategories: ExamFormCategory[] = [
     id: '1',
     examName: 'Kỳ thi HSA',
     displayMode: 'single-screen',
-    navigationMode: 'free',
-    questionSelection: 'any',
     questionDisplay: 'one-per-screen',
     configureScoring: true,
     partSelection: 'full',
@@ -81,8 +78,6 @@ const mockExamCategories: ExamFormCategory[] = [
     id: '2',
     examName: 'Kỳ thi TSA',
     displayMode: 'per-section',
-    navigationMode: 'fixed',
-    questionSelection: 'current-section-only',
     questionDisplay: 'all-at-once',
     configureScoring: false,
     partSelection: 'full',
@@ -564,7 +559,7 @@ const EditExamFormCategory: React.FC = () => {
             </div>
           </div>
 
-          {/* Row 2: 3 dropdowns */}
+          {/* Row 2: Only 'Hình thức hiển thị phần thi' remains */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
@@ -575,32 +570,6 @@ const EditExamFormCategory: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="single-screen">Toàn bộ phần thi</SelectItem>
                   <SelectItem value="per-section">Lần lượt từng phần thi</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="navigationMode">Cách di chuyển giữa các phần thi</Label>
-              <Select value={category.navigationMode} onValueChange={(value) => handleSelectChange(value, 'navigationMode')}>
-                <SelectTrigger id="navigationMode">
-                  <SelectValue placeholder="Chọn cách di chuyển" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">Tự do</SelectItem>
-                  <SelectItem value="fixed">Cố định</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="questionSelection">Cách chọn câu hỏi</Label>
-              <Select value={category.questionSelection} onValueChange={(value) => handleSelectChange(value, 'questionSelection')}>
-                <SelectTrigger id="questionSelection">
-                  <SelectValue placeholder="Chọn cách chọn câu hỏi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Làm bất kỳ</SelectItem>
-                  <SelectItem value="current-section-only">Chỉ phần hiện tại</SelectItem>
                 </SelectContent>
               </Select>
             </div>
