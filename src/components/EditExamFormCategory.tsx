@@ -410,131 +410,134 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New Section: Parts management */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản lý Phần thi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Nhập tên phần thi mới"
-              value={newPartName}
-              onChange={(e) => setNewPartName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddPart();
-                }
-              }}
-            />
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-              Thêm
-            </Button>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Tên phần thi</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {parts.length === 0 ? (
+      {/* New Section: Parts management and Time Settings side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Quản lý phần thi */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Quản lý Phần thi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2 mb-4">
+              <Input
+                placeholder="Nhập tên phần thi mới"
+                value={newPartName}
+                onChange={(e) => setNewPartName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddPart();
+                  }
+                }}
+              />
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+                Thêm
+              </Button>
+            </div>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
-                    Chưa có phần thi nào.
-                  </TableCell>
+                  <TableHead>Tên phần thi</TableHead>
+                  <TableHead className="text-right">Thao tác</TableHead>
                 </TableRow>
-              ) : (
-                parts.map((part) => (
-                  <TableRow key={part.id}>
-                    <TableCell>{part.name}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        className="text-red-600 hover:bg-red-50"
-                        onClick={() => handleDeletePart(part.id)}
-                        aria-label={`Xóa phần thi ${part.name}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+              </TableHeader>
+              <TableBody>
+                {parts.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
+                      Chưa có phần thi nào.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* New Section: Time Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cài đặt thời gian</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={handleTimeSettingModeChange} className="space-y-4">
-            <div className="flex items-center gap-3 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-              <RadioGroupItem value="total" id="time-total" className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
-              <Label htmlFor="time-total" className="flex flex-col cursor-pointer">
-                <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-600" /> Thời gian tổng
-                </span>
-                <span className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</span>
-                {category.timeSettingMode === 'total' && (
-                  <Input
-                    id="totalTimeMinutes"
-                    type="number"
-                    min={0}
-                    value={category.totalTimeMinutes ?? 0}
-                    onChange={handleTotalTimeChange}
-                    className="mt-2 w-32"
-                    placeholder="Nhập thời gian tổng (phút)"
-                  />
+                ) : (
+                  parts.map((part) => (
+                    <TableRow key={part.id}>
+                      <TableCell>{part.name}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeletePart(part.id)}
+                          aria-label={`Xóa phần thi ${part.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
                 )}
-              </Label>
-            </div>
-            <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value="per-part" id="time-per-part" className="h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-400" />
-                <Label htmlFor="time-per-part" className="flex flex-col cursor-pointer">
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Cài đặt thời gian */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Cài đặt thời gian</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={handleTimeSettingModeChange} className="space-y-4">
+              <div className="flex items-center gap-3 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                <RadioGroupItem value="total" id="time-total" className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
+                <Label htmlFor="time-total" className="flex flex-col cursor-pointer">
                   <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-green-600" /> Theo phần thi
+                    <Clock className="h-5 w-5 text-blue-600" /> Thời gian tổng
                   </span>
-                  <span className="text-sm text-muted-foreground">Mỗi phần có thời gian riêng</span>
+                  <span className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</span>
+                  {category.timeSettingMode === 'total' && (
+                    <Input
+                      id="totalTimeMinutes"
+                      type="number"
+                      min={0}
+                      value={category.totalTimeMinutes ?? 0}
+                      onChange={handleTotalTimeChange}
+                      className="mt-2 w-32"
+                      placeholder="Nhập thời gian tổng (phút)"
+                    />
+                  )}
                 </Label>
               </div>
-              {category.timeSettingMode === 'per-part' && (
-                <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900">
-                  <div className="mb-2 flex justify-between font-semibold text-green-700 dark:text-green-400">
-                    <span>Thời gian từng phần thi</span>
-                    <span>Tổng: {formatTime(totalPerPartTime)}</span>
-                  </div>
-                  <div className="space-y-3">
-                    {parts.map((part, index) => (
-                      <div key={part.id} className="flex items-center gap-4">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200">
-                          {index + 1}
-                        </div>
-                        <div className="flex-1">{part.name}</div>
-                        <Input
-                          type="number"
-                          min={0}
-                          value={category.perPartTimes?.[part.id] ?? 0}
-                          onChange={(e) => handlePerPartTimeChange(part.id, Number(e.target.value))}
-                          className="w-20"
-                        />
-                        <span>phút</span>
-                      </div>
-                    ))}
-                  </div>
+              <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="per-part" id="time-per-part" className="h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-400" />
+                  <Label htmlFor="time-per-part" className="flex flex-col cursor-pointer">
+                    <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Target className="h-5 w-5 text-green-600" /> Theo phần thi
+                    </span>
+                    <span className="text-sm text-muted-foreground">Mỗi phần có thời gian riêng</span>
+                  </Label>
                 </div>
-              )}
-            </div>
-          </RadioGroup>
-        </CardContent>
-      </Card>
+                {category.timeSettingMode === 'per-part' && (
+                  <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900">
+                    <div className="mb-2 flex justify-between font-semibold text-green-700 dark:text-green-400">
+                      <span>Thời gian từng phần thi</span>
+                      <span>Tổng: {formatTime(totalPerPartTime)}</span>
+                    </div>
+                    <div className="space-y-3">
+                      {parts.map((part, index) => (
+                        <div key={part.id} className="flex items-center gap-4">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1">{part.name}</div>
+                          <Input
+                            type="number"
+                            min={0}
+                            value={category.perPartTimes?.[part.id] ?? 0}
+                            onChange={(e) => handlePerPartTimeChange(part.id, Number(e.target.value))}
+                            className="w-20"
+                          />
+                          <span>phút</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </RadioGroup>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
