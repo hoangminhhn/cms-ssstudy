@@ -707,6 +707,8 @@ const EditExamFormCategory: React.FC = () => {
                                 {part.subParts && part.subParts.length > 0 ? (
                                   part.subParts.map((subPart) => {
                                     const subSubjectKey = `${part.id}-${subPart.id}`;
+                                    // Collect names of selected subjects for disabling in select
+                                    const selectedSubjectNames = subPart.subSubjects.map(ss => ss.name.toLowerCase());
                                     return (
                                       <div key={subPart.id} className="space-y-2 border rounded-md p-3 bg-white dark:bg-gray-800">
                                         <div className="flex items-center gap-2">
@@ -745,7 +747,6 @@ const EditExamFormCategory: React.FC = () => {
                                             <Select
                                               value={subPart.subSubjects.length > 0 ? subPart.subSubjects[0].name : ''}
                                               onValueChange={(val) => {
-                                                // Update single subSubject or add if none
                                                 setParts(prev =>
                                                   prev.map(part => {
                                                     if (part.id === part.id) {
@@ -818,11 +819,19 @@ const EditExamFormCategory: React.FC = () => {
                                                     <SelectValue placeholder="Lựa chọn môn" />
                                                   </SelectTrigger>
                                                   <SelectContent>
-                                                    {availableSubjects.map((subject) => (
-                                                      <SelectItem key={subject} value={subject}>
-                                                        {subject}
-                                                      </SelectItem>
-                                                    ))}
+                                                    {availableSubjects.map((subject) => {
+                                                      const isSelected = selectedSubjectNames.includes(subject.toLowerCase());
+                                                      return (
+                                                        <SelectItem
+                                                          key={subject}
+                                                          value={subject}
+                                                          disabled={isSelected}
+                                                          className={isSelected ? 'opacity-50 italic' : ''}
+                                                        >
+                                                          {subject} {isSelected && '(Đã sử dụng)'}
+                                                        </SelectItem>
+                                                      );
+                                                    })}
                                                   </SelectContent>
                                                 </Select>
                                                 <Button
