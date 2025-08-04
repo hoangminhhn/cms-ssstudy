@@ -18,7 +18,8 @@ interface SubPart {
 interface PartItem {
   id: string;
   name: string;
-  allowSubGroups?: boolean; // New property to track if sub-groups allowed
+  allowSubGroups?: boolean;
+  maxSubGroupsSelected?: number; // New field for max groups selectable
   subParts?: SubPart[];
 }
 
@@ -95,12 +96,13 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false },
-    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false },
+    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1 },
+    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1 },
     {
       id: 'part3',
       name: 'Phần thi 3',
       allowSubGroups: true,
+      maxSubGroupsSelected: 1,
       subParts: [
         { id: 'subpart1', name: 'Khoa học (3 trong 5 môn)' },
         { id: 'subpart2', name: 'Tiếng Anh' },
@@ -178,6 +180,7 @@ const EditExamFormCategory: React.FC = () => {
       id: `part-${Date.now()}`,
       name: trimmedName,
       allowSubGroups: false,
+      maxSubGroupsSelected: 1,
     };
     setParts(prev => [...prev, newPart]);
     if (category?.timeSettingMode === 'per-part') {
@@ -210,12 +213,17 @@ const EditExamFormCategory: React.FC = () => {
     setParts(prev =>
       prev.map(part => (part.id === partId ? { ...part, allowSubGroups: checked } : part))
     );
-    // Optionally clear subParts if unchecked
     if (!checked) {
       setParts(prev =>
         prev.map(part => (part.id === partId ? { ...part, subParts: [] } : part))
       );
     }
+  };
+
+  const handleMaxSubGroupsSelectedChange = (partId: string, value: number) => {
+    setParts(prev =>
+      prev.map(part => (part.id === partId ? { ...part, maxSubGroupsSelected: value } : part))
+    );
   };
 
   const handleSubPartNameChange = (partId: string, value: string) => {
@@ -532,6 +540,21 @@ const EditExamFormCategory: React.FC = () => {
                         <span>Cho phép chọn nhóm chủ đề</span>
                       </label>
                     </div>
+                    {part.allowSubGroups && (
+                      <div className="mb-4">
+                        <Label htmlFor={`maxSubGroupsSelected-${part.id}`} className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Số nhóm chủ đề tối đa được chọn
+                        </Label>
+                        <Input
+                          id={`maxSubGroupsSelected-${part.id}`}
+                          type="number"
+                          min={1}
+                          value={part.maxSubGroupsSelected ?? 1}
+                          onChange={(e) => handleMaxSubGroupsSelectedChange(part.id, Number(e.target.value))}
+                          className="w-24"
+                        />
+                      </div>
+                    )}
                     {/* SubParts management */}
                     <div className="space-y-2">
                       {(part.subParts && part.subParts.length > 0) ? (
