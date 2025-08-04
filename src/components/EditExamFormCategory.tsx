@@ -8,9 +8,19 @@ import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Clock, Target } from 'lucide-react';
+import { Trash2, Clock, Target, PlusCircle, MinusCircle } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { cn } from '@/lib/utils';
+
+interface SubPart {
+  id: string;
+  name: string;
+}
+
+interface PartItem {
+  id: string;
+  name: string;
+  subParts?: SubPart[];
+}
 
 interface ExamFormCategory {
   id: string;
@@ -30,11 +40,6 @@ interface ExamFormCategory {
   timeSettingMode?: 'total' | 'per-part';
   totalTimeMinutes?: number;
   perPartTimes?: Record<string, number>;
-}
-
-interface PartItem {
-  id: string;
-  name: string;
 }
 
 const mockExamCategories: ExamFormCategory[] = [
@@ -92,9 +97,17 @@ const EditExamFormCategory: React.FC = () => {
   const [parts, setParts] = React.useState<PartItem[]>([
     { id: 'part1', name: 'Phần thi 1' },
     { id: 'part2', name: 'Phần thi 2' },
-    { id: 'part3', name: 'Phần thi 3' },
+    {
+      id: 'part3',
+      name: 'Phần thi 3',
+      subParts: [
+        { id: 'subpart1', name: 'Khoa học (3 trong 5 môn)' },
+        { id: 'subpart2', name: 'Tiếng Anh' },
+      ],
+    },
   ]);
   const [newPartName, setNewPartName] = React.useState('');
+  const [newSubPartNames, setNewSubPartNames] = React.useState<Record<string, string>>({});
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -105,7 +118,6 @@ const EditExamFormCategory: React.FC = () => {
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
       setCategory(foundCategory);
-      // Initialize perPartTimes if missing
       if (!foundCategory.perPartTimes) {
         const initialTimes: Record<string, number> = {};
         parts.forEach(p => {
@@ -166,7 +178,6 @@ const EditExamFormCategory: React.FC = () => {
       name: trimmedName,
     };
     setParts(prev => [...prev, newPart]);
-    // Also add default time for new part if per-part mode
     if (category?.timeSettingMode === 'per-part') {
       setCategory(prev => {
         if (!prev) return prev;
@@ -191,6 +202,50 @@ const EditExamFormCategory: React.FC = () => {
       setCategory(prev => prev ? { ...prev, perPartTimes: newTimes } : prev);
     }
     toast.success('Đã xóa phần thi.');
+  };
+
+  const handleSubPartNameChange = (partId: string, value: string) => {
+    setNewSubPartNames(prev => ({ ...prev, [partId]: value }));
+  };
+
+  const handleAddSubPart = (partId: string) => {
+    const name = newSubPartNames[partId]?.trim();
+    if (!name) {
+      toast.error('Tên nhóm chủ đề không được để trống.');
+      return;
+    }
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const existingSubParts = part.subParts || [];
+          if (existingSubParts.some(sp => sp.name.toLowerCase() === name.toLowerCase())) {
+            toast.error('Nhóm chủ đề đã tồn tại.');
+            return part;
+          }
+          const newSubPart: SubPart = {
+            id: `subpart-${Date.now()}`,
+            name,
+          };
+          return { ...part, subParts: [...existingSubParts, newSubPart] };
+        }
+        return part;
+      }),
+    );
+    setNewSubPartNames(prev => ({ ...prev, [partId]: '' }));
+    toast.success('Đã thêm nhóm chủ đề mới.');
+  };
+
+  const handleDeleteSubPart = (partId: string, subPartId: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const filteredSubParts = (part.subParts || []).filter(sp => sp.id !== subPartId);
+          return { ...part, subParts: filteredSubParts };
+        }
+        return part;
+      }),
+    );
+    toast.success('Đã xóa nhóm chủ đề.');
   };
 
   const handleTimeSettingModeChange = (value: 'total' | 'per-part') => {
@@ -434,39 +489,70 @@ const EditExamFormCategory: React.FC = () => {
                 Thêm
               </Button>
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tên phần thi</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {parts.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
-                      Chưa có phần thi nào.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  parts.map((part) => (
-                    <TableRow key={part.id}>
-                      <TableCell>{part.name}</TableCell>
-                      <TableCell className="text-right">
+            {parts.length === 0 ? (
+              <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
+            ) : (
+              <div className="space-y-6">
+                {parts.map((part) => (
+                  <div key={part.id} className="border rounded-md p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold">{part.name}</h4>
+                      <Button
+                        variant="ghost"
+                        className="text-red-600 hover:bg-red-50"
+                        onClick={() => handleDeletePart(part.id)}
+                        aria-label={`Xóa phần thi ${part.name}`}
+                        size="sm"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {/* SubParts management */}
+                    <div className="space-y-2">
+                      {(part.subParts && part.subParts.length > 0) ? (
+                        part.subParts.map((subPart) => (
+                          <div key={subPart.id} className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-md px-3 py-1">
+                            <span>{subPart.name}</span>
+                            <Button
+                              variant="ghost"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleDeleteSubPart(part.id, subPart.id)}
+                              size="sm"
+                              aria-label={`Xóa nhóm chủ đề ${subPart.name}`}
+                            >
+                              <MinusCircle className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
+                      )}
+                      <div className="flex gap-2 mt-2">
+                        <Input
+                          placeholder="Nhập tên nhóm chủ đề mới"
+                          value={newSubPartNames[part.id] || ''}
+                          onChange={(e) => handleSubPartNameChange(part.id, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddSubPart(part.id);
+                            }
+                          }}
+                          className="flex-1"
+                        />
                         <Button
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeletePart(part.id)}
-                          aria-label={`Xóa phần thi ${part.name}`}
+                          className="bg-green-500 hover:bg-green-600 text-white"
+                          onClick={() => handleAddSubPart(part.id)}
+                          size="sm"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <PlusCircle className="h-4 w-4 mr-1" /> Thêm nhóm
                         </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
