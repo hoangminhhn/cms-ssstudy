@@ -7,19 +7,26 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, PlusCircle, MinusCircle } from 'lucide-react';
+import { Trash2, Clock, Target, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+interface SubSubject {
+  id: string;
+  name: string;
+}
 
 interface SubPart {
   id: string;
   name: string;
+  type: 'Một môn' | 'Nhiều môn'; // Added type for group
+  subSubjects: SubSubject[]; // Môn học con
 }
 
 interface PartItem {
   id: string;
   name: string;
   allowSubGroups?: boolean;
-  maxSubGroupsSelected?: number; // New field for max groups selectable
+  maxSubGroupsSelected?: number;
   subParts?: SubPart[];
 }
 
@@ -88,6 +95,8 @@ const mockExamCategories: ExamFormCategory[] = [
   },
 ];
 
+const groupTypeOptions = ['Một môn', 'Nhiều môn'] as const;
+
 const EditExamFormCategory: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -96,21 +105,27 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1 },
-    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1 },
+    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [] },
+    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [] },
     {
       id: 'part3',
       name: 'Phần thi 3',
       allowSubGroups: true,
       maxSubGroupsSelected: 1,
       subParts: [
-        { id: 'subpart1', name: 'Khoa học (3 trong 5 môn)' },
-        { id: 'subpart2', name: 'Tiếng Anh' },
+        {
+          id: 'subpart1',
+          name: 'Khoa học',
+          type: 'Nhiều môn',
+          subSubjects: [],
+        },
       ],
     },
   ]);
   const [newPartName, setNewPartName] = React.useState('');
   const [newSubPartNames, setNewSubPartNames] = React.useState<Record<string, string>>({});
+  const [newSubSubjectNames, setNewSubSubjectNames] = React.useState<Record<string, string>>({});
+  const [expandedParts, setExpandedParts] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -133,6 +148,10 @@ const EditExamFormCategory: React.FC = () => {
       navigate('/word-exam-upload?tab=exam-categories');
     }
   }, [categoryId, navigate, parts]);
+
+  const togglePartExpanded = (partId: string) => {
+    setExpandedParts(prev => ({ ...prev, [partId]: !prev[partId] }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (category) {
@@ -181,6 +200,7 @@ const EditExamFormCategory: React.FC = () => {
       name: trimmedName,
       allowSubGroups: false,
       maxSubGroupsSelected: 1,
+      subParts: [],
     };
     setParts(prev => [...prev, newPart]);
     if (category?.timeSettingMode === 'per-part') {
@@ -226,8 +246,32 @@ const EditExamFormCategory: React.FC = () => {
     );
   };
 
-  const handleSubPartNameChange = (partId: string, value: string) => {
-    setNewSubPartNames(prev => ({ ...prev, [partId]: value }));
+  const handleSubPartNameChange = (partId: string, subPartId: string, value: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp =>
+            sp.id === subPartId ? { ...sp, name: value } : sp
+          );
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      })
+    );
+  };
+
+  const handleSubPartTypeChange = (partId: string, subPartId: string, value: 'Một môn' | 'Nhiều môn') => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp =>
+            sp.id === subPartId ? { ...sp, type: value } : sp
+          );
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      })
+    );
   };
 
   const handleAddSubPart = (partId: string) => {
@@ -247,6 +291,8 @@ const EditExamFormCategory: React.FC = () => {
           const newSubPart: SubPart = {
             id: `subpart-${Date.now()}`,
             name,
+            type: 'Một môn',
+            subSubjects: [],
           };
           return { ...part, subParts: [...existingSubParts, newSubPart] };
         }
@@ -268,6 +314,79 @@ const EditExamFormCategory: React.FC = () => {
       }),
     );
     toast.success('Đã xóa nhóm chủ đề.');
+  };
+
+  const handleSubSubjectNameChange = (partId: string, subPartId: string, subSubjectId: string, value: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp => {
+            if (sp.id === subPartId) {
+              const updatedSubSubjects = sp.subSubjects.map(ss =>
+                ss.id === subSubjectId ? { ...ss, name: value } : ss
+              );
+              return { ...sp, subSubjects: updatedSubSubjects };
+            }
+            return sp;
+          });
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      })
+    );
+  };
+
+  const handleAddSubSubject = (partId: string, subPartId: string) => {
+    const key = `${partId}-${subPartId}`;
+    const name = newSubSubjectNames[key]?.trim();
+    if (!name) {
+      toast.error('Tên môn học con không được để trống.');
+      return;
+    }
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp => {
+            if (sp.id === subPartId) {
+              const existingSubSubjects = sp.subSubjects || [];
+              if (existingSubSubjects.some(ss => ss.name.toLowerCase() === name.toLowerCase())) {
+                toast.error('Môn học con đã tồn tại.');
+                return sp;
+              }
+              const newSubSubject: SubSubject = {
+                id: `subsubject-${Date.now()}`,
+                name,
+              };
+              return { ...sp, subSubjects: [...existingSubSubjects, newSubSubject] };
+            }
+            return sp;
+          });
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      }),
+    );
+    setNewSubSubjectNames(prev => ({ ...prev, [key]: '' }));
+    toast.success('Đã thêm môn học con mới.');
+  };
+
+  const handleDeleteSubSubject = (partId: string, subPartId: string, subSubjectId: string) => {
+    setParts(prev =>
+      prev.map(part => {
+        if (part.id === partId) {
+          const updatedSubParts = (part.subParts || []).map(sp => {
+            if (sp.id === subPartId) {
+              const filteredSubSubjects = (sp.subSubjects || []).filter(ss => ss.id !== subSubjectId);
+              return { ...sp, subSubjects: filteredSubSubjects };
+            }
+            return sp;
+          });
+          return { ...part, subParts: updatedSubParts };
+        }
+        return part;
+      }),
+    );
+    toast.success('Đã xóa môn học con.');
   };
 
   const handleTimeSettingModeChange = (value: 'total' | 'per-part') => {
@@ -515,94 +634,166 @@ const EditExamFormCategory: React.FC = () => {
               <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
             ) : (
               <div className="space-y-6">
-                {parts.map((part) => (
-                  <div key={part.id} className="border rounded-md p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold">{part.name}</h4>
-                      <Button
-                        variant="ghost"
-                        className="text-red-600 hover:bg-red-50"
-                        onClick={() => handleDeletePart(part.id)}
-                        aria-label={`Xóa phần thi ${part.name}`}
-                        size="sm"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="mb-2">
-                      <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={!!part.allowSubGroups}
-                          onChange={(e) => handleAllowSubGroupsChange(part.id, e.target.checked)}
-                          className="form-checkbox h-4 w-4 text-orange-600"
-                        />
-                        <span>Cho phép chọn nhóm chủ đề</span>
-                      </label>
-                    </div>
-                    {part.allowSubGroups && (
-                      <div className="mb-4">
-                        <Label htmlFor={`maxSubGroupsSelected-${part.id}`} className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Số nhóm chủ đề tối đa được chọn
-                        </Label>
-                        <Input
-                          id={`maxSubGroupsSelected-${part.id}`}
-                          type="number"
-                          min={1}
-                          value={part.maxSubGroupsSelected ?? 1}
-                          onChange={(e) => handleMaxSubGroupsSelectedChange(part.id, Number(e.target.value))}
-                          className="w-24"
-                        />
-                      </div>
-                    )}
-                    {/* SubParts management */}
-                    <div className="space-y-2">
-                      {(part.subParts && part.subParts.length > 0) ? (
-                        part.subParts.map((subPart) => (
-                          <div key={subPart.id} className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-md px-3 py-1">
-                            <span>{subPart.name}</span>
-                            <Button
-                              variant="ghost"
-                              className="text-red-600 hover:bg-red-50"
-                              onClick={() => handleDeleteSubPart(part.id, subPart.id)}
-                              size="sm"
-                              aria-label={`Xóa nhóm chủ đề ${subPart.name}`}
-                            >
-                              <MinusCircle className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))
-                      ) : (
-                        part.allowSubGroups ? (
-                          <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
-                        ) : null
-                      )}
-                      {part.allowSubGroups && (
-                        <div className="flex gap-2 mt-2">
-                          <Input
-                            placeholder="Nhập tên nhóm chủ đề mới"
-                            value={newSubPartNames[part.id] || ''}
-                            onChange={(e) => handleSubPartNameChange(part.id, e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleAddSubPart(part.id);
-                              }
-                            }}
-                            className="flex-1"
-                          />
-                          <Button
-                            className="bg-green-500 hover:bg-green-600 text-white"
-                            onClick={() => handleAddSubPart(part.id)}
-                            size="sm"
-                          >
-                            <PlusCircle className="h-4 w-4 mr-1" /> Thêm nhóm
-                          </Button>
+                {parts.map((part) => {
+                  const isExpanded = expandedParts[part.id] || false;
+                  return (
+                    <div key={part.id} className="border rounded-md p-4">
+                      <div className="flex items-center justify-between mb-2 cursor-pointer select-none" onClick={() => togglePartExpanded(part.id)}>
+                        <div className="flex items-center gap-2">
+                          {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                          <h4 className="font-semibold">{part.name}</h4>
+                          {part.subParts && part.subParts.length > 0 && (
+                            <span className="ml-2 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-xs font-medium select-none">
+                              Có chủ đề ({part.subParts.length})
+                            </span>
+                          )}
                         </div>
+                        <Button
+                          variant="ghost"
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePart(part.id);
+                          }}
+                          aria-label={`Xóa phần thi ${part.name}`}
+                          size="sm"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {isExpanded && (
+                        <>
+                          <div className="mb-2">
+                            <label className="inline-flex items-center space-x-2 cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={!!part.allowSubGroups}
+                                onChange={(e) => handleAllowSubGroupsChange(part.id, e.target.checked)}
+                                className="form-checkbox h-4 w-4 text-orange-600"
+                              />
+                              <span>Cho phép chọn nhóm chủ đề</span>
+                            </label>
+                          </div>
+                          {part.allowSubGroups && (
+                            <>
+                              <div className="mb-4">
+                                <Label htmlFor={`maxSubGroupsSelected-${part.id}`} className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                  Số nhóm chủ đề tối đa được chọn
+                                </Label>
+                                <Input
+                                  id={`maxSubGroupsSelected-${part.id}`}
+                                  type="number"
+                                  min={1}
+                                  value={part.maxSubGroupsSelected ?? 1}
+                                  onChange={(e) => handleMaxSubGroupsSelectedChange(part.id, Number(e.target.value))}
+                                  className="w-24"
+                                />
+                              </div>
+                              <div className="space-y-4 border rounded-md p-4 bg-blue-50 dark:bg-blue-900">
+                                <Label className="font-semibold">Nhóm chủ đề</Label>
+                                {part.subParts && part.subParts.length > 0 ? (
+                                  part.subParts.map((subPart) => {
+                                    const subSubjectKey = `${part.id}-${subPart.id}`;
+                                    return (
+                                      <div key={subPart.id} className="space-y-2 border rounded-md p-3 bg-white dark:bg-gray-800">
+                                        <div className="flex items-center gap-2">
+                                          <Input
+                                            value={subPart.name}
+                                            onChange={(e) => handleSubPartNameChange(part.id, subPart.id, e.target.value)}
+                                            placeholder="Tên nhóm chủ đề"
+                                            className="flex-1"
+                                          />
+                                          <Select
+                                            value={subPart.type}
+                                            onValueChange={(val) => handleSubPartTypeChange(part.id, subPart.id, val as 'Một môn' | 'Nhiều môn')}
+                                          >
+                                            <SelectTrigger className="w-[120px]">
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              {groupTypeOptions.map((opt) => (
+                                                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                          </Select>
+                                          <Button
+                                            variant="ghost"
+                                            className="text-red-600 hover:bg-red-50"
+                                            onClick={() => handleDeleteSubPart(part.id, subPart.id)}
+                                            size="sm"
+                                            aria-label="Xóa nhóm chủ đề"
+                                          >
+                                            <X className="h-5 w-5" />
+                                          </Button>
+                                        </div>
+                                        <div>
+                                          <Label className="mb-1 block font-medium">Môn học con</Label>
+                                          {subPart.subSubjects && subPart.subSubjects.length > 0 ? (
+                                            subPart.subSubjects.map((subSubject) => (
+                                              <div key={subSubject.id} className="flex items-center gap-2 mb-1">
+                                                <Input
+                                                  value={subSubject.name}
+                                                  onChange={(e) => handleSubSubjectNameChange(part.id, subPart.id, subSubject.id, e.target.value)}
+                                                  placeholder="Tên môn học con"
+                                                  className="flex-1"
+                                                />
+                                                <Button
+                                                  variant="ghost"
+                                                  className="text-red-600 hover:bg-red-50"
+                                                  onClick={() => handleDeleteSubSubject(part.id, subPart.id, subSubject.id)}
+                                                  size="sm"
+                                                  aria-label="Xóa môn học con"
+                                                >
+                                                  <X className="h-5 w-5" />
+                                                </Button>
+                                              </div>
+                                            ))
+                                          ) : (
+                                            <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
+                                          )}
+                                          <div className="flex gap-2 mt-1">
+                                            <Input
+                                              placeholder="Nhập tên môn học con"
+                                              value={newSubSubjectNames[subSubjectKey] || ''}
+                                              onChange={(e) => setNewSubSubjectNames(prev => ({ ...prev, [subSubjectKey]: e.target.value }))}
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                  e.preventDefault();
+                                                  handleAddSubSubject(part.id, subPart.id);
+                                                }
+                                              }}
+                                              className="flex-1"
+                                            />
+                                            <Button
+                                              className="bg-green-500 hover:bg-green-600 text-white"
+                                              onClick={() => handleAddSubSubject(part.id, subPart.id)}
+                                              size="sm"
+                                            >
+                                              + Thêm môn
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">Chưa có nhóm chủ đề nào.</p>
+                                )}
+                                <Button
+                                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                                  onClick={() => handleAddSubPart(part.id)}
+                                  size="sm"
+                                >
+                                  + Thêm nhóm
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                        </>
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>
