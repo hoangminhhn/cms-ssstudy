@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Trash2, Clock, Target, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface SubSubject {
@@ -21,7 +21,6 @@ interface SubPart {
   type: 'Một môn' | 'Nhiều môn';
   subSubjects: SubSubject[];
   maxSubGroupsSelected?: number;
-  // Removed allowSubGroups from sub-parts as requested
 }
 
 interface PartItem {
@@ -30,7 +29,7 @@ interface PartItem {
   allowSubGroups?: boolean;
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
-  splitIntoSubParts?: boolean; // New field for "Chia thành các phần con"
+  splitIntoSubParts?: boolean;
 }
 
 interface ExamFormCategory {
@@ -126,7 +125,6 @@ const EditExamFormCategory: React.FC = () => {
           name: 'Khoa học',
           type: 'Nhiều môn',
           subSubjects: [],
-          // Removed allowSubGroups here
         },
       ],
       splitIntoSubParts: false,
@@ -244,7 +242,6 @@ const EditExamFormCategory: React.FC = () => {
     setParts(prev =>
       prev.map(part => {
         if (part.id === partId) {
-          // Update allowSubGroups for part
           return { ...part, allowSubGroups: checked };
         }
         return part;
@@ -257,7 +254,6 @@ const EditExamFormCategory: React.FC = () => {
       prev.map(part => {
         if (part.id === partId) {
           let updatedSubParts = part.subParts || [];
-          // If enabling splitIntoSubParts, auto rename subParts to "Phần x.1", "Phần x.2", ...
           if (checked && updatedSubParts.length > 0) {
             const parentIndex = prev.findIndex(p => p.id === partId) + 1;
             updatedSubParts = updatedSubParts.map((sp, idx) => ({
@@ -265,7 +261,6 @@ const EditExamFormCategory: React.FC = () => {
               name: `Phần ${parentIndex}.${idx + 1}`,
             }));
           }
-          // When enabling splitIntoSubParts, uncheck allowSubGroups on parent
           if (checked) {
             setCategory(prev => prev ? { ...prev, allowSubGroups: false } : prev);
           }
@@ -502,14 +497,12 @@ const EditExamFormCategory: React.FC = () => {
     setParts(prev =>
       prev.map(part => {
         if (part.id === partId) {
-          // If enabling splitIntoSubParts, auto rename subParts to "Phần x.1", "Phần x.2", ...
           if (checked && part.subParts && part.subParts.length > 0) {
             const parentIndex = prev.findIndex(p => p.id === partId) + 1;
             const renamedSubParts = part.subParts.map((sp, idx) => ({
               ...sp,
               name: `Phần ${parentIndex}.${idx + 1}`,
             }));
-            // Uncheck allowSubGroups on parent when enabling splitIntoSubParts
             setCategory(prev => prev ? { ...prev, allowSubGroups: false } : prev);
             return { ...part, splitIntoSubParts: checked, subParts: renamedSubParts };
           }
@@ -689,12 +682,17 @@ const EditExamFormCategory: React.FC = () => {
                       <div className="flex items-center justify-between mb-2 cursor-pointer select-none" onClick={() => togglePartExpanded(part.id)}>
                         <div className="flex items-center gap-2">
                           {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                          <h4 className="font-semibold">{part.name}</h4>
-                          {part.subParts && part.subParts.length > 0 && (
-                            <span className="ml-2 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-xs font-medium select-none">
-                              Có chủ đề ({part.subParts.length})
-                            </span>
-                          )}
+                          <Input
+                            value={part.name}
+                            onChange={(e) => {
+                              const newName = e.target.value;
+                              setParts(prev =>
+                                prev.map(p => (p.id === part.id ? { ...p, name: newName } : p))
+                              );
+                            }}
+                            className="font-semibold text-lg w-auto max-w-xs"
+                            aria-label={`Tên phần thi ${partIndex + 1}`}
+                          />
                         </div>
                         <Button
                           variant="ghost"
@@ -731,7 +729,6 @@ const EditExamFormCategory: React.FC = () => {
                                     readOnly
                                     className="mb-2 cursor-not-allowed bg-gray-100 dark:bg-gray-700"
                                   />
-                                  {/* Removed 'Cho phép chọn nhóm chủ đề' checkbox here as requested */}
                                   <Button
                                     variant="ghost"
                                     className="absolute top-2 right-2 text-red-600 hover:bg-red-50"
@@ -799,7 +796,6 @@ const EditExamFormCategory: React.FC = () => {
                                 {part.subParts && part.subParts.length > 0 ? (
                                   part.subParts.map((subPart) => {
                                     const subSubjectKey = `${part.id}-${subPart.id}`;
-                                    // Collect names of selected subjects for disabling in select
                                     const selectedSubjectNames = subPart.subSubjects.map(ss => ss.name.toLowerCase());
                                     return (
                                       <div key={subPart.id} className="space-y-2 border rounded-md p-3 bg-white dark:bg-gray-800">
@@ -833,7 +829,6 @@ const EditExamFormCategory: React.FC = () => {
                                             <X className="h-5 w-5" />
                                           </Button>
                                         </div>
-                                        {/* New field for 'Chọn tối đa' only for 'Nhiều môn' */}
                                         {subPart.type === 'Nhiều môn' && (
                                           <div className="mb-4">
                                             <Label htmlFor={`maxSubGroupsSelected-${subPart.id}`} className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
