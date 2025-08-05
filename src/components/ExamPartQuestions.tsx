@@ -29,7 +29,7 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
   onAddDefaultPart: () => void;
-  onAddGroupPart: (partId: string) => void; // Updated to accept partId for adding group to specific part
+  onAddGroupPart: (partId: string) => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
@@ -148,7 +148,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       {renderPartHeader(part.id)}
                     </div>
                   )}
-                  <div className="absolute top-2 right-2 z-10 flex gap-2">
+                  <div className="absolute top-2 right-2 left-2 z-10 flex justify-between">
                     <Button
                       className="bg-green-600 hover:bg-green-700 text-white"
                       size="sm"
