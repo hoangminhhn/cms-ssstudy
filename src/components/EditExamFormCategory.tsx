@@ -25,7 +25,7 @@ interface SubPart {
 
 interface PartItem {
   id: string;
-  name: string;
+  name: string; // This will store only the descriptive part, e.g. "Tư duy đọc hiểu"
   allowSubGroups?: boolean;
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
@@ -112,11 +112,11 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
-    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part1', name: '', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part2', name: '', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
     {
       id: 'part3',
-      name: 'Phần thi 3',
+      name: '',
       allowSubGroups: true,
       maxSubGroupsSelected: 1,
       subParts: [
@@ -162,8 +162,12 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (category) {
-      setCategory({ ...category, [e.target.id]: e.target.value });
+    const { value, dataset } = e.target;
+    const partId = dataset.partId;
+    if (partId) {
+      setParts(prev =>
+        prev.map(p => (p.id === partId ? { ...p, name: value } : p))
+      );
     }
   };
 
@@ -677,11 +681,13 @@ const EditExamFormCategory: React.FC = () => {
               <div className="space-y-6">
                 {parts.map((part, partIndex) => {
                   const isExpanded = expandedParts[part.id] || false;
+                  const prefix = `Phần ${partIndex + 1}`;
                   return (
                     <div key={part.id} className="border rounded-md p-4">
                       <div className="flex items-center justify-between mb-2 cursor-pointer select-none" onClick={() => togglePartExpanded(part.id)}>
                         <div className="flex items-center gap-2">
                           {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                          <span className="font-semibold text-lg select-none">{prefix}:</span>
                           <Input
                             value={part.name}
                             onChange={(e) => {
@@ -690,8 +696,9 @@ const EditExamFormCategory: React.FC = () => {
                                 prev.map(p => (p.id === part.id ? { ...p, name: newName } : p))
                               );
                             }}
+                            placeholder="Tên bổ sung (ví dụ: Tư duy đọc hiểu)"
                             className="font-semibold text-lg w-auto max-w-xs"
-                            aria-label={`Tên phần thi ${partIndex + 1}`}
+                            aria-label={`Tên bổ sung cho ${prefix}`}
                           />
                         </div>
                         <Button
@@ -701,7 +708,7 @@ const EditExamFormCategory: React.FC = () => {
                             e.stopPropagation();
                             handleDeletePart(part.id);
                           }}
-                          aria-label={`Xóa phần thi ${part.name}`}
+                          aria-label={`Xóa phần thi ${prefix}`}
                           size="sm"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -1042,7 +1049,7 @@ const EditExamFormCategory: React.FC = () => {
                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200">
                             {index + 1}
                           </div>
-                          <div className="flex-1">{part.name}</div>
+                          <div className="flex-1">{part.name ? `Phần ${index + 1}: ${part.name}` : `Phần ${index + 1}`}</div>
                           <Input
                             type="number"
                             min={0}
