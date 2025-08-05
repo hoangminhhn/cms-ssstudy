@@ -113,6 +113,9 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setIsModalOpen(true);
   };
 
+  // Helper to check if part is a group part (id starts with 'group-part-')
+  const isGroupPart = (partId: string) => partId.startsWith('group-part-');
+
   return (
     <>
       <Card>
@@ -124,6 +127,12 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
               onClick={onAddDefaultPart}
             >
               + Phần thi mặc định
+            </Button>
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => onAddGroupPart('')}
+            >
+              + Phần thi nhóm chủ đề
             </Button>
           </div>
         </div>
@@ -149,14 +158,18 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     </div>
                   )}
                   <div className="absolute top-2 right-2 left-2 z-10 flex justify-between">
-                    <Button
-                      className="bg-green-600 hover:bg-green-700 text-white"
-                      size="sm"
-                      onClick={() => onAddGroupPart(part.id)}
-                      aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
-                    >
-                      + Nhóm chủ đề
-                    </Button>
+                    {isGroupPart(part.id) ? (
+                      <Button
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                        size="sm"
+                        onClick={() => onAddGroupPart(part.id)}
+                        aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
+                      >
+                        + Nhóm chủ đề
+                      </Button>
+                    ) : (
+                      <div /> // Empty div to keep space
+                    )}
                     <Button
                       variant="destructive"
                       size="sm"
