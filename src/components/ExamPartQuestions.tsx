@@ -29,7 +29,7 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
   onAddDefaultPart: () => void;
-  onAddGroupPart: () => void;
+  onAddGroupPart: (partId: string) => void; // Updated to accept partId for adding group to specific part
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
@@ -125,19 +125,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             >
               + Phần thi mặc định
             </Button>
-            <Button
-              className="bg-cyan-500 hover:bg-cyan-600 text-white"
-              onClick={onAddGroupPart}
-            >
-              + Phần thi nhóm chủ đề
-            </Button>
-            <Button
-              variant="outline"
-              className="whitespace-nowrap text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
-              onClick={onDeleteAll}
-            >
-              <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
-            </Button>
           </div>
         </div>
         <CardContent>
@@ -150,7 +137,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
               <TabsList className="mb-4 overflow-x-auto">
                 {parts.map((part) => (
                   <TabsTrigger key={part.id} value={part.id} className="whitespace-nowrap">
-                    {part.name} ({part.questions.length})
+                    {part.name || part.id}
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -161,12 +148,20 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       {renderPartHeader(part.id)}
                     </div>
                   )}
-                  <div className="absolute top-2 right-2 z-10">
+                  <div className="absolute top-2 right-2 z-10 flex gap-2">
+                    <Button
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      size="sm"
+                      onClick={() => onAddGroupPart(part.id)}
+                      aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
+                    >
+                      + Nhóm chủ đề
+                    </Button>
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => onDeletePart(part.id)}
-                      aria-label={`Xóa phần thi ${part.name}`}
+                      aria-label={`Xóa phần thi ${part.name || part.id}`}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="ml-1 hidden sm:inline">Xóa phần thi</span>
