@@ -162,12 +162,12 @@ const ExamTable: React.FC = () => {
                           variant="ghost"
                           size="sm"
                           className="flex items-center gap-1"
-                          aria-label={`Sao chép đề thi ${exam.name}`}
+                          aria-label={`Nhân bản đề ${exam.name}`}
                         >
                           <Copy className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Sao chép</TooltipContent>
+                      <TooltipContent>Nhân bản đề</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
