@@ -33,13 +33,13 @@ const examPeriods = ['Tốt nghiệp', 'HSA', 'TSA', 'V-ACT'];
 const ExamTable: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
-  const [selectedExamPeriod, setSelectedExamPeriod] = React.useState<string>('');
+  const [selectedExamPeriod, setSelectedExamPeriod] = React.useState<string>('all');
   const navigate = useNavigate();
 
   // Lọc theo kỳ thi nếu có chọn
-  const filteredExams = selectedExamPeriod
-    ? mockExams.filter(exam => exam.examPeriod === selectedExamPeriod)
-    : mockExams;
+  const filteredExams = selectedExamPeriod === 'all'
+    ? mockExams
+    : mockExams.filter(exam => exam.examPeriod === selectedExamPeriod);
 
   const totalPages = Math.ceil(filteredExams.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -77,7 +77,7 @@ const ExamTable: React.FC = () => {
                 <SelectValue placeholder="Kỳ thi" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {examPeriods.map((period) => (
                   <SelectItem key={period} value={period}>
                     {period}
