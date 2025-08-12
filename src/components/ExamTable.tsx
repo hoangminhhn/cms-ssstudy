@@ -111,7 +111,7 @@ const ExamTable: React.FC = () => {
               <TableHead>Đề thi</TableHead>
               <TableHead>Mã đề</TableHead>
               <TableHead>Môn học</TableHead>
-              <TableHead>Loại đề thi</TableHead>
+              <TableHead>Kỳ thi</TableHead> {/* Đổi tên cột */}
               <TableHead>Tổng số câu</TableHead>
               <TableHead>Ngày cập nhật</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
@@ -124,7 +124,7 @@ const ExamTable: React.FC = () => {
                 <TableCell className="font-medium">{exam.name}</TableCell>
                 <TableCell>{exam.examCode}</TableCell>
                 <TableCell>{exam.subject}</TableCell>
-                <TableCell>{exam.examType}</TableCell>
+                <TableCell>{exam.examPeriod || 'Chưa xác định'}</TableCell> {/* Hiển thị kỳ thi */}
                 <TableCell>{exam.totalQuestions}</TableCell>
                 <TableCell>{exam.lastUpdated}</TableCell>
                 <TableCell className="text-right">
