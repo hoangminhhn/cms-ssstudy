@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Filter, Search, MoreHorizontal, Pencil, Trash2, Eye, Copy, PieChart } from 'lucide-react';
+import { Filter, Search, Pencil, Trash2, Copy, PieChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Exam {
@@ -131,18 +131,9 @@ const ExamTable: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     className="flex items-center gap-1"
-                    aria-label={`Xem chi tiết đề thi ${exam.name}`}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-1"
                     aria-label={`Chỉnh sửa đề thi ${exam.name}`}
                   >
                     <Pencil className="h-4 w-4" />
-                    <span className="hidden sm:inline">Sửa</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -152,7 +143,6 @@ const ExamTable: React.FC = () => {
                     aria-label={`Báo cáo điểm đề thi ${exam.name}`}
                   >
                     <PieChart className="h-4 w-4" />
-                    <span className="hidden sm:inline">Báo cáo</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -161,7 +151,6 @@ const ExamTable: React.FC = () => {
                     aria-label={`Sao chép đề thi ${exam.name}`}
                   >
                     <Copy className="h-4 w-4" />
-                    <span className="hidden sm:inline">Sao chép</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -170,7 +159,6 @@ const ExamTable: React.FC = () => {
                     aria-label={`Xóa đề thi ${exam.name}`}
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span className="hidden sm:inline">Xóa</span>
                   </Button>
                 </TableCell>
               </TableRow>
