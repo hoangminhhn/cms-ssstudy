@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -20,17 +20,17 @@ interface Exam {
   examPeriod?: string; // New field for kỳ thi
 }
 
-const mockExams: Exam[] = [
+const initialMockExams: Exam[] = [
   { id: '1', name: 'Buổi 5. BTVN', examCode: '104136', subject: 'Tiếng Anh Panda', examType: 'Trắc nghiệm', totalQuestions: 0, lastUpdated: '11/06/2025 19:44', examPeriod: 'HSA' },
   { id: '2', name: '[2K8] BTVN HỌC HÈ ĐẠI', examCode: '104082', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 35, lastUpdated: '24/05/2025 18:21', examPeriod: 'Tốt nghiệp' },
   { id: '3', name: 'Bài 10: Công thức Bayes', examCode: '103841', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 15, lastUpdated: '12/03/2025 15:50', examPeriod: 'TSA' },
   { id: '4', name: 'Bài 9: Công thức xác suất toàn phần', examCode: '103840', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 21, lastUpdated: '12/03/2025 14:55', examPeriod: 'V-ACT' },
-  // ... các dữ liệu khác giữ nguyên, có thể thêm examPeriod tương ứng
 ];
 
 const examPeriods = ['Tốt nghiệp', 'HSA', 'TSA', 'V-ACT'];
 
 const ExamTable: React.FC = () => {
+  const [exams, setExams] = React.useState<Exam[]>(initialMockExams);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
   const [selectedExamPeriod, setSelectedExamPeriod] = React.useState<string>('all');
@@ -38,8 +38,8 @@ const ExamTable: React.FC = () => {
 
   // Lọc theo kỳ thi nếu có chọn
   const filteredExams = selectedExamPeriod === 'all'
-    ? mockExams
-    : mockExams.filter(exam => exam.examPeriod === selectedExamPeriod);
+    ? exams
+    : exams.filter(exam => exam.examPeriod === selectedExamPeriod);
 
   const totalPages = Math.ceil(filteredExams.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -57,6 +57,16 @@ const ExamTable: React.FC = () => {
 
   const handleReportScoreClick = (examId: string) => {
     navigate(`/score-reports/${examId}`);
+  };
+
+  const handleCopyExam = (exam: Exam) => {
+    const newExam: Exam = {
+      ...exam,
+      id: Date.now().toString(),
+      name: exam.name.endsWith(' copy') ? exam.name : `${exam.name} copy`,
+      lastUpdated: new Date().toLocaleDateString(),
+    };
+    setExams((prev) => [newExam, ...prev]);
   };
 
   return (
@@ -163,6 +173,7 @@ const ExamTable: React.FC = () => {
                           size="sm"
                           className="flex items-center gap-1"
                           aria-label={`Nhân bản đề ${exam.name}`}
+                          onClick={() => handleCopyExam(exam)}
                         >
                           <Copy className="h-4 w-4" />
                         </Button>
