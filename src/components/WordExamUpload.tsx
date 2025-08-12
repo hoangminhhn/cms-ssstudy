@@ -33,11 +33,18 @@ const examPeriods = [
   'Kỳ thi V-ACT',
 ];
 
-const partsOptions = [
+const partsOptionsDefault = [
   { value: 'full', label: 'Đầy đủ 3 phần' },
   { value: 'part1', label: 'Phần 1' },
   { value: 'part2', label: 'Phần 2' },
   { value: 'part3', label: 'Phần 3' },
+];
+
+const partsOptionsHSA = [
+  { value: 'math_and_data', label: 'Toán Học Và Xử Lý Số Liệu' },
+  { value: 'language_literature', label: 'Ngôn Ngữ - Văn Học' },
+  { value: 'science', label: 'Khoa Học' },
+  { value: 'english', label: 'Tiếng Anh' },
 ];
 
 const testTypes = [
@@ -127,7 +134,7 @@ const WordExamUpload: React.FC = () => {
   const [examCode] = React.useState('Tự động');
   const [examName, setExamName] = React.useState('');
   const [examPeriod, setExamPeriod] = React.useState('');
-  const [part, setPart] = React.useState('full');
+  const [part, setPart] = React.useState('');
   const [pdfLink, setPdfLink] = React.useState(''); // New state for PDF link
   const [testType, setTestType] = React.useState('Không');
   const [group, setGroup] = React.useState('Mặc định');
@@ -137,6 +144,8 @@ const WordExamUpload: React.FC = () => {
   const [city, setCity] = React.useState('Chọn thành phố');
   const [openCitySelect, setOpenCitySelect] = React.useState(false);
 
+  // Determine parts options based on examPeriod
+  const partsOptions = examPeriod === 'Kỳ thi HSA' ? partsOptionsHSA : partsOptionsDefault;
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
@@ -254,7 +263,7 @@ const WordExamUpload: React.FC = () => {
           </div>
           <div className="col-span-2">
             <Label htmlFor="exam-period">Kỳ thi</Label>
-            <Select value={examPeriod} onValueChange={setExamPeriod}>
+            <Select value={examPeriod} onValueChange={(val) => { setExamPeriod(val); setPart(''); }}>
               <SelectTrigger id="exam-period">
                 <SelectValue placeholder="Chọn kỳ thi" />
               </SelectTrigger>
