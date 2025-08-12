@@ -25,7 +25,7 @@ const mockExams: Exam[] = [
   { id: '2', name: '[2K8] BTVN HỌC HÈ ĐẠI', examCode: '104082', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 35, lastUpdated: '24/05/2025 18:21', examPeriod: 'Tốt nghiệp' },
   { id: '3', name: 'Bài 10: Công thức Bayes', examCode: '103841', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 15, lastUpdated: '12/03/2025 15:50', examPeriod: 'TSA' },
   { id: '4', name: 'Bài 9: Công thức xác suất toàn phần', examCode: '103840', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 21, lastUpdated: '12/03/2025 14:55', examPeriod: 'V-ACT' },
-  { id: '5', name: 'Bài 9: Công thức xác suất toàn phần copy', examCode: '103840-copy', subject: 'Toán', examType: 'Trắc nghiệm', totalQuestions: 21, lastUpdated: '13/03/2025 10:00', examPeriod: 'V-ACT' },
+  // ... các dữ liệu khác giữ nguyên, có thể thêm examPeriod tương ứng
 ];
 
 const examPeriods = ['Tốt nghiệp', 'HSA', 'TSA', 'V-ACT'];
