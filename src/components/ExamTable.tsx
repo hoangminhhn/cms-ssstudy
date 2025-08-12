@@ -134,7 +134,6 @@ const ExamTable: React.FC = () => {
                     aria-label={`Xem chi tiết đề thi ${exam.name}`}
                   >
                     <Eye className="h-4 w-4" />
-                    <span className="hidden sm:inline">Xem</span>
                   </Button>
                   <Button
                     variant="ghost"
