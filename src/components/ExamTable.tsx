@@ -77,7 +77,7 @@ const ExamTable: React.FC = () => {
                 <SelectValue placeholder="Kỳ thi" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="all">Kỳ thi</SelectItem> {/* Đổi text ở đây */}
                 {examPeriods.map((period) => (
                   <SelectItem key={period} value={period}>
                     {period}
@@ -111,7 +111,7 @@ const ExamTable: React.FC = () => {
               <TableHead>Đề thi</TableHead>
               <TableHead>Mã đề</TableHead>
               <TableHead>Môn học</TableHead>
-              <TableHead>Kỳ thi</TableHead> {/* Đổi tên cột */}
+              <TableHead>Kỳ thi</TableHead>
               <TableHead>Tổng số câu</TableHead>
               <TableHead>Ngày cập nhật</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
@@ -124,7 +124,7 @@ const ExamTable: React.FC = () => {
                 <TableCell className="font-medium">{exam.name}</TableCell>
                 <TableCell>{exam.examCode}</TableCell>
                 <TableCell>{exam.subject}</TableCell>
-                <TableCell>{exam.examPeriod || 'Chưa xác định'}</TableCell> {/* Hiển thị kỳ thi */}
+                <TableCell>{exam.examPeriod || 'Chưa xác định'}</TableCell>
                 <TableCell>{exam.totalQuestions}</TableCell>
                 <TableCell>{exam.lastUpdated}</TableCell>
                 <TableCell className="text-right">
