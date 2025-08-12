@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Filter, Search, MoreHorizontal, Pencil, Trash2, Eye, Copy, PieChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -77,7 +76,7 @@ const ExamTable: React.FC = () => {
                 <SelectValue placeholder="Kỳ thi" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Kỳ thi</SelectItem> {/* Đổi text ở đây */}
+                <SelectItem value="all">Kỳ thi</SelectItem>
                 {examPeriods.map((period) => (
                   <SelectItem key={period} value={period}>
                     {period}
@@ -127,32 +126,53 @@ const ExamTable: React.FC = () => {
                 <TableCell>{exam.examPeriod || 'Chưa xác định'}</TableCell>
                 <TableCell>{exam.totalQuestions}</TableCell>
                 <TableCell>{exam.lastUpdated}</TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <Eye className="h-4 w-4" /> Xem chi tiết
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <Pencil className="h-4 w-4" /> Chỉnh sửa
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2" onClick={() => handleReportScoreClick(exam.id)}>
-                        <PieChart className="h-4 w-4" /> Báo cáo điểm
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <Copy className="h-4 w-4" /> Sao chép
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                        <Trash2 className="h-4 w-4" /> Xóa
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <TableCell className="text-right flex flex-wrap justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    aria-label={`Xem chi tiết đề thi ${exam.name}`}
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span className="hidden sm:inline">Xem</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    aria-label={`Chỉnh sửa đề thi ${exam.name}`}
+                  >
+                    <Pencil className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sửa</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    onClick={() => handleReportScoreClick(exam.id)}
+                    aria-label={`Báo cáo điểm đề thi ${exam.name}`}
+                  >
+                    <PieChart className="h-4 w-4" />
+                    <span className="hidden sm:inline">Báo cáo</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    aria-label={`Sao chép đề thi ${exam.name}`}
+                  >
+                    <Copy className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sao chép</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-1 text-red-600 hover:bg-red-50"
+                    aria-label={`Xóa đề thi ${exam.name}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Xóa</span>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
