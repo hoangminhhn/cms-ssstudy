@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trash2, Pencil } from 'lucide-react';
 import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
+import GroupPartModal from './GroupPartModal'; // Import modal nhóm chủ đề
+import { toast } from 'sonner';
 
 interface Question {
   id: string;
@@ -29,7 +31,7 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
   onAddDefaultPart: () => void;
-  onAddGroupPart: (partId: string) => void;
+  onAddGroupPart: (partId: string) => void; // This will be replaced by modal
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
@@ -40,7 +42,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onDeleteQuestion,
   onDeletePart,
   onAddDefaultPart,
-  onAddGroupPart,
+  onAddGroupPart, // will not be used directly
   renderPartHeader,
   onAddOrUpdateQuestion,
 }) => {
@@ -49,6 +51,9 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
   const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
   const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
+
+  // State for group parts data (array of group parts)
+  const [groupParts, setGroupParts] = React.useState<any[]>([]); // You can type better if you want
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
@@ -113,6 +118,18 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setIsModalOpen(true);
   };
 
+  // New: open group part modal
+  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
+
+  // When user saves group parts from modal
+  const handleSaveGroupParts = (maxGroupSelected: number, groups: any[]) => {
+    // Here you can update your parts state or call a prop callback to update parent
+    // For demo, just toast and store locally
+    setGroupParts(groups);
+    toast.success("Đã lưu nhóm chủ đề!");
+    setIsGroupPartModalOpen(false);
+  };
+
   // Helper to check if part is a group part (id starts with 'group-part-')
   const isGroupPart = (partId: string) => partId.startsWith('group-part-');
 
@@ -130,7 +147,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </Button>
             <Button
               className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => onAddGroupPart('')}
+              onClick={() => setIsGroupPartModalOpen(true)} // Mở popup modal nhóm chủ đề
             >
               + Phần thi nhóm chủ đề
             </Button>
@@ -162,7 +179,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       <Button
                         className="bg-green-600 hover:bg-green-700 text-white"
                         size="sm"
-                        onClick={() => onAddGroupPart(part.id)}
+                        onClick={() => setIsGroupPartModalOpen(true)} // Mở popup modal nhóm chủ đề
                         aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
                       >
                         + Nhóm chủ đề
@@ -295,6 +312,12 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         onSave={handleSaveQuestion}
         questionNumber={editingQuestionIndex !== null ? editingQuestionIndex + 1 : parts.findIndex(p => p.id === editingPartId) + 1}
         {...(editingQuestion ? { ...editingQuestion } : {})}
+      />
+
+      <GroupPartModal
+        isOpen={isGroupPartModalOpen}
+        onClose={() => setIsGroupPartModalOpen(false)}
+        onSave={handleSaveGroupParts}
       />
     </>
   );
