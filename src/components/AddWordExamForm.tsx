@@ -22,7 +22,7 @@ const examPeriods = [
 ];
 
 const partsOptions = [
-  { value: '', label: 'Chọn phần thi' },
+  { value: 'none', label: 'Chọn phần thi' },
   { value: 'full', label: 'Đủ 3 Phần' },
   { value: 'part1', label: 'Phần 1' },
   { value: 'part2', label: 'Phần 2' },
@@ -81,7 +81,7 @@ const AddWordExamForm: React.FC = () => {
   const [examCode] = useState('Tự động');
   const [examName, setExamName] = useState('');
   const [examPeriod, setExamPeriod] = useState('');
-  const [part, setPart] = useState('');
+  const [part, setPart] = useState('none');
   const [pdfLink, setPdfLink] = useState('');
   const [testType, setTestType] = useState('Không');
   const [group, setGroup] = useState('Mặc định');
