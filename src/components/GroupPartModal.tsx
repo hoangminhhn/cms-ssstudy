@@ -160,6 +160,22 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
     );
   };
 
+  // New handler for selecting single subject in "Một môn" type group
+  const handleSingleSubjectChange = (groupId: string, subjectName: string) => {
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const newSubSubject: SubSubject = {
+            id: g.subSubjects.length > 0 ? g.subSubjects[0].id : `subsubject-${Date.now()}`,
+            name: subjectName,
+          };
+          return { ...g, subSubjects: [newSubSubject] };
+        }
+        return g;
+      })
+    );
+  };
+
   const handleSave = () => {
     if (maxGroupSelected < 1) {
       toast.error("Số nhóm chủ đề tối đa phải lớn hơn hoặc bằng 1.");
@@ -239,83 +255,111 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="flex flex-col items-start">
-                    <Label htmlFor={`maxSelected-${group.id}`} className="text-sm font-medium mb-1">
-                      Chọn tối đa
-                    </Label>
-                    <Input
-                      id={`maxSelected-${group.id}`}
-                      type="number"
-                      min={1}
-                      value={group.maxSelected}
-                      onChange={(e) => handleGroupMaxSelectedChange(group.id, Number(e.target.value))}
-                      className="w-16"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Chọn {group.maxSelected} trong {group.subSubjects.length} môn
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
-                  {group.subSubjects.length === 0 ? (
-                    <p className="text-sm text-muted-foreground mb-2">Chưa có môn học con.</p>
-                  ) : (
-                    group.subSubjects.map((sub) => (
-                      <div key={sub.id} className="flex items-center gap-2 mb-2">
-                        <Input
-                          value={sub.name}
-                          onChange={(e) => handleSubSubjectNameChange(group.id, sub.id, e.target.value)}
-                          className="flex-1"
-                        />
-                        <Button
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemoveSubSubject(group.id, sub.id)}
-                          size="sm"
-                          aria-label="Xóa môn học con"
-                        >
-                          <X className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    ))
+                  {/* Show maxSelected input only if type is "Nhiều môn" */}
+                  {group.type === "Nhiều môn" && (
+                    <div className="flex flex-col items-start">
+                      <Label htmlFor={`maxSelected-${group.id}`} className="text-sm font-medium mb-1">
+                        Chọn tối đa
+                      </Label>
+                      <Input
+                        id={`maxSelected-${group.id}`}
+                        type="number"
+                        min={1}
+                        value={group.maxSelected}
+                        onChange={(e) => handleGroupMaxSelectedChange(group.id, Number(e.target.value))}
+                        className="w-16"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Chọn {group.maxSelected} trong {group.subSubjects.length} môn
+                      </p>
+                    </div>
                   )}
-                  <div className="flex gap-2 mt-2">
+                </div>
+
+                {/* For "Một môn" type, show single Select for choosing one subject */}
+                {group.type === "Một môn" ? (
+                  <div>
+                    <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
                     <Select
-                      value={newSubjectSelections[group.id] || ""}
-                      onValueChange={(val) =>
-                        setNewSubjectSelections((prev) => ({ ...prev, [group.id]: val }))
-                      }
-                      className="flex-1 w-48"
+                      value={group.subSubjects.length > 0 ? group.subSubjects[0].name : ""}
+                      onValueChange={(val) => handleSingleSubjectChange(group.id, val)}
+                      className="w-48"
                     >
-                      <SelectTrigger className="w-full min-w-[150px]">
+                      <SelectTrigger>
                         <SelectValue placeholder="Lựa chọn môn" />
                       </SelectTrigger>
                       <SelectContent>
-                        {availableSubjects.map((subject) => {
-                          const isSelected = selectedSubjectNames.includes(subject.toLowerCase());
-                          return (
-                            <SelectItem
-                              key={subject}
-                              value={subject}
-                              disabled={isSelected}
-                              className={isSelected ? "opacity-50 italic" : ""}
-                            >
-                              {subject} {isSelected && "(Đã sử dụng)"}
-                            </SelectItem>
-                          );
-                        })}
+                        {availableSubjects.map((subject) => (
+                          <SelectItem key={subject} value={subject}>
+                            {subject}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
-                    <Button
-                      className="bg-green-500 hover:bg-green-600 text-white"
-                      onClick={() => handleAddSubSubject(group.id)}
-                      size="sm"
-                    >
-                      + Thêm môn
-                    </Button>
                   </div>
-                </div>
+                ) : (
+                  // For "Nhiều môn" type, show list of subSubjects with inputs and add new subject select
+                  <div>
+                    <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
+                    {group.subSubjects.length === 0 ? (
+                      <p className="text-sm text-muted-foreground mb-2">Chưa có môn học con.</p>
+                    ) : (
+                      group.subSubjects.map((sub) => (
+                        <div key={sub.id} className="flex items-center gap-2 mb-2">
+                          <Input
+                            value={sub.name}
+                            onChange={(e) => handleSubSubjectNameChange(group.id, sub.id, e.target.value)}
+                            className="flex-1"
+                          />
+                          <Button
+                            variant="ghost"
+                            className="text-red-600 hover:bg-red-50"
+                            onClick={() => handleRemoveSubSubject(group.id, sub.id)}
+                            size="sm"
+                            aria-label="Xóa môn học con"
+                          >
+                            <X className="h-5 w-5" />
+                          </Button>
+                        </div>
+                      ))
+                    )}
+                    <div className="flex gap-2 mt-2">
+                      <Select
+                        value={newSubjectSelections[group.id] || ""}
+                        onValueChange={(val) =>
+                          setNewSubjectSelections((prev) => ({ ...prev, [group.id]: val }))
+                        }
+                        className="flex-1 w-48"
+                      >
+                        <SelectTrigger className="w-full min-w-[150px]">
+                          <SelectValue placeholder="Lựa chọn môn" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableSubjects.map((subject) => {
+                            const isSelected = selectedSubjectNames.includes(subject.toLowerCase());
+                            return (
+                              <SelectItem
+                                key={subject}
+                                value={subject}
+                                disabled={isSelected}
+                                className={isSelected ? "opacity-50 italic" : ""}
+                              >
+                                {subject} {isSelected && "(Đã sử dụng)"}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        className="bg-green-500 hover:bg-green-600 text-white"
+                        onClick={() => handleAddSubSubject(group.id)}
+                        size="sm"
+                      >
+                        + Thêm môn
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
