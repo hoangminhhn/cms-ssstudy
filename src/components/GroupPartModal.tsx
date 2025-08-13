@@ -29,34 +29,46 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+      <DialogContent className="max-w-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Cài đặt Nhóm Chủ Đề</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Cài đặt Nhóm Chủ Đề
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="groupName">Tên nhóm chủ đề</Label>
+            <Label htmlFor="groupName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Tên nhóm chủ đề
+            </Label>
             <Input
               id="groupName"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder="Nhập tên nhóm chủ đề"
+              className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="maxSelected">Số nhóm tối đa được chọn</Label>
+            <Label htmlFor="maxSelected" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Số nhóm tối đa được chọn
+            </Label>
             <Input
               id="maxSelected"
               type="number"
               min={1}
               value={maxSelected}
               onChange={(e) => setMaxSelected(Number(e.target.value))}
+              className="mt-1 w-24"
             />
           </div>
         </div>
-        <DialogFooter className="mt-6 flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>HỦY</Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU</Button>
+        <DialogFooter className="mt-6 flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <Button variant="outline" onClick={onClose}>
+            HỦY
+          </Button>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>
+            LƯU
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
