@@ -182,18 +182,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
     );
   };
 
-  const handleSortSubSubjects = (groupId: string, newOrder: string[]) => {
-    setGroups((prev) =>
-      prev.map((g) => {
-        if (g.id === groupId) {
-          const newSubSubjects = newOrder.map(id => g.subSubjects.find(ss => ss.id === id)!).filter(Boolean);
-          return { ...g, subSubjects: newSubSubjects };
-        }
-        return g;
-      })
-    );
-  };
-
   const handleSave = () => {
     if (maxGroupSelected < 1) {
       toast.error("Số nhóm chủ đề tối đa phải lớn hơn hoặc bằng 1.");
