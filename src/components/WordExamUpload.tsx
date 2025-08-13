@@ -443,7 +443,7 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Nút + Phần thi nhóm chủ đề */}
+      {/* Nút + Phần thi nhóm chủ đề hiện có, mở popup cấu hình nhóm chủ đề */}
       <div className="flex justify-end">
         <Button
           className="bg-green-600 hover:bg-green-700 text-white"
