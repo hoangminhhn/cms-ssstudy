@@ -142,12 +142,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             >
               + Phần thi mặc định
             </Button>
-            <Button
-              className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => setIsGroupPartModalOpen(true)} // Mở popup cấu hình nhóm chủ đề
-            >
-              + Phần thi nhóm chủ đề
-            </Button>
+            {/* Đã xóa nút + Phần thi nhóm chủ đề thừa phía trên */}
           </div>
         </div>
         <CardContent>
