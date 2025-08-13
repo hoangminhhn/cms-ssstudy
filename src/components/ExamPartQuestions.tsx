@@ -70,12 +70,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
           </div>
         </div>
         <CardContent>
-          {/* Giữ nguyên toàn bộ phần nội dung hiển thị câu hỏi, tab phần thi, nút thêm câu hỏi, nút xóa phần thi,... */}
           {parts.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
           ) : (
             <div>
-              {/* Tab phần thi */}
               <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <nav className="-mb-px flex space-x-4" aria-label="Tabs">
                   {parts.map((part, idx) => (
@@ -93,7 +91,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                 </nav>
               </div>
 
-              {/* Bảng câu hỏi */}
               {parts.map((part) => (
                 <div key={part.id} className="mb-6">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -142,7 +139,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                 </div>
               ))}
 
-              {/* Nút thao tác câu hỏi */}
               <div className="flex flex-wrap gap-2">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">+TRẮC NGHIỆM</Button>
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">+TRẮC NGHIỆM ĐÚNG SAI</Button>
@@ -152,14 +148,24 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">+ĐÚNG/SAI</Button>
               </div>
 
-              {/* Nút xóa phần thi */}
               <div className="mt-4">
                 <Button variant="destructive" className="float-right">Xóa phần thi</Button>
               </div>
-            </CardContent>
-          </Card>
-        </>
-      );
-    };
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <AddMultipleChoiceQuestionModal
+        isOpen={false}
+        onClose={() => {}}
+        onSave={() => {}}
+        questionNumber={0}
+      />
+
+      <GroupPartModal isOpen={isGroupPartModalOpen} onClose={closeGroupPartModal} />
+    </>
+  );
+};
 
 export default ExamPartQuestions;
