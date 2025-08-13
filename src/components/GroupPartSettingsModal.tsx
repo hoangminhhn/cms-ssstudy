@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X } from "lucide-react";
+import { X, GripVertical } from "lucide-react";
+import Sortable from "react-sortablejs";
 
 type GroupType = "Một môn" | "Nhiều môn";
 
@@ -152,6 +153,20 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
     );
   };
 
+  const handleSubSubjectsSort = (groupId: string, newOrderIds: string[]) => {
+    setLocalGroups((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const newSubSubjects = newOrderIds
+            .map((id) => g.subSubjects.find((ss) => ss.id === id))
+            .filter((ss): ss is SubSubject => ss !== undefined);
+          return { ...g, subSubjects: newSubSubjects };
+        }
+        return g;
+      })
+    );
+  };
+
   const handleSave = () => {
     onGroupsChange(localGroups);
     onMaxGroupsSelectedChange(localMaxGroupsSelected);
@@ -194,7 +209,7 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
                     placeholder="Tên nhóm chủ đề"
-                    className="flex-grow min-w-0" // flex-grow để chiếm không gian còn lại, min-w-0 để cho phép thu nhỏ
+                    className="flex-grow min-w-0"
                   />
                   <Select
                     value={group.type}
@@ -275,25 +290,36 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                   ) : (
                     <>
                       {group.subSubjects.length > 0 ? (
-                        group.subSubjects.map((subSubject) => (
-                          <div key={subSubject.id} className="flex items-center gap-2 mb-1">
-                            <Input
-                              value={subSubject.name}
-                              onChange={(e) => handleSubSubjectNameChange(group.id, subSubject.id, e.target.value)}
-                              placeholder="Tên môn học con"
-                              className="flex-1"
-                            />
-                            <Button
-                              variant="ghost"
-                              className="text-red-600 hover:bg-red-50"
-                              onClick={() => handleDeleteSubSubject(group.id, subSubject.id)}
-                              size="sm"
-                              aria-label="Xóa môn học con"
-                            >
-                              <X className="h-5 w-5" />
-                            </Button>
-                          </div>
-                        ))
+                        <Sortable
+                          tag="div"
+                          list={group.subSubjects}
+                          setList={(newList) => {
+                            handleSubSubjectsSort(group.id, newList.map((ss) => ss.id));
+                          }}
+                          animation={150}
+                          handle=".drag-handle"
+                        >
+                          {group.subSubjects.map((subSubject) => (
+                            <div key={subSubject.id} className="flex items-center gap-2 mb-1">
+                              <GripVertical className="drag-handle cursor-grab text-gray-500" />
+                              <Input
+                                value={subSubject.name}
+                                onChange={(e) => handleSubSubjectNameChange(group.id, subSubject.id, e.target.value)}
+                                placeholder="Tên môn học con"
+                                className="flex-1"
+                              />
+                              <Button
+                                variant="ghost"
+                                className="text-red-600 hover:bg-red-50"
+                                onClick={() => handleDeleteSubSubject(group.id, subSubject.id)}
+                                size="sm"
+                                aria-label="Xóa môn học con"
+                              >
+                                <X className="h-5 w-5" />
+                              </Button>
+                            </div>
+                          ))}
+                        </Sortable>
                       ) : (
                         <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
                       )}
