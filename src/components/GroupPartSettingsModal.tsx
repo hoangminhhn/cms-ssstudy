@@ -203,7 +203,7 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
                     placeholder="Tên nhóm chủ đề"
-                    className="flex-1"
+                    className="flex-1 max-w-[calc(100%-140px)]" // Giới hạn chiều rộng input để tránh chồng lấn
                   />
                   <Select
                     value={group.type}
