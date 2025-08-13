@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, GripVertical } from "lucide-react";
-import Sortable from "react-sortablejs";
+import { X } from "lucide-react";
 
 type GroupType = "Một môn" | "Nhiều môn";
 
@@ -153,20 +152,6 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
     );
   };
 
-  const handleSubSubjectsSort = (groupId: string, newOrderIds: string[]) => {
-    setLocalGroups((prev) =>
-      prev.map((g) => {
-        if (g.id === groupId) {
-          const newSubSubjects = newOrderIds
-            .map((id) => g.subSubjects.find((ss) => ss.id === id))
-            .filter((ss): ss is SubSubject => ss !== undefined);
-          return { ...g, subSubjects: newSubSubjects };
-        }
-        return g;
-      })
-    );
-  };
-
   const handleSave = () => {
     onGroupsChange(localGroups);
     onMaxGroupsSelectedChange(localMaxGroupsSelected);
@@ -209,13 +194,12 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
                     placeholder="Tên nhóm chủ đề"
-                    className="flex-grow min-w-0"
+                    className="flex-grow min-w-0" // flex-grow để chiếm không gian còn lại, min-w-0 để cho phép thu nhỏ
                   />
                   <Select
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
                     className="flex-shrink-0 w-[120px]"
-                    key={group.id + "-type-select"}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -257,9 +241,9 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                   <Label className="mb-1 block font-medium">Môn học con</Label>
                   {group.type === "Một môn" ? (
                     <Select
-                      value={group.subSubjects.length > 0 ? group.subSubjects[0].name : undefined}
+                      value={group.subSubjects.length > 0 ? group.subSubjects[0].name : ""}
                       onValueChange={(val) => {
-                        if (val === undefined || val === "") {
+                        if (!val) {
                           setLocalGroups((prev) =>
                             prev.map((g) =>
                               g.id === group.id ? { ...g, subSubjects: [] } : g
@@ -276,13 +260,11 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                         }
                       }}
                       className="w-full"
-                      key={group.id + "-single-subject-select"}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Lựa chọn môn" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Lựa chọn môn</SelectItem>
                         {availableSubjects.map((subject) => (
                           <SelectItem key={subject} value={subject}>
                             {subject}
@@ -292,7 +274,68 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                     </Select>
                   ) : (
                     <>
-                      {/* ... phần Nhiều môn giữ nguyên ... */}
+                      {group.subSubjects.length > 0 ? (
+                        group.subSubjects.map((subSubject) => (
+                          <div key={subSubject.id} className="flex items-center gap-2 mb-1">
+                            <Input
+                              value={subSubject.name}
+                              onChange={(e) => handleSubSubjectNameChange(group.id, subSubject.id, e.target.value)}
+                              placeholder="Tên môn học con"
+                              className="flex-1"
+                            />
+                            <Button
+                              variant="ghost"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleDeleteSubSubject(group.id, subSubject.id)}
+                              size="sm"
+                              aria-label="Xóa môn học con"
+                            >
+                              <X className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">Chưa có môn học con.</p>
+                      )}
+                      <div className="flex gap-2 mt-1">
+                        <Select
+                          value=""
+                          onValueChange={(val) => {
+                            if (val && !selectedSubjectNames.includes(val.toLowerCase())) {
+                              handleAddSubSubject(group.id, val);
+                            }
+                          }}
+                          className="flex-1"
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Lựa chọn môn" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableSubjects.map((subject) => {
+                              const isSelected = selectedSubjectNames.includes(subject.toLowerCase());
+                              return (
+                                <SelectItem
+                                  key={subject}
+                                  value={subject}
+                                  disabled={isSelected}
+                                  className={isSelected ? "opacity-50 italic" : ""}
+                                >
+                                  {subject} {isSelected && "(Đã sử dụng)"}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          className="bg-green-500 hover:bg-green-600 text-white"
+                          onClick={() => {
+                            // Add via select onValueChange, button is just UI
+                          }}
+                          size="sm"
+                        >
+                          + Thêm môn
+                        </Button>
+                      </div>
                     </>
                   )}
                 </div>
