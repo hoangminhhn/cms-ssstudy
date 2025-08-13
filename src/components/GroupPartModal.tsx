@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import Sortable from "react-sortablejs";
+import { Sortable } from "react-sortablejs";
 
 type GroupType = "Một môn" | "Nhiều môn";
 
