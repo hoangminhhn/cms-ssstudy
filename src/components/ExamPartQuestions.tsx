@@ -83,7 +83,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
         : Date.now().toString(),
       correctAnswer: String.fromCharCode(65 + question.correctOptionIndex),
-      solution: question.explanation,
+      solution: question.solution || question.explanation,
       videoLink: question.videoLink,
       uploadDate: new Date().toLocaleDateString(),
       documentLink: undefined,
@@ -123,8 +123,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   // When user saves group parts from modal
   const handleSaveGroupParts = (maxGroupSelected: number, groups: any[]) => {
-    // Here you can update your parts state or call a prop callback to update parent
-    // For demo, just toast and store locally
     setGroupParts(groups);
     toast.success("Đã lưu nhóm chủ đề!");
     setIsGroupPartModalOpen(false);
@@ -147,11 +145,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </Button>
             <Button
               className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => setIsGroupPartModalOpen(true)} // Mở popup modal nhóm chủ đề
+              onClick={() => setIsGroupPartModalOpen(true)}
             >
               + Phần thi nhóm chủ đề
             </Button>
-            {/* Thêm nút + Câu hỏi chùm */}
             <Button
               className="bg-cyan-700 hover:bg-cyan-800 text-white"
               onClick={() => alert('Chức năng + Câu hỏi chùm chưa được triển khai')}
@@ -186,13 +183,13 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       <Button
                         className="bg-green-600 hover:bg-green-700 text-white"
                         size="sm"
-                        onClick={() => setIsGroupPartModalOpen(true)} // Mở popup modal nhóm chủ đề
+                        onClick={() => setIsGroupPartModalOpen(true)}
                         aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
                       >
                         + Nhóm chủ đề
                       </Button>
                     ) : (
-                      <div /> // Empty div to keep space
+                      <div />
                     )}
                     <Button
                       variant="destructive"
@@ -286,7 +283,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       </TableBody>
                     </Table>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-4 px-2">
+                  <div className="flex flex-wrap gap-2 mt-4 px-2 text-[18px]">
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]" onClick={handleAddMultipleChoice}>
                       +TRẮC NGHIỆM
                     </Button>
@@ -305,7 +302,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
                       +ĐÚNG/SAI
                     </Button>
-                    {/* Nút + Câu hỏi chùm mới */}
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
                       + Câu hỏi chùm
                     </Button>
