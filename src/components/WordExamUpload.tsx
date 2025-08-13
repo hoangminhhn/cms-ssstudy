@@ -34,7 +34,6 @@ const examPeriods = [
 ];
 
 const partsOptionsDefault = [
-  { value: 'full', label: 'Đầy đủ 3 phần' },
   { value: 'part1', label: 'Phần 1' },
   { value: 'part2', label: 'Phần 2' },
   { value: 'part3', label: 'Phần 3' },
@@ -162,17 +161,19 @@ const WordExamUpload: React.FC = () => {
   const [city, setCity] = React.useState('Chọn thành phố');
   const [openCitySelect, setOpenCitySelect] = React.useState(false);
 
-  // Determine parts options based on examPeriod
-  let partsOptions = partsOptionsDefault;
+  // Determine parts options based on examPeriod, always prepend "Đủ 3 Phần"
+  let partsOptionsSpecific = partsOptionsDefault;
   if (examPeriod === 'Kỳ thi HSA') {
-    partsOptions = partsOptionsHSA;
+    partsOptionsSpecific = partsOptionsHSA;
   } else if (examPeriod === 'Kỳ thi TSA') {
-    partsOptions = partsOptionsTSA;
+    partsOptionsSpecific = partsOptionsTSA;
   } else if (examPeriod === 'Kỳ thi Tốt Nghiệp') {
-    partsOptions = partsOptionsTotNghiep;
+    partsOptionsSpecific = partsOptionsTotNghiep;
   } else if (examPeriod === 'Kỳ thi V-ACT') {
-    partsOptions = partsOptionsVACT;
+    partsOptionsSpecific = partsOptionsVACT;
   }
+
+  const partsOptions = [{ value: 'full', label: 'Đủ 3 Phần' }, ...partsOptionsSpecific];
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
