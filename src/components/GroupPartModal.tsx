@@ -107,28 +107,34 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
   };
 
   const handleAddSubSubject = (groupId: string) => {
-    const selectedSubject = newSubjectSelections[groupId];
-    if (!selectedSubject) {
-      toast.error("Vui lòng chọn môn học để thêm.");
-      return;
-    }
-    setGroups((prev) =>
-      prev.map((g) => {
-        if (g.id === groupId) {
-          if (g.subSubjects.some((ss) => ss.name.toLowerCase() === selectedSubject.toLowerCase())) {
-            toast.error("Môn học con đã tồn tại trong nhóm này.");
-            return g;
+    try {
+      const selectedSubject = newSubjectSelections[groupId];
+      if (!selectedSubject) {
+        toast.error("Vui lòng chọn môn học để thêm.");
+        return;
+      }
+      setGroups((prev) =>
+        prev.map((g) => {
+          if (g.id === groupId) {
+            if (g.subSubjects.some((ss) => ss.name.toLowerCase() === selectedSubject.toLowerCase())) {
+              toast.error("Môn học con đã tồn tại trong nhóm này.");
+              return g;
+            }
+            const newId = `subsubject-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+            const newSubSubject: SubSubject = {
+              id: newId,
+              name: selectedSubject,
+            };
+            return { ...g, subSubjects: [...g.subSubjects, newSubSubject] };
           }
-          const newSubSubject: SubSubject = {
-            id: `subsubject-${Date.now()}`,
-            name: selectedSubject,
-          };
-          return { ...g, subSubjects: [...g.subSubjects, newSubSubject] };
-        }
-        return g;
-      })
-    );
-    setNewSubjectSelections((prev) => ({ ...prev, [groupId]: "" }));
+          return g;
+        })
+      );
+      setNewSubjectSelections((prev) => ({ ...prev, [groupId]: "" }));
+    } catch (error) {
+      console.error("Lỗi khi thêm môn học con:", error);
+      toast.error("Đã xảy ra lỗi khi thêm môn học. Vui lòng thử lại.");
+    }
   };
 
   const handleRemoveSubSubject = (groupId: string, subSubjectId: string) => {
@@ -161,7 +167,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
     );
   };
 
-  // New handler for selecting single subject in "Một môn" type group
   const handleSingleSubjectChange = (groupId: string, subjectName: string) => {
     setGroups((prev) =>
       prev.map((g) => {
@@ -177,7 +182,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
     );
   };
 
-  // New handler for sorting subSubjects in "Nhiều môn" group
   const handleSortSubSubjects = (groupId: string, newOrder: string[]) => {
     setGroups((prev) =>
       prev.map((g) => {
@@ -269,7 +273,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
-                  {/* Show maxSelected input only if type is "Nhiều môn" */}
                   {group.type === "Nhiều môn" && (
                     <div className="flex flex-col items-start">
                       <Label htmlFor={`maxSelected-${group.id}`} className="text-sm font-medium mb-1">
@@ -290,7 +293,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                   )}
                 </div>
 
-                {/* For "Một môn" type, show single Select for choosing one subject */}
                 {group.type === "Một môn" ? (
                   <div>
                     <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
@@ -312,7 +314,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                     </Select>
                   </div>
                 ) : (
-                  // For "Nhiều môn" type, show list of subSubjects with inputs and add new subject select
                   <div>
                     <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
                     {group.subSubjects.length === 0 ? (
