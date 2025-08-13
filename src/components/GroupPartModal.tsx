@@ -220,17 +220,17 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <div className="flex items-center gap-4 mb-4">
+                <div className="grid grid-cols-5 gap-4 mb-4 items-center">
                   <Input
                     placeholder="Tên nhóm chủ đề"
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
-                    className="flex-1"
+                    className="col-span-2"
                   />
                   <Select
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
-                    className="w-36"
+                    className="col-span-2"
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -240,18 +240,18 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div className="mb-4">
-                  <Label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Chọn tối đa
-                  </Label>
                   <Input
                     type="number"
                     min={1}
                     value={group.maxSelected}
                     onChange={(e) => handleGroupMaxSelectedChange(group.id, Number(e.target.value))}
-                    className="w-24"
+                    className="col-span-1"
                   />
+                </div>
+                <div className="mb-4">
+                  <Label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Chọn tối đa
+                  </Label>
                   <p className="text-xs text-muted-foreground mt-1">
                     Chọn {group.maxSelected} trong {group.subSubjects.length} môn
                   </p>
