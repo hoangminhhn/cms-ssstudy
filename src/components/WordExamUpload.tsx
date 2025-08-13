@@ -17,7 +17,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import GroupPartSettingsModal from './GroupPartSettingsModal';
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -129,14 +128,6 @@ interface ExamPart {
   uploadedFileName?: string;
 }
 
-interface GroupTopic {
-  id: string;
-  name: string;
-  type: "Một môn" | "Nhiều môn";
-  maxSubGroupsSelected?: number;
-  subSubjects: { id: string; name: string }[];
-}
-
 const WordExamUpload: React.FC = () => {
   const [parts, setParts] = React.useState<ExamPart[]>([
     {
@@ -161,7 +152,7 @@ const WordExamUpload: React.FC = () => {
   const [examName, setExamName] = React.useState('');
   const [examPeriod, setExamPeriod] = React.useState('');
   const [part, setPart] = React.useState('');
-  const [pdfLink, setPdfLink] = React.useState('');
+  const [pdfLink, setPdfLink] = React.useState(''); // New state for PDF link
   const [testType, setTestType] = React.useState('Không');
   const [group, setGroup] = React.useState('Mặc định');
   const [classLevel, setClassLevel] = React.useState('Lớp 1');
@@ -169,11 +160,6 @@ const WordExamUpload: React.FC = () => {
   const [allowRetry, setAllowRetry] = React.useState('Không cho phép');
   const [city, setCity] = React.useState('Chọn thành phố');
   const [openCitySelect, setOpenCitySelect] = React.useState(false);
-
-  // State for group part settings modal
-  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
-  const [groupPartMaxSelected, setGroupPartMaxSelected] = React.useState(1);
-  const [groupPartGroups, setGroupPartGroups] = React.useState<GroupTopic[]>([]);
 
   // Determine parts options based on examPeriod, always prepend "Đủ 3 Phần"
   let partsOptionsSpecific = partsOptionsDefault;
@@ -195,8 +181,10 @@ const WordExamUpload: React.FC = () => {
         if (part.id !== partId) return part;
         let updatedQuestions;
         if (questionId) {
+          // Update existing question
           updatedQuestions = part.questions.map((q) => (q.id === questionId ? newQuestion : q));
         } else {
+          // Add new question
           updatedQuestions = [...part.questions, newQuestion];
         }
         return { ...part, questions: updatedQuestions };
@@ -229,6 +217,7 @@ const WordExamUpload: React.FC = () => {
   };
 
   const handleUploadClick = () => {
+    // Example: add sample questions to all parts
     const now = new Date().toLocaleDateString();
     const newQuestionsPart1: Question[] = [
       {
@@ -443,15 +432,31 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Nút + Phần thi nhóm chủ đề hiện có, mở popup cấu hình nhóm chủ đề */}
-      <div className="flex justify-end">
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={() => setIsGroupPartModalOpen(true)}
-        >
-          + Phần thi nhóm chủ đề
-        </Button>
-      </div>
+      {/* Tải lên file Word và tải đề thi mẫu */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Tải lên file Word</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
+            <Button
+              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
+              onClick={handleUploadClick}
+            >
+              <Upload className="mr-2 h-4 w-4" /> Tải lên
+            </Button>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 w-full sm:w-auto"
+              onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}
+            >
+              <Download className="h-4 w-4" /> Tải đề thi mẫu
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
+        </CardContent>
+      </Card>
 
       {/* Câu hỏi đề thi (Manual Input) */}
       <ManualWordExamQuestions
@@ -477,17 +482,7 @@ const WordExamUpload: React.FC = () => {
           setParts((prev) => [...prev, newPart]);
           toast.success('Đã thêm phần thi nhóm chủ đề.');
         }}
-        onAddOrUpdateQuestion={handleAddOrUpdateQuestion}
-      />
-
-      {/* Popup cấu hình phần thi nhóm chủ đề */}
-      <GroupPartSettingsModal
-        isOpen={isGroupPartModalOpen}
-        onClose={() => setIsGroupPartModalOpen(false)}
-        maxGroupsSelected={groupPartMaxSelected}
-        onMaxGroupsSelectedChange={setGroupPartMaxSelected}
-        groups={groupPartGroups}
-        onGroupsChange={setGroupPartGroups}
+        onAddOrUpdateQuestion={handleAddOrUpdateQuestion} // Truyền hàm cập nhật câu hỏi
       />
 
       {/* Footer Buttons */}
