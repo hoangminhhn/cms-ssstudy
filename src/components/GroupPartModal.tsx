@@ -232,7 +232,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
                     className="col-span-3"
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full min-w-[150px]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -288,7 +288,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       }
                       className="flex-1 w-48"
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full min-w-[150px]">
                         <SelectValue placeholder="Lựa chọn môn" />
                       </SelectTrigger>
                       <SelectContent>
