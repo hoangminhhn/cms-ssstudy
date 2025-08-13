@@ -9,6 +9,7 @@ import WordExamUpload from '@/components/WordExamUpload';
 import ExamCategoryManagement from '@/components/ExamCategoryManagement';
 import EditExamFormCategory from '@/components/EditExamFormCategory'; // Import the new component
 import TestCategoryManagement from '@/components/TestCategoryManagement'; // Import new test category management
+import PartWithSubPartsManager from '@/components/PartWithSubPartsManager'; // Import the new prototype component
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -38,7 +39,14 @@ const WordExamUploadPage: React.FC = () => {
       case 'all-word-exams':
         return <ExamTable />;
       case 'add-word-exam':
-        return <WordExamUpload />;
+        return (
+          <>
+            <WordExamUpload />
+            <div className="mt-10">
+              <PartWithSubPartsManager />
+            </div>
+          </>
+        );
       case 'exam-categories':
         return <ExamCategoryManagement />;
       case 'test-categories':
