@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import Sortable from "react-sortablejs";
+import SortableJS from "sortablejs";
 
 type GroupType = "Một môn" | "Nhiều môn";
 
@@ -41,6 +41,53 @@ const availableSubjects = [
   "Lịch sử",
   "Địa lý",
 ];
+
+// Custom SortableList component using sortablejs
+interface SortableListProps<T> {
+  items: T[];
+  onChange: (newItems: T[]) => void;
+  renderItem: (item: T, index: number) => React.ReactNode;
+  idField: keyof T;
+  className?: string;
+}
+
+function SortableList<T extends Record<string, any>>({
+  items,
+  onChange,
+  renderItem,
+  idField,
+  className,
+}: SortableListProps<T>) {
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!listRef.current) return;
+
+    const sortable = SortableJS.create(listRef.current, {
+      animation: 150,
+      onEnd: (evt) => {
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(evt.oldIndex!, 1);
+        newItems.splice(evt.newIndex!, 0, movedItem);
+        onChange(newItems);
+      },
+    });
+
+    return () => {
+      sortable.destroy();
+    };
+  }, [items, onChange]);
+
+  return (
+    <div ref={listRef} className={className}>
+      {items.map((item, index) => (
+        <div key={String(item[idField])} className="mb-2 cursor-move select-none">
+          {renderItem(item, index)}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave }) => {
   const [maxGroupSelected, setMaxGroupSelected] = useState(1);
@@ -107,34 +154,29 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
   };
 
   const handleAddSubSubject = (groupId: string) => {
-    try {
-      const selectedSubject = newSubjectSelections[groupId];
-      if (!selectedSubject) {
-        toast.error("Vui lòng chọn môn học để thêm.");
-        return;
-      }
-      setGroups((prev) =>
-        prev.map((g) => {
-          if (g.id === groupId) {
-            if (g.subSubjects.some((ss) => ss.name.toLowerCase() === selectedSubject.toLowerCase())) {
-              toast.error("Môn học con đã tồn tại trong nhóm này.");
-              return g;
-            }
-            const newId = `subsubject-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-            const newSubSubject: SubSubject = {
-              id: newId,
-              name: selectedSubject,
-            };
-            return { ...g, subSubjects: [...g.subSubjects, newSubSubject] };
-          }
-          return g;
-        })
-      );
-      setNewSubjectSelections((prev) => ({ ...prev, [groupId]: "" }));
-    } catch (error) {
-      console.error("Lỗi khi thêm môn học con:", error);
-      toast.error("Đã xảy ra lỗi khi thêm môn học. Vui lòng thử lại.");
+    const selectedSubject = newSubjectSelections[groupId];
+    if (!selectedSubject) {
+      toast.error("Vui lòng chọn môn học để thêm.");
+      return;
     }
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          if (g.subSubjects.some((ss) => ss.name.toLowerCase() === selectedSubject.toLowerCase())) {
+            toast.error("Môn học con đã tồn tại trong nhóm này.");
+            return g;
+          }
+          const newId = `subsubject-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+          const newSubSubject: SubSubject = {
+            id: newId,
+            name: selectedSubject,
+          };
+          return { ...g, subSubjects: [...g.subSubjects, newSubSubject] };
+        }
+        return g;
+      })
+    );
+    setNewSubjectSelections((prev) => ({ ...prev, [groupId]: "" }));
   };
 
   const handleRemoveSubSubject = (groupId: string, subSubjectId: string) => {
@@ -230,7 +272,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
 
         <div className="space-y-6 bg-blue-50 dark:bg-blue-900 p-6 rounded-md">
           <Label className="mb-4 block font-semibold text-gray-700 dark:text-gray-300">Nhóm chủ đề</Label>
-          {groups.map((group, idx) => {
+          {groups.map((group) => {
             const selectedSubjectNames = group.subSubjects.map(ss => ss.name.toLowerCase());
             return (
               <div key={group.id} className="border rounded-md bg-white dark:bg-gray-800 p-4 relative">
@@ -307,20 +349,17 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                     {group.subSubjects.length === 0 ? (
                       <p className="text-sm text-muted-foreground mb-2">Chưa có môn học con.</p>
                     ) : (
-                      <Sortable
-                        tag="div"
-                        list={group.subSubjects}
-                        setList={(newList) => {
+                      <SortableList
+                        items={group.subSubjects}
+                        onChange={(newList) => {
                           setGroups((prev) =>
                             prev.map((g) => (g.id === group.id ? { ...g, subSubjects: newList } : g))
                           );
                         }}
-                        animation={150}
+                        idField="id"
                         className="space-y-2"
-                      >
-                        {group.subSubjects.map((sub) => (
+                        renderItem={(sub, idx) => (
                           <div
-                            key={sub.id}
                             className="flex items-center gap-2 mb-2 cursor-move select-none"
                             aria-label={`Kéo thả để sắp xếp môn học ${sub.name}`}
                           >
@@ -339,8 +378,8 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                               <X className="h-5 w-5" />
                             </Button>
                           </div>
-                        ))}
-                      </Sortable>
+                        )}
+                      />
                     )}
                     <div className="flex gap-2 mt-2">
                       <Select
