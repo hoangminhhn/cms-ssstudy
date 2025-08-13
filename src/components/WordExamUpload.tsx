@@ -1,269 +1,179 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Upload, Download } from 'lucide-react';
-import ManualWordExamQuestions from './ManualWordExamQuestions';
-import { toast } from 'sonner';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+"use client";
+
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Upload, Download, Check } from "lucide-react";
+import ManualWordExamQuestions from "./ManualWordExamQuestions";
+import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import GroupPartModal from "./GroupPartModal";
 
 const sampleFiles = [
-  { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
-  { label: 'Đề thi HSA', fileName: 'sample-hsa.docx' },
-  { label: 'Đề thi TSA', fileName: 'sample-tsa.docx' },
-  { label: 'Đề thi V-ACT', fileName: 'sample-v-act.docx' },
+  { label: "Đề thi tốt nghiệp", fileName: "sample-tot-nghiep.docx" },
+  { label: "Đề thi HSA", fileName: "sample-hsa.docx" },
+  { label: "Đề thi TSA", fileName: "sample-tsa.docx" },
+  { label: "Đề thi V-ACT", fileName: "sample-v-act.docx" },
 ];
 
 const examPeriods = [
-  'Chọn kỳ thi',
-  'Kỳ thi HSA',
-  'Kỳ thi TSA',
-  'Kỳ thi Tốt Nghiệp',
-  'Kỳ thi V-ACT',
+  "Chọn kỳ thi",
+  "Kỳ thi HSA",
+  "Kỳ thi TSA",
+  "Kỳ thi Tốt Nghiệp",
+  "Kỳ thi V-ACT",
 ];
 
 const partsOptionsDefault = [
-  { value: 'part1', label: 'Phần 1' },
-  { value: 'part2', label: 'Phần 2' },
-  { value: 'part3', label: 'Phần 3' },
-];
-
-const partsOptionsHSA = [
-  { value: 'math_and_data', label: 'Toán Học Và Xử Lý Số Liệu' },
-  { value: 'language_literature', label: 'Ngôn Ngữ - Văn Học' },
-  { value: 'science', label: 'Khoa Học' },
-  { value: 'english', label: 'Tiếng Anh' },
-];
-
-const partsOptionsTSA = [
-  { value: 'math_thinking', label: 'Tư Duy Toán Học' },
-  { value: 'reading_thinking', label: 'Tư Duy Đọc Hiểu' },
-  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
-];
-
-const partsOptionsTotNghiep = [
-  { value: 'multiple_choice', label: 'Trắc Nghiệm' },
-  { value: 'true_false', label: 'Đúng Sai' },
-  { value: 'short_answer', label: 'Trả Lời Ngắn' },
-];
-
-const partsOptionsVACT = [
-  { value: 'language_usage', label: 'Sử Dụng Ngôn Ngữ' },
-  { value: 'mathematics', label: 'Toán Học' },
-  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
+  { value: "part1", label: "Phần 1" },
+  { value: "part2", label: "Phần 2" },
+  { value: "part3", label: "Phần 3" },
 ];
 
 const testTypes = [
-  'Không',
-  'Thi giữa kỳ 1',
-  'Thi cuối kỳ 1',
-  'Thi giữa kỳ 2',
-  'Thi cuối kỳ 2',
+  "Không",
+  "Thi giữa kỳ 1",
+  "Thi cuối kỳ 1",
+  "Thi giữa kỳ 2",
+  "Thi cuối kỳ 2",
 ];
 
-const groups = [
-  'Mặc định',
-  'Thi thử',
-];
-
-const classes = [
-  'Lớp 1',
-  'Lớp 2',
-  'Lớp 3',
-  'Lớp 4',
-  'Lớp 5',
-];
-
-const subjects = [
-  'Toán',
-  'Văn',
-  'Tiếng Anh',
-  'Vật lí',
-  'Sinh học',
-];
-
-const allowRetryOptions = [
-  'Không cho phép',
-  'Có',
-];
-
+const groups = ["Mặc định", "Thi thử"];
+const classes = ["Lớp 1", "Lớp 2", "Lớp 3", "Lớp 4", "Lớp 5"];
+const subjects = ["Toán", "Văn", "Tiếng Anh", "Vật lí", "Sinh học"];
+const allowRetryOptions = ["Không cho phép", "Có"];
 const cities = [
-  'Chọn thành phố',
-  'Hà Nội',
-  'Hồ Chí Minh',
-  'Đà Nẵng',
-  'Hải Phòng',
-  'Cần Thơ',
-  'Nha Trang',
-  'Huế',
-  'Vũng Tàu',
-  'Quảng Ninh',
-  'Bình Dương',
+  "Chọn thành phố",
+  "Hà Nội",
+  "Hồ Chí Minh",
+  "Đà Nẵng",
+  "Hải Phòng",
+  "Cần Thơ",
+  "Nha Trang",
+  "Huế",
+  "Vũng Tàu",
+  "Quảng Ninh",
+  "Bình Dương",
 ];
 
 interface Question {
   id: string;
   correctAnswer: string;
   solution: string;
-  documentLink?: string;
-  videoLink?: string;
   uploadDate: string;
+  videoLink?: string;
+  documentLink?: string;
 }
 
 interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
-  uploadedFileName?: string;
+  maxSelected?: number;
 }
 
 const WordExamUpload: React.FC = () => {
-  const [parts, setParts] = React.useState<ExamPart[]>([
-    {
-      id: 'part1',
-      name: 'Phần 1',
-      questions: [],
-    },
-    {
-      id: 'part2',
-      name: 'Phần 2',
-      questions: [],
-    },
-    {
-      id: 'part3',
-      name: 'Phần 3',
-      questions: [],
-    },
+  const [parts, setParts] = useState<ExamPart[]>([
+    { id: "part1", name: "Phần 1", questions: [] },
+    { id: "part2", name: "Phần 2", questions: [] },
+    { id: "part3", name: "Phần 3", questions: [] },
   ]);
+  const [examName, setExamName] = useState("");
+  const [examPeriod, setExamPeriod] = useState("");
+  const [part, setPart] = useState("");
+  const [pdfLink, setPdfLink] = useState("");
+  const [testType, setTestType] = useState("Không");
+  const [group, setGroup] = useState("Mặc định");
+  const [classLevel, setClassLevel] = useState("Lớp 1");
+  const [subject, setSubject] = useState("Toán");
+  const [allowRetry, setAllowRetry] = useState("Không cho phép");
+  const [city, setCity] = useState("Chọn thành phố");
+  const [openCitySelect, setOpenCitySelect] = useState(false);
 
-  // State for exam info fields
-  const [examCode] = React.useState('Tự động');
-  const [examName, setExamName] = React.useState('');
-  const [examPeriod, setExamPeriod] = React.useState('');
-  const [part, setPart] = React.useState('');
-  const [pdfLink, setPdfLink] = React.useState(''); // New state for PDF link
-  const [testType, setTestType] = React.useState('Không');
-  const [group, setGroup] = React.useState('Mặc định');
-  const [classLevel, setClassLevel] = React.useState('Lớp 1');
-  const [subject, setSubject] = React.useState('Toán');
-  const [allowRetry, setAllowRetry] = React.useState('Không cho phép');
-  const [city, setCity] = React.useState('Chọn thành phố');
-  const [openCitySelect, setOpenCitySelect] = React.useState(false);
+  // State cho modal cài đặt nhóm chủ đề
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
-  // Determine parts options based on examPeriod, always prepend "Đủ 3 Phần"
-  let partsOptionsSpecific = partsOptionsDefault;
-  if (examPeriod === 'Kỳ thi HSA') {
-    partsOptionsSpecific = partsOptionsHSA;
-  } else if (examPeriod === 'Kỳ thi TSA') {
-    partsOptionsSpecific = partsOptionsTSA;
-  } else if (examPeriod === 'Kỳ thi Tốt Nghiệp') {
-    partsOptionsSpecific = partsOptionsTotNghiep;
-  } else if (examPeriod === 'Kỳ thi V-ACT') {
-    partsOptionsSpecific = partsOptionsVACT;
-  }
+  const handleOpenGroupModal = () => {
+    setIsGroupModalOpen(true);
+  };
 
-  const partsOptions = [{ value: 'full', label: 'Đủ 3 Phần' }, ...partsOptionsSpecific];
+  const handleCloseGroupModal = () => {
+    setIsGroupModalOpen(false);
+  };
 
-  const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
-    setParts((prevParts) =>
-      prevParts.map((part) => {
-        if (part.id !== partId) return part;
-        let updatedQuestions;
-        if (questionId) {
-          // Update existing question
-          updatedQuestions = part.questions.map((q) => (q.id === questionId ? newQuestion : q));
-        } else {
-          // Add new question
-          updatedQuestions = [...part.questions, newQuestion];
-        }
-        return { ...part, questions: updatedQuestions };
-      }),
-    );
+  const handleSaveGroupPart = (groupPartName: string, maxSelected?: number) => {
+    const newPart = {
+      id: `group-part-${Date.now()}`,
+      name: groupPartName,
+      questions: [],
+      maxSelected,
+    };
+    setParts((prev) => [...prev, newPart]);
+    toast.success("Đã thêm phần thi nhóm chủ đề.");
+    setIsGroupModalOpen(false);
   };
 
   const handleDeleteAll = () => {
-    setParts((prev) => prev.map((part) => ({ ...part, questions: [] })));
-    toast.success('Đã xóa tất cả câu hỏi.');
+    setParts((prevParts) => prevParts.map((p) => ({ ...p, questions: [] })));
+    toast.success("Đã xóa tất cả câu hỏi.");
   };
 
   const handleDeleteQuestion = (partId: string, questionId: string) => {
-    setParts((prev) =>
-      prev.map((part) =>
-        part.id === partId
-          ? {
-              ...part,
-              questions: part.questions.filter((q) => q.id !== questionId),
-            }
-          : part,
-      ),
+    setParts((prevParts) =>
+      prevParts.map((p) =>
+        p.id === partId ? { ...p, questions: p.questions.filter((q) => q.id !== questionId) } : p
+      )
     );
-    toast.success('Đã xóa câu hỏi.');
+    toast.success("Đã xóa câu hỏi.");
   };
 
   const handleDeletePart = (partId: string) => {
-    setParts((prev) => prev.filter((part) => part.id !== partId));
-    toast.success('Đã xóa phần thi.');
+    setParts((prev) => prev.filter((p) => p.id !== partId));
+    toast.success("Đã xóa phần thi.");
+  };
+
+  const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
+    setParts((prevParts) =>
+      prevParts.map((p) => {
+        if (p.id !== partId) return p;
+        const updatedQuestions = questionId
+          ? p.questions.map((q) => (q.id === questionId ? newQuestion : q))
+          : [...p.questions, newQuestion];
+        return { ...p, questions: updatedQuestions };
+      })
+    );
   };
 
   const handleUploadClick = () => {
-    // Example: add sample questions to all parts
     const now = new Date().toLocaleDateString();
     const newQuestionsPart1: Question[] = [
-      {
-        id: Date.now().toString() + "1",
-        correctAnswer: 'A',
-        solution: 'Giải thích câu hỏi mới 1',
-        uploadDate: now,
-      },
+      { id: Date.now().toString() + "1", correctAnswer: "A", solution: "Giải thích câu hỏi mới 1", uploadDate: now },
     ];
     const newQuestionsPart2: Question[] = [
-      {
-        id: Date.now().toString() + "2",
-        correctAnswer: 'B',
-        solution: 'Giải thích câu hỏi mới 2',
-        uploadDate: now,
-      },
+      { id: Date.now().toString() + "2", correctAnswer: "B", solution: "Giải thích câu hỏi mới 2", uploadDate: now },
     ];
     const newQuestionsPart3: Question[] = [
-      {
-        id: Date.now().toString() + "3",
-        correctAnswer: 'C',
-        solution: 'Giải thích câu hỏi mới 3',
-        uploadDate: now,
-      },
+      { id: Date.now().toString() + "3", correctAnswer: "C", solution: "Giải thích câu hỏi mới 3", uploadDate: now },
     ];
 
     setParts((prevParts) =>
-      prevParts.map((part) => {
-        if (part.id === 'part1') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart1] };
-        }
-        if (part.id === 'part2') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart2] };
-        }
-        if (part.id === 'part3') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart3] };
-        }
-        return part;
-      }),
+      prevParts.map((p) => {
+        if (p.id === "part1") return { ...p, questions: [...p.questions, ...newQuestionsPart1] };
+        if (p.id === "part2") return { ...p, questions: [...p.questions, ...newQuestionsPart2] };
+        if (p.id === "part3") return { ...p, questions: [...p.questions, ...newQuestionsPart3] };
+        return p;
+      })
     );
-
-    toast.success('Đã thêm câu hỏi mẫu cho 3 phần thi.');
+    toast.success("Đã thêm câu hỏi mẫu cho 3 phần thi.");
   };
 
   const handleDownloadSample = (fileName: string) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = `/${fileName}`;
     link.download = fileName;
     document.body.appendChild(link);
@@ -274,16 +184,14 @@ const WordExamUpload: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Thông tin đề thi */}
       <Card>
         <CardHeader>
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
-          {/* Row 1: Mã đề thi/Tên đề thi/ Kỳ thi / Phần thi/ Đề thi pdf */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
-            <Input id="exam-code" value={examCode} disabled />
+            <Input id="exam-code" value="Tự động" disabled />
           </div>
           <div className="col-span-3">
             <Label htmlFor="exam-name">Tên đề thi</Label>
@@ -291,7 +199,7 @@ const WordExamUpload: React.FC = () => {
           </div>
           <div className="col-span-2">
             <Label htmlFor="exam-period">Kỳ thi</Label>
-            <Select value={examPeriod} onValueChange={(val) => { setExamPeriod(val); setPart(''); }}>
+            <Select value={examPeriod} onValueChange={(val) => { setExamPeriod(val); setPart(""); }}>
               <SelectTrigger id="exam-period">
                 <SelectValue placeholder="Chọn kỳ thi" />
               </SelectTrigger>
@@ -309,7 +217,7 @@ const WordExamUpload: React.FC = () => {
                 <SelectValue placeholder="Chọn phần thi" />
               </SelectTrigger>
               <SelectContent>
-                {partsOptions.map((opt) => (
+                {[{ value: "full", label: "Đủ 3 Phần" }, ...partsOptionsDefault].map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                 ))}
               </SelectContent>
@@ -319,8 +227,6 @@ const WordExamUpload: React.FC = () => {
             <Label htmlFor="pdf-link">Đề thi PDF</Label>
             <Input id="pdf-link" value={pdfLink} onChange={(e) => setPdfLink(e.target.value)} placeholder="Nhập URL PDF" />
           </div>
-
-          {/* Row 2: Loại bài kiểm tra/Nhóm đề/Lớp/Môn học/ Cho phép làm lại/Thành phố */}
           <div className="col-span-1">
             <Label htmlFor="test-type">Loại bài kiểm tra</Label>
             <Select value={testType} onValueChange={setTestType}>
@@ -395,9 +301,7 @@ const WordExamUpload: React.FC = () => {
                   aria-expanded={openCitySelect}
                   className="w-full justify-between"
                 >
-                  {city
-                    ? cities.find((c) => c === city)
-                    : "Chọn thành phố..."}
+                  {city ? cities.find((c) => c === city) : "Chọn thành phố..."}
                   <Check className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -415,12 +319,7 @@ const WordExamUpload: React.FC = () => {
                           setOpenCitySelect(false);
                         }}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            city === c ? "opacity-100" : "opacity-0"
-                          )}
-                        />
+                        <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100" : "opacity-0")} />
                         {c}
                       </CommandItem>
                     ))}
@@ -432,7 +331,6 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Tải lên file Word và tải đề thi mẫu */}
       <Card>
         <CardHeader>
           <CardTitle>Tải lên file Word</CardTitle>
@@ -449,7 +347,7 @@ const WordExamUpload: React.FC = () => {
             <Button
               variant="outline"
               className="flex items-center gap-2 w-full sm:w-auto"
-              onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}
+              onClick={() => handleDownloadSample("sample-tot-nghiep.docx")}
             >
               <Download className="h-4 w-4" /> Tải đề thi mẫu
             </Button>
@@ -458,7 +356,6 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Câu hỏi đề thi (Manual Input) */}
       <ManualWordExamQuestions
         parts={parts}
         onDeleteAll={handleDeleteAll}
@@ -471,25 +368,18 @@ const WordExamUpload: React.FC = () => {
             questions: [],
           };
           setParts((prev) => [...prev, newPart]);
-          toast.success('Đã thêm phần thi mặc định.');
+          toast.success("Đã thêm phần thi mặc định.");
         }}
-        onAddGroupPart={() => {
-          const newPart = {
-            id: `group-part-${Date.now()}`,
-            name: `Phần nhóm chủ đề ${parts.length + 1}`,
-            questions: [],
-          };
-          setParts((prev) => [...prev, newPart]);
-          toast.success('Đã thêm phần thi nhóm chủ đề.');
-        }}
-        onAddOrUpdateQuestion={handleAddOrUpdateQuestion} // Truyền hàm cập nhật câu hỏi
+        onAddGroupPart={handleOpenGroupModal}
+        onAddOrUpdateQuestion={handleAddOrUpdateQuestion}
       />
 
-      {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline">HỦY</Button>
         <Button className="bg-orange-500 hover:bg-orange-600 text-white">LƯU</Button>
       </div>
+
+      <GroupPartModal isOpen={isGroupModalOpen} onClose={handleCloseGroupModal} onSave={handleSaveGroupPart} />
     </div>
   );
 };
