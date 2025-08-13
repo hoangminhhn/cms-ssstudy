@@ -17,7 +17,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import GroupPartSettingsModal from './GroupPartSettingsModal';
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -129,14 +128,6 @@ interface ExamPart {
   uploadedFileName?: string;
 }
 
-interface GroupTopic {
-  id: string;
-  name: string;
-  type: "Một môn" | "Nhiều môn";
-  maxSubGroupsSelected?: number;
-  subSubjects: { id: string; name: string }[];
-}
-
 const WordExamUpload: React.FC = () => {
   const [parts, setParts] = React.useState<ExamPart[]>([
     {
@@ -169,11 +160,6 @@ const WordExamUpload: React.FC = () => {
   const [allowRetry, setAllowRetry] = React.useState('Không cho phép');
   const [city, setCity] = React.useState('Chọn thành phố');
   const [openCitySelect, setOpenCitySelect] = React.useState(false);
-
-  // State for group part settings modal
-  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
-  const [groupPartMaxSelected, setGroupPartMaxSelected] = React.useState(1);
-  const [groupPartGroups, setGroupPartGroups] = React.useState<GroupTopic[]>([]);
 
   // Determine parts options based on examPeriod, always prepend "Đủ 3 Phần"
   let partsOptionsSpecific = partsOptionsDefault;
@@ -443,16 +429,6 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Nút + Phần thi nhóm chủ đề hiện có, mở popup cấu hình nhóm chủ đề */}
-      <div className="flex justify-end">
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={() => setIsGroupPartModalOpen(true)}
-        >
-          + Phần thi nhóm chủ đề
-        </Button>
-      </div>
-
       {/* Câu hỏi đề thi (Manual Input) */}
       <ManualWordExamQuestions
         parts={parts}
@@ -478,16 +454,6 @@ const WordExamUpload: React.FC = () => {
           toast.success('Đã thêm phần thi nhóm chủ đề.');
         }}
         onAddOrUpdateQuestion={handleAddOrUpdateQuestion}
-      />
-
-      {/* Popup cấu hình phần thi nhóm chủ đề */}
-      <GroupPartSettingsModal
-        isOpen={isGroupPartModalOpen}
-        onClose={() => setIsGroupPartModalOpen(false)}
-        maxGroupsSelected={groupPartMaxSelected}
-        onMaxGroupsSelectedChange={setGroupPartMaxSelected}
-        groups={groupPartGroups}
-        onGroupsChange={setGroupPartGroups}
       />
 
       {/* Footer Buttons */}
