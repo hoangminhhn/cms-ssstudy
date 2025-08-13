@@ -47,6 +47,12 @@ const partsOptionsHSA = [
   { value: 'english', label: 'Tiếng Anh' },
 ];
 
+const partsOptionsTSA = [
+  { value: 'math_thinking', label: 'Tư Duy Toán Học' },
+  { value: 'reading_thinking', label: 'Tư Duy Đọc Hiểu' },
+  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
+];
+
 const testTypes = [
   'Không',
   'Thi giữa kỳ 1',
@@ -145,7 +151,12 @@ const WordExamUpload: React.FC = () => {
   const [openCitySelect, setOpenCitySelect] = React.useState(false);
 
   // Determine parts options based on examPeriod
-  const partsOptions = examPeriod === 'Kỳ thi HSA' ? partsOptionsHSA : partsOptionsDefault;
+  let partsOptions = partsOptionsDefault;
+  if (examPeriod === 'Kỳ thi HSA') {
+    partsOptions = partsOptionsHSA;
+  } else if (examPeriod === 'Kỳ thi TSA') {
+    partsOptions = partsOptionsTSA;
+  }
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
