@@ -220,17 +220,16 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <div className="grid grid-cols-6 gap-4 mb-4 items-center">
+                <div className="grid grid-cols-[3fr_2fr_1fr] gap-4 mb-4 items-center">
                   <Input
                     placeholder="Tên nhóm chủ đề"
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
-                    className="col-span-2"
+                    className=""
                   />
                   <Select
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
-                    className="col-span-3"
                   >
                     <SelectTrigger className="w-full min-w-[150px]">
                       <SelectValue />
@@ -240,7 +239,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="col-span-1 flex flex-col items-start">
+                  <div className="flex flex-col items-start">
                     <Label htmlFor={`maxSelected-${group.id}`} className="text-sm font-medium mb-1">
                       Chọn tối đa
                     </Label>
