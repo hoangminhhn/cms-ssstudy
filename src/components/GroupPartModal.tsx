@@ -220,7 +220,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <div className="grid grid-cols-5 gap-4 mb-4 items-center">
+                <div className="grid grid-cols-6 gap-4 mb-4 items-center">
                   <Input
                     placeholder="Tên nhóm chủ đề"
                     value={group.name}
@@ -230,7 +230,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                   <Select
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
-                    className="col-span-2"
+                    className="col-span-3"
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -286,7 +286,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       onValueChange={(val) =>
                         setNewSubjectSelections((prev) => ({ ...prev, [group.id]: val }))
                       }
-                      className="flex-1"
+                      className="flex-1 w-48"
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Lựa chọn môn" />
