@@ -7,14 +7,15 @@ import { ChevronRight } from 'lucide-react';
 import ExamTable from '@/components/ExamTable';
 import WordExamUpload from '@/components/WordExamUpload';
 import ExamCategoryManagement from '@/components/ExamCategoryManagement';
-import EditExamFormCategory from '@/components/EditExamFormCategory'; // Import the new component
-import TestCategoryManagement from '@/components/TestCategoryManagement'; // Import new test category management
+import EditExamFormCategory from '@/components/EditExamFormCategory';
+import TestCategoryManagement from '@/components/TestCategoryManagement';
+import AddWordExamForm from '@/components/AddWordExamForm';
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const activeTab = searchParams.get('tab') || 'all-word-exams'; // Default to 'all-word-exams'
-  const categoryId = searchParams.get('categoryId'); // Get categoryId for editing
+  const activeTab = searchParams.get('tab') || 'all-word-exams';
+  const categoryId = searchParams.get('categoryId');
 
   const getHeaderTitle = () => {
     switch (activeTab) {
@@ -38,13 +39,13 @@ const WordExamUploadPage: React.FC = () => {
       case 'all-word-exams':
         return <ExamTable />;
       case 'add-word-exam':
-        return <WordExamUpload />;
+        return <AddWordExamForm />;
       case 'exam-categories':
         return <ExamCategoryManagement />;
       case 'test-categories':
         return <TestCategoryManagement />;
       case 'edit-category':
-        return <EditExamFormCategory />; // Render the new component here
+        return <EditExamFormCategory />;
       default:
         return <ExamTable />;
     }
@@ -53,7 +54,6 @@ const WordExamUploadPage: React.FC = () => {
   return (
     <Layout headerTitle={getHeaderTitle()}>
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        {/* Mobile content - This section is for a placeholder mobile submenu implementation */}
         <div className="lg:hidden w-full overflow-x-hidden">
           <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
             <Button
@@ -66,7 +66,7 @@ const WordExamUploadPage: React.FC = () => {
               <span className="text-sm font-semibold">MỞ RỘNG</span>
             </Button>
             <h2 className="text-lg font-semibold">{getHeaderTitle()}</h2>
-            <div className="w-16" /> {/* Placeholder */}
+            <div className="w-16" />
           </div>
         </div>
         {renderContent()}
