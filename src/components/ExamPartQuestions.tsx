@@ -134,19 +134,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
           <h2 className="text-lg font-semibold truncate">Đề thi</h2>
           <div className="flex items-center gap-2">
             <Button
-              className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm"
+              className="bg-cyan-500 hover:bg-cyan-600 text-white text-xs px-3 h-8 max-w-[140px] truncate"
               onClick={onAddDefaultPart}
             >
               + Phần thi mặc định
             </Button>
             <Button
-              className="bg-green-600 hover:bg-green-700 text-white text-sm"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 h-8 max-w-[140px] truncate"
               onClick={() => setIsGroupPartModalOpen(true)}
             >
               + Phần thi nhóm chủ đề
             </Button>
             <Button
-              className="bg-cyan-700 hover:bg-cyan-800 text-white text-sm"
+              className="bg-cyan-700 hover:bg-cyan-800 text-white text-xs px-3 h-8 max-w-[140px] truncate"
               onClick={() => alert('Chức năng + Câu hỏi chùm chưa được triển khai')}
             >
               + Câu hỏi chùm
@@ -177,7 +177,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   <div className="absolute top-2 right-2 left-2 z-10 flex justify-between">
                     {isGroupPart(part.id) ? (
                       <Button
-                        className="bg-green-600 hover:bg-green-700 text-white text-sm"
+                        className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 h-8 max-w-[140px] truncate"
                         size="sm"
                         onClick={() => setIsGroupPartModalOpen(true)}
                         aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
@@ -280,25 +280,25 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     </Table>
                   )}
                   <div className="flex flex-wrap gap-2 mt-4 px-2">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm" onClick={handleAddMultipleChoice}>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={handleAddMultipleChoice}>
                       +TRẮC NGHIỆM
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       +TRẮC NGHIỆM ĐÚNG SAI
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       +ĐIỀN SỐ/TRẢ LỜI NGẮN
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       +KÉO THẢ
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       +TN NHIỀU ĐÁP ÁN
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       +ĐÚNG/SAI
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-sm">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
                       + Câu hỏi chùm
                     </Button>
                   </div>
