@@ -215,6 +215,7 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
                     className="flex-shrink-0 w-[120px]"
+                    key={group.id + "-type-select"} // Thêm key để reset component khi nhóm thay đổi
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -275,6 +276,7 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                         }
                       }}
                       className="w-full"
+                      key={group.id + "-single-subject-select"} // Thêm key để reset component khi nhóm thay đổi
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Lựa chọn môn" />
