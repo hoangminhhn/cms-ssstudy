@@ -59,6 +59,12 @@ const partsOptionsTotNghiep = [
   { value: 'short_answer', label: 'Trả Lời Ngắn' },
 ];
 
+const partsOptionsVACT = [
+  { value: 'language_usage', label: 'Sử Dụng Ngôn Ngữ' },
+  { value: 'mathematics', label: 'Toán Học' },
+  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
+];
+
 const testTypes = [
   'Không',
   'Thi giữa kỳ 1',
@@ -164,6 +170,8 @@ const WordExamUpload: React.FC = () => {
     partsOptions = partsOptionsTSA;
   } else if (examPeriod === 'Kỳ thi Tốt Nghiệp') {
     partsOptions = partsOptionsTotNghiep;
+  } else if (examPeriod === 'Kỳ thi V-ACT') {
+    partsOptions = partsOptionsVACT;
   }
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
