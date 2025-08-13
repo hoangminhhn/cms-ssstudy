@@ -240,21 +240,22 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={group.maxSelected}
-                    onChange={(e) => handleGroupMaxSelectedChange(group.id, Number(e.target.value))}
-                    className="col-span-1"
-                  />
-                </div>
-                <div className="mb-4">
-                  <Label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Chọn tối đa
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Chọn {group.maxSelected} trong {group.subSubjects.length} môn
-                  </p>
+                  <div className="col-span-1 flex flex-col items-start">
+                    <Label htmlFor={`maxSelected-${group.id}`} className="text-sm font-medium mb-1">
+                      Chọn tối đa
+                    </Label>
+                    <Input
+                      id={`maxSelected-${group.id}`}
+                      type="number"
+                      min={1}
+                      value={group.maxSelected}
+                      onChange={(e) => handleGroupMaxSelectedChange(group.id, Number(e.target.value))}
+                      className="w-16"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Chọn {group.maxSelected} trong {group.subSubjects.length} môn
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <Label className="mb-1 block font-medium text-gray-700 dark:text-gray-300">Môn học con</Label>
