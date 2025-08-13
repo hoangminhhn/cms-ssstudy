@@ -151,6 +151,13 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             >
               + Phần thi nhóm chủ đề
             </Button>
+            {/* Thêm nút + Câu hỏi chùm */}
+            <Button
+              className="bg-cyan-700 hover:bg-cyan-800 text-white"
+              onClick={() => alert('Chức năng + Câu hỏi chùm chưa được triển khai')}
+            >
+              + Câu hỏi chùm
+            </Button>
           </div>
         </div>
         <CardContent>
@@ -255,7 +262,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                               )}
                             </TableCell>
                             <TableCell>{q.uploadDate}</TableCell>
-                            <TableCell className="text-right flex justify-end gap-2">
+                            <TableCell className="text-right flex flex-wrap justify-end gap-2">
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -297,6 +304,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     </Button>
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
                       +ĐÚNG/SAI
+                    </Button>
+                    {/* Nút + Câu hỏi chùm mới */}
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]">
+                      + Câu hỏi chùm
                     </Button>
                   </div>
                 </TabsContent>
