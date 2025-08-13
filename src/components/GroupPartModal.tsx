@@ -65,10 +65,12 @@ function SortableList<T extends Record<string, any>>({
 
     const sortable = SortableJS.create(listRef.current, {
       animation: 150,
+      handle: ".drag-handle",
       onEnd: (evt) => {
+        if (evt.oldIndex === undefined || evt.newIndex === undefined) return;
         const newItems = [...items];
-        const [movedItem] = newItems.splice(evt.oldIndex!, 1);
-        newItems.splice(evt.newIndex!, 0, movedItem);
+        const [movedItem] = newItems.splice(evt.oldIndex, 1);
+        newItems.splice(evt.newIndex, 0, movedItem);
         onChange(newItems);
       },
     });
@@ -81,7 +83,15 @@ function SortableList<T extends Record<string, any>>({
   return (
     <div ref={listRef} className={className}>
       {items.map((item, index) => (
-        <div key={String(item[idField])} className="mb-2 cursor-move select-none">
+        <div
+          key={String(item[idField])}
+          data-id={String(item[idField])}
+          className="mb-2 cursor-move select-none flex items-center gap-2"
+          aria-label={`Kéo thả để sắp xếp môn học ${item.name}`}
+        >
+          <span className="drag-handle cursor-move select-none text-gray-400" title="Kéo thả">
+            &#x2630;
+          </span>
           {renderItem(item, index)}
         </div>
       ))}
@@ -359,10 +369,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                         idField="id"
                         className="space-y-2"
                         renderItem={(sub, idx) => (
-                          <div
-                            className="flex items-center gap-2 mb-2 cursor-move select-none"
-                            aria-label={`Kéo thả để sắp xếp môn học ${sub.name}`}
-                          >
+                          <>
                             <Input
                               value={sub.name}
                               onChange={(e) => handleSubSubjectNameChange(group.id, sub.id, e.target.value)}
@@ -377,7 +384,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                             >
                               <X className="h-5 w-5" />
                             </Button>
-                          </div>
+                          </>
                         )}
                       />
                     )}
