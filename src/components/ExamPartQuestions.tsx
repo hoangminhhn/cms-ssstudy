@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trash2, Pencil } from 'lucide-react';
 import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
-import GroupPartModal from './GroupPartModal'; // Import modal nhóm chủ đề
+import GroupPartModal from './GroupPartModal';
 import { toast } from 'sonner';
 
 interface Question {
@@ -31,7 +31,7 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
   onAddDefaultPart: () => void;
-  onAddGroupPart: (partId: string) => void; // This will be replaced by modal
+  onAddGroupPart: (partId: string) => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
@@ -42,7 +42,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onDeleteQuestion,
   onDeletePart,
   onAddDefaultPart,
-  onAddGroupPart, // will not be used directly
+  onAddGroupPart,
   renderPartHeader,
   onAddOrUpdateQuestion,
 }) => {
@@ -52,8 +52,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
   const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
 
-  // State for group parts data (array of group parts)
-  const [groupParts, setGroupParts] = React.useState<any[]>([]); // You can type better if you want
+  const [groupParts, setGroupParts] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
@@ -104,7 +103,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     const correctOptionIndex = question.correctAnswer.charCodeAt(0) - 65;
 
     const editingQ: MultipleChoiceQuestion = {
-      questionText: "", // No question text stored
+      questionText: "",
       options,
       correctOptionIndex: correctOptionIndex >= 0 && correctOptionIndex < 5 ? correctOptionIndex : 0,
       difficulty: "Nhận biết",
@@ -118,17 +117,14 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setIsModalOpen(true);
   };
 
-  // New: open group part modal
   const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
 
-  // When user saves group parts from modal
   const handleSaveGroupParts = (maxGroupSelected: number, groups: any[]) => {
     setGroupParts(groups);
     toast.success("Đã lưu nhóm chủ đề!");
     setIsGroupPartModalOpen(false);
   };
 
-  // Helper to check if part is a group part (id starts with 'group-part-')
   const isGroupPart = (partId: string) => partId.startsWith('group-part-');
 
   return (
@@ -138,19 +134,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
           <h2 className="text-lg font-semibold truncate">Đề thi</h2>
           <div className="flex items-center gap-2">
             <Button
-              className="bg-cyan-500 hover:bg-cyan-600 text-white"
+              className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm"
               onClick={onAddDefaultPart}
             >
               + Phần thi mặc định
             </Button>
             <Button
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-green-600 hover:bg-green-700 text-white text-sm"
               onClick={() => setIsGroupPartModalOpen(true)}
             >
               + Phần thi nhóm chủ đề
             </Button>
             <Button
-              className="bg-cyan-700 hover:bg-cyan-800 text-white"
+              className="bg-cyan-700 hover:bg-cyan-800 text-white text-sm"
               onClick={() => alert('Chức năng + Câu hỏi chùm chưa được triển khai')}
             >
               + Câu hỏi chùm
@@ -181,7 +177,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   <div className="absolute top-2 right-2 left-2 z-10 flex justify-between">
                     {isGroupPart(part.id) ? (
                       <Button
-                        className="bg-green-600 hover:bg-green-700 text-white"
+                        className="bg-green-600 hover:bg-green-700 text-white text-sm"
                         size="sm"
                         onClick={() => setIsGroupPartModalOpen(true)}
                         aria-label={`Thêm nhóm chủ đề cho phần thi ${part.name || part.id}`}
@@ -283,7 +279,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       </TableBody>
                     </Table>
                   )}
-                  <div className="flex flex-wrap gap-2 mt-4 px-2 text-[18px]">
+                  <div className="flex flex-wrap gap-2 mt-4 px-2 text-sm">
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px]" onClick={handleAddMultipleChoice}>
                       +TRẮC NGHIỆM
                     </Button>
