@@ -189,27 +189,19 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
             const selectedSubjectNames = group.subSubjects.map((ss) => ss.name.toLowerCase());
             return (
               <div key={group.id} className="border rounded-md p-4 bg-gray-50 dark:bg-gray-700 relative">
-                <Button
-                  variant="ghost"
-                  className="absolute top-2 right-2 text-red-600 hover:bg-red-50"
-                  onClick={() => handleDeleteGroup(group.id)}
-                  size="sm"
-                  aria-label="Xóa nhóm chủ đề"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
                 <div className="flex items-center gap-4 mb-4">
                   <Input
                     value={group.name}
                     onChange={(e) => handleGroupNameChange(group.id, e.target.value)}
                     placeholder="Tên nhóm chủ đề"
-                    className="flex-1 max-w-[calc(100%-140px)]" // Giới hạn chiều rộng input để tránh chồng lấn
+                    className="flex-1 max-w-full min-w-0"
                   />
                   <Select
                     value={group.type}
                     onValueChange={(val) => handleGroupTypeChange(group.id, val as GroupType)}
+                    className="flex-shrink-0 w-[120px]"
                   >
-                    <SelectTrigger className="w-[120px]">
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -217,6 +209,15 @@ const GroupPartSettingsModal: React.FC<GroupPartSettingsModalProps> = ({
                       <SelectItem value="Nhiều môn">Nhiều môn</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Button
+                    variant="ghost"
+                    className="text-red-600 hover:bg-red-50 flex-shrink-0"
+                    onClick={() => handleDeleteGroup(group.id)}
+                    size="sm"
+                    aria-label="Xóa nhóm chủ đề"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
                 </div>
                 {group.type === "Nhiều môn" && (
                   <div className="mb-4">
