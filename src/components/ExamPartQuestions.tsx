@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trash2, Pencil } from 'lucide-react';
 import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
-import GroupPartSettingsModal from './GroupPartSettingsModal';
 
 interface Question {
   id: string;
@@ -22,14 +21,6 @@ interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
-}
-
-interface GroupTopic {
-  id: string;
-  name: string;
-  type: "Một môn" | "Nhiều môn";
-  maxSubGroupsSelected?: number;
-  subSubjects: { id: string; name: string }[];
 }
 
 interface ExamPartQuestionsProps {
@@ -58,11 +49,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
   const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
   const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
-
-  // State popup cấu hình nhóm chủ đề
-  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
-  const [groupPartMaxSelected, setGroupPartMaxSelected] = React.useState(1);
-  const [groupPartGroups, setGroupPartGroups] = React.useState<GroupTopic[]>([]);
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
@@ -144,7 +130,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </Button>
             <Button
               className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => setIsGroupPartModalOpen(true)} // Mở popup cấu hình nhóm chủ đề
+              onClick={() => onAddGroupPart('')}
             >
               + Phần thi nhóm chủ đề
             </Button>
@@ -309,15 +295,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         onSave={handleSaveQuestion}
         questionNumber={editingQuestionIndex !== null ? editingQuestionIndex + 1 : parts.findIndex(p => p.id === editingPartId) + 1}
         {...(editingQuestion ? { ...editingQuestion } : {})}
-      />
-
-      <GroupPartSettingsModal
-        isOpen={isGroupPartModalOpen}
-        onClose={() => setIsGroupPartModalOpen(false)}
-        maxGroupsSelected={groupPartMaxSelected}
-        onMaxGroupsSelectedChange={setGroupPartMaxSelected}
-        groups={groupPartGroups}
-        onGroupsChange={setGroupPartGroups}
       />
     </>
   );
