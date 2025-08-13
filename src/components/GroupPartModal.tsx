@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import Sortable from "react-sortablejs";
 
 type GroupType = "Một môn" | "Nhiều môn";
 
@@ -176,6 +177,19 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
     );
   };
 
+  // New handler for sorting subSubjects in "Nhiều môn" group
+  const handleSortSubSubjects = (groupId: string, newOrder: string[]) => {
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const newSubSubjects = newOrder.map(id => g.subSubjects.find(ss => ss.id === id)!).filter(Boolean);
+          return { ...g, subSubjects: newSubSubjects };
+        }
+        return g;
+      })
+    );
+  };
+
   const handleSave = () => {
     if (maxGroupSelected < 1) {
       toast.error("Số nhóm chủ đề tối đa phải lớn hơn hoặc bằng 1.");
@@ -304,24 +318,40 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                     {group.subSubjects.length === 0 ? (
                       <p className="text-sm text-muted-foreground mb-2">Chưa có môn học con.</p>
                     ) : (
-                      group.subSubjects.map((sub) => (
-                        <div key={sub.id} className="flex items-center gap-2 mb-2">
-                          <Input
-                            value={sub.name}
-                            onChange={(e) => handleSubSubjectNameChange(group.id, sub.id, e.target.value)}
-                            className="flex-1"
-                          />
-                          <Button
-                            variant="ghost"
-                            className="text-red-600 hover:bg-red-50"
-                            onClick={() => handleRemoveSubSubject(group.id, sub.id)}
-                            size="sm"
-                            aria-label="Xóa môn học con"
+                      <Sortable
+                        tag="div"
+                        list={group.subSubjects}
+                        setList={(newList) => {
+                          setGroups((prev) =>
+                            prev.map((g) => (g.id === group.id ? { ...g, subSubjects: newList } : g))
+                          );
+                        }}
+                        animation={150}
+                        className="space-y-2"
+                      >
+                        {group.subSubjects.map((sub) => (
+                          <div
+                            key={sub.id}
+                            className="flex items-center gap-2 mb-2 cursor-move select-none"
+                            aria-label={`Kéo thả để sắp xếp môn học ${sub.name}`}
                           >
-                            <X className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      ))
+                            <Input
+                              value={sub.name}
+                              onChange={(e) => handleSubSubjectNameChange(group.id, sub.id, e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              variant="ghost"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleRemoveSubSubject(group.id, sub.id)}
+                              size="sm"
+                              aria-label="Xóa môn học con"
+                            >
+                              <X className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        ))}
+                      </Sortable>
                     )}
                     <div className="flex gap-2 mt-2">
                       <Select
