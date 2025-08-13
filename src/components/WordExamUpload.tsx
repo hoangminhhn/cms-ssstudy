@@ -53,6 +53,12 @@ const partsOptionsTSA = [
   { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
 ];
 
+const partsOptionsTotNghiep = [
+  { value: 'multiple_choice', label: 'Trắc Nghiệm' },
+  { value: 'true_false', label: 'Đúng Sai' },
+  { value: 'short_answer', label: 'Trả Lời Ngắn' },
+];
+
 const testTypes = [
   'Không',
   'Thi giữa kỳ 1',
@@ -156,6 +162,8 @@ const WordExamUpload: React.FC = () => {
     partsOptions = partsOptionsHSA;
   } else if (examPeriod === 'Kỳ thi TSA') {
     partsOptions = partsOptionsTSA;
+  } else if (examPeriod === 'Kỳ thi Tốt Nghiệp') {
+    partsOptions = partsOptionsTotNghiep;
   }
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
