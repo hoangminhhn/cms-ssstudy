@@ -278,7 +278,7 @@ const AddWordExamForm: React.FC = () => {
         <p className="text-sm text-muted-foreground mt-2 px-4">Chỉ chấp nhận các định dạng .doc, .docx</p>
       </Card>
 
-      {/* Danh sách đề thi (hiện chưa có phần thi nào) */}
+      {/* Danh sách đề thi (giữ nguyên phần này) */}
       <Card>
         <CardHeader>
           <CardTitle>Đề thi</CardTitle>
