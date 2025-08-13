@@ -145,12 +145,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             >
               + Phần thi nhóm chủ đề
             </Button>
-            <Button
-              className="bg-cyan-700 hover:bg-cyan-800 text-white text-xs px-3 h-8 max-w-[140px] truncate"
-              onClick={() => alert('Chức năng + Câu hỏi chùm chưa được triển khai')}
-            >
-              + Câu hỏi chùm
-            </Button>
+            {/* Nút + Câu hỏi chùm đã bị xóa ở đây */}
           </div>
         </div>
         <CardContent>
