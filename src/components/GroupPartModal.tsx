@@ -220,7 +220,7 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <div className="grid grid-cols-[3fr_2fr_1fr] gap-4 mb-4 items-center">
+                <div className="grid grid-cols-[4fr_3fr_2fr] gap-4 mb-4 items-center">
                   <Input
                     placeholder="Tên nhóm chủ đề"
                     value={group.name}
