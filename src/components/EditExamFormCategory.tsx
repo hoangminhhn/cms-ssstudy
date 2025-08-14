@@ -10,10 +10,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const EditExamFormCategory: React.FC = () => {
-  // ============================
-  // STATE VÀ LOGIC KHUNG CHUNG
-  // (giữ nguyên mọi thứ đã có)
-  // ============================
+  // --- Các state và logic của phần "Chỉnh sửa danh mục" và "Cài đặt thời gian" giữ nguyên ---
   const [examName, setExamName] = React.useState('Kỳ thi HSA');
   const [displayMode, setDisplayMode] = React.useState('single-screen');
   const [timeSettingMode, setTimeSettingMode] = React.useState('total');
@@ -22,31 +19,31 @@ const EditExamFormCategory: React.FC = () => {
     oneCorrect: 0,
     twoCorrect: 0,
     threeCorrect: 0,
-    fourCorrect: 0,
+    fourCorrect: 0
   });
-  // … các state/và logic khác của trang giữ nguyên …
+  // ... các state và logic khác của trang giữ nguyên ...
 
-  // ===================================================
-  // PHẦN ĐƠN GIẢN HÓA RIÊNG CHỨC NĂNG QUẢN LÝ PHẦN THI
-  // ===================================================
+  // --- Chỉ chỉnh sửa chức năng "Quản lý Phần thi" ---
+  // State quản lý phần thi đơn giản: chỉ thêm mới và xóa phần thi
   const [parts, setParts] = React.useState<{ id: string; name: string }[]>([
     { id: 'part1', name: 'Phần thi 1' },
     { id: 'part2', name: 'Phần thi 2' },
-    { id: 'part3', name: 'Phần thi 3' },
+    { id: 'part3', name: 'Phần thi 3' }
   ]);
   const [newPartName, setNewPartName] = React.useState('');
 
   const handleAddPart = () => {
-    const name = newPartName.trim();
-    if (!name) {
+    const trimmedName = newPartName.trim();
+    if (!trimmedName) {
       toast.error('Vui lòng nhập tên phần thi');
       return;
     }
-    if (parts.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+    if (parts.some(p => p.name.toLowerCase() === trimmedName.toLowerCase())) {
       toast.error('Phần thi đã tồn tại');
       return;
     }
-    setParts(prev => [...prev, { id: `part-${Date.now()}`, name }]);
+    const newPart = { id: `part-${Date.now()}`, name: trimmedName };
+    setParts(prev => [...prev, newPart]);
     setNewPartName('');
     toast.success('Đã thêm phần thi mới');
   };
@@ -58,7 +55,7 @@ const EditExamFormCategory: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* === KHUNG CHUNG: Chỉnh sửa danh mục (giữ nguyên) === */}
+      {/* --- Phần Chỉnh sửa Danh mục (giữ nguyên) --- */}
       <Card>
         <CardHeader>
           <CardTitle>Chỉnh sửa Danh mục Kỳ thi</CardTitle>
@@ -66,18 +63,18 @@ const EditExamFormCategory: React.FC = () => {
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="exam-name">Tên kỳ thi</Label>
-            <Input
-              id="exam-name"
+            <Input 
+              id="exam-name" 
               value={examName}
-              onChange={e => setExamName(e.target.value)}
+              onChange={(e) => setExamName(e.target.value)}
             />
           </div>
           <div>
             <Label htmlFor="display-mode">Hình thức hiển thị</Label>
-            <Select
-              id="display-mode"
+            <Select 
               value={displayMode}
               onValueChange={setDisplayMode}
+              id="display-mode"
             >
               <SelectTrigger>
                 <SelectValue placeholder="Chọn hình thức" />
@@ -90,7 +87,7 @@ const EditExamFormCategory: React.FC = () => {
           </div>
           <div>
             <Label htmlFor="question-display">Hiển thị câu hỏi</Label>
-            <Select defaultValue="one-per-screen" id="question-display">
+            <Select id="question-display" defaultValue="one-per-screen">
               <SelectTrigger>
                 <SelectValue placeholder="Chọn cách hiển thị" />
               </SelectTrigger>
@@ -103,7 +100,7 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* === ĐƠN GIẢN HÓA RIÊNG: Quản lý Phần thi === */}
+      {/* --- Phần Quản lý Phần thi được chỉnh sửa riêng --- */}
       <Card>
         <CardHeader>
           <CardTitle>Quản lý Phần thi</CardTitle>
@@ -113,8 +110,13 @@ const EditExamFormCategory: React.FC = () => {
             <Input
               placeholder="Nhập tên phần thi mới"
               value={newPartName}
-              onChange={e => setNewPartName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleAddPart()}
+              onChange={(e) => setNewPartName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPart();
+                }
+              }}
             />
             <Button
               className="bg-orange-500 hover:bg-orange-600 text-white"
@@ -125,7 +127,7 @@ const EditExamFormCategory: React.FC = () => {
           </div>
           {parts.length > 0 ? (
             <div className="space-y-2">
-              {parts.map(part => (
+              {parts.map((part) => (
                 <div
                   key={part.id}
                   className="flex justify-between items-center p-2 border rounded"
@@ -135,6 +137,7 @@ const EditExamFormCategory: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeletePart(part.id)}
+                    aria-label={`Xóa phần thi ${part.name}`}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
@@ -149,7 +152,7 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* === KHUNG CHUNG: Cài đặt Thời gian (giữ nguyên) === */}
+      {/* --- Phần Cài đặt Thời gian (giữ nguyên) --- */}
       <Card>
         <CardHeader>
           <CardTitle>Cài đặt Thời gian</CardTitle>
@@ -169,7 +172,7 @@ const EditExamFormCategory: React.FC = () => {
               <Label htmlFor="time-per-part">Theo từng phần</Label>
             </div>
           </RadioGroup>
-          {/* … giữ nguyên các cấu hình thời gian chi tiết … */}
+          {/* Các cấu hình thời gian khác giữ nguyên */}
         </CardContent>
       </Card>
     </div>
