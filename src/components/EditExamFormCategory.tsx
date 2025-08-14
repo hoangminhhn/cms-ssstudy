@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PartManager, { Part } from '@/components/PartManager';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,14 +10,14 @@ const EditExamFormCategory: React.FC = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams<{ categoryId: string }>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!categoryId) {
       toast.error('Không tìm thấy danh mục!');
       navigate('/word-exam-upload?tab=exam-categories');
     }
   }, [categoryId, navigate]);
 
-  const [parts, setParts] = React.useState<Part[]>([]);
+  const [parts, setParts] = useState<Part[]>([]);
 
   const handleAddPart = (name: string) => {
     setParts(prev => [...prev, { id: Date.now().toString(), name }]);
@@ -42,6 +42,7 @@ const EditExamFormCategory: React.FC = () => {
         </Button>
       </div>
     </div>
-);
+  );
+};
 
 export default EditExamFormCategory;
