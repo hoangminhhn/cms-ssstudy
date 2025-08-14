@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PartItem {
   id: string;
-  name: string; // Only name needed now
+  name: string;
 }
 
 interface ExamFormCategory {
@@ -356,7 +356,7 @@ const EditExamFormCategory: React.FC = () => {
             <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
           ) : (
             <ul className="space-y-2">
-              {parts.map((part, index) => (
+              {parts.map((part) => (
                 <li key={part.id} className="flex items-center justify-between border rounded-md p-3">
                   <span>{part.name}</span>
                   <Button
