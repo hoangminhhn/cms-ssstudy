@@ -55,6 +55,7 @@ const PartManager: React.FC<PartManagerProps> = ({ parts, onAddPart, onRemovePar
         </ul>
       </CardContent>
     </Card>
-);
+  );
+};
 
 export default PartManager;
