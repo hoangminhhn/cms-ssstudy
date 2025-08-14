@@ -2,13 +2,14 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-
-// Giữ nguyên các import và phần code khác của file...
+import { useState } from 'react';
 
 const EditExamFormCategory: React.FC = () => {
-  // Giữ nguyên các state và logic khác...
+  // Các state và logic khác giữ nguyên
 
   // State quản lý phần thi đơn giản
   const [parts, setParts] = React.useState<{ id: string; name: string }[]>([
@@ -43,8 +44,103 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   return (
-    <>
-      {/* Giữ nguyên toàn bộ các phần khác của trang */}
+    <div className="space-y-6">
+      {/* Giữ nguyên toàn bộ các phần cấu hình khác như ảnh */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="exam-name">Tên kỳ thi</Label>
+              <Input id="exam-name" defaultValue="Kỳ thi HSA" />
+            </div>
+            <div>
+              <Label htmlFor="display-mode">Hình thức hiển thị phần thi</Label>
+              <Select defaultValue="1 màn hình" id="display-mode">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1 màn hình">1 màn hình</SelectItem>
+                  <SelectItem value="nhiều màn hình">Nhiều màn hình</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="navigation-mode">Cách di chuyển giữa các phần thi</Label>
+              <Select defaultValue="Tự do" id="navigation-mode">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Tự do">Tự do</SelectItem>
+                  <SelectItem value="tuần tự">Tuần tự</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="question-selection">Cách chọn câu hỏi</Label>
+              <Select defaultValue="Làm bất kỳ" id="question-selection">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Làm bất kỳ">Làm bất kỳ</SelectItem>
+                  <SelectItem value="Làm theo thứ tự">Làm theo thứ tự</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="question-display">Cách hiển thị câu hỏi</Label>
+              <Select defaultValue="1 câu trong màn" id="question-display">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1 câu trong màn">1 câu trong màn</SelectItem>
+                  <SelectItem value="nhiều câu trong màn">Nhiều câu trong màn</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="part-display">Phần thi</Label>
+              <Select defaultValue="Đầy đủ 3 phần thi" id="part-display">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Đầy đủ 3 phần thi">Đầy đủ 3 phần thi</SelectItem>
+                  <SelectItem value="rút gọn">Rút gọn</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center space-x-2 col-span-full">
+              <Switch id="score-scale" />
+              <Label htmlFor="score-scale" className="mb-0">
+                Cấu hình thang điểm đúng sai
+              </Label>
+            </div>
+            <div>
+              <Label htmlFor="score-1">Trả lời đúng 1 ý</Label>
+              <Input id="score-1" type="number" defaultValue={0} />
+            </div>
+            <div>
+              <Label htmlFor="score-2">Trả lời đúng 2 ý</Label>
+              <Input id="score-2" type="number" defaultValue={0} />
+            </div>
+            <div>
+              <Label htmlFor="score-3">Trả lời đúng 3 ý</Label>
+              <Input id="score-3" type="number" defaultValue={0} />
+            </div>
+            <div>
+              <Label htmlFor="score-4">Trả lời đúng 4 ý</Label>
+              <Input id="score-4" type="number" defaultValue={0} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* --- Đơn giản hóa phần Quản lý Phần thi --- */}
       <Card>
@@ -101,8 +197,8 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Giữ nguyên toàn bộ các phần khác của trang */}
-    </>
+      {/* Giữ nguyên các phần khác nếu có */}
+    </div>
   );
 };
 
