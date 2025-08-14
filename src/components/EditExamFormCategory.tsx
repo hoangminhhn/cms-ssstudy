@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Trash2, Clock, Target } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PartItem {
@@ -81,7 +81,7 @@ const EditExamFormCategory: React.FC = () => {
   const categoryId = searchParams.get('categoryId');
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
-  const [parts, setParts] = React.useState<PartItem[]>([]); // Only id and name now
+  const [parts, setParts] = React.useState<PartItem[]>([]);
   const [newPartName, setNewPartName] = React.useState('');
 
   React.useEffect(() => {
@@ -93,7 +93,6 @@ const EditExamFormCategory: React.FC = () => {
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
       setCategory(foundCategory);
-      // Initialize parts with some default parts or empty
       setParts([
         { id: 'part1', name: 'Phần 1' },
         { id: 'part2', name: 'Phần 2' },
@@ -105,6 +104,7 @@ const EditExamFormCategory: React.FC = () => {
     }
   }, [categoryId, navigate]);
 
+  // Handlers for part management (add/delete)
   const handleAddPart = () => {
     const trimmedName = newPartName.trim();
     if (!trimmedName) {
@@ -129,10 +129,66 @@ const EditExamFormCategory: React.FC = () => {
     toast.success('Đã xóa phần thi.');
   };
 
+  // Handlers for category fields (part 1)
   const handleChangeCategoryField = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (category) {
       setCategory({ ...category, examName: value });
+    }
+  };
+
+  const handleChangeDisplayMode = (value: 'single-screen' | 'per-section') => {
+    if (category) {
+      setCategory({ ...category, displayMode: value });
+    }
+  };
+
+  const handleChangeQuestionDisplay = (value: 'one-per-screen' | 'all-at-once') => {
+    if (category) {
+      setCategory({ ...category, questionDisplay: value });
+    }
+  };
+
+  const handleToggleConfigureScoring = (checked: boolean) => {
+    if (category) {
+      setCategory({ ...category, configureScoring: checked });
+    }
+  };
+
+  const handleScoringPercentageChange = (field: keyof NonNullable<ExamFormCategory['scoringPercentages']>, value: number) => {
+    if (category) {
+      setCategory({
+        ...category,
+        scoringPercentages: {
+          ...category.scoringPercentages,
+          [field]: value,
+        },
+      });
+    }
+  };
+
+  // Handlers for time settings (part 3)
+  const handleChangeTimeSettingMode = (value: 'total' | 'per-part') => {
+    if (category) {
+      setCategory({ ...category, timeSettingMode: value });
+    }
+  };
+
+  const handleChangeTotalTime = (value: number) => {
+    if (category) {
+      setCategory({ ...category, totalTimeMinutes: value });
+    }
+  };
+
+  const handleChangePerPartTime = (partId: string, value: number) => {
+    if (category) {
+      setCategory({
+        ...category,
+        perPartTimes: {
+          ...category.perPartTimes,
+          [partId]: value,
+        },
+      });
     }
   };
 
@@ -153,6 +209,10 @@ const EditExamFormCategory: React.FC = () => {
     return <div className="p-4 text-center text-muted-foreground">Đang tải...</div>;
   }
 
+  const totalPerPartTime = category.perPartTimes
+    ? Object.values(category.perPartTimes).reduce((acc, val) => acc + val, 0)
+    : 0;
+
   return (
     <div className="space-y-6 p-4">
       {/* Phần 1: Thông tin danh mục kỳ thi */}
@@ -165,7 +225,100 @@ const EditExamFormCategory: React.FC = () => {
             <Label htmlFor="examName">Tên kỳ thi</Label>
             <Input id="examName" value={category.examName} onChange={handleChangeCategoryField} />
           </div>
-          {/* Giữ nguyên các phần khác của phần 1 nếu cần */}
+          <div>
+            <Label>Hiển thị phần thi</Label>
+            <RadioGroup value={category.displayMode} onValueChange={handleChangeDisplayMode} className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="single-screen" id="single-screen" />
+                <Label htmlFor="single-screen">Toàn bộ phần thi</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="per-section" id="per-section" />
+                <Label htmlFor="per-section">Lần lượt từng phần thi</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <div>
+            <Label>Hiển thị câu hỏi</Label>
+            <RadioGroup value={category.questionDisplay} onValueChange={handleChangeQuestionDisplay} className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="one-per-screen" id="one-per-screen" />
+                <Label htmlFor="one-per-screen">1 câu trong màn</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all-at-once" id="all-at-once" />
+                <Label htmlFor="all-at-once">Tất cả cùng lúc</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <div className="col-span-full">
+            <div className="flex items-center space-x-2">
+              <Switch checked={category.configureScoring} onCheckedChange={handleToggleConfigureScoring} id="configureScoring" />
+              <Label htmlFor="configureScoring">Cấu hình thang điểm đúng sai</Label>
+            </div>
+            {category.configureScoring && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                <div>
+                  <Label htmlFor="oneCorrect">1 ý đúng (%)</Label>
+                  <Input
+                    id="oneCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.oneCorrect || 0}
+                    onChange={(e) => handleScoringPercentageChange('oneCorrect', Number(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="twoCorrect">2 ý đúng (%)</Label>
+                  <Input
+                    id="twoCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.twoCorrect || 0}
+                    onChange={(e) => handleScoringPercentageChange('twoCorrect', Number(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="threeCorrect">3 ý đúng (%)</Label>
+                  <Input
+                    id="threeCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.threeCorrect || 0}
+                    onChange={(e) => handleScoringPercentageChange('threeCorrect', Number(e.target.value))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="fourCorrect">4 ý đúng (%)</Label>
+                  <Input
+                    id="fourCorrect"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={category.scoringPercentages?.fourCorrect || 0}
+                    onChange={(e) => handleScoringPercentageChange('fourCorrect', Number(e.target.value))}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div>
+            <Label>Chọn phần thi</Label>
+            <Select value={category.partSelection} onValueChange={(val) => setCategory({ ...category, partSelection: val as any })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="full">Toàn bộ</SelectItem>
+                <SelectItem value="part1">Phần 1</SelectItem>
+                <SelectItem value="part2">Phần 2</SelectItem>
+                <SelectItem value="part3">Phần 3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
@@ -214,14 +367,51 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Phần 3: Cài đặt thời gian (giữ nguyên) */}
+      {/* Phần 3: Cài đặt thời gian */}
       <Card>
         <CardHeader>
           <CardTitle>Cài đặt thời gian</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Giữ nguyên phần cài đặt thời gian như cũ */}
-          {/* ... (bạn có thể giữ nguyên phần này từ mã gốc) */}
+          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={handleChangeTimeSettingMode} className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="total" id="time-total" />
+              <Label htmlFor="time-total">Tổng thời gian</Label>
+            </div>
+            {category.timeSettingMode === 'total' && (
+              <Input
+                type="number"
+                min={0}
+                value={category.totalTimeMinutes || 0}
+                onChange={(e) => handleChangeTotalTime(Number(e.target.value))}
+                className="max-w-[120px]"
+              />
+            )}
+
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="per-part" id="time-per-part" />
+              <Label htmlFor="time-per-part">Theo phần thi</Label>
+            </div>
+            {category.timeSettingMode === 'per-part' && (
+              <div className="space-y-2">
+                {parts.map((part) => (
+                  <div key={part.id} className="flex items-center space-x-2">
+                    <Label className="w-32">{part.name}</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={category.perPartTimes?.[part.id] || 0}
+                      onChange={(e) => handleChangePerPartTime(part.id, Number(e.target.value))}
+                      className="max-w-[120px]"
+                    />
+                  </div>
+                ))}
+                <div className="mt-2 font-semibold">
+                  Tổng thời gian: {totalPerPartTime} phút
+                </div>
+              </div>
+            )}
+          </RadioGroup>
         </CardContent>
       </Card>
 
