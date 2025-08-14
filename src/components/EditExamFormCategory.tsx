@@ -43,59 +43,66 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quản lý Phần thi</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex gap-2 mb-4">
-          <Input
-            placeholder="Nhập tên phần thi mới"
-            value={newPartName}
-            onChange={(e) => setNewPartName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddPart();
-              }
-            }}
-          />
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-            Thêm
-          </Button>
-        </div>
-        {parts.length === 0 ? (
-          <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
-        ) : (
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-300 dark:border-gray-700">
-                <th className="py-2 px-4">Tên phần thi</th>
-                <th className="py-2 px-4 text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {parts.map((part) => (
-                <tr key={part.id} className="border-b border-gray-200 dark:border-gray-800">
-                  <td className="py-2 px-4">{part.name}</td>
-                  <td className="py-2 px-4 text-right">
-                    <Button
-                      variant="ghost"
-                      className="text-red-600 hover:bg-red-50"
-                      size="sm"
-                      onClick={() => handleDeletePart(part.id)}
-                      aria-label={`Xóa phần thi ${part.name}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </td>
+    <div>
+      {/* Các phần khác của trang giữ nguyên */}
+
+      {/* Phần Quản lý Phần thi được đơn giản hóa */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quản lý Phần thi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2 mb-4">
+            <Input
+              placeholder="Nhập tên phần thi mới"
+              value={newPartName}
+              onChange={(e) => setNewPartName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPart();
+                }
+              }}
+            />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+              Thêm
+            </Button>
+          </div>
+          {parts.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-300 dark:border-gray-700">
+                  <th className="py-2 px-4">Tên phần thi</th>
+                  <th className="py-2 px-4 text-right">Thao tác</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </CardContent>
-    </Card>
+              </thead>
+              <tbody>
+                {parts.map((part) => (
+                  <tr key={part.id} className="border-b border-gray-200 dark:border-gray-800">
+                    <td className="py-2 px-4">{part.name}</td>
+                    <td className="py-2 px-4 text-right">
+                      <Button
+                        variant="ghost"
+                        className="text-red-600 hover:bg-red-50"
+                        size="sm"
+                        onClick={() => handleDeletePart(part.id)}
+                        aria-label={`Xóa phần thi ${part.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Các phần khác của trang giữ nguyên */}
+    </div>
   );
 };
 
