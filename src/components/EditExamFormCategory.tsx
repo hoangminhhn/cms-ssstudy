@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface PartItem {
@@ -407,7 +407,7 @@ const EditExamFormCategory: React.FC = () => {
                   </div>
                 ))}
                 <div className="mt-2 font-semibold">
-                  Tổng thời gian: {totalPerPartTime} phút
+                  Tổng thời gian: {parts.reduce((acc, part) => acc + (category.perPartTimes?.[part.id] || 0), 0)} phút
                 </div>
               </div>
             )}
