@@ -5,30 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, ChevronDown, ChevronUp, X, Clock, Target } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-interface SubSubject {
-  id: string;
-  name: string;
-}
-
-interface SubPart {
-  id: string;
-  name: string;
-  type: 'Một môn' | 'Nhiều môn';
-  subSubjects: SubSubject[];
-  maxSubGroupsSelected?: number;
-}
-
 interface PartItem {
   id: string;
-  name: string; // This will store only the descriptive part, e.g. "Tư duy đọc hiểu"
-  allowSubGroups?: boolean;
-  maxSubGroupsSelected?: number;
-  subParts?: SubPart[];
-  splitIntoSubParts?: boolean;
+  name: string;
+  additionalName?: string;
 }
 
 interface ExamFormCategory {
@@ -97,14 +81,27 @@ const EditExamFormCategory: React.FC = () => {
   const categoryId = searchParams.get('categoryId');
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
-  // Keep parts state as before, but will only use name and id now
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần 1' },
-    { id: 'part2', name: 'Phần 2' },
-    { id: 'part3', name: 'Phần 3' },
+    { id: 'part1', name: 'Phần 1', additionalName: '' },
+    { id: 'part2', name: 'Phần 2', additionalName: '' },
+    { id: 'part3', name: 'Phần 3', additionalName: '' },
   ]);
   const [newPartName, setNewPartName] = React.useState('');
   const [expandedParts, setExpandedParts] = React.useState<Record<string, boolean>>({});
+  const [scoringEnabled, setScoringEnabled] = React.useState(false);
+  const [scoringValues, setScoringValues] = React.useState({
+    oneCorrect: 0,
+    twoCorrect: 0,
+    threeCorrect: 0,
+    fourCorrect: 0,
+  });
+  const [timeSettingMode, setTimeSettingMode] = React.useState<'total' | 'per-part'>('total');
+  const [totalTimeMinutes, setTotalTimeMinutes] = React.useState(120);
+  const [perPartTimes, setPerPartTimes] = React.useState<Record<string, number>>({
+    part1: 30,
+    part2: 30,
+    part3: 60,
+  });
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -115,6 +112,16 @@ const EditExamFormCategory: React.FC = () => {
     const foundCategory = mockExamCategories.find(cat => cat.id === categoryId);
     if (foundCategory) {
       setCategory(foundCategory);
+      setScoringEnabled(foundCategory.configureScoring);
+      setScoringValues({
+        oneCorrect: foundCategory.scoringPercentages?.oneCorrect || 0,
+        twoCorrect: foundCategory.scoringPercentages?.twoCorrect || 0,
+        threeCorrect: foundCategory.scoringPercentages?.threeCorrect || 0,
+        fourCorrect: foundCategory.scoringPercentages?.fourCorrect || 0,
+      });
+      setTimeSettingMode(foundCategory.timeSettingMode || 'total');
+      setTotalTimeMinutes(foundCategory.totalTimeMinutes || 120);
+      setPerPartTimes(foundCategory.perPartTimes || { part1: 30, part2: 30, part3: 60 });
     } else {
       toast.error('Không tìm thấy danh mục kỳ thi!');
       navigate('/word-exam-upload?tab=exam-categories');
@@ -125,14 +132,10 @@ const EditExamFormCategory: React.FC = () => {
     setExpandedParts(prev => ({ ...prev, [partId]: !prev[partId] }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, dataset } = e.target;
-    const partId = dataset.partId;
-    if (partId) {
-      setParts(prev =>
-        prev.map(p => (p.id === partId ? { ...p, name: value } : p))
-      );
-    }
+  const handleAdditionalNameChange = (partId: string, value: string) => {
+    setParts(prev =>
+      prev.map(p => (p.id === partId ? { ...p, additionalName: value } : p))
+    );
   };
 
   const handleAddPart = () => {
@@ -148,6 +151,7 @@ const EditExamFormCategory: React.FC = () => {
     const newPart: PartItem = {
       id: `part-${Date.now()}`,
       name: trimmedName,
+      additionalName: '',
     };
     setParts(prev => [...prev, newPart]);
     setNewPartName('');
@@ -159,10 +163,33 @@ const EditExamFormCategory: React.FC = () => {
     toast.success('Đã xóa phần thi.');
   };
 
+  const handleScoringToggle = () => {
+    setScoringEnabled(!scoringEnabled);
+  };
+
+  const handleScoringValueChange = (field: keyof typeof scoringValues, value: number) => {
+    setScoringValues(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleTimeSettingChange = (value: 'total' | 'per-part') => {
+    setTimeSettingMode(value);
+  };
+
+  const handleTotalTimeChange = (value: number) => {
+    setTotalTimeMinutes(value);
+  };
+
+  const handlePerPartTimeChange = (partId: string, value: number) => {
+    setPerPartTimes(prev => ({ ...prev, [partId]: value }));
+  };
+
   const handleSave = () => {
     if (category) {
+      // Here you would send updated data to backend or state management
       console.log('Lưu thay đổi cho danh mục kỳ thi:', category);
       console.log('Danh sách phần thi:', parts);
+      console.log('Cấu hình thang điểm:', scoringEnabled, scoringValues);
+      console.log('Cài đặt thời gian:', timeSettingMode, totalTimeMinutes, perPartTimes);
       toast.success('Đã lưu thay đổi cho danh mục kỳ thi!');
       navigate('/word-exam-upload?tab=exam-categories');
     }
@@ -178,29 +205,81 @@ const EditExamFormCategory: React.FC = () => {
 
   return (
     <div className="space-y-6 p-4">
+      {/* Phần trên cùng: Tên kỳ thi, hình thức hiển thị, cách hiển thị câu hỏi, cấu hình thang điểm */}
       <Card>
-        <CardHeader>
-          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
-        </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Row with 3 fields in one line */}
           <div>
             <Label htmlFor="examName">Tên kỳ thi</Label>
             <Input id="examName" value={category.examName} readOnly />
           </div>
-
           <div>
             <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
             <Input id="displayMode" value={category.displayMode} readOnly />
           </div>
-
           <div>
             <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
             <Input id="questionDisplay" value={category.questionDisplay} readOnly />
           </div>
         </CardContent>
+        <CardContent className="border-t border-border pt-4">
+          <div className="flex items-center space-x-4">
+            <Switch checked={scoringEnabled} onCheckedChange={handleScoringToggle} id="scoring-toggle" />
+            <Label htmlFor="scoring-toggle" className="font-semibold">Cấu hình thang điểm đúng sai</Label>
+          </div>
+          {scoringEnabled && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div>
+                <Label>Trả lời đúng 1 ý</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={scoringValues.oneCorrect}
+                  onChange={(e) => handleScoringValueChange('oneCorrect', Number(e.target.value))}
+                  suffix="%"
+                />
+              </div>
+              <div>
+                <Label>Trả lời đúng 2 ý</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={scoringValues.twoCorrect}
+                  onChange={(e) => handleScoringValueChange('twoCorrect', Number(e.target.value))}
+                  suffix="%"
+                />
+              </div>
+              <div>
+                <Label>Trả lời đúng 3 ý</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={scoringValues.threeCorrect}
+                  onChange={(e) => handleScoringValueChange('threeCorrect', Number(e.target.value))}
+                  suffix="%"
+                />
+              </div>
+              <div>
+                <Label>Trả lời đúng 4 ý</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={scoringValues.fourCorrect}
+                  onChange={(e) => handleScoringValueChange('fourCorrect', Number(e.target.value))}
+                  suffix="%"
+                />
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Chỉ chỉnh sửa phần Quản lý phần thi bên dưới */}
+      {/* Phần chính: Quản lý phần thi và Cài đặt thời gian */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Quản lý phần thi */}
         <Card>
           <CardHeader>
             <CardTitle>Quản lý Phần thi</CardTitle>
@@ -225,19 +304,36 @@ const EditExamFormCategory: React.FC = () => {
             {parts.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {parts.map((part, index) => (
-                  <div key={part.id} className="flex items-center justify-between border rounded-md p-3">
-                    <span className="font-semibold">{part.name || `Phần ${index + 1}`}</span>
-                    <Button
-                      variant="ghost"
-                      className="text-red-600 hover:bg-red-50"
-                      onClick={() => handleDeletePart(part.id)}
-                      size="sm"
-                      aria-label={`Xóa phần thi ${part.name || `Phần ${index + 1}`}`}
+                  <div key={part.id} className="border rounded-md">
+                    <button
+                      type="button"
+                      onClick={() => togglePartExpanded(part.id)}
+                      className="flex w-full items-center justify-between px-4 py-2 text-left font-semibold text-gray-900 dark:text-gray-100"
+                      aria-expanded={!!expandedParts[part.id]}
+                      aria-controls={`part-content-${part.id}`}
                     >
-                      <Trash2 className="h-5 w-5" />
-                    </Button>
+                      <span>{part.name}</span>
+                      {expandedParts[part.id] ? <ChevronUp /> : <ChevronDown />}
+                    </button>
+                    {expandedParts[part.id] && (
+                      <div id={`part-content-${part.id}`} className="border-t border-border px-4 py-2 bg-gray-50 dark:bg-gray-800">
+                        <Input
+                          placeholder="Tên bổ sung (ví dụ: Tư duy)"
+                          value={part.additionalName || ''}
+                          onChange={(e) => handleAdditionalNameChange(part.id, e.target.value)}
+                        />
+                        <Button
+                          variant="ghost"
+                          className="mt-2 text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeletePart(part.id)}
+                          aria-label={`Xóa phần thi ${part.name}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -245,10 +341,65 @@ const EditExamFormCategory: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Các phần còn lại giữ nguyên */}
-        {/* ... (giữ nguyên các phần khác trong file) */}
-      </Card>
+        {/* Cài đặt thời gian */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Cài đặt thời gian</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup value={timeSettingMode} onValueChange={handleTimeSettingChange}>
+              <div className="flex items-center space-x-2 mb-4">
+                <RadioGroupItem id="time-total" value="total" />
+                <Label htmlFor="time-total" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <div>Thời gian tổng</div>
+                      <div className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</div>
+                    </div>
+                  </div>
+                </Label>
+                {timeSettingMode === 'total' && (
+                  <Input
+                    type="number"
+                    min={1}
+                    value={totalTimeMinutes}
+                    onChange={(e) => handleTotalTimeChange(Number(e.target.value))}
+                    className="w-24"
+                  />
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem id="time-per-part" value="per-part" />
+                <Label htmlFor="time-per-part" className="flex-1 cursor-pointer">
+                  <div>
+                    <div>Theo phần thi</div>
+                    <div className="text-sm text-muted-foreground">Mỗi phần có thời gian riêng</div>
+                  </div>
+                </Label>
+              </div>
+              {timeSettingMode === 'per-part' && (
+                <div className="mt-4 space-y-2">
+                  {parts.map((part) => (
+                    <div key={part.id} className="flex items-center gap-2">
+                      <Label className="flex-1">{part.name}</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        value={perPartTimes[part.id] || 0}
+                        onChange={(e) => handlePerPartTimeChange(part.id, Number(e.target.value))}
+                        className="w-24"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </RadioGroup>
+          </CardContent>
+        </Card>
+      </div>
 
+      {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
         <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU THAY ĐỔI</Button>
