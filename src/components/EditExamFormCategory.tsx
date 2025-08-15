@@ -254,8 +254,8 @@ const EditExamFormCategory: React.FC = () => {
         <CardHeader>
           <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Row with 3 fields in one line */}
+        <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* 4 fields in one row */}
           <div>
             <Label htmlFor="examName">Tên kỳ thi</Label>
             <Input id="examName" value={category.examName} onChange={handleChange} />
@@ -286,34 +286,55 @@ const EditExamFormCategory: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
+          <div>
+            <Label htmlFor="timeSettingMode">Cài đặt thời gian</Label>
+            <Select value={category.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')}>
+              <SelectTrigger id="timeSettingMode">
+                <SelectValue placeholder="Chọn cài đặt thời gian" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="total">Toàn bài</SelectItem>
+                <SelectItem value="per-part">Theo phần thi</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Thêm select Cài đặt thời gian */}
+      {/* Phần còn lại giữ nguyên */}
+      {/* ... giữ nguyên phần Quản lý phần thi, Cài đặt thời gian chi tiết, Cấu hình thang điểm đúng sai, Footer Buttons ... */}
+
       <Card>
         <CardHeader>
-          <CardTitle>Cài đặt thời gian</CardTitle>
+          <CardTitle>Quản lý Phần thi</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={category.timeSettingMode || 'total'} onValueChange={(value) => setCategory(prev => prev ? { ...prev, timeSettingMode: value } : prev)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Chọn cài đặt thời gian" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="total">Toàn bài</SelectItem>
-              <SelectItem value="per-part">Theo phần thi</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2 mb-4">
+            <Input
+              placeholder="Nhập tên phần thi mới"
+              value={newPartName}
+              onChange={(e) => setNewPartName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPart();
+                }
+              }}
+            />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+              Thêm
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Cài đặt thời gian chi tiết */}
       <Card>
         <CardHeader>
           <CardTitle>Chi tiết cài đặt thời gian</CardTitle>
         </CardHeader>
         <CardContent>
-          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={(value) => setCategory(prev => prev ? { ...prev, timeSettingMode: value } : prev)} className="space-y-4">
+          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')} className="space-y-4">
             <div className="flex items-center gap-3 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
               <RadioGroupItem value="total" id="time-total" className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
               <Label htmlFor="time-total" className="flex flex-col cursor-pointer">
@@ -383,7 +404,6 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Cấu hình thang điểm đúng sai */}
       <Card>
         <CardHeader>
           <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
