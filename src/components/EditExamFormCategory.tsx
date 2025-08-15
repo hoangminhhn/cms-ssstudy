@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Trash2, Clock, Target } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface SubSubject {
@@ -25,7 +25,7 @@ interface SubPart {
 
 interface PartItem {
   id: string;
-  name: string; // This will store only the descriptive part, e.g. "Tư duy đọc hiểu"
+  name: string;
   allowSubGroups?: boolean;
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
@@ -150,6 +150,9 @@ const EditExamFormCategory: React.FC = () => {
           initialTimes[p.id] = 30;
         });
         setCategory(prev => prev ? { ...prev, perPartTimes: initialTimes } : prev);
+      }
+      if (!foundCategory.scoringPercentages) {
+        setCategory(prev => prev ? { ...prev, scoringPercentages: { oneCorrect: 0, twoCorrect: 0, threeCorrect: 0, fourCorrect: 0 } } : prev);
       }
     } else {
       toast.error('Không tìm thấy danh mục kỳ thi!');
@@ -384,6 +387,69 @@ const EditExamFormCategory: React.FC = () => {
               )}
             </div>
           </RadioGroup>
+        </CardContent>
+      </Card>
+
+      {/* Cấu hình thang điểm đúng sai */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Cấu hình thang điểm đúng sai</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center space-x-4">
+            <Switch
+              id="configureScoring"
+              checked={category.configureScoring}
+              onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
+            />
+            <Label htmlFor="configureScoring" className="cursor-pointer">
+              Bật cấu hình thang điểm đúng sai
+            </Label>
+          </div>
+          {category.configureScoring && (
+            <div className="grid grid-cols-2 gap-4 max-w-md">
+              <div>
+                <Label htmlFor="oneCorrect">Điểm 1 câu đúng</Label>
+                <Input
+                  id="oneCorrect"
+                  type="number"
+                  min={0}
+                  value={category.scoringPercentages?.oneCorrect ?? 0}
+                  onChange={handleScoringPercentageChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="twoCorrect">Điểm 2 câu đúng</Label>
+                <Input
+                  id="twoCorrect"
+                  type="number"
+                  min={0}
+                  value={category.scoringPercentages?.twoCorrect ?? 0}
+                  onChange={handleScoringPercentageChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="threeCorrect">Điểm 3 câu đúng</Label>
+                <Input
+                  id="threeCorrect"
+                  type="number"
+                  min={0}
+                  value={category.scoringPercentages?.threeCorrect ?? 0}
+                  onChange={handleScoringPercentageChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="fourCorrect">Điểm 4 câu đúng</Label>
+                <Input
+                  id="fourCorrect"
+                  type="number"
+                  min={0}
+                  value={category.scoringPercentages?.fourCorrect ?? 0}
+                  onChange={handleScoringPercentageChange}
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
