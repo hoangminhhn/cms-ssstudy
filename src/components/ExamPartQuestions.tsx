@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Pencil } from 'lucide-react';
+import { Trash2, Pencil, Settings } from 'lucide-react';
 import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
 import GroupPartModal from './GroupPartModal';
 import { toast } from 'sonner';
@@ -131,7 +131,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     <>
       <Card>
         <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-          <h2 className="text-lg font-semibold truncate">Đề thi</h2>
+          <h2 className="text-lg font-semibold truncate flex items-center gap-2">
+            Đề thi
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 px-2 py-1"
+              onClick={() => alert('Chức năng Cấu hình đề thi chưa được triển khai')}
+              aria-label="Cấu hình đề thi"
+            >
+              <Settings className="h-4 w-4" />
+              <span className="text-sm">Cấu hình đề thi</span>
+            </Button>
+          </h2>
           <div className="flex items-center gap-2">
             <Button
               className="bg-cyan-500 hover:bg-cyan-600 text-white text-xs px-3 h-8 max-w-[140px] truncate"
