@@ -7,8 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface SubSubject {
   id: string;
@@ -249,7 +247,7 @@ const EditExamFormCategory: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-4 max-w-full overflow-x-hidden">
       <Card>
         <CardHeader>
           <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
@@ -302,7 +300,6 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Quản lý phần thi */}
       <Card>
         <CardHeader>
           <CardTitle>Quản lý Phần thi</CardTitle>
@@ -327,7 +324,6 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Cấu hình thang điểm đúng sai */}
       <Card>
         <CardHeader>
           <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
