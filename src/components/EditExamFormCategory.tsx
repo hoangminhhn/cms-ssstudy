@@ -302,9 +302,7 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Phần còn lại giữ nguyên */}
-      {/* ... giữ nguyên phần Quản lý phần thi, Cài đặt thời gian chi tiết, Cấu hình thang điểm đúng sai, Footer Buttons ... */}
-
+      {/* Quản lý phần thi */}
       <Card>
         <CardHeader>
           <CardTitle>Quản lý Phần thi</CardTitle>
@@ -329,81 +327,7 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Chi tiết cài đặt thời gian</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')} className="space-y-4">
-            <div className="flex items-center gap-3 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-              <RadioGroupItem value="total" id="time-total" className="h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
-              <Label htmlFor="time-total" className="flex flex-col cursor-pointer">
-                <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-600" /> Thời gian tổng
-                </span>
-                <span className="text-sm text-muted-foreground">Áp dụng cho toàn bộ bài thi</span>
-                {category.timeSettingMode === 'total' && (
-                  <Input
-                    id="totalTimeMinutes"
-                    type="number"
-                    min={0}
-                    value={category.totalTimeMinutes ?? 0}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      setCategory(prev => prev ? { ...prev, totalTimeMinutes: isNaN(val) ? 0 : val } : prev);
-                    }}
-                    className="mt-2 w-32"
-                    placeholder="Nhập thời gian tổng (phút)"
-                  />
-                )}
-              </Label>
-            </div>
-            <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-4 cursor-pointer hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-              <div className="flex items-center gap-3">
-                <RadioGroupItem value="per-part" id="time-per-part" className="h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-400" />
-                <Label htmlFor="time-per-part" className="flex flex-col cursor-pointer">
-                  <span className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-green-600" /> Theo phần thi
-                  </span>
-                  <span className="text-sm text-muted-foreground">Mỗi phần có thời gian riêng</span>
-                </Label>
-              </div>
-              {category.timeSettingMode === 'per-part' && (
-                <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900">
-                  <div className="mb-2 flex justify-between font-semibold text-green-700 dark:text-green-400">
-                    <span>Thời gian từng phần thi</span>
-                    <span>
-                      Tổng: {category.perPartTimes ? Object.values(category.perPartTimes).reduce((acc, cur) => acc + (cur || 0), 0) : 0}
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    {parts.map((part, index) => (
-                      <div key={part.id} className="flex items-center gap-4">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200">
-                          {index + 1}
-                        </div>
-                        <div className="flex-1">{part.name ? `Phần ${index + 1}: ${part.name}` : `Phần ${index + 1}`}</div>
-                        <Input
-                          type="number"
-                          min={0}
-                          value={category.perPartTimes?.[part.id] ?? 0}
-                          onChange={(e) => {
-                            const val = Number(e.target.value);
-                            setCategory(prev => prev ? { ...prev, perPartTimes: { ...prev.perPartTimes, [part.id]: val } } : prev);
-                          }}
-                          className="w-20"
-                        />
-                        <span>phút</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </RadioGroup>
-        </CardContent>
-      </Card>
-
+      {/* Cấu hình thang điểm đúng sai */}
       <Card>
         <CardHeader>
           <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
