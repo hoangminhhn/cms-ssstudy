@@ -393,60 +393,68 @@ const EditExamFormCategory: React.FC = () => {
       {/* Cấu hình thang điểm đúng sai */}
       <Card>
         <CardHeader>
-          <CardTitle>Cấu hình thang điểm đúng sai</CardTitle>
+          <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-4">
+        <CardContent>
+          <div className="flex items-center space-x-4 mb-4">
             <Switch
               id="configureScoring"
               checked={category.configureScoring}
               onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
             />
             <Label htmlFor="configureScoring" className="cursor-pointer">
-              Bật cấu hình thang điểm đúng sai
+              Cấu hình thang điểm câu hỏi đúng sai
             </Label>
           </div>
           {category.configureScoring && (
-            <div className="grid grid-cols-2 gap-4 max-w-md">
-              <div>
-                <Label htmlFor="oneCorrect">Điểm 1 câu đúng</Label>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-md">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="oneCorrect" className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
                 <Input
                   id="oneCorrect"
                   type="number"
                   min={0}
                   value={category.scoringPercentages?.oneCorrect ?? 0}
                   onChange={handleScoringPercentageChange}
+                  className="w-20"
                 />
+                <span>%</span>
               </div>
-              <div>
-                <Label htmlFor="twoCorrect">Điểm 2 câu đúng</Label>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="twoCorrect" className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
                 <Input
                   id="twoCorrect"
                   type="number"
                   min={0}
                   value={category.scoringPercentages?.twoCorrect ?? 0}
                   onChange={handleScoringPercentageChange}
+                  className="w-20"
                 />
+                <span>%</span>
               </div>
-              <div>
-                <Label htmlFor="threeCorrect">Điểm 3 câu đúng</Label>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="threeCorrect" className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
                 <Input
                   id="threeCorrect"
                   type="number"
                   min={0}
                   value={category.scoringPercentages?.threeCorrect ?? 0}
                   onChange={handleScoringPercentageChange}
+                  className="w-20"
                 />
+                <span>%</span>
               </div>
-              <div>
-                <Label htmlFor="fourCorrect">Điểm 4 câu đúng</Label>
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="fourCorrect" className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
                 <Input
                   id="fourCorrect"
                   type="number"
                   min={0}
                   value={category.scoringPercentages?.fourCorrect ?? 0}
                   onChange={handleScoringPercentageChange}
+                  className="w-20"
                 />
+                <span>%</span>
               </div>
             </div>
           )}
