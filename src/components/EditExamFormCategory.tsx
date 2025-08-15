@@ -289,35 +289,28 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Tối giản phần Quản lý phần thi chỉ giữ chức năng thêm phần thi mới */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản lý Phần thi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Nhập tên phần thi mới"
-              value={newPartName}
-              onChange={(e) => setNewPartName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddPart();
-                }
-              }}
-            />
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-              Thêm
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Cài đặt thời gian */}
+      {/* Thêm select Cài đặt thời gian */}
       <Card>
         <CardHeader>
           <CardTitle>Cài đặt thời gian</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={category.timeSettingMode || 'total'} onValueChange={(value) => setCategory(prev => prev ? { ...prev, timeSettingMode: value } : prev)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Chọn cài đặt thời gian" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="total">Toàn bài</SelectItem>
+              <SelectItem value="per-part">Theo phần thi</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      {/* Cài đặt thời gian chi tiết */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Chi tiết cài đặt thời gian</CardTitle>
         </CardHeader>
         <CardContent>
           <RadioGroup value={category.timeSettingMode || 'total'} onValueChange={(value) => setCategory(prev => prev ? { ...prev, timeSettingMode: value } : prev)} className="space-y-4">
