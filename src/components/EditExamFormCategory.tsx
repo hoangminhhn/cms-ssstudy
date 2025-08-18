@@ -299,41 +299,9 @@ const EditExamFormCategory: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-        </CardContent>
 
-      </Card>
-
-      {/* Đặt 2 khối này cùng hàng, chia đôi chiều ngang */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quản lý Phần thi</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2 mb-4">
-              <Input
-                placeholder="Nhập tên phần thi mới"
-                value={newPartName}
-                onChange={(e) => setNewPartName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddPart();
-                  }
-                }}
-              />
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-                Thêm
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
-          </CardHeader>
-          <CardContent>
+          {/* Gộp phần cấu hình thang điểm đúng sai vào đây */}
+          <div className="col-span-full">
             <div className="flex items-center space-x-4 mb-4">
               <Switch
                 id="configureScoring"
@@ -396,9 +364,34 @@ const EditExamFormCategory: React.FC = () => {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quản lý phần thi */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quản lý Phần thi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2 mb-4">
+            <Input
+              placeholder="Nhập tên phần thi mới"
+              value={newPartName}
+              onChange={(e) => setNewPartName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPart();
+                }
+              }}
+            />
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+              Thêm
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
