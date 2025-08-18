@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target } from 'lucide-react';
+import { Trash2, Clock, Target, Pencil } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface SubSubject {
@@ -134,6 +134,7 @@ const EditExamFormCategory: React.FC = () => {
   const [newSubPartNames, setNewSubPartNames] = React.useState<Record<string, string>>({});
   const [newSubSubjectNames, setNewSubSubjectNames] = React.useState<Record<string, string>>({});
   const [expandedParts, setExpandedParts] = React.useState<Record<string, boolean>>({});
+  const [deletedPart, setDeletedPart] = React.useState<PartItem | null>(null);
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -232,8 +233,53 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   const handleDeletePart = (id: string) => {
+    const partToDelete = parts.find(p => p.id === id);
+    if (!partToDelete) return;
+
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa phần thi "${partToDelete.name}"?`)) {
+      return;
+    }
+
     setParts(prev => prev.filter(p => p.id !== id));
-    toast.success('Đã xóa phần thi.');
+    setDeletedPart(partToDelete);
+
+    toast(
+      (t) => (
+        <div className="flex items-center justify-between gap-4">
+          <span>Đã xóa phần thi "{partToDelete.name}".</span>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              setParts((prev) => [...prev, partToDelete]);
+              setDeletedPart(null);
+              toast.dismiss(t.id);
+              toast.success('Đã khôi phục phần thi.');
+            }}
+          >
+            Hoàn tác
+          </Button>
+        </div>
+      ),
+      { duration: 8000 }
+    );
+  };
+
+  const handleEditPart = (id: string) => {
+    const part = parts.find(p => p.id === id);
+    if (!part) return;
+    const newName = window.prompt('Chỉnh sửa tên phần thi:', part.name);
+    if (newName !== null) {
+      const trimmed = newName.trim();
+      if (trimmed === '') {
+        toast.error('Tên phần thi không được để trống.');
+        return;
+      }
+      setParts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, name: trimmed } : p))
+      );
+      toast.success('Đã cập nhật tên phần thi.');
+    }
   };
 
   const handleCancel = () => {
@@ -415,13 +461,23 @@ const EditExamFormCategory: React.FC = () => {
                   parts.map((part) => (
                     <TableRow key={part.id}>
                       <TableCell>{part.name}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Chỉnh sửa phần thi ${part.name}`}
+                          onClick={() => handleEditPart(part.id)}
+                          title="Chỉnh sửa nhanh"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="text-red-600 hover:bg-red-50"
                           onClick={() => handleDeletePart(part.id)}
                           aria-label={`Xóa phần thi ${part.name}`}
+                          title="Xóa phần thi"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
