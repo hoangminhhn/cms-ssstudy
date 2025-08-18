@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { Trash2, Pencil } from 'lucide-react';
@@ -35,8 +35,13 @@ const mockCategoriesData: ExamCategory[] = [
 ];
 
 const EditExamFormCategory: React.FC = () => {
-  const { categoryId } = useParams<{ categoryId: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
+
+  // Lấy categoryId từ query param
+  const searchParams = new URLSearchParams(location.search);
+  const categoryId = searchParams.get('categoryId');
+
   const [category, setCategory] = React.useState<ExamCategory | null>(null);
 
   const [parts, setParts] = React.useState<PartItem[]>([
@@ -50,6 +55,11 @@ const EditExamFormCategory: React.FC = () => {
   const [filterStatus, setFilterStatus] = React.useState<PartStatus | 'all'>('all');
 
   React.useEffect(() => {
+    if (!categoryId) {
+      toast.error('Không có mã danh mục!');
+      navigate('/word-exam-upload?tab=exam-categories');
+      return;
+    }
     // Simulate fetching data
     const foundCategory = mockCategoriesData.find(cat => cat.id === categoryId);
     if (foundCategory) {
