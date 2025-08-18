@@ -112,11 +112,11 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
-    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part1', name: 'Tư duy toán học', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part2', name: 'Tư duy đọc hiểu', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
     {
       id: 'part3',
-      name: 'Phần thi 3',
+      name: 'Tư duy khoa học',
       allowSubGroups: true,
       maxSubGroupsSelected: 1,
       subParts: [
