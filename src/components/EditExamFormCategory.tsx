@@ -326,6 +326,18 @@ const EditExamFormCategory: React.FC = () => {
                 Thêm
               </Button>
             </div>
+            {/* Hiển thị danh sách phần thi đã thêm */}
+            {parts.length === 0 ? (
+              <p className="text-muted-foreground">Chưa có phần thi nào.</p>
+            ) : (
+              <ul className="list-disc list-inside space-y-1 max-h-48 overflow-y-auto">
+                {parts.map((part) => (
+                  <li key={part.id} className="truncate">
+                    {part.name || <i className="text-muted-foreground">Chưa đặt tên</i>}
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
 
