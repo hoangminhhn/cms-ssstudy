@@ -300,103 +300,105 @@ const EditExamFormCategory: React.FC = () => {
             </Select>
           </div>
         </CardContent>
+
       </Card>
 
-      {/* Quản lý phần thi */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản lý Phần thi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Nhập tên phần thi mới"
-              value={newPartName}
-              onChange={(e) => setNewPartName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddPart();
-                }
-              }}
-            />
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-              Thêm
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Cấu hình thang điểm đúng sai */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-4 mb-4">
-            <Switch
-              id="configureScoring"
-              checked={category.configureScoring}
-              onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
-            />
-            <Label htmlFor="configureScoring" className="cursor-pointer">
-              Cấu hình thang điểm câu hỏi đúng sai
-            </Label>
-          </div>
-          {category.configureScoring && (
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-md">
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="oneCorrect" className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
-                <Input
-                  id="oneCorrect"
-                  type="number"
-                  min={0}
-                  value={category.scoringPercentages?.oneCorrect ?? 0}
-                  onChange={handleScoringPercentageChange}
-                  className="w-20"
-                />
-                <span>%</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="twoCorrect" className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
-                <Input
-                  id="twoCorrect"
-                  type="number"
-                  min={0}
-                  value={category.scoringPercentages?.twoCorrect ?? 0}
-                  onChange={handleScoringPercentageChange}
-                  className="w-20"
-                />
-                <span>%</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="threeCorrect" className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
-                <Input
-                  id="threeCorrect"
-                  type="number"
-                  min={0}
-                  value={category.scoringPercentages?.threeCorrect ?? 0}
-                  onChange={handleScoringPercentageChange}
-                  className="w-20"
-                />
-                <span>%</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="fourCorrect" className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
-                <Input
-                  id="fourCorrect"
-                  type="number"
-                  min={0}
-                  value={category.scoringPercentages?.fourCorrect ?? 0}
-                  onChange={handleScoringPercentageChange}
-                  className="w-20"
-                />
-                <span>%</span>
-              </div>
+      {/* Đặt 2 khối này cùng hàng, chia đôi chiều ngang */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Quản lý Phần thi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2 mb-4">
+              <Input
+                placeholder="Nhập tên phần thi mới"
+                value={newPartName}
+                onChange={(e) => setNewPartName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddPart();
+                  }
+                }}
+              />
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+                Thêm
+              </Button>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Cấu hình thang điểm câu hỏi đúng sai</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-4 mb-4">
+              <Switch
+                id="configureScoring"
+                checked={category.configureScoring}
+                onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
+              />
+              <Label htmlFor="configureScoring" className="cursor-pointer">
+                Cấu hình thang điểm câu hỏi đúng sai
+              </Label>
+            </div>
+            {category.configureScoring && (
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-md">
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="oneCorrect" className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
+                  <Input
+                    id="oneCorrect"
+                    type="number"
+                    min={0}
+                    value={category.scoringPercentages?.oneCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="twoCorrect" className="whitespace-nowrap">Trả lời đúng 2 ý</Label>
+                  <Input
+                    id="twoCorrect"
+                    type="number"
+                    min={0}
+                    value={category.scoringPercentages?.twoCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="threeCorrect" className="whitespace-nowrap">Trả lời đúng 3 ý</Label>
+                  <Input
+                    id="threeCorrect"
+                    type="number"
+                    min={0}
+                    value={category.scoringPercentages?.threeCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label htmlFor="fourCorrect" className="whitespace-nowrap">Trả lời đúng 4 ý</Label>
+                  <Input
+                    id="fourCorrect"
+                    type="number"
+                    min={0}
+                    value={category.scoringPercentages?.fourCorrect ?? 0}
+                    onChange={handleScoringPercentageChange}
+                    className="w-20"
+                  />
+                  <span>%</span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
