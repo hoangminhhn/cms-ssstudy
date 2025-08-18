@@ -30,6 +30,7 @@ interface PartItem {
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
   splitIntoSubParts?: boolean;
+  status?: number; // 0 = Tất cả, 1 = Ẩn, 3 = Xóa
 }
 
 interface ExamFormCategory {
@@ -112,8 +113,8 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Tư duy toán học', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
-    { id: 'part2', name: 'Tư duy đọc hiểu', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part1', name: 'Tư duy toán học', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false, status: 0 },
+    { id: 'part2', name: 'Tư duy đọc hiểu', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false, status: 1 },
     {
       id: 'part3',
       name: 'Tư duy khoa học',
@@ -128,6 +129,7 @@ const EditExamFormCategory: React.FC = () => {
         },
       ],
       splitIntoSubParts: false,
+      status: 3,
     },
   ]);
   const [newPartName, setNewPartName] = React.useState('');
@@ -135,6 +137,9 @@ const EditExamFormCategory: React.FC = () => {
   const [newSubSubjectNames, setNewSubSubjectNames] = React.useState<Record<string, string>>({});
   const [expandedParts, setExpandedParts] = React.useState<Record<string, boolean>>({});
   const [deletedPart, setDeletedPart] = React.useState<PartItem | null>(null);
+
+  // New state for filter status
+  const [filterStatus, setFilterStatus] = React.useState<number>(0); // 0 = Tất cả
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -214,6 +219,7 @@ const EditExamFormCategory: React.FC = () => {
       maxSubGroupsSelected: 1,
       subParts: [],
       splitIntoSubParts: false,
+      status: 0, // Mặc định là Tất cả
     };
     setParts(prev => [...prev, newPart]);
     if (category?.timeSettingMode === 'per-part') {
@@ -295,26 +301,25 @@ const EditExamFormCategory: React.FC = () => {
     }
   };
 
-  if (!category) {
-    return <div className="p-4 text-center text-muted-foreground">Đang tải...</div>;
-  }
+  // Lọc phần thi theo filterStatus
+  const filteredParts = filterStatus === 0 ? parts : parts.filter(p => p.status === filterStatus);
 
   return (
     <div className="space-y-6 p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
+          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category?.examName}</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* 4 fields in one row */}
           <div>
             <Label htmlFor="examName">Tên kỳ thi</Label>
-            <Input id="examName" value={category.examName} onChange={handleChange} />
+            <Input id="examName" value={category?.examName || ''} onChange={handleChange} />
           </div>
 
           <div>
             <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
-            <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
+            <Select value={category?.displayMode || ''} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
               <SelectTrigger id="displayMode">
                 <SelectValue placeholder="Chọn hình thức" />
               </SelectTrigger>
@@ -327,7 +332,7 @@ const EditExamFormCategory: React.FC = () => {
 
           <div>
             <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
-            <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
+            <Select value={category?.questionDisplay || ''} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
               <SelectTrigger id="questionDisplay">
                 <SelectValue placeholder="Chọn cách hiển thị" />
               </SelectTrigger>
@@ -340,7 +345,7 @@ const EditExamFormCategory: React.FC = () => {
 
           <div>
             <Label htmlFor="timeSettingMode">Cài đặt thời gian</Label>
-            <Select value={category.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')}>
+            <Select value={category?.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')}>
               <SelectTrigger id="timeSettingMode">
                 <SelectValue placeholder="Chọn cài đặt thời gian" />
               </SelectTrigger>
@@ -356,14 +361,14 @@ const EditExamFormCategory: React.FC = () => {
             <div className="flex items-center space-x-4 mb-4">
               <Switch
                 id="configureScoring"
-                checked={category.configureScoring}
+                checked={category?.configureScoring || false}
                 onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
               />
               <Label htmlFor="configureScoring" className="cursor-pointer">
                 Cấu hình thang điểm câu hỏi đúng sai
               </Label>
             </div>
-            {category.configureScoring && (
+            {category?.configureScoring && (
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-md">
                 <div className="flex items-center space-x-2">
                   <Label htmlFor="oneCorrect" className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
@@ -443,6 +448,28 @@ const EditExamFormCategory: React.FC = () => {
               </Button>
             </div>
 
+            {/* Dải tag phân loại */}
+            <div className="flex gap-4 mb-4">
+              {[
+                { label: 'Tất cả', value: 0 },
+                { label: 'Ẩn', value: 1 },
+                { label: 'Xóa', value: 3 },
+              ].map((tag) => (
+                <button
+                  key={tag.value}
+                  type="button"
+                  onClick={() => setFilterStatus(tag.value)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                    filterStatus === tag.value
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {tag.label} ({parts.filter(p => p.status === tag.value).length})
+                </button>
+              ))}
+            </div>
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -451,14 +478,14 @@ const EditExamFormCategory: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {parts.length === 0 ? (
+                {filteredParts.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={2} className="text-center text-muted-foreground py-4">
-                      Chưa có phần thi nào.
+                      Không có phần thi phù hợp.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  parts.map((part) => (
+                  filteredParts.map((part) => (
                     <TableRow key={part.id}>
                       <TableCell>{part.name}</TableCell>
                       <TableCell className="text-right flex justify-end gap-2">
