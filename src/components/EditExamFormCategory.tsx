@@ -302,12 +302,14 @@ const EditExamFormCategory: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (category) {
-      console.log('Lưu thay đổi cho danh mục kỳ thi:', category);
-      console.log('Danh sách phần thi:', parts);
-      toast.success('Đã lưu thay đổi cho danh mục kỳ thi!');
-      navigate('/word-exam-upload?tab=exam-categories');
+    if (!category) {
+      toast.error('Không có danh mục kỳ thi để lưu!');
+      return;
     }
+    console.log('Lưu thay đổi cho danh mục kỳ thi:', category);
+    console.log('Danh sách phần thi:', parts);
+    toast.success('Đã lưu thay đổi cho danh mục kỳ thi!');
+    navigate('/word-exam-upload?tab=exam-categories');
   };
 
   const filteredParts = parts.filter((part) => {
@@ -319,18 +321,18 @@ const EditExamFormCategory: React.FC = () => {
     <div className="space-y-6 p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.examName}</CardTitle>
+          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category?.examName || ''}</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* 4 fields in one row */}
           <div>
             <Label htmlFor="examName">Tên kỳ thi</Label>
-            <Input id="examName" value={category.examName} onChange={handleChange} />
+            <Input id="examName" value={category?.examName || ''} onChange={handleChange} />
           </div>
 
           <div>
             <Label htmlFor="displayMode">Hình thức hiển thị phần thi</Label>
-            <Select value={category.displayMode} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
+            <Select value={category?.displayMode || 'single-screen'} onValueChange={(value) => handleSelectChange(value, 'displayMode')}>
               <SelectTrigger id="displayMode">
                 <SelectValue placeholder="Chọn hình thức" />
               </SelectTrigger>
@@ -343,7 +345,7 @@ const EditExamFormCategory: React.FC = () => {
 
           <div>
             <Label htmlFor="questionDisplay">Cách hiển thị câu hỏi</Label>
-            <Select value={category.questionDisplay} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
+            <Select value={category?.questionDisplay || 'one-per-screen'} onValueChange={(value) => handleSelectChange(value, 'questionDisplay')}>
               <SelectTrigger id="questionDisplay">
                 <SelectValue placeholder="Chọn cách hiển thị" />
               </SelectTrigger>
@@ -356,7 +358,7 @@ const EditExamFormCategory: React.FC = () => {
 
           <div>
             <Label htmlFor="timeSettingMode">Cài đặt thời gian</Label>
-            <Select value={category.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')}>
+            <Select value={category?.timeSettingMode || 'total'} onValueChange={(value) => handleSelectChange(value, 'timeSettingMode')}>
               <SelectTrigger id="timeSettingMode">
                 <SelectValue placeholder="Chọn cài đặt thời gian" />
               </SelectTrigger>
@@ -372,14 +374,14 @@ const EditExamFormCategory: React.FC = () => {
             <div className="flex items-center space-x-4 mb-4">
               <Switch
                 id="configureScoring"
-                checked={category.configureScoring}
+                checked={category?.configureScoring || false}
                 onCheckedChange={(checked) => handleSwitchChange(!!checked, 'configureScoring')}
               />
               <Label htmlFor="configureScoring" className="cursor-pointer">
                 Cấu hình thang điểm câu hỏi đúng sai
               </Label>
             </div>
-            {category.configureScoring && (
+            {category?.configureScoring && (
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 max-w-md">
                 <div className="flex items-center space-x-2">
                   <Label htmlFor="oneCorrect" className="whitespace-nowrap">Trả lời đúng 1 ý</Label>
