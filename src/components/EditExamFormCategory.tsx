@@ -1,8 +1,12 @@
 import React from 'react';
-// ... các import khác giữ nguyên
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const EditExamFormCategory: React.FC = () => {
-  // ... các state và useEffect giữ nguyên
+  const [parts, setParts] = React.useState<any[]>([]); // Giữ nguyên hoặc khai báo đúng kiểu
+  const [deletedPart, setDeletedPart] = React.useState<any | null>(null);
+
+  // ... các state và useEffect khác giữ nguyên
 
   const handleDeletePart = (id: string) => {
     setParts((currentParts) => {
