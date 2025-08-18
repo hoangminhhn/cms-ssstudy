@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, Pencil } from 'lucide-react';
+import { Trash2, Clock, Target, Pencil, EyeOff, RotateCcw } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface SubSubject {
@@ -23,9 +23,12 @@ interface SubPart {
   maxSubGroupsSelected?: number;
 }
 
+type PartStatus = 'active' | 'hidden' | 'deleted';
+
 interface PartItem {
   id: string;
   name: string;
+  status: PartStatus;
   allowSubGroups?: boolean;
   maxSubGroupsSelected?: number;
   subParts?: SubPart[];
@@ -112,11 +115,12 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: 'Tư duy toán học', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
-    { id: 'part2', name: 'Tư duy đọc hiểu', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part1', name: 'Tư duy toán học', status: 'active', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part2', name: 'Tư duy đọc hiểu', status: 'active', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
     {
       id: 'part3',
       name: 'Tư duy khoa học',
+      status: 'active',
       allowSubGroups: true,
       maxSubGroupsSelected: 1,
       subParts: [
@@ -134,7 +138,7 @@ const EditExamFormCategory: React.FC = () => {
   const [newSubPartNames, setNewSubPartNames] = React.useState<Record<string, string>>({});
   const [newSubSubjectNames, setNewSubSubjectNames] = React.useState<Record<string, string>>({});
   const [expandedParts, setExpandedParts] = React.useState<Record<string, boolean>>({});
-  const [deletedPart, setDeletedPart] = React.useState<PartItem | null>(null);
+  const [filterStatus, setFilterStatus] = React.useState<PartStatus | 'all'>('all');
 
   React.useEffect(() => {
     if (!categoryId) {
@@ -203,13 +207,14 @@ const EditExamFormCategory: React.FC = () => {
       toast.error('Tên phần thi không được để trống.');
       return;
     }
-    if (parts.some(p => p.name.toLowerCase() === trimmedName.toLowerCase())) {
+    if (parts.some(p => p.name.toLowerCase() === trimmedName.toLowerCase() && p.status !== 'deleted')) {
       toast.error('Phần thi đã tồn tại.');
       return;
     }
     const newPart: PartItem = {
       id: `part-${Date.now()}`,
       name: trimmedName,
+      status: 'active',
       allowSubGroups: false,
       maxSubGroupsSelected: 1,
       subParts: [],
@@ -240,29 +245,39 @@ const EditExamFormCategory: React.FC = () => {
       return;
     }
 
-    setParts(prev => prev.filter(p => p.id !== id));
-    setDeletedPart(partToDelete);
-
-    toast(
-      (t) => (
-        <div className="flex items-center justify-between gap-4">
-          <span>Đã xóa phần thi "{partToDelete.name}".</span>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              setParts((prev) => [...prev, partToDelete]);
-              setDeletedPart(null);
-              toast.dismiss(t.id);
-              toast.success('Đã khôi phục phần thi.');
-            }}
-          >
-            Hoàn tác
-          </Button>
-        </div>
-      ),
-      { duration: 8000 }
+    setParts(prev =>
+      prev.map(p =>
+        p.id === id ? { ...p, status: 'deleted' } : p
+      )
     );
+
+    toast.success(`Đã xóa phần thi "${partToDelete.name}". Bạn có thể xem lại ở tab "Xóa".`);
+  };
+
+  const handleRestorePart = (id: string) => {
+    const partToRestore = parts.find(p => p.id === id);
+    if (!partToRestore) return;
+
+    setParts(prev =>
+      prev.map(p =>
+        p.id === id ? { ...p, status: 'active' } : p
+      )
+    );
+
+    toast.success(`Đã khôi phục phần thi "${partToRestore.name}".`);
+  };
+
+  const handleHidePart = (id: string) => {
+    const partToHide = parts.find(p => p.id === id);
+    if (!partToHide) return;
+
+    setParts(prev =>
+      prev.map(p =>
+        p.id === id ? { ...p, status: 'hidden' } : p
+      )
+    );
+
+    toast.success(`Đã ẩn phần thi "${partToHide.name}".`);
   };
 
   const handleEditPart = (id: string) => {
@@ -295,9 +310,10 @@ const EditExamFormCategory: React.FC = () => {
     }
   };
 
-  if (!category) {
-    return <div className="p-4 text-center text-muted-foreground">Đang tải...</div>;
-  }
+  const filteredParts = parts.filter((part) => {
+    if (filterStatus === 'all') return part.status !== 'deleted';
+    return part.status === filterStatus;
+  });
 
   return (
     <div className="space-y-6 p-4">
@@ -419,30 +435,31 @@ const EditExamFormCategory: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Quản lý phần thi */}
+      {/* Phân loại trạng thái phần thi */}
+      <div className="flex gap-4 border-b border-gray-300 dark:border-gray-700 px-4">
+        {['all', 'hidden', 'deleted'].map((status) => {
+          const label = status === 'all' ? 'Tất cả' : status === 'hidden' ? 'Ẩn' : 'Xóa';
+          const count = parts.filter(p => status === 'all' ? p.status !== 'deleted' : p.status === status).length;
+          return (
+            <button
+              key={status}
+              onClick={() => setFilterStatus(status as PartStatus | 'all')}
+              className={`py-2 px-4 rounded-t-lg font-semibold ${
+                filterStatus === status
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              {label} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Quản lý phần thi theo trạng thái */}
       <div className="w-full md:w-1/2">
         <Card>
-          <CardHeader>
-            <CardTitle>Quản lý Phần thi</CardTitle>
-          </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2 mb-4">
-              <Input
-                placeholder="Nhập tên phần thi mới"
-                value={newPartName}
-                onChange={(e) => setNewPartName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddPart();
-                  }
-                }}
-              />
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-                Thêm
-              </Button>
-            </div>
-
             <Table>
               <TableHeader>
                 <TableRow>
@@ -451,36 +468,98 @@ const EditExamFormCategory: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {parts.length === 0 ? (
+                {filteredParts.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={2} className="text-center text-muted-foreground py-4">
-                      Chưa có phần thi nào.
+                      Không có phần thi nào.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  parts.map((part) => (
+                  filteredParts.map((part) => (
                     <TableRow key={part.id}>
                       <TableCell>{part.name}</TableCell>
                       <TableCell className="text-right flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Chỉnh sửa phần thi ${part.name}`}
-                          onClick={() => handleEditPart(part.id)}
-                          title="Chỉnh sửa nhanh"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeletePart(part.id)}
-                          aria-label={`Xóa phần thi ${part.name}`}
-                          title="Xóa phần thi"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {part.status === 'active' && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Chỉnh sửa phần thi ${part.name}`}
+                              onClick={() => handleEditPart(part.id)}
+                              title="Chỉnh sửa nhanh"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleDeletePart(part.id)}
+                              aria-label={`Xóa phần thi ${part.name}`}
+                              title="Xóa phần thi"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-gray-600 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700"
+                              onClick={() => {
+                                setParts(prev =>
+                                  prev.map(p =>
+                                    p.id === part.id ? { ...p, status: 'hidden' } : p
+                                  )
+                                );
+                                toast.success(`Đã ẩn phần thi "${part.name}".`);
+                              }}
+                              title="Ẩn phần thi"
+                            >
+                              <EyeOff className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
+                        {part.status === 'hidden' && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Hiện phần thi ${part.name}`}
+                              onClick={() => {
+                                setParts(prev =>
+                                  prev.map(p =>
+                                    p.id === part.id ? { ...p, status: 'active' } : p
+                                  )
+                                );
+                                toast.success(`Đã hiện phần thi "${part.name}".`);
+                              }}
+                              title="Hiện phần thi"
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleDeletePart(part.id)}
+                              aria-label={`Xóa phần thi ${part.name}`}
+                              title="Xóa phần thi"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
+                        {part.status === 'deleted' && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-green-600 hover:bg-green-50"
+                            onClick={() => handleRestorePart(part.id)}
+                            aria-label={`Khôi phục phần thi ${part.name}`}
+                            title="Khôi phục phần thi"
+                          >
+                            <RotateCcw className="h-4 w-4" />
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))
