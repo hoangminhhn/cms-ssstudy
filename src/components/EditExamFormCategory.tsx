@@ -5,9 +5,12 @@ const EditExamFormCategory: React.FC = () => {
   // ... các state và useEffect giữ nguyên
 
   const handleDeletePart = (id: string) => {
+    console.log('handleDeletePart called with id:', id);
+    console.log('Current parts:', parts);
+
     const partToDelete = parts.find(p => p.id === id);
     if (!partToDelete) {
-      // Nếu không tìm thấy phần thi, không làm gì
+      console.warn(`Không tìm thấy phần thi với id: ${id}`);
       return;
     }
 
