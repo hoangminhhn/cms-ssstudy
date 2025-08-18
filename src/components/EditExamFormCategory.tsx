@@ -369,29 +369,31 @@ const EditExamFormCategory: React.FC = () => {
       </Card>
 
       {/* Quản lý phần thi */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quản lý Phần thi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Nhập tên phần thi mới"
-              value={newPartName}
-              onChange={(e) => setNewPartName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddPart();
-                }
-              }}
-            />
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
-              Thêm
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="w-full md:w-1/2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Quản lý Phần thi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2 mb-4">
+              <Input
+                placeholder="Nhập tên phần thi mới"
+                value={newPartName}
+                onChange={(e) => setNewPartName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddPart();
+                  }
+                }}
+              />
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+                Thêm
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
