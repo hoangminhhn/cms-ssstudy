@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Trash2, Clock, Target } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface SubSubject {
   id: string;
@@ -112,11 +112,11 @@ const EditExamFormCategory: React.FC = () => {
 
   const [category, setCategory] = React.useState<ExamFormCategory | null>(null);
   const [parts, setParts] = React.useState<PartItem[]>([
-    { id: 'part1', name: '', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
-    { id: 'part2', name: '', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part1', name: 'Phần thi 1', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
+    { id: 'part2', name: 'Phần thi 2', allowSubGroups: false, maxSubGroupsSelected: 1, subParts: [], splitIntoSubParts: false },
     {
       id: 'part3',
-      name: '',
+      name: 'Phần thi 3',
       allowSubGroups: true,
       maxSubGroupsSelected: 1,
       subParts: [
@@ -229,6 +229,11 @@ const EditExamFormCategory: React.FC = () => {
     }
     setNewPartName('');
     toast.success('Đã thêm phần thi mới.');
+  };
+
+  const handleDeletePart = (id: string) => {
+    setParts(prev => prev.filter(p => p.id !== id));
+    toast.success('Đã xóa phần thi.');
   };
 
   const handleCancel = () => {
@@ -375,7 +380,7 @@ const EditExamFormCategory: React.FC = () => {
             <CardTitle>Quản lý Phần thi</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4">
               <Input
                 placeholder="Nhập tên phần thi mới"
                 value={newPartName}
@@ -391,6 +396,41 @@ const EditExamFormCategory: React.FC = () => {
                 Thêm
               </Button>
             </div>
+
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tên phần thi</TableHead>
+                  <TableHead className="text-right">Thao tác</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {parts.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-center text-muted-foreground py-4">
+                      Chưa có phần thi nào.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  parts.map((part) => (
+                    <TableRow key={part.id}>
+                      <TableCell>{part.name}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeletePart(part.id)}
+                          aria-label={`Xóa phần thi ${part.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>
