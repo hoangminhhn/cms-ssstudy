@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Trash2, Clock, Target, Pencil } from 'lucide-react';
+import { Trash2, Clock, Target, Pencil, EyeOff } from 'lucide-react'; // EyeOff imported
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface SubSubject {
@@ -443,7 +443,8 @@ const EditExamFormCategory: React.FC = () => {
                   }
                 }}
               />
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddPart}>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1" onClick={handleAddPart}>
+                <EyeOff className="h-4 w-4" />
                 Thêm
               </Button>
             </div>
@@ -497,6 +498,25 @@ const EditExamFormCategory: React.FC = () => {
                           title="Chỉnh sửa nhanh"
                         >
                           <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Ẩn phần thi ${part.name}`}
+                          title="Ẩn phần thi"
+                          className="text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                          onClick={() => {
+                            // Ví dụ: toggle trạng thái ẩn (1) và hiện (0)
+                            const newStatus = part.status === 1 ? 0 : 1;
+                            setParts((prev) =>
+                              prev.map((p) =>
+                                p.id === part.id ? { ...p, status: newStatus } : p
+                              )
+                            );
+                            toast.success(`Đã ${newStatus === 1 ? 'ẩn' : 'hiện'} phần thi "${part.name}".`);
+                          }}
+                        >
+                          <EyeOff className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
