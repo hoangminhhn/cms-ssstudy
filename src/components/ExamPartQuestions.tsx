@@ -9,6 +9,7 @@ import { Trash2, Pencil, Settings } from 'lucide-react';
 import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
 import GroupPartModal from './GroupPartModal';
 import { toast } from 'sonner';
+import ExamConfigModal from './ExamConfigModal';
 
 interface Question {
   id: string;
@@ -53,6 +54,10 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
 
   const [groupParts, setGroupParts] = React.useState<any[]>([]);
+  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
+
+  // New state for Exam Config modal
+  const [isExamConfigOpen, setIsExamConfigOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
@@ -117,8 +122,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setIsModalOpen(true);
   };
 
-  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
-
   const handleSaveGroupParts = (maxGroupSelected: number, groups: any[]) => {
     setGroupParts(groups);
     toast.success("Đã lưu nhóm chủ đề!");
@@ -126,6 +129,14 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   };
 
   const isGroupPart = (partId: string) => partId.startsWith('group-part-');
+
+  // handle save from ExamConfigModal
+  const handleSaveExamConfig = (config: any) => {
+    // For now we just log and toast; extend to persist if needed
+    console.log("Saved exam config:", config);
+    toast.success("Cấu hình đề thi đã được áp dụng.");
+    setIsExamConfigOpen(false);
+  };
 
   return (
     <>
@@ -137,7 +148,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
               variant="ghost"
               size="sm"
               className="flex items-center gap-1 px-2 py-1"
-              onClick={() => alert('Chức năng Cấu hình đề thi chưa được triển khai')}
+              onClick={() => setIsExamConfigOpen(true)}
               aria-label="Cấu hình đề thi"
             >
               <Settings className="h-4 w-4" />
@@ -157,7 +168,6 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             >
               + Phần thi nhóm chủ đề
             </Button>
-            {/* Nút + Câu hỏi chùm đã bị xóa ở đây */}
           </div>
         </div>
         <CardContent>
@@ -274,6 +284,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                               <Button
                                 variant="ghost"
                                 size="icon"
+                                aria-label={`Ẩn câu hỏi ${q.id}`}
+                                title="Ẩn câu hỏi"
+                                className="text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                                onClick={() => {
+                                  // Currently this toggles nothing at question level; placeholder for future
+                                  toast.info('Chức năng ẩn câu hỏi tạm thời chưa triển khai chi tiết.');
+                                }}
+                              >
+                                <Settings className="h-4 w-4" /> {/* reuse Settings icon as placeholder for Hide icon */}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
                                 className="text-red-600 hover:bg-red-50"
                                 onClick={() => onDeleteQuestion(part.id, q.id)}
                                 aria-label={`Xóa câu hỏi ${q.id}`}
@@ -328,6 +351,13 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         isOpen={isGroupPartModalOpen}
         onClose={() => setIsGroupPartModalOpen(false)}
         onSave={handleSaveGroupParts}
+      />
+
+      <ExamConfigModal
+        isOpen={isExamConfigOpen}
+        onClose={() => setIsExamConfigOpen(false)}
+        parts={parts}
+        onSave={handleSaveExamConfig}
       />
     </>
   );
