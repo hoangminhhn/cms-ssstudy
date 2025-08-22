@@ -92,36 +92,46 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     const numQuestions = p.questions?.length ?? 0;
     const totalPoints = perPartPoints[p.id] ?? 0;
     const pointPerQuestion = numQuestions > 0 ? totalPoints / numQuestions : 0;
+
     return (
-      <div key={p.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center border-b py-3">
-        <div className="md:col-span-1">
-          <div className="font-medium">{p.name}</div>
-          <div className="text-sm text-muted-foreground">Số câu: {numQuestions}</div>
+      <div key={p.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 py-3 border-b">
+        <div className="min-w-0">
+          <div className="font-medium truncate">{p.name}</div>
+          <div className="text-sm text-muted-foreground">Mã: {p.id}</div>
         </div>
-        <div>
-          <Label className="text-sm">Tổng điểm (admin)</Label>
-          <Input
-            type="number"
-            min={0}
-            value={String(totalPoints)}
-            onChange={(e) => handlePerPartPointChange(p.id, e.target.value)}
-            className="w-full"
-          />
-        </div>
-        <div>
-          <Label className="text-sm">Điểm / câu</Label>
-          <div className="mt-1 text-sm font-medium">{Number.isFinite(pointPerQuestion) ? pointPerQuestion.toFixed(2) : "0.00"}</div>
-        </div>
-        <div>
-          <Label className="text-sm">Thời gian (phút)</Label>
-          <Input
-            type="number"
-            min={0}
-            value={String(perPartTimes[p.id] ?? 30)}
-            onChange={(e) => handlePerPartTimeChange(p.id, e.target.value)}
-            className="w-full"
-            disabled={timeMode === "total"}
-          />
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-2 md:mt-0">
+          {/* Tổng điểm */}
+          <div className="flex flex-col">
+            <Label className="text-xs mb-1">Tổng điểm</Label>
+            <Input
+              type="number"
+              min={0}
+              value={String(totalPoints)}
+              onChange={(e) => handlePerPartPointChange(p.id, e.target.value)}
+              className="w-36 text-center"
+            />
+          </div>
+
+          {/* Tổng số câu (read-only) */}
+          <div className="flex flex-col">
+            <Label className="text-xs mb-1 uppercase text-[11px] tracking-wide">TỔNG SỐ CÂU</Label>
+            <Input
+              value={String(numQuestions)}
+              readOnly
+              className="w-36 text-center bg-gray-50 dark:bg-gray-700"
+            />
+          </div>
+
+          {/* Điểm mỗi câu (computed) */}
+          <div className="flex flex-col">
+            <Label className="text-xs mb-1">Điểm mỗi câu</Label>
+            <Input
+              value={Number.isFinite(pointPerQuestion) ? pointPerQuestion.toFixed(2) : "0.00"}
+              readOnly
+              className="w-36 text-center bg-gray-50 dark:bg-gray-700"
+            />
+          </div>
         </div>
       </div>
     );
@@ -139,9 +149,9 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
             <CardHeader>
               <CardTitle className="text-sm">Chia điểm theo từng phần thi</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-sm text-muted-foreground">Nhập tổng điểm cho mỗi phần, hệ thống sẽ tính điểm trên mỗi câu tự động dựa trên số câu đã có.</div>
-              <div className="mt-2 space-y-2">
+            <CardContent className="space-y-2">
+              <div className="text-sm text-muted-foreground">Nhập tổng điểm cho mỗi phần; hệ thống sẽ tính Điểm mỗi câu dựa trên số câu đã có.</div>
+              <div className="mt-2 divide-y">
                 {parts.map((p) => renderPartRow(p))}
               </div>
             </CardContent>
