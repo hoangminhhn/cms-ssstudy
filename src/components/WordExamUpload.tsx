@@ -483,6 +483,10 @@ const WordExamUpload: React.FC = () => {
           toast.success('Đã thêm phần thi nhóm chủ đề.');
         }}
         onAddOrUpdateQuestion={handleAddOrUpdateQuestion} // Truyền hàm cập nhật câu hỏi
+        onUpdateParts={(updatedParts) => {
+          // Replace parts with updated array (e.g. renamed parts)
+          setParts(updatedParts);
+        }}
       />
 
       {/* Footer Buttons */}

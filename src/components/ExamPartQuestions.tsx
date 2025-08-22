@@ -20,7 +20,7 @@ interface Question {
   uploadDate: string;
 }
 
-interface ExamPart {
+export interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
@@ -35,6 +35,7 @@ interface ExamPartQuestionsProps {
   onAddGroupPart: (partId: string) => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
+  onUpdateParts?: (updatedParts: ExamPart[]) => void; // new prop
 }
 
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
@@ -46,6 +47,86 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onAddGroupPart,
   renderPartHeader,
   onAddOrUpdateQuestion,
+  onUpdateParts,
+}) => {
+  const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
+  const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
+  const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
+
+  const [groupParts, setGroupParts] = React.useState<any[]>([]);
+  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
+
+  // New state for Exam Config modal
+  const [isExamConfigOpen, setIsExamConfigOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
+      setSelectedTab(parts[0].id);
+    }
+  }, [parts, selectedTab]);
+
+  const handleAddMultipleChoice = () => {
+    setEditingQuestion(null);
+    setEditingQuestionIndex(null);
+    setEditingPartId(selectedTab);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    set<dyad-write path="src/components/ExamPartQuestions.tsx" description="Add onUpdateParts prop and apply updated part names when config is saved">
+"use client";
+
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Trash2, Pencil, Settings } from 'lucide-react';
+import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
+import GroupPartModal from './GroupPartModal';
+import { toast } from 'sonner';
+import ExamConfigModal from './ExamConfigModal';
+
+interface Question {
+  id: string;
+  correctAnswer: string;
+  solution: string;
+  documentLink?: string;
+  videoLink?: string;
+  uploadDate: string;
+}
+
+export interface ExamPart {
+  id: string;
+  name: string;
+  questions: Question[];
+}
+
+interface ExamPartQuestionsProps {
+  parts: ExamPart[];
+  onDeleteAll: () => void;
+  onDeleteQuestion: (partId: string, questionId: string) => void;
+  onDeletePart: (partId: string) => void;
+  onAddDefaultPart: () => void;
+  onAddGroupPart: (partId: string) => void;
+  renderPartHeader?: (partId: string) => React.ReactNode;
+  onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
+  onUpdateParts?: (updatedParts: ExamPart[]) => void; // new prop to update parts (e.g. rename)
+}
+
+const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
+  parts,
+  onDeleteAll,
+  onDeleteQuestion,
+  onDeletePart,
+  onAddDefaultPart,
+  onAddGroupPart,
+  renderPartHeader,
+  onAddOrUpdateQuestion,
+  onUpdateParts,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -132,7 +213,16 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   // handle save from ExamConfigModal
   const handleSaveExamConfig = (config: any) => {
-    // For now we just log and toast; extend to persist if needed
+    // Update part names if provided
+    if (config && config.partNames && typeof onUpdateParts === 'function') {
+      const updatedParts = parts.map(p => ({
+        ...p,
+        name: config.partNames[p.id] ?? p.name,
+      }));
+      onUpdateParts(updatedParts);
+      toast.success("Tên phần thi đã được cập nhật.");
+    }
+
     console.log("Saved exam config:", config);
     toast.success("Cấu hình đề thi đã được áp dụng.");
     setIsExamConfigOpen(false);
@@ -288,11 +378,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                                 title="Ẩn câu hỏi"
                                 className="text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
                                 onClick={() => {
-                                  // Currently this toggles nothing at question level; placeholder for future
+                                  // Placeholder for hide functionality
                                   toast.info('Chức năng ẩn câu hỏi tạm thời chưa triển khai chi tiết.');
                                 }}
                               >
-                                <Settings className="h-4 w-4" /> {/* reuse Settings icon as placeholder for Hide icon */}
+                                <Settings className="h-4 w-4" />
                               </Button>
                               <Button
                                 variant="ghost"
