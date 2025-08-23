@@ -13,11 +13,23 @@ interface Question {
   // other fields omitted
 }
 
+interface SubSubject {
+  id: string;
+  name: string;
+}
+
+interface SubPart {
+  id: string;
+  name: string;
+  subSubjects?: SubSubject[]; // optional nested subjects
+}
+
 interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
-  // optional uploadedFileName?: string;
+  // optional shape for parts with nested structure
+  subParts?: SubPart[]; // optional
 }
 
 interface ExamConfig {
@@ -26,11 +38,15 @@ interface ExamConfig {
   totalTimeMinutes: number;
   perPartTimes: Record<string, number>;
   enableQuestionNumbering: boolean;
-  updatedPartNames?: Record<string, string>; // newly added: part title edits
+  updatedPartNames?: Record<string, string>; // part title edits
   numberingOptions?: {
+    mode: "sequential" | "custom";
     format: "1" | "a" | "i";
-    startFrom: number;
-    resetPerPart: boolean;
+    // when sequential:
+    startFrom?: number;
+    // when custom:
+    perItemStart?: Record<string, number>; // keys = partId or subPartId or subSubjectId
+    resetPerPart?: boolean;
   };
 }
 
@@ -59,10 +75,14 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(true);
   const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
 
-  // New numbering options state
+  // numbering controls
   const [numberingFormat, setNumberingFormat] = React.useState<ExamConfig["numberingOptions"]["format"]>("1");
-  const [numberingStartFrom, setNumberingStartFrom] = React.useState<number>(1);
+  const [numberingMode, setNumberingMode] = React.useState<"sequential" | "custom">("sequential");
+  const [sequentialStartFrom, setSequentialStartFrom] = React.useState<number>(1);
   const [numberingResetPerPart, setNumberingResetPerPart] = React.useState<boolean>(false);
+
+  // For custom mode: map of start numbers keyed by item id (part id, subpart id, or subsubject id)
+  const [perItemStart, setPerItemStart] = React.useState<Record<string, number>>({});
 
   React.useEffect(() => {
     // Reset whenever modal opens to reflect current parts
@@ -70,17 +90,37 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       const freshPoints: Record<string, number> = {};
       const freshTimes: Record<string, number> = {};
       const freshNames: Record<string, string> = {};
+      const freshStarts: Record<string, number> = {};
+
       parts.forEach((p) => {
         freshPoints[p.id] = perPartPoints[p.id] ?? 0;
         freshTimes[p.id] = perPartTimes[p.id] ?? 30;
         freshNames[p.id] = p.name || p.id;
+        // default custom start for a part
+        freshStarts[p.id] = perItemStart[p.id] ?? 1;
+
+        // if the part has subParts, initialize each subPart and its subSubjects
+        if ((p as any).subParts && Array.isArray((p as any).subParts)) {
+          (p as any).subParts.forEach((sp: SubPart) => {
+            freshStarts[sp.id] = perItemStart[sp.id] ?? 1;
+            if (sp.subSubjects && Array.isArray(sp.subSubjects)) {
+              sp.subSubjects.forEach((ss: SubSubject) => {
+                freshStarts[ss.id] = perItemStart[ss.id] ?? 1;
+              });
+            }
+          });
+        }
       });
+
       setPerPartPoints(freshPoints);
       setPerPartTimes(freshTimes);
       setPartNames(freshNames);
-      // reset numbering options to sensible defaults (retain current UI state if desired)
+      setPerItemStart(freshStarts);
+
+      // reasonable defaults for numbering
       setNumberingFormat("1");
-      setNumberingStartFrom(1);
+      setNumberingMode("sequential");
+      setSequentialStartFrom(1);
       setNumberingResetPerPart(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,6 +140,11 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     setPartNames((prev) => ({ ...prev, [partId]: value }));
   };
 
+  const handlePerItemStartChange = (id: string, value: string) => {
+    const num = Math.max(0, Number(value || 0));
+    setPerItemStart((prev) => ({ ...prev, [id]: num }));
+  };
+
   const handleSave = () => {
     const config: ExamConfig = {
       perPartPoints,
@@ -108,13 +153,12 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       perPartTimes,
       enableQuestionNumbering,
       updatedPartNames: partNames,
-      numberingOptions: enableQuestionNumbering
-        ? {
-            format: numberingFormat,
-            startFrom: Math.max(0, numberingStartFrom),
-            resetPerPart: numberingResetPerPart,
-          }
-        : undefined,
+      numberingOptions: {
+        mode: numberingMode,
+        format: numberingFormat,
+        resetPerPart: numberingResetPerPart,
+        ...(numberingMode === "sequential" ? { startFrom: sequentialStartFrom } : { perItemStart }),
+      },
     };
     if (onSave) onSave(config);
     console.log("Exam config saved:", config);
@@ -171,6 +215,75 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
               className="w-36 text-center bg-gray-50 dark:bg-gray-700"
             />
           </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCustomNumberingPanel = () => {
+    return (
+      <div className="space-y-3">
+        <Label className="text-sm">Đánh số thứ tự câu hỏi bắt đầu</Label>
+
+        <div className="grid grid-cols-1 gap-3">
+          {parts.map((p) => (
+            <div key={p.id} className="border rounded-md p-3 bg-white dark:bg-gray-800">
+              <div className="flex items-center justify-between mb-3">
+                <div className="font-medium">{partNames[p.id] ?? p.name}</div>
+                {/* If part has no subParts, show single input */}
+                {!((p as any).subParts && (p as any).subParts.length > 0) && (
+                  <div className="w-32">
+                    <Input
+                      value={String(perItemStart[p.id] ?? 1)}
+                      onChange={(e) => handlePerItemStartChange(p.id, e.target.value)}
+                      aria-label={`Số bắt đầu cho ${p.name}`}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* If part has subParts, render each subPart and subSubjects */}
+              {(p as any).subParts && Array.isArray((p as any).subParts) && (
+                <div className="space-y-3">
+                  {(p as any).subParts.map((sp: SubPart) => (
+                    <div key={sp.id} className="border rounded-md p-3 bg-gray-50 dark:bg-gray-900">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="font-semibold text-sm">{sp.name}</div>
+                        {/* if subPart has no subSubjects, show input next to title */}
+                        {!(sp.subSubjects && sp.subSubjects.length > 0) && (
+                          <div className="w-28">
+                            <Input
+                              value={String(perItemStart[sp.id] ?? 1)}
+                              onChange={(e) => handlePerItemStartChange(sp.id, e.target.value)}
+                              aria-label={`Số bắt đầu cho ${sp.name}`}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* If there are subSubjects, show them in grid with inputs */}
+                      {sp.subSubjects && sp.subSubjects.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          {sp.subSubjects.map((ss) => (
+                            <div key={ss.id} className="flex items-center justify-between gap-3">
+                              <div className="text-sm">{ss.name}</div>
+                              <div className="w-28">
+                                <Input
+                                  value={String(perItemStart[ss.id] ?? 1)}
+                                  onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                                  aria-label={`Số bắt đầu cho ${ss.name}`}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -247,19 +360,34 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
               <CardTitle className="text-sm">Cấu hình đánh số câu hỏi</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Bật đánh số câu hỏi</div>
-                  <div className="text-sm text-muted-foreground">Khi bật, hệ thống sẽ hiển thị đánh số cho mỗi câu.</div>
-                </div>
-                <div>
-                  <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
-                </div>
-              </div>
+              <div>
+                <div className="font-medium mb-2">Chế độ đánh số</div>
+                <div className="flex items-center gap-4 mb-3">
+                  <label className={`px-3 py-2 rounded border ${numberingMode === "sequential" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
+                    <input
+                      type="radio"
+                      name="numberingMode"
+                      checked={numberingMode === "sequential"}
+                      onChange={() => setNumberingMode("sequential")}
+                      className="mr-2"
+                    />
+                    Đánh số tuần tự lặp lại
+                  </label>
 
-              {/* Additional numbering options shown when enabled */}
-              {enableQuestionNumbering && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                  <label className={`px-3 py-2 rounded border ${numberingMode === "custom" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
+                    <input
+                      type="radio"
+                      name="numberingMode"
+                      checked={numberingMode === "custom"}
+                      onChange={() => setNumberingMode("custom")}
+                      className="mr-2"
+                    />
+                    Tùy chỉnh
+                  </label>
+                </div>
+
+                {/* Format & reset options (always useful) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div>
                     <Label className="text-xs mb-1">Kiểu đánh số</Label>
                     <Select value={numberingFormat} onValueChange={(v) => setNumberingFormat(v as any)}>
@@ -275,32 +403,28 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                   </div>
 
                   <div>
-                    <Label className="text-xs mb-1">Bắt đầu từ</Label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={String(numberingStartFrom)}
-                      onChange={(e) => setNumberingStartFrom(Math.max(0, Number(e.target.value || 0)))}
-                      className="w-36"
-                    />
+                    <Label className="text-xs mb-1">Đặt lại theo phần</Label>
+                    <div className="mt-2">
+                      <Switch checked={numberingResetPerPart} onCheckedChange={(v) => setNumberingResetPerPart(!!v)} />
+                    </div>
                   </div>
 
                   <div>
-                    <Label className="text-xs mb-1">Tuỳ chọn</Label>
-                    <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={numberingResetPerPart}
-                          onChange={(e) => setNumberingResetPerPart(e.target.checked)}
-                          className="h-4 w-4 rounded border border-gray-300 bg-white"
-                        />
-                        <span className="text-sm">Đặt lại theo phần</span>
-                      </label>
-                    </div>
+                    <Label className="text-xs mb-1">Bắt đầu (cho chế độ tuần tự)</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={String(sequentialStartFrom)}
+                      onChange={(e) => setSequentialStartFrom(Math.max(0, Number(e.target.value || 0)))}
+                      className="w-36"
+                      disabled={numberingMode !== "sequential"}
+                    />
                   </div>
                 </div>
-              )}
+
+                {/* Custom panel */}
+                {numberingMode === "custom" && renderCustomNumberingPanel()}
+              </div>
             </CardContent>
           </Card>
         </div>
