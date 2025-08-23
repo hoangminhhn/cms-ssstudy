@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface Question {
@@ -26,6 +27,11 @@ interface ExamConfig {
   perPartTimes: Record<string, number>;
   enableQuestionNumbering: boolean;
   updatedPartNames?: Record<string, string>; // newly added: part title edits
+  numberingOptions?: {
+    format: "1" | "a" | "i";
+    startFrom: number;
+    resetPerPart: boolean;
+  };
 }
 
 interface ExamConfigModalProps {
@@ -53,6 +59,11 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(true);
   const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
 
+  // New numbering options state
+  const [numberingFormat, setNumberingFormat] = React.useState<ExamConfig["numberingOptions"]["format"]>("1");
+  const [numberingStartFrom, setNumberingStartFrom] = React.useState<number>(1);
+  const [numberingResetPerPart, setNumberingResetPerPart] = React.useState<boolean>(false);
+
   React.useEffect(() => {
     // Reset whenever modal opens to reflect current parts
     if (isOpen) {
@@ -67,6 +78,10 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       setPerPartPoints(freshPoints);
       setPerPartTimes(freshTimes);
       setPartNames(freshNames);
+      // reset numbering options to sensible defaults (retain current UI state if desired)
+      setNumberingFormat("1");
+      setNumberingStartFrom(1);
+      setNumberingResetPerPart(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, parts]);
@@ -93,6 +108,13 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       perPartTimes,
       enableQuestionNumbering,
       updatedPartNames: partNames,
+      numberingOptions: enableQuestionNumbering
+        ? {
+            format: numberingFormat,
+            startFrom: Math.max(0, numberingStartFrom),
+            resetPerPart: numberingResetPerPart,
+          }
+        : undefined,
     };
     if (onSave) onSave(config);
     console.log("Exam config saved:", config);
@@ -224,14 +246,61 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
             <CardHeader>
               <CardTitle className="text-sm">Cấu hình đánh số câu hỏi</CardTitle>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <div className="font-medium">Bật đánh số câu hỏi</div>
-                <div className="text-sm text-muted-foreground">Khi bật, hệ thống sẽ hiển thị đánh số cho mỗi câu.</div>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium">Bật đánh số câu hỏi</div>
+                  <div className="text-sm text-muted-foreground">Khi bật, hệ thống sẽ hiển thị đánh số cho mỗi câu.</div>
+                </div>
+                <div>
+                  <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
+                </div>
               </div>
-              <div>
-                <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
-              </div>
+
+              {/* Additional numbering options shown when enabled */}
+              {enableQuestionNumbering && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                  <div>
+                    <Label className="text-xs mb-1">Kiểu đánh số</Label>
+                    <Select value={numberingFormat} onValueChange={(v) => setNumberingFormat(v as any)}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn kiểu" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1, 2, 3 ...</SelectItem>
+                        <SelectItem value="a">a, b, c ...</SelectItem>
+                        <SelectItem value="i">i, ii, iii ...</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs mb-1">Bắt đầu từ</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={String(numberingStartFrom)}
+                      onChange={(e) => setNumberingStartFrom(Math.max(0, Number(e.target.value || 0)))}
+                      className="w-36"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs mb-1">Tuỳ chọn</Label>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={numberingResetPerPart}
+                          onChange={(e) => setNumberingResetPerPart(e.target.checked)}
+                          className="h-4 w-4 rounded border border-gray-300 bg-white"
+                        />
+                        <span className="text-sm">Đặt lại theo phần</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
