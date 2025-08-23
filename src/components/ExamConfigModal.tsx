@@ -25,6 +25,7 @@ interface ExamConfig {
   totalTimeMinutes: number;
   perPartTimes: Record<string, number>;
   enableQuestionNumbering: boolean;
+  updatedPartNames?: Record<string, string>; // newly added: part title edits
 }
 
 interface ExamConfigModalProps {
@@ -38,9 +39,11 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   // initialize per-part points & times
   const initialPerPartPoints: Record<string, number> = {};
   const initialPerPartTimes: Record<string, number> = {};
+  const initialPartNames: Record<string, string> = {};
   parts.forEach((p) => {
     initialPerPartPoints[p.id] = 0;
     initialPerPartTimes[p.id] = 30;
+    initialPartNames[p.id] = p.name || p.id;
   });
 
   const [perPartPoints, setPerPartPoints] = React.useState<Record<string, number>>(initialPerPartPoints);
@@ -48,18 +51,22 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [totalTimeMinutes, setTotalTimeMinutes] = React.useState<number>(60);
   const [perPartTimes, setPerPartTimes] = React.useState<Record<string, number>>(initialPerPartTimes);
   const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(true);
+  const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
 
   React.useEffect(() => {
     // Reset whenever modal opens to reflect current parts
     if (isOpen) {
       const freshPoints: Record<string, number> = {};
       const freshTimes: Record<string, number> = {};
+      const freshNames: Record<string, string> = {};
       parts.forEach((p) => {
         freshPoints[p.id] = perPartPoints[p.id] ?? 0;
         freshTimes[p.id] = perPartTimes[p.id] ?? 30;
+        freshNames[p.id] = p.name || p.id;
       });
       setPerPartPoints(freshPoints);
       setPerPartTimes(freshTimes);
+      setPartNames(freshNames);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, parts]);
@@ -74,13 +81,18 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     setPerPartTimes((prev) => ({ ...prev, [partId]: num }));
   };
 
+  const handlePartNameChange = (partId: string, value: string) => {
+    setPartNames((prev) => ({ ...prev, [partId]: value }));
+  };
+
   const handleSave = () => {
-    const config = {
+    const config: ExamConfig = {
       perPartPoints,
       timeMode,
       totalTimeMinutes,
       perPartTimes,
       enableQuestionNumbering,
+      updatedPartNames: partNames,
     };
     if (onSave) onSave(config);
     console.log("Exam config saved:", config);
@@ -95,9 +107,15 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
     return (
       <div key={p.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 py-3 border-b">
-        <div className="min-w-0">
-          <div className="font-medium truncate">{p.name}</div>
-          <div className="text-sm text-muted-foreground">Mã: {p.id}</div>
+        <div className="min-w-0 flex-1">
+          <Label className="text-sm mb-1">Tiêu đề phần</Label>
+          <Input
+            value={partNames[p.id] ?? p.name}
+            onChange={(e) => handlePartNameChange(p.id, e.target.value)}
+            className="mb-2"
+            aria-label={`Tiêu đề cho ${p.name}`}
+          />
+          <div className="text-sm text-muted-foreground">Mã phần: {p.id}</div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-2 md:mt-0">
@@ -193,7 +211,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {parts.map((p) => (
                       <div key={p.id}>
-                        <Label className="text-sm">{p.name}</Label>
+                        <Label className="text-sm">{partNames[p.id] ?? p.name}</Label>
                         <Input type="number" min={0} value={String(perPartTimes[p.id] ?? 30)} onChange={(e) => handlePerPartTimeChange(p.id, e.target.value)} className="w-full" />
                       </div>
                     ))}
