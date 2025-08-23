@@ -115,7 +115,6 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
             className="mb-2"
             aria-label={`Tiêu đề cho ${p.name}`}
           />
-          <div className="text-sm text-muted-foreground">Mã phần: {p.id}</div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-2 md:mt-0">
