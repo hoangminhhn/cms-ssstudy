@@ -266,7 +266,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-left">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-2xl font-bold text-left">Cấu hình đánh số câu hỏi</DialogTitle> {/* larger and left-aligned title */}
+          <DialogTitle className="text-2xl font-bold text-left">Cấu hình đánh số câu hỏi</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -330,11 +330,11 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
           <Card>
             <CardHeader className="flex items-center justify-between">
-              <div className="pl-0 ml-0">
-                <CardTitle className="text-lg font-semibold ml-0 pl-0 text-left">Cấu hình đánh số</CardTitle>
+              <div className="flex-1 flex flex-col items-start">
+                <CardTitle className="text-lg font-semibold m-0 p-0 text-left">Cấu hình đánh số</CardTitle>
                 <div className="text-sm text-muted-foreground">Bật để thiết lập cách đánh số câu hỏi</div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-4">
                 <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
               </div>
             </CardHeader>
