@@ -196,8 +196,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     );
   };
 
-  // New custom layout: non-group parts displayed compact in a two-column grid,
-  // grouped parts rendered as full-width cards with group headings and a two-column grid of subject + input pairs.
+  // Custom layout: simple parts -> small cards; for part3 show explicit Khoa học and Tiếng Anh groups
   const renderCustomNumberingPanel = () => {
     const nonGroupParts = parts.filter((p) => !p.subParts || p.subParts.length === 0);
     const groupParts = parts.filter((p) => p.subParts && p.subParts.length > 0);
@@ -223,68 +222,102 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
           </div>
         )}
 
-        {/* Full blocks for group parts */}
-        {groupParts.map((p) => (
-          <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
-            <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
-                <div className="text-sm text-muted-foreground"> </div>
+        {/* For parts that have explicit groups provided, render them */}
+        {groupParts.map((p) => {
+          // If this is "part3" and it has no meaningful subParts, create the exact groups requested:
+          if (p.id === "part3") {
+            const khoaHocSubjects = [
+              { id: `${p.id}-khoa-vatli`, name: "Vật lí" },
+              { id: `${p.id}-khoa-hoahoc`, name: "Hóa học" },
+              { id: `${p.id}-khoa-sinhhoc`, name: "Sinh học" },
+              { id: `${p.id}-khoa-toan`, name: "Toán" },
+              { id: `${p.id}-khoa-khoahoc`, name: "Khoa học tổng hợp" },
+            ];
+            const tiengAnhSubjects = [{ id: `${p.id}-eng-1`, name: "Tiếng Anh" }];
+
+            const groupsForPart3 = [
+              { id: `${p.id}-khoa`, name: "Khoa học", subSubjects: khoaHocSubjects },
+              { id: `${p.id}-tienganh`, name: "Tiếng Anh", subSubjects: tiengAnhSubjects },
+            ];
+
+            return (
+              <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
+                <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
+                    <div className="text-sm text-muted-foreground">Nhóm chủ đề</div>
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-4">
+                  {groupsForPart3.map((group) => (
+                    <div key={group.id} className="space-y-3">
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {group.subSubjects.map((ss) => (
+                          <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                            <div className="text-sm">{ss.name}</div>
+                            <div className="w-28">
+                              <Input
+                                value={String(perItemStart[ss.id] ?? 1)}
+                                onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                                className="text-center"
+                                aria-label={`Số bắt đầu cho ${ss.name}`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          // Fallback: render actual subParts if present (groupParts other than part3)
+          return (
+            <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
+              <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
+                  <div className="text-sm text-muted-foreground">Nhóm chủ đề</div>
+                </div>
+              </div>
+
+              <div className="p-4 space-y-4">
+                {(p.subParts || []).map((group) => (
+                  <div key={group.id} className="space-y-3">
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {group.subSubjects && group.subSubjects.length > 0 ? (
+                        group.subSubjects.map((ss) => (
+                          <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                            <div className="text-sm">{ss.name}</div>
+                            <div className="w-28">
+                              <Input
+                                value={String(perItemStart[ss.id] ?? 1)}
+                                onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                                className="text-center"
+                                aria-label={`Số bắt đầu cho ${ss.name}`}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-sm text-muted-foreground">Chưa có môn học</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          );
+        })}
 
-            <div className="p-4 space-y-4">
-              {(p.subParts || []).map((group) => (
-                <div key={group.id} className="space-y-3">
-                  {/* group header */}
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
-
-                  {/* subjects in two columns */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {group.subSubjects && group.subSubjects.length > 0 ? (
-                      group.subSubjects.map((ss) => (
-                        <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
-                          <div className="text-sm">{ss.name}</div>
-                          <div className="w-28">
-                            <Input
-                              value={String(perItemStart[ss.id] ?? 1)}
-                              onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
-                              className="text-center"
-                              aria-label={`Số bắt đầu cho ${ss.name}`}
-                            />
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-sm text-muted-foreground">Chưa có môn học</div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {/* separator and any top-level subSubjects directly under the part (if present) */}
-              {(p as any).subSubjects && Array.isArray((p as any).subSubjects) && (p as any).subSubjects.length > 0 && (
-                <div>
-                  <div className="border-t mt-4 pt-4 text-sm font-medium text-gray-700 dark:text-gray-300">Khác</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-                    {(p as any).subSubjects.map((ss: SubSubject) => (
-                      <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
-                        <div className="text-sm">{ss.name}</div>
-                        <div className="w-28">
-                          <Input
-                            value={String(perItemStart[ss.id] ?? 1)}
-                            onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
-                            className="text-center"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+        {/* If there are any parts that neither groupParts nor nonGroupParts covered, skip */}
       </div>
     );
   };
@@ -356,7 +389,6 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
           </Card>
 
           <Card>
-            {/* Use a simple flex container so title and switch stay on one line */}
             <CardHeader className="items-center">
               <div className="w-full flex items-center justify-between">
                 <div className="text-sm font-medium">Cấu hình đánh số câu hỏi</div>
