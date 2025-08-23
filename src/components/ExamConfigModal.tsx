@@ -264,9 +264,9 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Cấu hình đánh số câu hỏi</DialogTitle> {/* larger title */}
+      <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-left">
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-2xl font-bold text-left">Cấu hình đánh số câu hỏi</DialogTitle> {/* larger and left-aligned title */}
         </DialogHeader>
 
         <div className="space-y-6">
@@ -275,7 +275,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
               <CardTitle className="text-sm">Chia điểm theo từng phần thi</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-sm text-muted-foreground">Nhập tổng điểm cho mỗi phần; hệ thống sẽ tính Điểm mỗi câu dựa trên số câu đã có.</div>
+              <div className="text-sm text-muted-foreground text-left">Nhập tổng điểm cho mỗi phần; hệ thống sẽ tính Điểm mỗi câu dựa trên số câu đã có.</div>
               <div className="mt-2 divide-y">
                 {parts.map((p) => renderPartRow(p))}
               </div>
