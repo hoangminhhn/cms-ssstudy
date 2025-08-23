@@ -330,8 +330,8 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
           <Card>
             <CardHeader className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-semibold">Cấu hình đánh số</CardTitle>
+              <div className="pl-0 ml-0">
+                <CardTitle className="text-lg font-semibold ml-0 pl-0 text-left">Cấu hình đánh số</CardTitle>
                 <div className="text-sm text-muted-foreground">Bật để thiết lập cách đánh số câu hỏi</div>
               </div>
               <div className="flex items-center gap-2">
