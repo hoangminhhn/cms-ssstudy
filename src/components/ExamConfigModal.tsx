@@ -198,6 +198,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
   // New custom layout: non-group parts displayed compact in a two-column grid,
   // grouped parts rendered as full-width cards with group headings and a two-column grid of subject + input pairs.
+  // Special-case part3 to show two groups: "Khoa học" (5 subjects) and "Tiếng Anh" (1 subject)
   const renderCustomNumberingPanel = () => {
     const nonGroupParts = parts.filter((p) => !p.subParts || p.subParts.length === 0);
     const groupParts = parts.filter((p) => p.subParts && p.subParts.length > 0);
@@ -224,25 +225,71 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
         )}
 
         {/* Full blocks for group parts */}
-        {groupParts.map((p) => (
-          <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
-            <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
-                <div className="text-sm text-muted-foreground"> </div>
+        {/* include special rendering for part3 when no real subParts are provided */}
+        {(groupParts.length > 0 || parts.some(p => p.id === "part3")) && (
+          <>
+            {/* render existing groupParts */}
+            {groupParts.map((p) => (
+              <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
+                <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
+                    <div className="text-sm text-muted-foreground"> </div>
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-4">
+                  {(p.subParts || []).map((group) => (
+                    <div key={group.id} className="space-y-3">
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {group.subSubjects && group.subSubjects.length > 0 ? (
+                          group.subSubjects.map((ss) => (
+                            <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                              <div className="text-sm">{ss.name}</div>
+                              <div className="w-28">
+                                <Input
+                                  value={String(perItemStart[ss.id] ?? 1)}
+                                  onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                                  className="text-center"
+                                  aria-label={`Số bắt đầu cho ${ss.name}`}
+                                />
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-sm text-muted-foreground">Chưa có môn học</div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
 
-            <div className="p-4 space-y-4">
-              {(p.subParts || []).map((group) => (
-                <div key={group.id} className="space-y-3">
-                  {/* group header */}
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
+            {/* Special-case: if part3 exists, render with the requested two groups */}
+            {parts.find(p => p.id === "part3") && (
+              <div className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
+                <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">{partNames["part3"] ?? "Phần 3"}</div>
+                    <div className="text-sm text-muted-foreground"> </div>
+                  </div>
+                </div>
 
-                  {/* subjects in two columns */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {group.subSubjects && group.subSubjects.length > 0 ? (
-                      group.subSubjects.map((ss) => (
+                <div className="p-4 space-y-4">
+                  {/* Khoa học group - 5 subjects */}
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Khoa học</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {[
+                        { id: "science-math", name: "Toán" },
+                        { id: "science-physics", name: "Vật lí" },
+                        { id: "science-chemistry", name: "Hóa học" },
+                        { id: "science-biology", name: "Sinh học" },
+                        { id: "science-computing", name: "Tin học" },
+                      ].map((ss) => (
                         <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
                           <div className="text-sm">{ss.name}</div>
                           <div className="w-28">
@@ -254,37 +301,32 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                             />
                           </div>
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-sm text-muted-foreground">Chưa có môn học</div>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
 
-              {/* separator and any top-level subSubjects directly under the part (if present) */}
-              {(p as any).subSubjects && Array.isArray((p as any).subSubjects) && (p as any).subSubjects.length > 0 && (
-                <div>
-                  <div className="border-t mt-4 pt-4 text-sm font-medium text-gray-700 dark:text-gray-300">Khác</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-                    {(p as any).subSubjects.map((ss: SubSubject) => (
-                      <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
-                        <div className="text-sm">{ss.name}</div>
+                  {/* Tiếng Anh group - 1 subject */}
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Tiếng Anh</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                        <div className="text-sm">Tiếng Anh</div>
                         <div className="w-28">
                           <Input
-                            value={String(perItemStart[ss.id] ?? 1)}
-                            onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                            value={String(perItemStart["english-1"] ?? 1)}
+                            onChange={(e) => handlePerItemStartChange("english-1", e.target.value)}
                             className="text-center"
+                            aria-label={`Số bắt đầu cho Tiếng Anh`}
                           />
                         </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
-        ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     );
   };
