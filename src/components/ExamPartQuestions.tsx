@@ -1,3 +1,4 @@
+// "use client" is used elsewhere in the project for client components
 "use client";
 
 import React from 'react';
@@ -32,10 +33,10 @@ interface ExamPartQuestionsProps {
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
   onAddDefaultPart: () => void;
-  onAddGroupPart: (partId: string) => void;
+  onAddGroupPart: (partId?: string) => void;
   renderPartHeader?: (partId: string) => React.ReactNode;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
-  onUpdateParts?: (updatedParts: ExamPart[]) => void; // new prop
+  onUpdateParts?: (updatedParts: ExamPart[]) => void; // optional callback to update part metadata (e.g. rename)
 }
 
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
@@ -50,7 +51,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   onUpdateParts,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isAddMcqOpen, setIsAddMcqOpen] = React.useState(false);
   const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
   const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
   const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
@@ -58,103 +59,24 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   const [groupParts, setGroupParts] = React.useState<any[]>([]);
   const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
 
-  // New state for Exam Config modal
   const [isExamConfigOpen, setIsExamConfigOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
       setSelectedTab(parts[0].id);
     }
-  }, [parts, selectedTab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parts]);
 
-  const handleAddMultipleChoice = () => {
+  const openAddMcq = (partId?: string) => {
     setEditingQuestion(null);
     setEditingQuestionIndex(null);
-    setEditingPartId(selectedTab);
-    setIsModalOpen(true);
+    setEditingPartId(partId ?? selectedTab);
+    setIsAddMcqOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    set<dyad-write path="src/components/ExamPartQuestions.tsx" description="Add onUpdateParts prop and apply updated part names when config is saved">
-"use client";
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, Pencil, Settings } from 'lucide-react';
-import AddMultipleChoiceQuestionModal, { MultipleChoiceQuestion } from './AddMultipleChoiceQuestionModal';
-import GroupPartModal from './GroupPartModal';
-import { toast } from 'sonner';
-import ExamConfigModal from './ExamConfigModal';
-
-interface Question {
-  id: string;
-  correctAnswer: string;
-  solution: string;
-  documentLink?: string;
-  videoLink?: string;
-  uploadDate: string;
-}
-
-export interface ExamPart {
-  id: string;
-  name: string;
-  questions: Question[];
-}
-
-interface ExamPartQuestionsProps {
-  parts: ExamPart[];
-  onDeleteAll: () => void;
-  onDeleteQuestion: (partId: string, questionId: string) => void;
-  onDeletePart: (partId: string) => void;
-  onAddDefaultPart: () => void;
-  onAddGroupPart: (partId: string) => void;
-  renderPartHeader?: (partId: string) => React.ReactNode;
-  onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
-  onUpdateParts?: (updatedParts: ExamPart[]) => void; // new prop to update parts (e.g. rename)
-}
-
-const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
-  parts,
-  onDeleteAll,
-  onDeleteQuestion,
-  onDeletePart,
-  onAddDefaultPart,
-  onAddGroupPart,
-  renderPartHeader,
-  onAddOrUpdateQuestion,
-  onUpdateParts,
-}) => {
-  const [selectedTab, setSelectedTab] = React.useState(parts.length > 0 ? parts[0].id : '');
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [editingQuestion, setEditingQuestion] = React.useState<MultipleChoiceQuestion | null>(null);
-  const [editingQuestionIndex, setEditingQuestionIndex] = React.useState<number | null>(null);
-  const [editingPartId, setEditingPartId] = React.useState<string | null>(null);
-
-  const [groupParts, setGroupParts] = React.useState<any[]>([]);
-  const [isGroupPartModalOpen, setIsGroupPartModalOpen] = React.useState(false);
-
-  // New state for Exam Config modal
-  const [isExamConfigOpen, setIsExamConfigOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
-      setSelectedTab(parts[0].id);
-    }
-  }, [parts, selectedTab]);
-
-  const handleAddMultipleChoice = () => {
-    setEditingQuestion(null);
-    setEditingQuestionIndex(null);
-    setEditingPartId(selectedTab);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const closeAddMcq = () => {
+    setIsAddMcqOpen(false);
     setEditingQuestion(null);
     setEditingQuestionIndex(null);
     setEditingPartId(null);
@@ -162,11 +84,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   const handleSaveQuestion = (question: MultipleChoiceQuestion) => {
     if (!editingPartId) return;
-
     const newQuestion: Question = {
-      id: editingQuestionIndex !== null && parts.find(p => p.id === editingPartId)?.questions[editingQuestionIndex]
-        ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
-        : Date.now().toString(),
+      id:
+        editingQuestionIndex !== null && parts.find(p => p.id === editingPartId)?.questions[editingQuestionIndex]
+          ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
+          : Date.now().toString(),
       correctAnswer: String.fromCharCode(65 + question.correctOptionIndex),
       solution: question.solution || question.explanation,
       videoLink: question.videoLink,
@@ -175,8 +97,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     };
 
     onAddOrUpdateQuestion(editingPartId, editingQuestionIndex !== null ? newQuestion.id : null, newQuestion);
-
-    handleModalClose();
+    closeAddMcq();
   };
 
   const handleEditQuestion = (partId: string, questionIndex: number) => {
@@ -200,7 +121,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setEditingQuestion(editingQ);
     setEditingQuestionIndex(questionIndex);
     setEditingPartId(partId);
-    setIsModalOpen(true);
+    setIsAddMcqOpen(true);
   };
 
   const handleSaveGroupParts = (maxGroupSelected: number, groups: any[]) => {
@@ -211,9 +132,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
 
   const isGroupPart = (partId: string) => partId.startsWith('group-part-');
 
-  // handle save from ExamConfigModal
+  // When the config modal is saved it passes config including partNames; apply them if callback available.
   const handleSaveExamConfig = (config: any) => {
-    // Update part names if provided
     if (config && config.partNames && typeof onUpdateParts === 'function') {
       const updatedParts = parts.map(p => ({
         ...p,
@@ -223,7 +143,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
       toast.success("Tên phần thi đã được cập nhật.");
     }
 
-    console.log("Saved exam config:", config);
+    // Also give a general success toast
     toast.success("Cấu hình đề thi đã được áp dụng.");
     setIsExamConfigOpen(false);
   };
@@ -245,6 +165,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
               <span className="text-sm">Cấu hình đề thi</span>
             </Button>
           </h2>
+
           <div className="flex items-center gap-2">
             <Button
               className="bg-cyan-500 hover:bg-cyan-600 text-white text-xs px-3 h-8 max-w-[140px] truncate"
@@ -254,17 +175,19 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
             </Button>
             <Button
               className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 h-8 max-w-[140px] truncate"
-              onClick={() => setIsGroupPartModalOpen(true)}
+              onClick={() => {
+                const id = `group-part-${Date.now()}`;
+                onAddGroupPart?.(id);
+              }}
             >
               + Phần thi nhóm chủ đề
             </Button>
           </div>
         </div>
+
         <CardContent>
           {parts.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">
-              Chưa có phần thi nào.
-            </div>
+            <div className="text-center text-muted-foreground py-8">Chưa có phần thi nào.</div>
           ) : (
             <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
               <TabsList className="mb-4 overflow-x-auto">
@@ -274,13 +197,11 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                   </TabsTrigger>
                 ))}
               </TabsList>
+
               {parts.map((part) => (
                 <TabsContent key={part.id} value={part.id} className="p-0 relative">
-                  {renderPartHeader && (
-                    <div className="p-4 border-b border-border">
-                      {renderPartHeader(part.id)}
-                    </div>
-                  )}
+                  {renderPartHeader && <div className="p-4 border-b border-border">{renderPartHeader(part.id)}</div>}
+
                   <div className="absolute top-2 right-2 left-2 z-10 flex justify-between">
                     {isGroupPart(part.id) ? (
                       <Button
@@ -294,6 +215,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     ) : (
                       <div />
                     )}
+
                     <Button
                       variant="destructive"
                       size="sm"
@@ -304,10 +226,9 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       <span className="ml-1 hidden sm:inline">Xóa phần thi</span>
                     </Button>
                   </div>
+
                   {part.questions.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">
-                      Chưa có câu hỏi nào trong phần này.
-                    </p>
+                    <p className="text-muted-foreground text-center py-8">Chưa có câu hỏi nào trong phần này.</p>
                   ) : (
                     <Table>
                       <TableHeader>
@@ -322,55 +243,38 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                           <TableHead className="text-right">Thao tác</TableHead>
                         </TableRow>
                       </TableHeader>
+
                       <TableBody>
-                        {part.questions.map((q, index) => (
+                        {part.questions.map((q, idx) => (
                           <TableRow key={q.id}>
-                            <TableCell>{`Câu ${index + 1}`}</TableCell>
+                            <TableCell>{`Câu ${idx + 1}`}</TableCell>
                             <TableCell>{q.id}</TableCell>
                             <TableCell>{q.correctAnswer}</TableCell>
                             <TableCell>TRẮC NGHIỆM</TableCell>
                             <TableCell>
                               {q.documentLink ? (
-                                <a
-                                  href={q.documentLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
-                                >
+                                <a href={q.documentLink} target="_blank" rel="noopener noreferrer" className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline">
                                   Có
                                 </a>
                               ) : (
-                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
-                                  Chưa có
-                                </span>
+                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">Chưa có</span>
                               )}
                             </TableCell>
                             <TableCell>
                               {q.videoLink ? (
-                                <a
-                                  href={q.videoLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline"
-                                >
+                                <a href={q.videoLink} target="_blank" rel="noopener noreferrer" className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 hover:underline">
                                   Có
                                 </a>
                               ) : (
-                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">
-                                  Chưa có
-                                </span>
+                                <span className="inline-block rounded-md bg-pink-100 px-2 py-1 text-xs font-medium text-pink-700 select-none">Chưa có</span>
                               )}
                             </TableCell>
                             <TableCell>{q.uploadDate}</TableCell>
                             <TableCell className="text-right flex flex-wrap justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                aria-label={`Chỉnh sửa câu hỏi ${q.id}`}
-                                onClick={() => handleEditQuestion(part.id, index)}
-                              >
+                              <Button variant="ghost" size="icon" aria-label={`Chỉnh sửa câu hỏi ${q.id}`} onClick={() => handleEditQuestion(part.id, idx)}>
                                 <Pencil className="h-4 w-4" />
                               </Button>
+
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -378,19 +282,13 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                                 title="Ẩn câu hỏi"
                                 className="text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
                                 onClick={() => {
-                                  // Placeholder for hide functionality
                                   toast.info('Chức năng ẩn câu hỏi tạm thời chưa triển khai chi tiết.');
                                 }}
                               >
                                 <Settings className="h-4 w-4" />
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-red-600 hover:bg-red-50"
-                                onClick={() => onDeleteQuestion(part.id, q.id)}
-                                aria-label={`Xóa câu hỏi ${q.id}`}
-                              >
+
+                              <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-50" onClick={() => onDeleteQuestion(part.id, q.id)}>
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </TableCell>
@@ -399,28 +297,17 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                       </TableBody>
                     </Table>
                   )}
+
                   <div className="flex flex-wrap gap-2 mt-4 px-2">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={handleAddMultipleChoice}>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => openAddMcq(part.id)}>
                       +TRẮC NGHIỆM
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      +TRẮC NGHIỆM ĐÚNG SAI
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      +ĐIỀN SỐ/TRẢ LỜI NGẮN
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      +KÉO THẢ
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      +TN NHIỀU ĐÁP ÁN
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      +ĐÚNG/SAI
-                    </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
-                      + Câu hỏi chùm
-                    </Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+TRẮC NGHIỆM ĐÚNG SAI</Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+ĐIỀN SỐ/TRẢ LỜI NGẮN</Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+KÉO THẢ</Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+TN NHIỀU ĐÁP ÁN</Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+ĐÚNG/SAI</Button>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">+ Câu hỏi chùm</Button>
                   </div>
                 </TabsContent>
               ))}
@@ -430,25 +317,20 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
       </Card>
 
       <AddMultipleChoiceQuestionModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        isOpen={isAddMcqOpen}
+        onClose={closeAddMcq}
         onSave={handleSaveQuestion}
-        questionNumber={editingQuestionIndex !== null ? editingQuestionIndex + 1 : parts.findIndex(p => p.id === editingPartId) + 1}
+        questionNumber={
+          editingQuestionIndex !== null
+            ? editingQuestionIndex + 1
+            : Math.max(0, parts.findIndex(p => p.id === editingPartId)) + 1
+        }
         {...(editingQuestion ? { ...editingQuestion } : {})}
       />
 
-      <GroupPartModal
-        isOpen={isGroupPartModalOpen}
-        onClose={() => setIsGroupPartModalOpen(false)}
-        onSave={handleSaveGroupParts}
-      />
+      <GroupPartModal isOpen={isGroupPartModalOpen} onClose={() => setIsGroupPartModalOpen(false)} onSave={handleSaveGroupParts} />
 
-      <ExamConfigModal
-        isOpen={isExamConfigOpen}
-        onClose={() => setIsExamConfigOpen(false)}
-        parts={parts}
-        onSave={handleSaveExamConfig}
-      />
+      <ExamConfigModal isOpen={isExamConfigOpen} onClose={() => setIsExamConfigOpen(false)} parts={parts} onSave={handleSaveExamConfig} />
     </>
   );
 };
