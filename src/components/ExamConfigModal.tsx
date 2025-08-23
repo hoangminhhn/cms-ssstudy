@@ -25,7 +25,6 @@ interface ExamConfig {
   totalTimeMinutes: number;
   perPartTimes: Record<string, number>;
   enableQuestionNumbering: boolean;
-  partNames?: Record<string, string>;
 }
 
 interface ExamConfigModalProps {
@@ -36,14 +35,12 @@ interface ExamConfigModalProps {
 }
 
 const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, parts, onSave }) => {
-  // initialize per-part points & times & names
+  // initialize per-part points & times
   const initialPerPartPoints: Record<string, number> = {};
   const initialPerPartTimes: Record<string, number> = {};
-  const initialPartNames: Record<string, string> = {};
   parts.forEach((p) => {
     initialPerPartPoints[p.id] = 0;
     initialPerPartTimes[p.id] = 30;
-    initialPartNames[p.id] = p.name;
   });
 
   const [perPartPoints, setPerPartPoints] = React.useState<Record<string, number>>(initialPerPartPoints);
@@ -51,22 +48,18 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [totalTimeMinutes, setTotalTimeMinutes] = React.useState<number>(60);
   const [perPartTimes, setPerPartTimes] = React.useState<Record<string, number>>(initialPerPartTimes);
   const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(true);
-  const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
 
   React.useEffect(() => {
     // Reset whenever modal opens to reflect current parts
     if (isOpen) {
       const freshPoints: Record<string, number> = {};
       const freshTimes: Record<string, number> = {};
-      const freshNames: Record<string, string> = {};
       parts.forEach((p) => {
         freshPoints[p.id] = perPartPoints[p.id] ?? 0;
         freshTimes[p.id] = perPartTimes[p.id] ?? 30;
-        freshNames[p.id] = partNames[p.id] ?? p.name;
       });
       setPerPartPoints(freshPoints);
       setPerPartTimes(freshTimes);
-      setPartNames(freshNames);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, parts]);
@@ -81,18 +74,13 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     setPerPartTimes((prev) => ({ ...prev, [partId]: num }));
   };
 
-  const handlePartNameChange = (partId: string, value: string) => {
-    setPartNames((prev) => ({ ...prev, [partId]: value }));
-  };
-
   const handleSave = () => {
-    const config: ExamConfig = {
+    const config = {
       perPartPoints,
       timeMode,
       totalTimeMinutes,
       perPartTimes,
       enableQuestionNumbering,
-      partNames,
     };
     if (onSave) onSave(config);
     console.log("Exam config saved:", config);
@@ -108,11 +96,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     return (
       <div key={p.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 py-3 border-b">
         <div className="min-w-0">
-          <Input
-            value={partNames[p.id] ?? p.name}
-            onChange={(e) => handlePartNameChange(p.id, e.target.value)}
-            className="font-medium text-base p-2 mb-1"
-          />
+          <div className="font-medium truncate">{p.name}</div>
           <div className="text-sm text-muted-foreground">Mã: {p.id}</div>
         </div>
 
@@ -209,7 +193,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {parts.map((p) => (
                       <div key={p.id}>
-                        <Label className="text-sm">{partNames[p.id] ?? p.name}</Label>
+                        <Label className="text-sm">{p.name}</Label>
                         <Input type="number" min={0} value={String(perPartTimes[p.id] ?? 30)} onChange={(e) => handlePerPartTimeChange(p.id, e.target.value)} className="w-full" />
                       </div>
                     ))}

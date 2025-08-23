@@ -1,5 +1,5 @@
 import React from 'react';
-import ExamPartQuestions, { ExamPart } from './ExamPartQuestions';
+import ExamPartQuestions from './ExamPartQuestions';
 
 interface Question {
   id: string;
@@ -10,14 +10,14 @@ interface Question {
   uploadDate: string;
 }
 
-interface ExamPartLocal {
+interface ExamPart {
   id: string;
   name: string;
   questions: Question[];
 }
 
 interface ManualWordExamQuestionsProps {
-  parts: ExamPartLocal[];
+  parts: ExamPart[];
   onDeleteAll: () => void;
   onDeleteQuestion: (partId: string, questionId: string) => void;
   onDeletePart: (partId: string) => void;
@@ -25,7 +25,6 @@ interface ManualWordExamQuestionsProps {
   onAddDefaultPart: () => void;
   onAddGroupPart: () => void;
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
-  onUpdateParts?: (updatedParts: ExamPart[]) => void; // forwarded prop
 }
 
 const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
@@ -37,7 +36,6 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
   onAddDefaultPart,
   onAddGroupPart,
   onAddOrUpdateQuestion,
-  onUpdateParts,
 }) => {
   return (
     <div>
@@ -49,8 +47,7 @@ const ManualWordExamQuestions: React.FC<ManualWordExamQuestionsProps> = ({
         renderPartHeader={renderPartHeader}
         onAddDefaultPart={onAddDefaultPart}
         onAddGroupPart={onAddGroupPart}
-        onAddOrUpdateQuestion={onAddOrUpdateQuestion}
-        onUpdateParts={onUpdateParts}
+        onAddOrUpdateQuestion={onAddOrUpdateQuestion} // Pass down
       />
     </div>
   );
