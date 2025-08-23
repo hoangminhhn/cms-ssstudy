@@ -63,7 +63,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [timeMode, setTimeMode] = React.useState<ExamConfig["timeMode"]>("total");
   const [totalTimeMinutes, setTotalTimeMinutes] = React.useState<number>(60);
   const [perPartTimes, setPerPartTimes] = React.useState<Record<string, number>>(initialPerPartTimes);
-  const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(false); // default off
+  const [enableQuestionNumbering, setEnableQuestionNumbering] = React.useState<boolean>(true);
   const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
 
   // numbering controls: mode + per-item starts for custom mode
@@ -100,9 +100,8 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       setPartNames(freshNames);
       setPerItemStart(freshStarts);
 
-      // sensible default for mode when opened
+      // sensible default
       setNumberingMode("sequential");
-      // keep enableQuestionNumbering as previously set (do not force)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, parts]);
@@ -264,9 +263,9 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-left">
-        <DialogHeader className="text-left">
-          <DialogTitle className="text-2xl font-bold text-left">Cấu hình đánh số câu hỏi</DialogTitle>
+      <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-semibold">Cấu hình đề thi</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -275,7 +274,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
               <CardTitle className="text-sm">Chia điểm theo từng phần thi</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-sm text-muted-foreground text-left">Nhập tổng điểm cho mỗi phần; hệ thống sẽ tính Điểm mỗi câu dựa trên số câu đã có.</div>
+              <div className="text-sm text-muted-foreground">Nhập tổng điểm cho mỗi phần; hệ thống sẽ tính Điểm mỗi câu dựa trên số câu đã có.</div>
               <div className="mt-2 divide-y">
                 {parts.map((p) => renderPartRow(p))}
               </div>
@@ -329,50 +328,39 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
           </Card>
 
           <Card>
-            <CardHeader className="flex items-center justify-between">
-              <div className="flex-1 flex flex-col items-start">
-                <CardTitle className="text-lg font-semibold m-0 p-0 text-left">Cấu hình đánh số</CardTitle>
-                <div className="text-sm text-muted-foreground">Bật để thiết lập cách đánh số câu hỏi</div>
-              </div>
-              <div className="flex items-center gap-2 ml-4">
-                <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
-              </div>
+            <CardHeader>
+              <CardTitle className="text-sm">Cấu hình đánh số câu hỏi</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Only show mode choices if switch is enabled */}
-              {enableQuestionNumbering ? (
-                <div>
-                  <div className="font-medium mb-2">Chế độ đánh số</div>
-                  <div className="flex items-center gap-4 mb-3">
-                    <label className={`px-3 py-2 rounded border ${numberingMode === "sequential" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
-                      <input
-                        type="radio"
-                        name="numberingMode"
-                        checked={numberingMode === "sequential"}
-                        onChange={() => setNumberingMode("sequential")}
-                        className="mr-2"
-                      />
-                      Đánh số tuần tự lặp lại
-                    </label>
+              <div>
+                <div className="font-medium mb-2">Chế độ đánh số</div>
+                <div className="flex items-center gap-4 mb-3">
+                  <label className={`px-3 py-2 rounded border ${numberingMode === "sequential" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
+                    <input
+                      type="radio"
+                      name="numberingMode"
+                      checked={numberingMode === "sequential"}
+                      onChange={() => setNumberingMode("sequential")}
+                      className="mr-2"
+                    />
+                    Đánh số tuần tự lặp lại
+                  </label>
 
-                    <label className={`px-3 py-2 rounded border ${numberingMode === "custom" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
-                      <input
-                        type="radio"
-                        name="numberingMode"
-                        checked={numberingMode === "custom"}
-                        onChange={() => setNumberingMode("custom")}
-                        className="mr-2"
-                      />
-                      Tùy chỉnh
-                    </label>
-                  </div>
-
-                  {/* Show per-item start inputs only for custom mode */}
-                  {numberingMode === "custom" && renderCustomNumberingPanel()}
+                  <label className={`px-3 py-2 rounded border ${numberingMode === "custom" ? "bg-orange-50 border-orange-300" : "bg-white dark:bg-gray-800"}`}>
+                    <input
+                      type="radio"
+                      name="numberingMode"
+                      checked={numberingMode === "custom"}
+                      onChange={() => setNumberingMode("custom")}
+                      className="mr-2"
+                    />
+                    Tùy chỉnh
+                  </label>
                 </div>
-              ) : (
-                <div className="text-sm text-muted-foreground">Tùy chọn đánh số đang tắt.</div>
-              )}
+
+                {/* Show per-item start inputs only for custom mode */}
+                {numberingMode === "custom" && renderCustomNumberingPanel()}
+              </div>
             </CardContent>
           </Card>
         </div>
