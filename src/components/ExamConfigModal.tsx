@@ -328,10 +328,13 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
           </Card>
 
           <Card>
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle className="text-sm">Cấu hình đánh số câu hỏi</CardTitle>
-              <div>
-                <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
+            {/* Use a simple flex container so title and switch stay on one line */}
+            <CardHeader className="items-center">
+              <div className="w-full flex items-center justify-between">
+                <div className="text-sm font-medium">Cấu hình đánh số câu hỏi</div>
+                <div>
+                  <Switch checked={enableQuestionNumbering} onCheckedChange={(v) => setEnableQuestionNumbering(!!v)} />
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
