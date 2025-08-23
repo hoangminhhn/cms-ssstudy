@@ -196,67 +196,95 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
     );
   };
 
+  // New custom layout: non-group parts displayed compact in a two-column grid,
+  // grouped parts rendered as full-width cards with group headings and a two-column grid of subject + input pairs.
   const renderCustomNumberingPanel = () => {
+    const nonGroupParts = parts.filter((p) => !p.subParts || p.subParts.length === 0);
+    const groupParts = parts.filter((p) => p.subParts && p.subParts.length > 0);
+
     return (
-      <div className="space-y-3">
-        <Label className="text-sm">Đặt số thứ tự bắt đầu cho từng phần</Label>
-
-        <div className="grid grid-cols-1 gap-3">
-          {parts.map((p) => (
-            <div key={p.id} className="border rounded-md p-3 bg-white dark:bg-gray-800">
-              <div className="flex items-center justify-between mb-3">
-                <div className="font-medium">{partNames[p.id] ?? p.name}</div>
-                {!((p as any).subParts && (p as any).subParts.length > 0) && (
-                  <div className="w-32">
-                    <Input
-                      value={String(perItemStart[p.id] ?? 1)}
-                      onChange={(e) => handlePerItemStartChange(p.id, e.target.value)}
-                      aria-label={`Số bắt đầu cho ${p.name}`}
-                    />
-                  </div>
-                )}
+      <div className="space-y-4">
+        {/* Compact grid for simple parts (Part 1, Part 2 ...) */}
+        {nonGroupParts.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {nonGroupParts.map((p) => (
+              <div key={p.id} className="border rounded-md p-3 bg-white dark:bg-gray-800 flex items-center justify-between">
+                <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
+                <div className="w-24">
+                  <Input
+                    value={String(perItemStart[p.id] ?? 1)}
+                    onChange={(e) => handlePerItemStartChange(p.id, e.target.value)}
+                    className="text-center"
+                    aria-label={`Số bắt đầu cho ${p.name}`}
+                  />
+                </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              {(p as any).subParts && Array.isArray((p as any).subParts) && (
-                <div className="space-y-3">
-                  {(p as any).subParts.map((sp: SubPart) => (
-                    <div key={sp.id} className="border rounded-md p-3 bg-gray-50 dark:bg-gray-900">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold text-sm">{sp.name}</div>
-                        {!(sp.subSubjects && sp.subSubjects.length > 0) && (
+        {/* Full blocks for group parts */}
+        {groupParts.map((p) => (
+          <div key={p.id} className="border rounded-md bg-white dark:bg-gray-800 overflow-hidden">
+            <div className="p-3 border-b bg-gray-50 dark:bg-gray-900">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-medium">{partNames[p.id] ?? p.name}</div>
+                <div className="text-sm text-muted-foreground"> </div>
+              </div>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {(p.subParts || []).map((group) => (
+                <div key={group.id} className="space-y-3">
+                  {/* group header */}
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{group.name}</div>
+
+                  {/* subjects in two columns */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {group.subSubjects && group.subSubjects.length > 0 ? (
+                      group.subSubjects.map((ss) => (
+                        <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                          <div className="text-sm">{ss.name}</div>
                           <div className="w-28">
                             <Input
-                              value={String(perItemStart[sp.id] ?? 1)}
-                              onChange={(e) => handlePerItemStartChange(sp.id, e.target.value)}
-                              aria-label={`Số bắt đầu cho ${sp.name}`}
+                              value={String(perItemStart[ss.id] ?? 1)}
+                              onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                              className="text-center"
+                              aria-label={`Số bắt đầu cho ${ss.name}`}
                             />
                           </div>
-                        )}
-                      </div>
-
-                      {sp.subSubjects && sp.subSubjects.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                          {sp.subSubjects.map((ss) => (
-                            <div key={ss.id} className="flex items-center justify-between gap-3">
-                              <div className="text-sm">{ss.name}</div>
-                              <div className="w-28">
-                                <Input
-                                  value={String(perItemStart[ss.id] ?? 1)}
-                                  onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
-                                  aria-label={`Số bắt đầu cho ${ss.name}`}
-                                />
-                              </div>
-                            </div>
-                          ))}
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">Chưa có môn học</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {/* separator and any top-level subSubjects directly under the part (if present) */}
+              {(p as any).subSubjects && Array.isArray((p as any).subSubjects) && (p as any).subSubjects.length > 0 && (
+                <div>
+                  <div className="border-t mt-4 pt-4 text-sm font-medium text-gray-700 dark:text-gray-300">Khác</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    {(p as any).subSubjects.map((ss: SubSubject) => (
+                      <div key={ss.id} className="flex items-center justify-between border rounded-md p-3 bg-white dark:bg-gray-800">
+                        <div className="text-sm">{ss.name}</div>
+                        <div className="w-28">
+                          <Input
+                            value={String(perItemStart[ss.id] ?? 1)}
+                            onChange={(e) => handlePerItemStartChange(ss.id, e.target.value)}
+                            className="text-center"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -366,7 +394,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                     </label>
                   </div>
 
-                  {/* Show per-item start inputs only for custom mode */}
+                  {/* Show the redesigned custom panel only for custom mode */}
                   {numberingMode === "custom" && renderCustomNumberingPanel()}
                 </div>
               ) : (
