@@ -440,7 +440,7 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                   {numberingMode === "custom" && renderCustomNumberingPanel()}
                 </div>
               ) : (
-                <div className="text-sm text-muted-foreground">Tắt: hệ thống sẽ không đánh số câu hỏi tự động.</div>
+                <div className="text-sm text-muted-foreground">Chỉ nên sử dụng khi tạo đề thủ công</div>
               )}
             </CardContent>
           </Card>
