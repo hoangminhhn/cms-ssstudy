@@ -9,6 +9,7 @@ import BookManagement from "./pages/BookManagement";
 import ExamManagement from "./pages/ExamManagement";
 import WordExamUploadPage from "./pages/WordExamUploadPage";
 import ScoreReportPage from "./pages/ScoreReportPage";
+import CourseManagement from "./pages/CourseManagement";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/exams" element={<ExamManagement />} />
           <Route path="/word-exam-upload" element={<WordExamUploadPage />} />
           <Route path="/score-reports/:examId" element={<ScoreReportPage />} />
+          <Route path="/courses" element={<CourseManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
