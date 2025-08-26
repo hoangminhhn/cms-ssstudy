@@ -490,7 +490,8 @@ const AddClass: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            <div className="md:col-span-2">
+            {/* Make the three radio cols compact (col-span-1 each) */}
+            <div className="md:col-span-1">
               <Label className="text-xs">HÌNH THỨC HỌC</Label>
               <RadioGroup value={studyMode} onValueChange={(val) => setStudyMode(val as "Offline" | "Online")} className="flex flex-col space-y-2 mt-1">
                 <div className="flex items-center gap-3">
@@ -504,7 +505,7 @@ const AddClass: React.FC = () => {
               </RadioGroup>
             </div>
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-1">
               <Label className="text-xs">LOẠI CA</Label>
               <RadioGroup value={shiftType} onValueChange={(val) => setShiftType(val as "Ca đơn" | "Ca đúp")} className="flex flex-col space-y-2 mt-1">
                 <div className="flex items-center gap-3">
@@ -518,7 +519,7 @@ const AddClass: React.FC = () => {
               </RadioGroup>
             </div>
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-1">
               <Label className="text-xs">TỰ ĐỘNG TRỪ BUỔI</Label>
               <RadioGroup value={autoDeduct} onValueChange={(val) => setAutoDeduct(val as "Tự động" | "Thủ công")} className="flex flex-col space-y-2 mt-1">
                 <div className="flex items-center gap-3">
@@ -532,6 +533,7 @@ const AddClass: React.FC = () => {
               </RadioGroup>
             </div>
 
+            {/* Social links */}
             <div className="md:col-span-2">
               <Label className="text-xs">LINK FACEBOOK PAGE</Label>
               <Input value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." className="mt-1" />
@@ -542,7 +544,8 @@ const AddClass: React.FC = () => {
               <Input value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." className="mt-1" />
             </div>
 
-            <div className="md:col-span-1">
+            {/* Make intro video wider by giving it more columns */}
+            <div className="md:col-span-3">
               <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
               <Input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="Link video..." className="mt-1" />
             </div>
