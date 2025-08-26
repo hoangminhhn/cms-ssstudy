@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import BookSubMenu from './BookSubMenu';
 import ExamSubMenu from './ExamSubMenu';
-import WordExamSubMenu from './WordExamSubMenu'; // Import the new submenu
+import WordExamSubMenu from './WordExamSubMenu';
+import CourseSubMenu from './CourseSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -62,10 +63,11 @@ const Sidebar: React.FC = () => {
       setOpenSubMenu('books');
     } else if (location.pathname.startsWith('/exams')) {
       setOpenSubMenu('exams');
-    } else if (location.pathname.startsWith('/word-exam-upload')) { // Handle new parent menu
+    } else if (location.pathname.startsWith('/word-exam-upload')) {
       setOpenSubMenu('word-exams');
-    }
-    else {
+    } else if (location.pathname.startsWith('/courses')) {
+      setOpenSubMenu('courses');
+    } else {
       setOpenSubMenu(null);
     }
   }, [location.pathname]);
@@ -122,9 +124,20 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'word-exams' && <WordExamSubMenu />}
 
+            {/* Courses parent with submenu */}
+            <NavItem
+              icon={GraduationCap}
+              label="Khóa học"
+              onClick={() => handleParentClick('courses')}
+              isActive={location.pathname.startsWith('/courses')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'courses'}
+            />
+            {openSubMenu === 'courses' && <CourseSubMenu />}
+
             <NavItem icon={File} label="Bài học" to="/lessons" isActive={location.pathname === '/lessons'} />
             <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" isActive={location.pathname === '/quizzes'} />
-            <NavItem icon={GraduationCap} label="Khóa học" to="/courses" isActive={location.pathname === '/courses'} />
+            <NavItem icon={File} label="Khóa học" to="/courses" isActive={location.pathname === '/courses'} className="" />
             <NavItem icon={File} label="Tài liệu" to="/documents" isActive={location.pathname === '/documents'} />
             <NavItem icon={Users} label="Thành viên" to="/members" isActive={location.pathname === '/members'} />
             <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" isActive={location.pathname === '/orders'} />
