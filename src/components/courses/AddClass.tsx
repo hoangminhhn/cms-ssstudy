@@ -35,6 +35,14 @@ const AddClass: React.FC = () => {
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
 
+  // Học phí
+  const [feePerDay, setFeePerDay] = useState<string>("");
+  const [fee1Month, setFee1Month] = useState<string>("");
+  const [fee3Months, setFee3Months] = useState<string>("");
+  const [fee6Months, setFee6Months] = useState<string>("");
+  const [fee12Months, setFee12Months] = useState<string>("");
+  const [expandedStudents, setExpandedStudents] = useState<number>(0);
+
   useEffect(() => {
     const p = Number(price || 0);
     const pp = Number(promoPrice || 0);
@@ -60,7 +68,7 @@ const AddClass: React.FC = () => {
 
   const handleSave = () => {
     // For now just show a toast confirmation
-    toast.success("Đã lưu thông tin chung lớp.");
+    toast.success("Đã lưu thông tin lớp.");
     console.log({
       code,
       name,
@@ -79,6 +87,12 @@ const AddClass: React.FC = () => {
       promoFrom,
       promoTo,
       promoQuantity,
+      feePerDay,
+      fee1Month,
+      fee3Months,
+      fee6Months,
+      fee12Months,
+      expandedStudents,
     });
   };
 
@@ -104,6 +118,14 @@ const AddClass: React.FC = () => {
     setPromoTo("");
     setPromoQuantity(0);
     setPromoTimeMode("specific");
+
+    // Reset fees
+    setFeePerDay("");
+    setFee1Month("");
+    setFee3Months("");
+    setFee6Months("");
+    setFee12Months("");
+    setExpandedStudents(0);
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -348,6 +370,83 @@ const AddClass: React.FC = () => {
                 value={String(promoQuantity)}
                 onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
                 className="mt-1"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Học phí */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Học phí</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <div className="col-span-1">
+              <Label className="text-xs">THEO NGÀY</Label>
+              <Input
+                type="number"
+                placeholder=""
+                value={feePerDay}
+                onChange={(e) => setFeePerDay(e.target.value)}
+                className="mt-1"
+                aria-label="Học phí theo ngày"
+              />
+            </div>
+            <div className="col-span-1">
+              <Label className="text-xs">1 NGÀY/1 THÁNG</Label>
+              <Input
+                type="number"
+                placeholder=""
+                value={fee1Month}
+                onChange={(e) => setFee1Month(e.target.value)}
+                className="mt-1"
+                aria-label="Học phí 1 ngày/1 tháng"
+              />
+            </div>
+            <div className="col-span-1">
+              <Label className="text-xs">1 NGÀY/3 THÁNG</Label>
+              <Input
+                type="number"
+                placeholder=""
+                value={fee3Months}
+                onChange={(e) => setFee3Months(e.target.value)}
+                className="mt-1"
+                aria-label="Học phí 1 ngày/3 tháng"
+              />
+            </div>
+            <div className="col-span-1">
+              <Label className="text-xs">1 NGÀY/6 THÁNG</Label>
+              <Input
+                type="number"
+                placeholder=""
+                value={fee6Months}
+                onChange={(e) => setFee6Months(e.target.value)}
+                className="mt-1"
+                aria-label="Học phí 1 ngày/6 tháng"
+              />
+            </div>
+            <div className="col-span-1">
+              <Label className="text-xs">1 NGÀY/12 THÁNG</Label>
+              <Input
+                type="number"
+                placeholder=""
+                value={fee12Months}
+                onChange={(e) => setFee12Months(e.target.value)}
+                className="mt-1"
+                aria-label="Học phí 1 ngày/12 tháng"
+              />
+            </div>
+            <div className="col-span-1">
+              <Label className="text-xs">SỐ HỌC SINH (MỞ RỘNG)</Label>
+              <Input
+                type="number"
+                placeholder="0"
+                value={String(expandedStudents)}
+                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
+                className="mt-1"
+                aria-label="Số học sinh mở rộng"
               />
             </div>
           </div>
