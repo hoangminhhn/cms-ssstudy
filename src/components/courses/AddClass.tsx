@@ -551,47 +551,47 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New four feature panels placed under 'Thông tin khác' */}
+      {/* New four feature panels placed under 'Thông tin khác' - buttons placed next to titles */}
       <div className="space-y-4">
         <Card>
-          <CardContent className="flex items-center justify-between py-6 px-6">
-            <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
-            <div>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
-                THÊM SÁCH <span className="ml-2 font-bold">+</span>
+          <CardContent className="py-4 px-6">
+            <div className="flex items-center gap-3">
+              <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                THÊM SÁCH
               </Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="flex items-center justify-between py-6 px-6">
-            <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
-            <div>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
-                THÊM SÁCH <span className="ml-2 font-bold">+</span>
+          <CardContent className="py-4 px-6">
+            <div className="flex items-center gap-3">
+              <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                THÊM SÁCH
               </Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="flex items-center justify-between py-6 px-6">
-            <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
-            <div>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
-                THÊM KHÓA HỌC <span className="ml-2 font-bold">+</span>
+          <CardContent className="py-4 px-6">
+            <div className="flex items-center gap-3">
+              <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                THÊM KHÓA HỌC
               </Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="flex items-center justify-between py-6 px-6">
-            <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
-            <div>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
-                THÊM KHÓA HỌC <span className="ml-2 font-bold">+</span>
+          <CardContent className="py-4 px-6">
+            <div className="flex items-center gap-3">
+              <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                THÊM KHÓA HỌC
               </Button>
             </div>
           </CardContent>
