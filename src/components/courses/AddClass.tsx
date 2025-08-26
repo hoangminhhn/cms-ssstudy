@@ -80,15 +80,16 @@ const AddClass: React.FC = () => {
           <CardTitle>Thông tin chung</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            {/* Column 1 - Image upload */}
+          {/* Use 4 cols at md so image is narrower (1/4) and fields take 3/4 */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+            {/* Column 1 - Image upload (1/4 width on md+) */}
             <div className="col-span-1">
               <div className="border-2 border-dashed border-orange-300 rounded-md p-6 h-full flex flex-col items-center justify-center">
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="max-h-48 object-contain rounded" />
+                  <img src={imagePreview} alt="Preview" className="max-h-44 object-contain rounded" />
                 ) : (
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-48 h-32 border border-dashed border-orange-200 rounded flex items-center justify-center text-orange-400">
+                    <div className="w-40 h-28 border border-dashed border-orange-200 rounded flex items-center justify-center text-orange-400">
                       <span>Ảnh lớp</span>
                     </div>
                     <Button variant="outline" onClick={onPickImage} className="bg-white text-orange-600 border-orange-300 hover:bg-orange-50">
@@ -107,8 +108,8 @@ const AddClass: React.FC = () => {
               </div>
             </div>
 
-            {/* Column 2 - Fields */}
-            <div className="col-span-2">
+            {/* Column 2 - Fields (3/4 width on md+) */}
+            <div className="col-span-1 md:col-span-3">
               <div className="space-y-4">
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
