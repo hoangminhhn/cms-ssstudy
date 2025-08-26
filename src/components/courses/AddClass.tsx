@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import FeatureListEditor from "./FeatureListEditor";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -224,9 +225,8 @@ const AddClass: React.FC = () => {
       ["bold", "italic", "underline", "strike"],
       [{ script: "sub" }, { script: "super" }],
       [{ color: [] }, { background: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
       [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
       ["blockquote", "code-block"],
       ["link", "image", "video"],
       ["clean"],
@@ -805,6 +805,9 @@ const AddClass: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Feature List Editor (Option B) */}
+      <FeatureListEditor />
 
       {/* Short description panel (Mô tả ngắn) */}
       <Card>
