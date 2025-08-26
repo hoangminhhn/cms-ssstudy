@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -42,6 +44,16 @@ const AddClass: React.FC = () => {
   const [fee6Months, setFee6Months] = useState<string>("");
   const [fee12Months, setFee12Months] = useState<string>("");
   const [expandedStudents, setExpandedStudents] = useState<number>(0);
+
+  // Thông tin khác
+  const [studyMode, setStudyMode] = useState<"Offline" | "Online">("Offline");
+  const [shiftType, setShiftType] = useState<"Ca đơn" | "Ca đúp">("Ca đơn");
+  const [autoDeduct, setAutoDeduct] = useState<"Tự động" | "Thủ công">("Thủ công");
+  const [fbPage, setFbPage] = useState<string>("");
+  const [fbGroup, setFbGroup] = useState<string>("");
+  const [introVideo, setIntroVideo] = useState<string>("");
+  const [order, setOrder] = useState<number>(0);
+  const [note, setNote] = useState<string>("");
 
   useEffect(() => {
     const p = Number(price || 0);
@@ -93,6 +105,14 @@ const AddClass: React.FC = () => {
       fee6Months,
       fee12Months,
       expandedStudents,
+      studyMode,
+      shiftType,
+      autoDeduct,
+      fbPage,
+      fbGroup,
+      introVideo,
+      order,
+      note,
     });
   };
 
@@ -126,6 +146,16 @@ const AddClass: React.FC = () => {
     setFee6Months("");
     setFee12Months("");
     setExpandedStudents(0);
+
+    // Reset other info
+    setStudyMode("Offline");
+    setShiftType("Ca đơn");
+    setAutoDeduct("Thủ công");
+    setFbPage("");
+    setFbGroup("");
+    setIntroVideo("");
+    setOrder(0);
+    setNote("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -448,6 +478,83 @@ const AddClass: React.FC = () => {
                 className="mt-1"
                 aria-label="Số học sinh mở rộng"
               />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Thông tin khác */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-orange-600">Thông tin khác</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <div className="md:col-span-2">
+              <Label className="text-xs">HÌNH THỨC HỌC</Label>
+              <RadioGroup value={studyMode} onValueChange={(val) => setStudyMode(val as "Offline" | "Online")} className="flex flex-col space-y-2 mt-1">
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Offline" id="study-offline" />
+                  <Label htmlFor="study-offline" className="cursor-pointer">Offline</Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Online" id="study-online" />
+                  <Label htmlFor="study-online" className="cursor-pointer">Online</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="text-xs">LOẠI CA</Label>
+              <RadioGroup value={shiftType} onValueChange={(val) => setShiftType(val as "Ca đơn" | "Ca đúp")} className="flex flex-col space-y-2 mt-1">
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Ca đơn" id="shift-single" />
+                  <Label htmlFor="shift-single" className="cursor-pointer">Ca đơn</Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Ca đúp" id="shift-double" />
+                  <Label htmlFor="shift-double" className="cursor-pointer">Ca đúp</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="text-xs">TỰ ĐỘNG TRỪ BUỔI</Label>
+              <RadioGroup value={autoDeduct} onValueChange={(val) => setAutoDeduct(val as "Tự động" | "Thủ công")} className="flex flex-col space-y-2 mt-1">
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Tự động" id="deduct-auto" />
+                  <Label htmlFor="deduct-auto" className="cursor-pointer">Tự động</Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="Thủ công" id="deduct-manual" />
+                  <Label htmlFor="deduct-manual" className="cursor-pointer">Thủ công</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="text-xs">LINK FACEBOOK PAGE</Label>
+              <Input value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." className="mt-1" />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="text-xs">LINK FACEBOOK GROUP</Label>
+              <Input value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." className="mt-1" />
+            </div>
+
+            <div className="md:col-span-1">
+              <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
+              <Input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="Link video..." className="mt-1" />
+            </div>
+
+            <div className="md:col-span-1">
+              <Label className="text-xs">THỨ TỰ</Label>
+              <Input type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} className="mt-1" />
+            </div>
+
+            <div className="md:col-span-12">
+              <Label className="text-xs">GHI CHÚ</Label>
+              <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nhập nội dung ghi chú" className="mt-1 min-h-[80px]" />
             </div>
           </div>
         </CardContent>
