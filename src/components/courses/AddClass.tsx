@@ -116,6 +116,7 @@ const AddClass: React.FC = () => {
       order,
       note,
       shortDescription,
+      fullContent,
     });
   };
 
@@ -160,6 +161,7 @@ const AddClass: React.FC = () => {
     setOrder(0);
     setNote("");
     setShortDescription("");
+    setFullContent("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -213,18 +215,18 @@ const AddClass: React.FC = () => {
 
   // -- End chapters feature --
 
-  // -- New: Short description editor state and toolbar config --
+  // -- Short description editor state and toolbar config --
   const [shortDescription, setShortDescription] = useState<string>("");
 
   const quillModules = {
     toolbar: [
-      [{ undo: "redo" }], // placeholder, custom undo/redo not wired but keep toolbar look
       [{ font: [] }, { size: [] }],
       ["bold", "italic", "underline", "strike"],
       [{ script: "sub" }, { script: "super" }],
       [{ color: [] }, { background: [] }],
-      [{ align: [] }],
       [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ align: [] }],
       ["blockquote", "code-block"],
       ["link", "image", "video"],
       ["clean"],
@@ -241,9 +243,10 @@ const AddClass: React.FC = () => {
     "script",
     "color",
     "background",
-    "align",
     "list",
     "bullet",
+    "indent",
+    "align",
     "blockquote",
     "code-block",
     "link",
@@ -251,6 +254,35 @@ const AddClass: React.FC = () => {
     "video",
   ];
   // -- End short description config --
+
+  // -- Full content (Nội dung) editor state and toolbar (more complete) --
+  const [fullContent, setFullContent] = useState<string>("");
+
+  const contentModules = {
+    toolbar: [
+      [{ 'font': [] }, { 'size': [] }],
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'underline', 'italic', 'strike'],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      ['blockquote', 'code-block', 'formula'],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  };
+
+  const contentFormats = [
+    'font', 'size', 'header',
+    'bold', 'italic', 'underline', 'strike',
+    'script', 'color', 'background',
+    'align', 'list', 'bullet', 'indent',
+    'blockquote', 'code-block', 'formula',
+    'link', 'image', 'video'
+  ];
+  // -- End content config --
 
   return (
     <div className="space-y-6">
@@ -791,6 +823,26 @@ const AddClass: React.FC = () => {
             />
           </div>
           <div className="text-sm text-muted-foreground mt-2">Mô tả ngắn sẽ hiển thị ở trang khóa học và giúp học viên nắm nhanh nội dung.</div>
+        </CardContent>
+      </Card>
+
+      {/* New: Full content panel (Nội dung) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-orange-600">Nội dung</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="border rounded-md overflow-hidden">
+            <ReactQuill
+              value={fullContent}
+              onChange={setFullContent}
+              modules={contentModules}
+              formats={contentFormats}
+              placeholder="Nhập nội dung chi tiết khóa học..."
+              className="min-h-[420px] bg-white text-sm"
+            />
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
         </CardContent>
       </Card>
 
