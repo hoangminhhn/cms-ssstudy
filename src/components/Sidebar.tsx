@@ -137,7 +137,6 @@ const Sidebar: React.FC = () => {
 
             <NavItem icon={File} label="Bài học" to="/lessons" isActive={location.pathname === '/lessons'} />
             <NavItem icon={File} label="Bài kiểm tra" to="/quizzes" isActive={location.pathname === '/quizzes'} />
-            <NavItem icon={File} label="Khóa học" to="/courses" isActive={location.pathname === '/courses'} className="" />
             <NavItem icon={File} label="Tài liệu" to="/documents" isActive={location.pathname === '/documents'} />
             <NavItem icon={Users} label="Thành viên" to="/members" isActive={location.pathname === '/members'} />
             <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" isActive={location.pathname === '/orders'} />
