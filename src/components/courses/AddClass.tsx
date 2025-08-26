@@ -38,6 +38,7 @@ const AddClass: React.FC = () => {
   };
 
   const handleSave = () => {
+    // For now just show a toast confirmation
     toast.success("Đã lưu thông tin chung lớp.");
     console.log({
       code,
@@ -55,6 +56,7 @@ const AddClass: React.FC = () => {
   };
 
   const handleCancel = () => {
+    // Reset form
     setCode("");
     setName("");
     setStartDate("");
@@ -78,20 +80,20 @@ const AddClass: React.FC = () => {
           <CardTitle>Thông tin chung</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Use 6 cols at md so image is very narrow (1/6) and fields take 5/6 */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 items-start">
-            {/* Column 1 - Image upload (narrow: 1/6 on md+) */}
-            <div className="col-span-1 flex justify-center">
-              <div className="border-2 border-dashed border-orange-300 rounded-md p-4 w-28 h-28 flex flex-col items-center justify-center">
+          {/* Use 4 cols at md so image is narrower (1/4) and fields take 3/4 */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+            {/* Column 1 - Image upload (1/4 width on md+) */}
+            <div className="col-span-1">
+              <div className="border-2 border-dashed border-orange-300 rounded-md p-6 h-full flex flex-col items-center justify-center">
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="max-h-20 max-w-20 object-contain rounded" />
+                  <img src={imagePreview} alt="Preview" className="max-h-44 object-contain rounded" />
                 ) : (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-20 h-14 border border-dashed border-orange-200 rounded flex items-center justify-center text-orange-400 text-xs">
-                      Ảnh
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-40 h-28 border border-dashed border-orange-200 rounded flex items-center justify-center text-orange-400">
+                      <span>Ảnh lớp</span>
                     </div>
-                    <Button variant="outline" onClick={onPickImage} className="px-2 py-1 text-xs bg-white text-orange-600 border-orange-300 hover:bg-orange-50">
-                      Thêm
+                    <Button variant="outline" onClick={onPickImage} className="bg-white text-orange-600 border-orange-300 hover:bg-orange-50">
+                      Thêm hình
                     </Button>
                   </div>
                 )}
@@ -106,8 +108,8 @@ const AddClass: React.FC = () => {
               </div>
             </div>
 
-            {/* Column 2 - Fields (wide: 5/6 on md+) */}
-            <div className="col-span-1 md:col-span-5">
+            {/* Column 2 - Fields (3/4 width on md+) */}
+            <div className="col-span-1 md:col-span-3">
               <div className="space-y-4">
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
