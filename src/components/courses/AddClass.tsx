@@ -168,9 +168,7 @@ const AddClass: React.FC = () => {
           <CardTitle>Thông tin chung</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Use 4 cols at md so image is narrower (1/4) and fields take 3/4 */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-            {/* Column 1 - Image upload (1/4 width on md+) */}
             <div className="col-span-1">
               <div className="border-2 border-dashed border-orange-300 rounded-md p-6 h-full flex flex-col items-center justify-center">
                 {imagePreview ? (
@@ -196,10 +194,8 @@ const AddClass: React.FC = () => {
               </div>
             </div>
 
-            {/* Column 2 - Fields (3/4 width on md+) */}
             <div className="col-span-1 md:col-span-3">
               <div className="space-y-4">
-                {/* Row 1 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
                   <div className="lg:col-span-2">
                     <Label htmlFor="code">Mã khóa học</Label>
@@ -238,7 +234,6 @@ const AddClass: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Row 2 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
                   <div className="lg:col-span-2">
                     <Label htmlFor="classification">Phân loại</Label>
@@ -320,7 +315,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Giá và khuyến mãi */}
       <Card>
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
@@ -373,7 +367,6 @@ const AddClass: React.FC = () => {
               </Select>
             </div>
 
-            {/* Date range inputs: show only when specific */}
             {promoTimeMode === "specific" && (
               <>
                 <div className="md:col-span-2">
@@ -406,7 +399,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Học phí */}
       <Card>
         <CardHeader>
           <CardTitle>Học phí</CardTitle>
@@ -483,14 +475,12 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Thông tin khác */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Thông tin khác</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            {/* Make the three radio cols compact (col-span-1 each) */}
             <div className="md:col-span-1">
               <Label className="text-xs">HÌNH THỨC HỌC</Label>
               <RadioGroup value={studyMode} onValueChange={(val) => setStudyMode(val as "Offline" | "Online")} className="flex flex-col space-y-2 mt-1">
@@ -533,7 +523,6 @@ const AddClass: React.FC = () => {
               </RadioGroup>
             </div>
 
-            {/* Social links */}
             <div className="md:col-span-2">
               <Label className="text-xs">LINK FACEBOOK PAGE</Label>
               <Input value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." className="mt-1" />
@@ -544,7 +533,6 @@ const AddClass: React.FC = () => {
               <Input value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." className="mt-1" />
             </div>
 
-            {/* Make intro video wider by giving it more columns */}
             <div className="md:col-span-3">
               <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
               <Input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="Link video..." className="mt-1" />
@@ -562,6 +550,53 @@ const AddClass: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* New four feature panels placed under 'Thông tin khác' */}
+      <div className="space-y-4">
+        <Card>
+          <CardContent className="flex items-center justify-between py-6 px-6">
+            <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
+            <div>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
+                THÊM SÁCH <span className="ml-2 font-bold">+</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center justify-between py-6 px-6">
+            <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
+            <div>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
+                THÊM SÁCH <span className="ml-2 font-bold">+</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center justify-between py-6 px-6">
+            <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
+            <div>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
+                THÊM KHÓA HỌC <span className="ml-2 font-bold">+</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center justify-between py-6 px-6">
+            <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
+            <div>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 text-sm">
+                THÊM KHÓA HỌC <span className="ml-2 font-bold">+</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Footer buttons placed outside the Card */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
