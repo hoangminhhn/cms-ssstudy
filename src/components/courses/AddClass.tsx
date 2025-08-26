@@ -161,6 +161,54 @@ const AddClass: React.FC = () => {
     toast.info("Đã hủy thay đổi.");
   };
 
+  // -- New: Chapters feature states and helpers --
+  const allChaptersMock = [
+    { id: "c1", title: "Giới thiệu khóa học" },
+    { id: "c2", title: "Chương 1: Cơ bản" },
+    { id: "c3", title: "Chương 2: Trung cấp" },
+    { id: "c4", title: "Chương 3: Nâng cao" },
+    { id: "c5", title: "Tài liệu tham khảo" },
+    { id: "c6", title: "Bài tập & Đáp án" },
+    { id: "c7", title: "Phần mở rộng" },
+  ];
+
+  const [allChapters] = useState(allChaptersMock);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredChapters, setFilteredChapters] = useState(allChapters);
+  const [selectedChapters, setSelectedChapters] = useState<typeof allChaptersMock>([]);
+
+  useEffect(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) {
+      setFilteredChapters(allChapters);
+    } else {
+      setFilteredChapters(
+        allChapters.filter((ch) => ch.title.toLowerCase().includes(q))
+      );
+    }
+  }, [searchTerm, allChapters]);
+
+  const handleAddChapter = (chapter: { id: string; title: string }) => {
+    if (selectedChapters.find((c) => c.id === chapter.id)) {
+      toast.info("Chương đã có trong danh sách.");
+      return;
+    }
+    setSelectedChapters((prev) => [...prev, chapter]);
+    toast.success(`Đã thêm: ${chapter.title}`);
+  };
+
+  const handleRemoveChapter = (chapterId: string) => {
+    setSelectedChapters((prev) => prev.filter((c) => c.id !== chapterId));
+    toast.success("Đã xóa chương.");
+  };
+
+  const handleSearchClick = () => {
+    // filtering happens automatically via useEffect; keep handler for potential analytics
+    toast.success("Đã lọc chương.");
+  };
+
+  // -- End chapters feature --
+
   return (
     <div className="space-y-6">
       <Card>
@@ -551,7 +599,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New four feature panels placed under 'Thông tin khác' - buttons placed next to titles */}
+      {/* Feature panels */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -597,6 +645,91 @@ const AddClass: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* New: Chapters two-column panel (no separate title) */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left column: selected chapters */}
+            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
+                <div className="text-sm text-muted-foreground">{selectedChapters.length} chương</div>
+              </div>
+
+              {selectedChapters.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  Chưa có chương nào. Hãy thêm từ bên phải.
+                </div>
+              ) : (
+                <ul className="space-y-2">
+                  {selectedChapters.map((ch) => (
+                    <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
+                      <div className="text-sm font-medium">{ch.title}</div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={() => handleRemoveChapter(ch.id)}
+                          aria-label={`Xóa ${ch.title}`}
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Right column: all chapters with search */}
+            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Tìm chương..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-64"
+                    aria-label="Tìm chương"
+                  />
+                  <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSearchClick}>
+                    Tìm kiếm
+                  </Button>
+                </div>
+              </div>
+
+              {filteredChapters.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">Không tìm thấy chương.</div>
+              ) : (
+                <ul className="space-y-2">
+                  {filteredChapters.map((ch) => {
+                    const already = selectedChapters.some((s) => s.id === ch.id);
+                    return (
+                      <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
+                        <div className="text-sm">{ch.title}</div>
+                        <div>
+                          <Button
+                            size="sm"
+                            className={`px-3 py-1 ${already ? "bg-gray-200 text-gray-600" : "bg-green-500 hover:bg-green-600 text-white"}`}
+                            onClick={() => handleAddChapter(ch)}
+                            disabled={already}
+                            aria-label={`Thêm ${ch.title}`}
+                          >
+                            {already ? "Đã thêm" : "Thêm"}
+                          </Button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Footer buttons placed outside the Card */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
