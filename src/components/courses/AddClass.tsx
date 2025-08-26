@@ -9,6 +9,8 @@ import { Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -113,6 +115,7 @@ const AddClass: React.FC = () => {
       introVideo,
       order,
       note,
+      shortDescription,
     });
   };
 
@@ -156,6 +159,7 @@ const AddClass: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
+    setShortDescription("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -208,6 +212,45 @@ const AddClass: React.FC = () => {
   };
 
   // -- End chapters feature --
+
+  // -- New: Short description editor state and toolbar config --
+  const [shortDescription, setShortDescription] = useState<string>("");
+
+  const quillModules = {
+    toolbar: [
+      [{ undo: "redo" }], // placeholder, custom undo/redo not wired but keep toolbar look
+      [{ font: [] }, { size: [] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ script: "sub" }, { script: "super" }],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "code-block"],
+      ["link", "image", "video"],
+      ["clean"],
+    ],
+  };
+
+  const quillFormats = [
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "script",
+    "color",
+    "background",
+    "align",
+    "list",
+    "bullet",
+    "blockquote",
+    "code-block",
+    "link",
+    "image",
+    "video",
+  ];
+  // -- End short description config --
 
   return (
     <div className="space-y-6">
@@ -646,7 +689,7 @@ const AddClass: React.FC = () => {
         </Card>
       </div>
 
-      {/* New: Chapters two-column panel (no separate title) */}
+      {/* Chapters two-column panel (no separate title) */}
       <Card>
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -728,6 +771,26 @@ const AddClass: React.FC = () => {
               )}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Short description panel (Mô tả ngắn) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="border rounded-md overflow-hidden">
+            <ReactQuill
+              value={shortDescription}
+              onChange={setShortDescription}
+              modules={quillModules}
+              formats={quillFormats}
+              placeholder="Nhập mô tả ngắn..."
+              className="min-h-[220px] bg-white text-sm"
+            />
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">Mô tả ngắn sẽ hiển thị ở trang khóa học và giúp học viên nắm nhanh nội dung.</div>
         </CardContent>
       </Card>
 
