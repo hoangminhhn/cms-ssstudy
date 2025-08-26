@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // Thông tin chung
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState<string>("");
@@ -24,6 +25,26 @@ const AddClass: React.FC = () => {
   const [teacher, setTeacher] = useState("");
   const [featured, setFeatured] = useState(false);
   const [visible, setVisible] = useState(true);
+
+  // Giá và khuyến mãi
+  const [price, setPrice] = useState<string>("");
+  const [promoPrice, setPromoPrice] = useState<string>("");
+  const [differencePercent, setDifferencePercent] = useState<number>(0);
+  const [promoTimeMode, setPromoTimeMode] = useState<string>("specific"); // 'specific' | 'always'
+  const [promoFrom, setPromoFrom] = useState<string>("");
+  const [promoTo, setPromoTo] = useState<string>("");
+  const [promoQuantity, setPromoQuantity] = useState<number>(0);
+
+  useEffect(() => {
+    const p = Number(price || 0);
+    const pp = Number(promoPrice || 0);
+    if (!p || p <= 0) {
+      setDifferencePercent(0);
+      return;
+    }
+    const diff = Math.round(((p - pp) / p) * 100);
+    setDifferencePercent(isFinite(diff) ? Math.max(0, diff) : 0);
+  }, [price, promoPrice]);
 
   const onPickImage = () => {
     fileInputRef.current?.click();
@@ -52,6 +73,12 @@ const AddClass: React.FC = () => {
       teacher,
       featured,
       visible,
+      price,
+      promoPrice,
+      promoTimeMode,
+      promoFrom,
+      promoTo,
+      promoQuantity,
     });
   };
 
@@ -69,6 +96,15 @@ const AddClass: React.FC = () => {
     setFeatured(false);
     setVisible(true);
     setImagePreview(null);
+
+    // Reset promotion fields
+    setPrice("");
+    setPromoPrice("");
+    setPromoFrom("");
+    setPromoTo("");
+    setPromoQuantity(0);
+    setPromoTimeMode("specific");
+
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
   };
@@ -227,6 +263,92 @@ const AddClass: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Giá và khuyến mãi */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Giá và khuyến mãi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <div className="md:col-span-2">
+              <Label htmlFor="price" className="text-xs">GIÁ KHÓA HỌC</Label>
+              <Input
+                id="price"
+                type="number"
+                placeholder="0"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="promoPrice" className="text-xs">GIÁ KHUYẾN MÃI</Label>
+              <Input
+                id="promoPrice"
+                type="number"
+                placeholder="0"
+                value={promoPrice}
+                onChange={(e) => setPromoPrice(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="md:col-span-1 flex items-end">
+              <div className="w-full">
+                <Label className="text-xs">CHÊNH LỆCH</Label>
+                <div className="mt-1 rounded-md bg-gray-50 text-orange-600 border border-gray-200 px-3 py-2 text-sm text-center">
+                  {differencePercent}% 
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="text-xs">CHỌN THỜI GIAN KHUYẾN MÃI</Label>
+              <Select value={promoTimeMode} onValueChange={(val) => setPromoTimeMode(val)}>
+                <SelectTrigger className="w-full h-9 mt-1">
+                  <SelectValue placeholder="Khoảng thời" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="specific">Khoảng thời gian</SelectItem>
+                  <SelectItem value="always">Luôn luôn</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Date range inputs: show only when specific */}
+            {promoTimeMode === "specific" && (
+              <>
+                <div className="md:col-span-2">
+                  <Label className="text-xs">Từ ngày</Label>
+                  <div className="relative mt-1">
+                    <Input type="date" value={promoFrom} onChange={(e) => setPromoFrom(e.target.value)} />
+                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                  </div>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-xs">Đến ngày</Label>
+                  <div className="relative mt-1">
+                    <Input type="date" value={promoTo} onChange={(e) => setPromoTo(e.target.value)} />
+                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className={`md:col-span-${promoTimeMode === "specific" ? "1" : "2"}`}>
+              <Label className="text-xs">SỐ LƯỢNG KHUYẾN MÃI</Label>
+              <Input
+                type="number"
+                value={String(promoQuantity)}
+                onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
+                className="mt-1"
+              />
             </div>
           </div>
         </CardContent>
