@@ -88,14 +88,14 @@ const AddClass: React.FC = () => {
         </CardHeader>
 
         <CardContent>
+          {/* Row 1: Image (left) + primary fields (right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Image upload area */}
             <div className="lg:col-span-3">
               <div className="border border-dashed rounded-md p-4 flex flex-col items-center justify-center min-h-[160px]">
                 {imagePreview ? (
                   <div className="relative w-full">
                     <img src={imagePreview} alt="preview" className="w-full h-40 object-cover rounded-md" />
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex gap-2 justify-center">
                       <Button variant="outline" onClick={clearImage}>Xóa</Button>
                       <Button onClick={handleChooseImage}>Thay đổi</Button>
                     </div>
@@ -106,7 +106,7 @@ const AddClass: React.FC = () => {
                     <Button onClick={handleChooseImage} className="bg-white border border-orange-300 text-orange-600 hover:bg-orange-50">
                       THÊM HÌNH
                     </Button>
-                    <p className="text-xs text-muted-foreground mt-2">Kích thước gợi ý: 800x600, định dạng JPG/PNG</p>
+                    <p className="text-xs text-muted-foreground mt-2">Kích thước gợi ý: 800x600, JPG/PNG</p>
                   </div>
                 )}
                 <input
@@ -119,120 +119,131 @@ const AddClass: React.FC = () => {
               </div>
             </div>
 
-            {/* Form fields */}
-            <div className="lg:col-span-9 grid grid-cols-1 gap-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div>
-                  <Label htmlFor="course-code">Mã khóa học</Label>
-                  <Input id="course-code" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Nhập mã khóa học" />
-                </div>
-                <div className="md:col-span-2">
-                  <Label htmlFor="course-name">Tên khóa học</Label>
-                  <Input id="course-name" value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Nhập tên khóa học" />
+            <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="course-code">Mã lớp</Label>
+                <Input id="course-code" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="VD: CLS-001" />
+              </div>
+
+              <div className="md:col-span-2">
+                <Label htmlFor="course-name">Tên lớp</Label>
+                <Input id="course-name" value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Nhập tên lớp" />
+              </div>
+
+              <div>
+                <Label htmlFor="start-date">Ngày khai giảng</Label>
+                <div className="relative">
+                  <Input
+                    id="start-date"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="pr-10"
+                  />
+                  <CalendarIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label htmlFor="start-date">Ngày khai giảng</Label>
-                  <div className="relative">
-                    <Input
-                      id="start-date"
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="pr-10"
-                    />
-                    <CalendarIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="end-date">Ngày bế giảng</Label>
-                  <div className="relative">
-                    <Input
-                      id="end-date"
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="pr-10"
-                    />
-                    <CalendarIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="grade">Phân loại</Label>
-                  <Select value={grade} onValueChange={(val) => setGrade(val)}>
-                    <SelectTrigger id="grade" className="w-full">
-                      <SelectValue placeholder="Chọn cấp học" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {gradeOptions.map((g) => (
-                        <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="room">Phòng học</Label>
-                  <Input id="room" value={room} onChange={(e) => setRoom(e.target.value)} placeholder="Nhập phòng học" />
+              <div>
+                <Label htmlFor="end-date">Ngày bế giảng</Label>
+                <div className="relative">
+                  <Input
+                    id="end-date"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="pr-10"
+                  />
+                  <CalendarIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div>
-                  <Label htmlFor="subject">Môn học</Label>
-                  <Select value={subject} onValueChange={(val) => setSubject(val)}>
-                    <SelectTrigger id="subject" className="w-full">
-                      <SelectValue placeholder="-- Chọn môn học --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subjectOptions.map((s) => (
-                        <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="category">Danh mục</Label>
-                  <Select value={category} onValueChange={(val) => setCategory(val)}>
-                    <SelectTrigger id="category" className="w-full">
-                      <SelectValue placeholder="-- Chọn danh mục --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categoryOptions.map((c) => (
-                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="teacher">Giáo viên</Label>
-                  <Select value={teacher} onValueChange={(val) => setTeacher(val)}>
-                    <SelectTrigger id="teacher" className="w-full">
-                      <SelectValue placeholder="-- Chọn giáo viên --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {teacherOptions.map((t) => (
-                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="grade">Phân loại</Label>
+                <Select value={grade} onValueChange={(val) => setGrade(val)}>
+                  <SelectTrigger id="grade" className="w-full">
+                    <SelectValue placeholder="Chọn cấp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {gradeOptions.map((g) => (
+                      <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Switch id="featured" checked={featured} onCheckedChange={(v) => setFeatured(!!v)} />
-                    <Label htmlFor="featured">Nổi bật</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch id="visible" checked={visible} onCheckedChange={(v) => setVisible(!!v)} />
-                    <Label htmlFor="visible">Hiển thị</Label>
-                  </div>
+          {/* Row 2: remaining fields + switches + actions */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center mt-2">
+            <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="subject">Môn học</Label>
+                <Select value={subject} onValueChange={(val) => setSubject(val)}>
+                  <SelectTrigger id="subject" className="w-full">
+                    <SelectValue placeholder="Chọn môn" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subjectOptions.map((s) => (
+                      <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="category">Danh mục</Label>
+                <Select value={category} onValueChange={(val) => setCategory(val)}>
+                  <SelectTrigger id="category" className="w-full">
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="teacher">Giáo viên</Label>
+                <Select value={teacher} onValueChange={(val) => setTeacher(val)}>
+                  <SelectTrigger id="teacher" className="w-full">
+                    <SelectValue placeholder="Chọn giáo viên" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {teacherOptions.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="room">Phòng học</Label>
+                <Input id="room" value={room} onChange={(e) => setRoom(e.target.value)} placeholder="Nhập phòng" />
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Switch id="featured" checked={featured} onCheckedChange={(v) => setFeatured(!!v)} />
+                  <Label htmlFor="featured">Nổi bật</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch id="visible" checked={visible} onCheckedChange={(v) => setVisible(!!v)} />
+                  <Label htmlFor="visible">Hiển thị</Label>
                 </div>
               </div>
 
-              <div className="flex justify-end mt-2">
-                <Button variant="outline" className="mr-2" onClick={() => {
+              <div className="md:col-span-3">
+                {/* Empty placeholder to keep grid alignment on large screens */}
+              </div>
+            </div>
+
+            <div className="lg:col-span-3 flex flex-col items-end gap-3">
+              <div className="text-sm text-muted-foreground">Xem trước ảnh lớp</div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => {
                   // reset
                   setCourseCode("");
                   setCourseName("");
@@ -246,8 +257,12 @@ const AddClass: React.FC = () => {
                   setFeatured(false);
                   setVisible(true);
                   clearImage();
-                }}>HỦY</Button>
-                <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">LƯU</Button>
+                }}>
+                  HỦY
+                </Button>
+                <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">
+                  LƯU
+                </Button>
               </div>
             </div>
           </div>
