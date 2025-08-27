@@ -176,67 +176,59 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             </div>
 
-            {/* Tight 2x2 layout: small horizontal gap and compact label/input alignment */}
+            {/* Very tight 2x2 layout: minimal horizontal gap, small inputs and labels aligned close */}
             {useScoringConfig && (
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
-                <div className="flex items-center gap-3">
-                  <div className="text-sm min-w-[160px]">Trả lời đúng 1 ý</div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={percent1}
-                      onChange={(e) => setPercent1(Number(e.target.value || 0))}
-                      className="w-20"
-                    />
-                    <span className="text-sm">%</span>
-                  </div>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-3">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm leading-none">Trả lời đúng 1 ý</div>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={percent1}
+                    onChange={(e) => setPercent1(Number(e.target.value || 0))}
+                    className="w-14 h-8 px-2 py-1 text-center"
+                  />
+                  <span className="text-sm">%</span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="text-sm min-w-[160px]">Trả lời đúng 2 ý</div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={percent2}
-                      onChange={(e) => setPercent2(Number(e.target.value || 0))}
-                      className="w-20"
-                    />
-                    <span className="text-sm">%</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm leading-none">Trả lời đúng 2 ý</div>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={percent2}
+                    onChange={(e) => setPercent2(Number(e.target.value || 0))}
+                    className="w-14 h-8 px-2 py-1 text-center"
+                  />
+                  <span className="text-sm">%</span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="text-sm min-w-[160px]">Trả lời đúng 3 ý</div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={percent3}
-                      onChange={(e) => setPercent3(Number(e.target.value || 0))}
-                      className="w-20"
-                    />
-                    <span className="text-sm">%</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm leading-none">Trả lời đúng 3 ý</div>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={percent3}
+                    onChange={(e) => setPercent3(Number(e.target.value || 0))}
+                    className="w-14 h-8 px-2 py-1 text-center"
+                  />
+                  <span className="text-sm">%</span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="text-sm min-w-[160px]">Trả lời đúng 4 ý</div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={percent4}
-                      onChange={(e) => setPercent4(Number(e.target.value || 0))}
-                      className="w-20"
-                    />
-                    <span className="text-sm">%</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm leading-none">Trả lời đúng 4 ý</div>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={percent4}
+                    onChange={(e) => setPercent4(Number(e.target.value || 0))}
+                    className="w-14 h-8 px-2 py-1 text-center"
+                  />
+                  <span className="text-sm">%</span>
                 </div>
               </div>
             )}
