@@ -176,10 +176,13 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             </div>
 
+            {/* Compact 2x2 layout for percent fields */}
             {useScoringConfig && (
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div>
-                  <Label>Trả lời đúng 1 ý</Label>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <Label className="text-sm">Trả lời đúng 1 ý</Label>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -187,13 +190,16 @@ const EditExamFormCategory: React.FC = () => {
                       max={100}
                       value={percent1}
                       onChange={(e) => setPercent1(Number(e.target.value || 0))}
+                      className="w-20"
                     />
                     <span className="text-sm">%</span>
                   </div>
                 </div>
 
-                <div>
-                  <Label>Trả lời đúng 2 ý</Label>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <Label className="text-sm">Trả lời đúng 2 ý</Label>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -201,13 +207,16 @@ const EditExamFormCategory: React.FC = () => {
                       max={100}
                       value={percent2}
                       onChange={(e) => setPercent2(Number(e.target.value || 0))}
+                      className="w-20"
                     />
                     <span className="text-sm">%</span>
                   </div>
                 </div>
 
-                <div>
-                  <Label>Trả lời đúng 3 ý</Label>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <Label className="text-sm">Trả lời đúng 3 ý</Label>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -215,13 +224,16 @@ const EditExamFormCategory: React.FC = () => {
                       max={100}
                       value={percent3}
                       onChange={(e) => setPercent3(Number(e.target.value || 0))}
+                      className="w-20"
                     />
                     <span className="text-sm">%</span>
                   </div>
                 </div>
 
-                <div>
-                  <Label>Trả lời đúng 4 ý</Label>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <Label className="text-sm">Trả lời đúng 4 ý</Label>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -229,6 +241,7 @@ const EditExamFormCategory: React.FC = () => {
                       max={100}
                       value={percent4}
                       onChange={(e) => setPercent4(Number(e.target.value || 0))}
+                      className="w-20"
                     />
                     <span className="text-sm">%</span>
                   </div>
