@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Book, FileText, Clock, FilePlus, ImageSquare, Link as LinkIcon, Play } from "lucide-react";
+import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play } from "lucide-react";
 
-type BuiltInIconKey = "Book" | "FileText" | "Clock" | "FilePlus" | "Play" | "ImageSquare" | "Link";
+type BuiltInIconKey = "Book" | "FileText" | "Clock" | "FilePlus" | "Play" | "Image" | "Link";
 
 const BUILT_IN_ICONS: Record<BuiltInIconKey, React.ComponentType<any>> = {
   Book,
@@ -14,7 +14,7 @@ const BUILT_IN_ICONS: Record<BuiltInIconKey, React.ComponentType<any>> = {
   Clock,
   FilePlus,
   Play,
-  ImageSquare,
+  Image,
   Link: LinkIcon,
 };
 
@@ -217,7 +217,7 @@ const CourseIncludes: React.FC = () => {
                       ) : it.svgUrl ? (
                         <img src={it.svgUrl} alt={it.label} className="h-5 w-5 object-contain" />
                       ) : (
-                        <ImageSquare className="h-5 w-5 text-gray-600" />
+                        <Image className="h-5 w-5 text-gray-600" />
                       )}
                     </div>
                     <div className="text-sm">{it.label}</div>
