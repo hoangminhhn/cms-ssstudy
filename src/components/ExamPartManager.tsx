@@ -148,7 +148,7 @@ const ExamPartManager: React.FC = () => {
             title={`Tất cả (${countAll})`}
           >
             <span>Tất cả</span>
-            <span className="text-sm text-muted-foreground">({countAll})</span>
+            <span className={`text-sm ${filter === "all" ? "text-white" : "text-muted-foreground"}`}>({countAll})</span>
           </button>
 
           <button
@@ -159,7 +159,7 @@ const ExamPartManager: React.FC = () => {
             title={`Ẩn (${countHidden})`}
           >
             <span>Ẩn</span>
-            <span className="text-sm text-muted-foreground">({countHidden})</span>
+            <span className={`text-sm ${filter === "hidden" ? "text-white" : "text-muted-foreground"}`}>({countHidden})</span>
           </button>
 
           <button
@@ -170,7 +170,7 @@ const ExamPartManager: React.FC = () => {
             title={`Xóa (${countDeleted})`}
           >
             <span>Xóa</span>
-            <span className="text-sm text-muted-foreground">({countDeleted})</span>
+            <span className={`text-sm ${filter === "deleted" ? "text-white" : "text-muted-foreground"}`}>({countDeleted})</span>
           </button>
         </div>
 
