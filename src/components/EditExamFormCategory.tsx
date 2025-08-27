@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 
 interface ExamCategory {
   id: string;
@@ -16,7 +17,7 @@ interface ExamCategory {
   parentId?: string;
 }
 
-// Mock data for a single category (in a real app, this would come from an API)
+// Mock data for categories (replace with real API calls as needed)
 const mockCategoriesData: ExamCategory[] = [
   { id: '1', name: 'Kỳ thi HSA', description: 'Mô tả cho kỳ thi HSA', slug: 'ky-thi-hsa', parentId: undefined },
   { id: '2', name: 'Kỳ thi TSA', description: 'Mô tả cho kỳ thi TSA', slug: 'ky-thi-tsa', parentId: undefined },
@@ -24,44 +25,85 @@ const mockCategoriesData: ExamCategory[] = [
   { id: '4', name: 'Kỳ thi V-ACT', description: 'Mô tả cho kỳ thi V-ACT', slug: 'ky-thi-v-act', parentId: undefined },
 ];
 
-const EditExamCategoryForm: React.FC = () => {
-  const { categoryId } = useParams<{ categoryId: string }>();
+const displayModeOptions = [
+  { value: 'all', label: 'Toàn bộ phần thi' },
+  { value: 'per-part', label: 'Theo từng phần' },
+];
+
+const questionDisplayOptions = [
+  { value: 'one-per-screen', label: '1 câu trong màn' },
+  { value: 'list', label: 'Danh sách' },
+];
+
+const timeSettingOptions = [
+  { value: 'per-part', label: 'Theo phần thi' },
+  { value: 'total', label: 'Tổng thời gian' },
+];
+
+const EditExamFormCategory: React.FC = () => {
+  const params = useParams<{ categoryId?: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const categoryIdFromSearch = searchParams.get('categoryId');
+
+  const categoryId = params.categoryId || categoryIdFromSearch || undefined;
+
   const [category, setCategory] = React.useState<ExamCategory | null>(null);
 
+  // extra fields to match requested UI
+  const [displayMode, setDisplayMode] = React.useState<string>(displayModeOptions[0].value);
+  const [questionDisplay, setQuestionDisplay] = React.useState<string>(questionDisplayOptions[0].value);
+  const [timeSetting, setTimeSetting] = React.useState<string>(timeSettingOptions[0].value);
+
+  const [useScoringConfig, setUseScoringConfig] = React.useState<boolean>(false);
+  const [percent1, setPercent1] = React.useState<number>(0);
+  const [percent2, setPercent2] = React.useState<number>(0);
+  const [percent3, setPercent3] = React.useState<number>(0);
+  const [percent4, setPercent4] = React.useState<number>(0);
+
   React.useEffect(() => {
-    // Simulate fetching data
-    const foundCategory = mockCategoriesData.find(cat => cat.id === categoryId);
-    if (foundCategory) {
-      setCategory(foundCategory);
+    // simulate fetch by id (use mock data)
+    if (!categoryId) {
+      toast.error('categoryId không được cung cấp.');
+      navigate('/word-exam-upload?tab=exam-categories');
+      return;
+    }
+
+    const found = mockCategoriesData.find((c) => c.id === categoryId);
+    if (found) {
+      setCategory(found);
+      // prefill other fields if you'd like -- here we keep defaults
     } else {
       toast.error('Không tìm thấy danh mục!');
-      navigate('/word-exam-upload?tab=exam-categories'); // Redirect if not found
+      navigate('/word-exam-upload?tab=exam-categories');
     }
   }, [categoryId, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (category) {
-      setCategory({ ...category, [e.target.id]: e.target.value });
-    }
-  };
-
-  const handleSelectChange = (value: string, id: string) => {
-    if (category) {
-      setCategory({ ...category, [id]: value });
-    }
+    if (!category) return;
+    setCategory({ ...category, [e.target.id]: e.target.value } as ExamCategory);
   };
 
   const handleSave = () => {
-    if (category) {
-      console.log('Lưu thay đổi cho danh mục:', category);
-      toast.success('Đã lưu thay đổi cho danh mục!');
-      navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
-    }
+    // In a real app you'd submit the form to an API. For now we just show a toast.
+    console.log('Saving category with values:', {
+      category,
+      displayMode,
+      questionDisplay,
+      timeSetting,
+      useScoringConfig,
+      percent1,
+      percent2,
+      percent3,
+      percent4,
+    });
+    toast.success('Đã lưu thay đổi cho danh mục!');
+    navigate('/word-exam-upload?tab=exam-categories');
   };
 
   const handleCancel = () => {
-    navigate('/word-exam-upload?tab=exam-categories'); // Go back to list
+    navigate('/word-exam-upload?tab=exam-categories');
   };
 
   if (!category) {
@@ -72,24 +114,145 @@ const EditExamCategoryForm: React.FC = () => {
     <div className="space-y-6 p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Chỉnh sửa Danh Mục: {category.name}</CardTitle>
+          <CardTitle>Chỉnh sửa Danh Mục Kỳ Thi: {category.name}</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <div>
-            <Label htmlFor="name">Tên</Label>
-            <Input id="name" value={category.name} onChange={handleChange} />
-            <p className="text-xs text-muted-foreground mt-1">Tên là cách nó xuất hiện trên trang web của bạn.</p>
+
+        <CardContent className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+            <div>
+              <Label htmlFor="name">Tên kỳ thi</Label>
+              <Input id="name" value={category.name} onChange={handleChange} />
+            </div>
+
+            <div>
+              <Label>Hình thức hiển thị phần thi</Label>
+              <Select value={displayMode} onValueChange={setDisplayMode}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {displayModeOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Cách hiển thị câu hỏi</Label>
+              <Select value={questionDisplay} onValueChange={setQuestionDisplay}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {questionDisplayOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Cài đặt thời gian</Label>
+              <Select value={timeSetting} onValueChange={setTimeSetting}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeSettingOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          <div className="py-4 border-t">
+            <div className="flex items-center gap-3">
+              <Switch checked={useScoringConfig} onCheckedChange={(v) => setUseScoringConfig(!!v)} />
+              <div>
+                <div className="font-medium">Cấu hình thang điểm câu hỏi đúng sai</div>
+                <div className="text-sm text-muted-foreground">Bật để cấu hình phần trăm điểm theo số đáp án đúng.</div>
+              </div>
+            </div>
+
+            {useScoringConfig && (
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                  <Label>Trả lời đúng 1 ý</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={percent1}
+                      onChange={(e) => setPercent1(Number(e.target.value || 0))}
+                    />
+                    <span className="text-sm">%</span>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Trả lời đúng 2 ý</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={percent2}
+                      onChange={(e) => setPercent2(Number(e.target.value || 0))}
+                    />
+                    <span className="text-sm">%</span>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Trả lời đúng 3 ý</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={percent3}
+                      onChange={(e) => setPercent3(Number(e.target.value || 0))}
+                    />
+                    <span className="text-sm">%</span>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Trả lời đúng 4 ý</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={percent4}
+                      onChange={(e) => setPercent4(Number(e.target.value || 0))}
+                    />
+                    <span className="text-sm">%</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
-            <Label htmlFor="slug">Đường dẫn</Label>
+            <Label htmlFor="slug">Đường dẫn (slug)</Label>
             <Input id="slug" value={category.slug} onChange={handleChange} />
-            <p className="text-xs text-muted-foreground mt-1">"slug" là đường dẫn thân thiện của tên. Nó thường chỉ bao gồm kí tự viết thường, số và dấu gạch ngang, không dùng tiếng Việt.</p>
           </div>
+
           <div>
             <Label htmlFor="parentId">Danh mục cha</Label>
-            <Select value={category.parentId || 'none'} onValueChange={(value) => handleSelectChange(value, 'parentId')}>
-              <SelectTrigger id="parentId">
-                <SelectValue placeholder="Không có" />
+            <Select value={category.parentId || 'none'} onValueChange={(val) => setCategory({ ...category, parentId: val === 'none' ? undefined : val })}>
+              <SelectTrigger>
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Không có</SelectItem>
@@ -98,12 +261,14 @@ const EditExamCategoryForm: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground mt-1">Chuyên mục khác với thẻ, bạn có thể sử dụng nhiều cấp chuyên mục. Ví dụ: Trong chuyên mục nhạc, bạn có chuyên mục con là nhạc Pop, nhạc Jazz. Việc này hoàn toàn là tùy theo ý bạn.</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Chuyên mục khác với thẻ — bạn có thể dùng nhiều cấp chuyên mục.
+            </p>
           </div>
+
           <div>
             <Label htmlFor="description">Mô tả</Label>
             <Textarea id="description" value={category.description} onChange={handleChange} />
-            <p className="text-xs text-muted-foreground mt-1">Thông thường mô tả này không được sử dụng trong các giao diện, tuy nhiên có vài giao diện có thể hiển thị mô tả này.</p>
           </div>
         </CardContent>
       </Card>
@@ -116,4 +281,4 @@ const EditExamCategoryForm: React.FC = () => {
   );
 };
 
-export default EditExamCategoryForm;
+export default EditExamFormCategory;
