@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Calendar } from "lucide-react";
+import { Calendar, Check } from "lucide-react";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import SortableJS from "sortablejs";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -117,11 +118,12 @@ const AddClass: React.FC = () => {
       note,
       shortDescription,
       fullContent,
+      highlights,
     });
   };
 
   const handleCancel = () => {
-    // Reset form
+    // Reset form (preserve other behaviors)
     setCode("");
     setName("");
     setStartDate("");
@@ -163,11 +165,14 @@ const AddClass: React.FC = () => {
     setShortDescription("");
     setFullContent("");
 
+    // Reset highlights
+    setHighlights([]);
+
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
   };
 
-  // -- New: Chapters feature states and helpers --
+  // -- Chapters feature states and helpers --
   const allChaptersMock = [
     { id: "c1", title: "Giới thiệu khóa học" },
     { id: "c2", title: "Chương 1: Cơ bản" },
@@ -213,8 +218,6 @@ const AddClass: React.FC = () => {
     toast.success("Đã lọc chương.");
   };
 
-  // -- End chapters feature --
-
   // -- Short description editor state and toolbar config --
   const [shortDescription, setShortDescription] = useState<string>("");
 
@@ -253,36 +256,89 @@ const AddClass: React.FC = () => {
     "image",
     "video",
   ];
-  // -- End short description config --
 
   // -- Full content (Nội dung) editor state and toolbar (more complete) --
   const [fullContent, setFullContent] = useState<string>("");
 
   const contentModules = {
     toolbar: [
-      [{ 'font': [] }, { 'size': [] }],
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'underline', 'italic', 'strike'],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'align': [] }],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      ['blockquote', 'code-block', 'formula'],
-      ['link', 'image', 'video'],
-      ['clean'],
+      [{ font: [] }, { size: [] }],
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "underline", "italic", "strike"],
+      [{ script: "sub" }, { script: "super" }],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      ["blockquote", "code-block", "formula"],
+      ["link", "image", "video"],
+      ["clean"],
     ],
   };
 
   const contentFormats = [
-    'font', 'size', 'header',
-    'bold', 'italic', 'underline', 'strike',
-    'script', 'color', 'background',
-    'align', 'list', 'bullet', 'indent',
-    'blockquote', 'code-block', 'formula',
-    'link', 'image', 'video'
+    "font", "size", "header",
+    "bold", "italic", "underline", "strike",
+    "script", "color", "background",
+    "align", "list", "bullet", "indent",
+    "blockquote", "code-block", "formula",
+    "link", "image", "video"
   ];
-  // -- End content config --
+
+  // -- Highlights (Thông tin nổi bật) feature --
+  interface HighlightItem {
+    id: string;
+    text: string;
+  }
+
+  const [highlights, setHighlights] = useState<HighlightItem[]>([]);
+  const [newHighlightText, setNewHighlightText] = useState("");
+  const highlightsListRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!highlightsListRef.current) return;
+
+    const sortable = SortableJS.create(highlightsListRef.current, {
+      animation: 150,
+      handle: ".drag-handle",
+      onEnd: (evt) => {
+        if (evt.oldIndex === undefined || evt.newIndex === undefined) return;
+        setHighlights((prev) => {
+          const items = [...prev];
+          const [moved] = items.splice(evt.oldIndex, 1);
+          items.splice(evt.newIndex, 0, moved);
+          return items;
+        });
+      },
+    });
+
+    return () => sortable.destroy();
+  }, [highlightsListRef.current]);
+
+  const handleAddHighlight = () => {
+    const text = newHighlightText.trim();
+    if (!text) {
+      toast.error("Vui lòng nhập nội dung nổi bật.");
+      return;
+    }
+    const id = `h-${Date.now()}`;
+    setHighlights((prev) => [...prev, { id, text }]);
+    setNewHighlightText("");
+    toast.success("Đã thêm thông tin nổi bật.");
+  };
+
+  const handleDeleteHighlight = (id: string) => {
+    setHighlights((prev) => prev.filter((h) => h.id !== id));
+    toast.success("Đã xóa thông tin nổi bật.");
+  };
+
+  // Small helper for keyboard add (Enter)
+  const onHighlightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddHighlight();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -674,7 +730,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Feature panels */}
+      {/* Feature panels (unchanged) */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -826,7 +882,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New: Full content panel (Nội dung) */}
+      {/* Full content panel (Nội dung) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Nội dung</CardTitle>
@@ -843,6 +899,78 @@ const AddClass: React.FC = () => {
             />
           </div>
           <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
+        </CardContent>
+      </Card>
+
+      {/* New: Highlights panel placed under 'Nội dung' - left half for highlights, right half reserved */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left column: Highlights list */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="Nhập thông tin nổi bật..."
+                  value={newHighlightText}
+                  onChange={(e) => setNewHighlightText(e.target.value)}
+                  onKeyDown={onHighlightKeyDown}
+                  aria-label="Nhập thông tin nổi bật"
+                />
+                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddHighlight}>
+                  Thêm
+                </Button>
+              </div>
+
+              <div ref={highlightsListRef} className="space-y-2" aria-label="Danh sách thông tin nổi bật sắp xếp được">
+                {highlights.length === 0 ? (
+                  <div className="text-sm text-muted-foreground p-4 border rounded">Chưa có thông tin nổi bật nào.</div>
+                ) : (
+                  highlights.map((h) => (
+                    <div
+                      key={h.id}
+                      className="flex items-center gap-3 border rounded p-3 bg-white dark:bg-gray-800"
+                    >
+                      <button
+                        className="drag-handle p-1 text-gray-400 hover:text-gray-600"
+                        aria-label="Kéo để thay đổi vị trí"
+                        title="Kéo để thay đổi vị trí"
+                      >
+                        <span className="select-none" aria-hidden>☰</span>
+                      </button>
+
+                      <div className="flex-1 flex items-center gap-3">
+                        <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
+                          <Check className="h-4 w-4" />
+                        </div>
+                        <div className="text-sm">{h.text}</div>
+                      </div>
+
+                      <div>
+                        <Button
+                          variant="ghost"
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeleteHighlight(h.id)}
+                          aria-label={`Xóa thông tin nổi bật ${h.text}`}
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <p className="text-sm text-muted-foreground">Danh sách có thể kéo-thả để thay đổi thứ tự.</p>
+            </div>
+
+            {/* Right column: placeholder for future features (keeps it empty for your later use) */}
+            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[150px] flex items-center justify-center">
+              <div className="text-sm text-muted-foreground">Khung để bạn thêm chức năng khác (bên phải)</div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
