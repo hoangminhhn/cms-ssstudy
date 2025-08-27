@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 type BuiltInIconKey = "Book" | "FileText" | "Clock" | "FilePlus" | "Play" | "Image" | "Link";
 
@@ -21,10 +24,10 @@ const BUILT_IN_ICONS: Record<BuiltInIconKey, React.ComponentType<any>> = {
 interface CustomInclude {
   id: string;
   label: string;
-  iconType: "built-in" | "svg";
-  builtInKey?: BuiltInIconKey;
-  svgUrl?: string; // data URL from uploaded SVG
+  builtInKey: BuiltInIconKey;
 }
+
+const AVAILABLE_ICON_KEYS = Object.keys(BUILT_IN_ICONS) as BuiltInIconKey[];
 
 const CourseIncludes: React.FC = () => {
   // Fixed fields state
@@ -35,29 +38,12 @@ const CourseIncludes: React.FC = () => {
 
   // Custom fields state
   const [customLabel, setCustomLabel] = React.useState<string>("");
-  const [customIconType, setCustomIconType] = React.useState<"built-in" | "svg">("built-in");
-  const [selectedBuiltIn, setSelectedBuiltIn] = React.useState<BuiltInIconKey>("Book");
-  const [uploadedSvgUrl, setUploadedSvgUrl] = React.useState<string>("");
+  const [selectedIconForNew, setSelectedIconForNew] = React.useState<BuiltInIconKey>("Book");
 
   const [customItems, setCustomItems] = React.useState<CustomInclude[]>([]);
 
-  const svgInputRef = React.useRef<HTMLInputElement | null>(null);
-
-  const handleUploadSvg = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.includes("svg") && !file.name.toLowerCase().endsWith(".svg")) {
-      toast.error("Vui lòng chọn file SVG.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      setUploadedSvgUrl(result);
-      toast.success("SVG đã được tải lên và xem trước.");
-    };
-    reader.readAsDataURL(file);
-  };
+  // Which item's icon picker is open (id) — used to control popovers per-item
+  const [openPickerId, setOpenPickerId] = React.useState<string | null>(null);
 
   const handleAddCustom = () => {
     const label = customLabel.trim();
@@ -65,25 +51,16 @@ const CourseIncludes: React.FC = () => {
       toast.error("Vui lòng nhập nội dung cho mục bổ sung.");
       return;
     }
-    if (customIconType === "svg" && !uploadedSvgUrl) {
-      toast.error("Vui lòng tải lên một file SVG trước khi thêm.");
-      return;
-    }
 
     const newItem: CustomInclude = {
       id: `ci-${Date.now()}`,
       label,
-      iconType: customIconType,
-      builtInKey: customIconType === "built-in" ? selectedBuiltIn : undefined,
-      svgUrl: customIconType === "svg" ? uploadedSvgUrl : undefined,
+      builtInKey: selectedIconForNew,
     };
 
     setCustomItems((prev) => [...prev, newItem]);
     setCustomLabel("");
-    setUploadedSvgUrl("");
-    if (svgInputRef.current) svgInputRef.current.value = "";
-    setCustomIconType("built-in");
-    setSelectedBuiltIn("Book");
+    setSelectedIconForNew("Book");
     toast.success("Đã thêm mục 'Khóa học bao gồm'.");
   };
 
@@ -92,16 +69,15 @@ const CourseIncludes: React.FC = () => {
     toast.success("Đã xóa mục.");
   };
 
-  const renderIcon = (item: CustomInclude | { iconType: "built-in"; builtInKey: BuiltInIconKey } | null) => {
-    if (!item) return null;
-    if (item.iconType === "built-in") {
-      const Comp = BUILT_IN_ICONS[item.builtInKey as BuiltInIconKey];
-      return <Comp className="h-5 w-5 text-gray-600" />;
-    }
-    if (item.iconType === "svg" && item.svgUrl) {
-      return <img src={item.svgUrl} alt="svg" className="h-5 w-5 object-contain" />;
-    }
-    return null;
+  const handleUpdateItemIcon = (id: string, key: BuiltInIconKey) => {
+    setCustomItems((prev) => prev.map((it) => (it.id === id ? { ...it, builtInKey: key } : it)));
+    setOpenPickerId(null);
+    toast.success("Đã cập nhật icon.");
+  };
+
+  const handleUpdateNewIcon = (key: BuiltInIconKey) => {
+    setSelectedIconForNew(key);
+    setOpenPickerId(null);
   };
 
   return (
@@ -157,56 +133,61 @@ const CourseIncludes: React.FC = () => {
 
           <hr className="my-2" />
 
-          {/* Add custom items */}
+          {/* Add custom items: Now only label + icon picker */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Thêm mục tùy chỉnh</div>
-              <div className="text-xs text-muted-foreground">Bạn có thể chọn icon có sẵn hoặc tải file SVG</div>
+              <div className="text-xs text-muted-foreground">Nhập nội dung và chọn icon bên cạnh</div>
             </div>
 
-            <div className="grid grid-cols-1 gap-2">
-              <div className="flex items-center gap-2">
-                <Label className="whitespace-nowrap">Icon</Label>
-                <select
-                  value={customIconType}
-                  onChange={(e) => setCustomIconType(e.target.value as "built-in" | "svg")}
-                  className="rounded border px-2 py-1 text-sm"
-                >
-                  <option value="built-in">Chọn icon có sẵn</option>
-                  <option value="svg">Tải lên SVG</option>
-                </select>
-              </div>
+            <div className="flex items-center gap-2">
+              <Label className="whitespace-nowrap">Nội dung</Label>
 
-              {customIconType === "built-in" ? (
-                <div className="flex items-center gap-2">
-                  <Label>Chọn</Label>
-                  <select
-                    value={selectedBuiltIn}
-                    onChange={(e) => setSelectedBuiltIn(e.target.value as BuiltInIconKey)}
-                    className="rounded border px-2 py-1 text-sm"
-                  >
-                    {Object.keys(BUILT_IN_ICONS).map((k) => (
-                      <option key={k} value={k}>
-                        {k}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="ml-2">
-                    {/* preview */}
-                    {React.createElement(BUILT_IN_ICONS[selectedBuiltIn], { className: "h-5 w-5 text-gray-600" })}
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Label>Tải SVG</Label>
-                  <input ref={svgInputRef} type="file" accept=".svg" onChange={handleUploadSvg} />
-                  {uploadedSvgUrl && <img src={uploadedSvgUrl} alt="preview" className="h-6 w-6" />}
-                </div>
-              )}
+              <div className="flex-1 flex items-center gap-2 min-w-0">
+                <Input
+                  value={customLabel}
+                  onChange={(e) => setCustomLabel(e.target.value)}
+                  placeholder="Ví dụ: Bài tập có đáp án"
+                  className="flex-1 min-w-0"
+                />
 
-              <div className="flex items-center gap-2">
-                <Label className="whitespace-nowrap">Nội dung</Label>
-                <Input value={customLabel} onChange={(e) => setCustomLabel(e.target.value)} className="flex-1" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Popover open={openPickerId === "new"} onOpenChange={(open) => setOpenPickerId(open ? "new" : null)}>
+                      <div>
+                        <PopoverTrigger asChild>
+                          <button
+                            className="h-9 w-9 rounded-md border flex items-center justify-center bg-white hover:bg-gray-50"
+                            aria-label="Click để thay đổi icon"
+                            title="Click để thay đổi icon"
+                          >
+                            {React.createElement(BUILT_IN_ICONS[selectedIconForNew], {
+                              className: "h-5 w-5 text-gray-600",
+                            })}
+                          </button>
+                        </PopoverTrigger>
+
+                        <PopoverContent className="w-[240px] p-3 grid grid-cols-4 gap-2">
+                          {AVAILABLE_ICON_KEYS.map((k) => (
+                            <button
+                              key={k}
+                              onClick={() => handleUpdateNewIcon(k)}
+                              className={cn(
+                                "p-2 rounded-md flex items-center justify-center hover:bg-gray-100",
+                                k === selectedIconForNew ? "ring-2 ring-orange-300" : ""
+                              )}
+                              aria-label={`Chọn icon ${k}`}
+                            >
+                              {React.createElement(BUILT_IN_ICONS[k], { className: "h-5 w-5 text-gray-600" })}
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </div>
+                    </Popover>
+                  </TooltipTrigger>
+                  <TooltipContent>click để thay đổi icon</TooltipContent>
+                </Tooltip>
+
                 <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddCustom}>
                   Thêm
                 </Button>
@@ -219,17 +200,45 @@ const CourseIncludes: React.FC = () => {
             <div className="mt-3 space-y-2">
               {customItems.map((it) => (
                 <div key={it.id} className="flex items-center gap-3 justify-between border rounded px-3 py-2 bg-white dark:bg-gray-800">
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <div className="flex-shrink-0">
-                      {it.iconType === "built-in" && it.builtInKey ? (
-                        React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-5 w-5 text-gray-600" })
-                      ) : it.svgUrl ? (
-                        <img src={it.svgUrl} alt={it.label} className="h-5 w-5 object-contain" />
-                      ) : (
-                        <Image className="h-5 w-5 text-gray-600" />
-                      )}
+                  <div className="flex items-center gap-3 flex-shrink-0 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Popover open={openPickerId === it.id} onOpenChange={(open) => setOpenPickerId(open ? it.id : null)}>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <PopoverTrigger asChild>
+                                <button
+                                  className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+                                  aria-label="Click để thay đổi icon"
+                                  title="Click để thay đổi icon"
+                                >
+                                  {React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-4 w-4 text-gray-700" })}
+                                </button>
+                              </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>click để thay đổi icon</TooltipContent>
+                          </Tooltip>
+
+                          <PopoverContent className="w-[240px] p-3 grid grid-cols-4 gap-2">
+                            {AVAILABLE_ICON_KEYS.map((k) => (
+                              <button
+                                key={k}
+                                onClick={() => handleUpdateItemIcon(it.id, k)}
+                                className={cn(
+                                  "p-2 rounded-md flex items-center justify-center hover:bg-gray-100",
+                                  k === it.builtInKey ? "ring-2 ring-orange-300" : ""
+                                )}
+                                aria-label={`Chọn icon ${k}`}
+                              >
+                                {React.createElement(BUILT_IN_ICONS[k], { className: "h-5 w-5 text-gray-600" })}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </div>
+                      </Popover>
+
+                      <div className="text-sm truncate">{it.label}</div>
                     </div>
-                    <div className="text-sm">{it.label}</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => handleRemoveCustom(it.id)} className="text-red-600">
