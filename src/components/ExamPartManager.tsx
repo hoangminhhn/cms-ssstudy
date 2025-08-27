@@ -138,7 +138,7 @@ const ExamPartManager: React.FC = () => {
           </div>
         </div>
 
-        {/* Filter pills under the input row with counts */}
+        {/* Filter pills under the input row with counts in parentheses */}
         <div className="mb-4 flex items-center gap-2">
           <button
             onClick={() => setFilter("all")}
@@ -148,7 +148,7 @@ const ExamPartManager: React.FC = () => {
             title={`Tất cả (${countAll})`}
           >
             <span>Tất cả</span>
-            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countAll}</span>
+            <span className="text-sm text-muted-foreground">({countAll})</span>
           </button>
 
           <button
@@ -159,7 +159,7 @@ const ExamPartManager: React.FC = () => {
             title={`Ẩn (${countHidden})`}
           >
             <span>Ẩn</span>
-            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countHidden}</span>
+            <span className="text-sm text-muted-foreground">({countHidden})</span>
           </button>
 
           <button
@@ -170,7 +170,7 @@ const ExamPartManager: React.FC = () => {
             title={`Xóa (${countDeleted})`}
           >
             <span>Xóa</span>
-            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countDeleted}</span>
+            <span className="text-sm text-muted-foreground">({countDeleted})</span>
           </button>
         </div>
 
