@@ -113,36 +113,37 @@ const CourseIncludes: React.FC = () => {
         <div className="space-y-3">
           {/* Fixed 4 rows */}
           <div className="space-y-2">
+            {/* Each row: left = icon+title (min width), right = input (flex-1) */}
             <div className="flex items-center gap-3">
-              <Book className="h-5 w-5 text-gray-600" />
-              <div className="flex-1">
+              <div className="flex items-center gap-3 min-w-[140px] md:min-w-[200px]">
+                <Book className="h-5 w-5 text-gray-600" />
                 <div className="text-sm text-gray-700">Số chuyên đề</div>
               </div>
-              <Input value={topics} onChange={(e) => setTopics(e.target.value)} className="w-36" />
+              <Input value={topics} onChange={(e) => setTopics(e.target.value)} className="flex-1" />
             </div>
 
             <div className="flex items-center gap-3">
-              <FileText className="h-5 w-5 text-gray-600" />
-              <div className="flex-1">
+              <div className="flex items-center gap-3 min-w-[140px] md:min-w-[200px]">
+                <FileText className="h-5 w-5 text-gray-600" />
                 <div className="text-sm text-gray-700">Số bài học</div>
               </div>
-              <Input value={lessons} onChange={(e) => setLessons(e.target.value)} className="w-36" />
+              <Input value={lessons} onChange={(e) => setLessons(e.target.value)} className="flex-1" />
             </div>
 
             <div className="flex items-center gap-3">
-              <FilePlus className="h-5 w-5 text-gray-600" />
-              <div className="flex-1">
+              <div className="flex items-center gap-3 min-w-[140px] md:min-w-[200px]">
+                <FilePlus className="h-5 w-5 text-gray-600" />
                 <div className="text-sm text-gray-700">Số bài tập</div>
               </div>
-              <Input value={exercises} onChange={(e) => setExercises(e.target.value)} className="w-36" />
+              <Input value={exercises} onChange={(e) => setExercises(e.target.value)} className="flex-1" />
             </div>
 
             <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-gray-600" />
-              <div className="flex-1">
+              <div className="flex items-center gap-3 min-w-[140px] md:min-w-[200px]">
+                <Clock className="h-5 w-5 text-gray-600" />
                 <div className="text-sm text-gray-700">Số giờ học</div>
               </div>
-              <Input value={hours} onChange={(e) => setHours(e.target.value)} className="w-36" />
+              <Input value={hours} onChange={(e) => setHours(e.target.value)} className="flex-1" />
             </div>
           </div>
 
@@ -210,7 +211,7 @@ const CourseIncludes: React.FC = () => {
             <div className="mt-3 space-y-2">
               {customItems.map((it) => (
                 <div key={it.id} className="flex items-center gap-3 justify-between border rounded px-3 py-2 bg-white dark:bg-gray-800">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-[140px] md:min-w-[200px]">
                     <div className="flex-shrink-0">
                       {it.iconType === "built-in" && it.builtInKey ? (
                         React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-5 w-5 text-gray-600" })
