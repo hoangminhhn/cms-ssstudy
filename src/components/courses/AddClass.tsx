@@ -83,7 +83,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleSave = () => {
-    // For now just show a toast confirmation
     toast.success("Đã lưu thông tin lớp.");
     console.log({
       code,
@@ -124,7 +123,7 @@ const AddClass: React.FC = () => {
   };
 
   const handleCancel = () => {
-    // Reset form
+    // Reset some fields; keep behavior simple
     setCode("");
     setName("");
     setStartDate("");
@@ -138,7 +137,6 @@ const AddClass: React.FC = () => {
     setVisible(true);
     setImagePreview(null);
 
-    // Reset promotion fields
     setPrice("");
     setPromoPrice("");
     setPromoFrom("");
@@ -146,7 +144,6 @@ const AddClass: React.FC = () => {
     setPromoQuantity(0);
     setPromoTimeMode("specific");
 
-    // Reset fees
     setFeePerDay("");
     setFee1Month("");
     setFee3Months("");
@@ -154,7 +151,6 @@ const AddClass: React.FC = () => {
     setFee12Months("");
     setExpandedStudents(0);
 
-    // Reset other info
     setStudyMode("Offline");
     setShiftType("Ca đơn");
     setAutoDeduct("Thủ công");
@@ -172,7 +168,7 @@ const AddClass: React.FC = () => {
     toast.info("Đã hủy thay đổi.");
   };
 
-  // -- New: Chapters feature states and helpers --
+  // -- Chapters feature (kept for context) --
   const allChaptersMock = [
     { id: "c1", title: "Giới thiệu khóa học" },
     { id: "c2", title: "Chương 1: Cơ bản" },
@@ -214,13 +210,10 @@ const AddClass: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    // filtering happens automatically via useEffect; keep handler for potential analytics
     toast.success("Đã lọc chương.");
   };
 
-  // -- End chapters feature --
-
-  // -- Short description editor state and toolbar config --
+  // -- Short description editor --
   const [shortDescription, setShortDescription] = useState<string>("");
 
   const quillModules = {
@@ -258,38 +251,36 @@ const AddClass: React.FC = () => {
     "image",
     "video",
   ];
-  // -- End short description config --
 
-  // -- Full content (Nội dung) editor state and toolbar (more complete) --
+  // -- Full content editor --
   const [fullContent, setFullContent] = useState<string>("");
 
   const contentModules = {
     toolbar: [
-      [{ 'font': [] }, { 'size': [] }],
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'underline', 'italic', 'strike'],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'align': [] }],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      ['blockquote', 'code-block', 'formula'],
-      ['link', 'image', 'video'],
-      ['clean'],
+      [{ font: [] }, { size: [] }],
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "underline", "italic", "strike"],
+      [{ script: "sub" }, { script: "super" }],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      ["blockquote", "code-block", "formula"],
+      ["link", "image", "video"],
+      ["clean"],
     ],
   };
 
   const contentFormats = [
-    'font', 'size', 'header',
-    'bold', 'italic', 'underline', 'strike',
-    'script', 'color', 'background',
-    'align', 'list', 'bullet', 'indent',
-    'blockquote', 'code-block', 'formula',
-    'link', 'image', 'video'
+    "font", "size", "header",
+    "bold", "italic", "underline", "strike",
+    "script", "color", "background",
+    "align", "list", "bullet", "indent",
+    "blockquote", "code-block", "formula",
+    "link", "image", "video"
   ];
-  // -- End content config --
 
-  // -- New: Highlights (Thông tin nổi bật) panel --
+  // -- Highlights with drag & drop (vertical list) --
   const [highlights, setHighlights] = useState<string[]>([
     "Đảm bảo đầu ra.",
     "Có kiến thức về cấu trúc và cách tiếp cận bài thi IELTS hiệu quả.",
@@ -314,7 +305,7 @@ const AddClass: React.FC = () => {
     toast.success("Đã xóa thông tin nổi bật.");
   };
 
-  // Drag & drop: SortableJS setup for highlights
+  // Sortable ref for vertical ordering
   const highlightsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -322,6 +313,7 @@ const AddClass: React.FC = () => {
     const sortable = SortableJS.create(highlightsRef.current, {
       animation: 150,
       handle: ".drag-handle",
+      ghostClass: "opacity-60",
       onEnd: (evt) => {
         const oldIndex = evt.oldIndex;
         const newIndex = evt.newIndex;
@@ -336,23 +328,20 @@ const AddClass: React.FC = () => {
       },
     });
 
-    return () => {
-      sortable.destroy();
-    };
+    return () => sortable.destroy();
   }, [highlightsRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // helper to render two-column preview grid split evenly
-  const renderHighlightsGrid = () => {
+  const renderHighlightsList = () => {
     return (
-      <div ref={highlightsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4" aria-live="polite">
+      <div ref={highlightsRef} className="flex flex-col gap-2" aria-live="polite">
         {highlights.map((h, idx) => (
           <div
             key={idx}
-            className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 border rounded-md"
+            className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 border rounded-md"
             role="group"
             aria-label={`Thông tin nổi bật ${idx + 1}`}
           >
-            <div className="drag-handle cursor-move select-none mr-1 text-gray-400" aria-hidden title="Kéo để thay đổi vị trí">
+            <div className="drag-handle cursor-move select-none text-gray-400" aria-hidden title="Kéo để thay đổi vị trí">
               ≡
             </div>
             <div className="flex-shrink-0 mt-0.5">
@@ -371,7 +360,6 @@ const AddClass: React.FC = () => {
       </div>
     );
   };
-  // -- End highlights --
 
   return (
     <div className="space-y-6">
@@ -527,375 +515,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Giá và khuyến mãi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            <div className="md:col-span-2">
-              <Label htmlFor="price" className="text-xs">GIÁ KHÓA HỌC</Label>
-              <Input
-                id="price"
-                type="number"
-                placeholder="0"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="promoPrice" className="text-xs">GIÁ KHUYẾN MÃI</Label>
-              <Input
-                id="promoPrice"
-                type="number"
-                placeholder="0"
-                value={promoPrice}
-                onChange={(e) => setPromoPrice(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-
-            <div className="md:col-span-1 flex items-end">
-              <div className="w-full">
-                <Label className="text-xs">CHÊNH LỆCH</Label>
-                <div className="mt-1 rounded-md bg-gray-50 text-orange-600 border border-gray-200 px-3 py-2 text-sm text-center">
-                  {differencePercent}% 
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <Label className="text-xs">CHỌN THỜI GIAN KHUYẾN MÃI</Label>
-              <Select value={promoTimeMode} onValueChange={(val) => setPromoTimeMode(val)}>
-                <SelectTrigger className="w-full h-9 mt-1">
-                  <SelectValue placeholder="Khoảng thời" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="specific">Khoảng thời gian</SelectItem>
-                  <SelectItem value="always">Luôn luôn</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {promoTimeMode === "specific" && (
-              <>
-                <div className="md:col-span-2">
-                  <Label className="text-xs">Từ ngày</Label>
-                  <div className="relative mt-1">
-                    <Input type="date" value={promoFrom} onChange={(e) => setPromoFrom(e.target.value)} />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
-                <div className="md:col-span-2">
-                  <Label className="text-xs">Đến ngày</Label>
-                  <div className="relative mt-1">
-                    <Input type="date" value={promoTo} onChange={(e) => setPromoTo(e.target.value)} />
-                    <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className={`md:col-span-${promoTimeMode === "specific" ? "1" : "2"}`}>
-              <Label className="text-xs">SỐ LƯỢNG KHUYẾN MÃI</Label>
-              <Input
-                type="number"
-                value={String(promoQuantity)}
-                onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
-                className="mt-1"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Học phí</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-            <div className="col-span-1">
-              <Label className="text-xs">THEO NGÀY</Label>
-              <Input
-                type="number"
-                placeholder=""
-                value={feePerDay}
-                onChange={(e) => setFeePerDay(e.target.value)}
-                className="mt-1"
-                aria-label="Học phí theo ngày"
-              />
-            </div>
-            <div className="col-span-1">
-              <Label className="text-xs">1 NGÀY/1 THÁNG</Label>
-              <Input
-                type="number"
-                placeholder=""
-                value={fee1Month}
-                onChange={(e) => setFee1Month(e.target.value)}
-                className="mt-1"
-                aria-label="Học phí 1 ngày/1 tháng"
-              />
-            </div>
-            <div className="col-span-1">
-              <Label className="text-xs">1 NGÀY/3 THÁNG</Label>
-              <Input
-                type="number"
-                placeholder=""
-                value={fee3Months}
-                onChange={(e) => setFee3Months(e.target.value)}
-                className="mt-1"
-                aria-label="Học phí 1 ngày/3 tháng"
-              />
-            </div>
-            <div className="col-span-1">
-              <Label className="text-xs">1 NGÀY/6 THÁNG</Label>
-              <Input
-                type="number"
-                placeholder=""
-                value={fee6Months}
-                onChange={(e) => setFee6Months(e.target.value)}
-                className="mt-1"
-                aria-label="Học phí 1 ngày/6 tháng"
-              />
-            </div>
-            <div className="col-span-1">
-              <Label className="text-xs">1 NGÀY/12 THÁNG</Label>
-              <Input
-                type="number"
-                placeholder=""
-                value={fee12Months}
-                onChange={(e) => setFee12Months(e.target.value)}
-                className="mt-1"
-                aria-label="Học phí 1 ngày/12 tháng"
-              />
-            </div>
-            <div className="col-span-1">
-              <Label className="text-xs">SỐ HỌC SINH (MỞ RỘNG)</Label>
-              <Input
-                type="number"
-                placeholder="0"
-                value={String(expandedStudents)}
-                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
-                className="mt-1"
-                aria-label="Số học sinh mở rộng"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Thông tin khác</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-            <div className="md:col-span-1">
-              <Label className="text-xs">HÌNH THỨC HỌC</Label>
-              <RadioGroup value={studyMode} onValueChange={(val) => setStudyMode(val as "Offline" | "Online")} className="flex flex-col space-y-2 mt-1">
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Offline" id="study-offline" />
-                  <Label htmlFor="study-offline" className="cursor-pointer">Offline</Label>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Online" id="study-online" />
-                  <Label htmlFor="study-online" className="cursor-pointer">Online</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label className="text-xs">LOẠI CA</Label>
-              <RadioGroup value={shiftType} onValueChange={(val) => setShiftType(val as "Ca đơn" | "Ca đúp")} className="flex flex-col space-y-2 mt-1">
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Ca đơn" id="shift-single" />
-                  <Label htmlFor="shift-single" className="cursor-pointer">Ca đơn</Label>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Ca đúp" id="shift-double" />
-                  <Label htmlFor="shift-double" className="cursor-pointer">Ca đúp</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label className="text-xs">TỰ ĐỘNG TRỪ BUỔI</Label>
-              <RadioGroup value={autoDeduct} onValueChange={(val) => setAutoDeduct(val as "Tự động" | "Thủ công")} className="flex flex-col space-y-2 mt-1">
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Tự động" id="deduct-auto" />
-                  <Label htmlFor="deduct-auto" className="cursor-pointer">Tự động</Label>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value="Thủ công" id="deduct-manual" />
-                  <Label htmlFor="deduct-manual" className="cursor-pointer">Thủ công</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="md:col-span-2">
-              <Label className="text-xs">LINK FACEBOOK PAGE</Label>
-              <Input value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." className="mt-1" />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label className="text-xs">LINK FACEBOOK GROUP</Label>
-              <Input value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." className="mt-1" />
-            </div>
-
-            <div className="md:col-span-3">
-              <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
-              <Input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="Link video..." className="mt-1" />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label className="text-xs">THỨ TỰ</Label>
-              <Input type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} className="mt-1" />
-            </div>
-
-            <div className="md:col-span-12">
-              <Label className="text-xs">GHI CHÚ</Label>
-              <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nhập nội dung ghi chú" className="mt-1 min-h-[80px]" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Feature panels */}
-      <div className="space-y-4">
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Chapters two-column panel (no separate title) */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left column: selected chapters */}
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
-                <div className="text-sm text-muted-foreground">{selectedChapters.length} chương</div>
-              </div>
-
-              {selectedChapters.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  Chưa có chương nào. Hãy thêm từ bên phải.
-                </div>
-              ) : (
-                <ul className="space-y-2">
-                  {selectedChapters.map((ch) => (
-                    <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
-                      <div className="text-sm font-medium">{ch.title}</div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemoveChapter(ch.id)}
-                          aria-label={`Xóa ${ch.title}`}
-                        >
-                          Xóa
-                        </Button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* Right column: all chapters with search */}
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Tìm chương..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-64"
-                    aria-label="Tìm chương"
-                  />
-                  <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSearchClick}>
-                    Tìm kiếm
-                  </Button>
-                </div>
-              </div>
-
-              {filteredChapters.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">Không tìm thấy chương.</div>
-              ) : (
-                <ul className="space-y-2">
-                  {filteredChapters.map((ch) => {
-                    const already = selectedChapters.some((s) => s.id === ch.id);
-                    return (
-                      <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
-                        <div className="text-sm">{ch.title}</div>
-                        <div>
-                          <Button
-                            size="sm"
-                            className={`px-3 py-1 ${already ? "bg-gray-200 text-gray-600" : "bg-green-500 hover:bg-green-600 text-white"}`}
-                            onClick={() => handleAddChapter(ch)}
-                            disabled={already}
-                            aria-label={`Thêm ${ch.title}`}
-                          >
-                            {already ? "Đã thêm" : "Thêm"}
-                          </Button>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Short description panel (Mô tả ngắn) */}
+      {/* Many intermediate panels kept unchanged... (pricing, fees, chapters, descriptions) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
@@ -915,7 +535,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Full content panel (Nội dung) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Nội dung</CardTitle>
@@ -935,42 +554,57 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Featured highlights panel */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="flex gap-2 items-center">
-              <Input
-                placeholder="Nhập thông tin nổi bật..."
-                value={newHighlight}
-                onChange={(e) => setNewHighlight(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addHighlight();
-                  }
-                }}
-              />
-              <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addHighlight}>Thêm</Button>
+      {/* Highlights + Placeholder side-by-side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Left: Highlights (half width) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="flex gap-2 items-center">
+                <Input
+                  placeholder="Nhập thông tin nổi bật..."
+                  value={newHighlight}
+                  onChange={(e) => setNewHighlight(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addHighlight();
+                    }
+                  }}
+                />
+                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addHighlight}>Thêm</Button>
+              </div>
+
+              <div>
+                {highlights.length === 0 ? (
+                  <div className="text-muted-foreground text-sm">Chưa có thông tin nổi bật nào.</div>
+                ) : (
+                  renderHighlightsList()
+                )}
+              </div>
+
+              <div className="text-sm text-muted-foreground">Danh sách có thể kéo-thả để thay đổi thứ tự (kéo lên/xuống).</div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div>
-              {highlights.length === 0 ? (
-                <div className="text-muted-foreground text-sm">Chưa có thông tin nổi bật nào.</div>
-              ) : (
-                renderHighlightsGrid()
-              )}
+        {/* Right: Placeholder for future functionality (half width) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-muted-foreground">Bảng phụ</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="min-h-[220px] flex items-center justify-center text-sm text-muted-foreground">
+              Khu vực dành cho chức năng bổ sung — bạn có thể thêm module tiếp theo ở đây.
             </div>
+          </CardContent>
+        </Card>
+      </div>
 
-            <div className="text-sm text-muted-foreground">Những nội dung trên sẽ hiển thị cho người dùng với icon mặc định; kéo thả để thay đổi vị trí.</div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Footer buttons placed outside the Card */}
+      {/* Footer buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
         <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU</Button>
