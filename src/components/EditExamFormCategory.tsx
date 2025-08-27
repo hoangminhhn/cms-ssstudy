@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
+import ExamPartManager from './ExamPartManager';
 
 interface ExamCategory {
   id: string;
@@ -237,6 +238,19 @@ const EditExamFormCategory: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* New layout row: left column = ExamPartManager (half width), right column reserved for future content */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="md:col-span-1">
+          <ExamPartManager />
+        </div>
+        <div className="md:col-span-1">
+          {/* Placeholder column (empty) to keep manager width as half */}
+          <div className="h-full border rounded-md bg-gray-50 dark:bg-gray-800 p-4 flex items-center justify-center text-sm text-muted-foreground">
+            Khu vực trống — bạn có thể thêm nội dung phụ trợ tại đây.
+          </div>
+        </div>
+      </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
