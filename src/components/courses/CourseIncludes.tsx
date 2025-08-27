@@ -30,11 +30,11 @@ interface CustomInclude {
 const AVAILABLE_ICON_KEYS = Object.keys(BUILT_IN_ICONS) as BuiltInIconKey[];
 
 const CourseIncludes: React.FC = () => {
-  // Fixed fields state
-  const [topics, setTopics] = React.useState<string>("12");
-  const [lessons, setLessons] = React.useState<string>("150");
-  const [exercises, setExercises] = React.useState<string>("200+");
-  const [hours, setHours] = React.useState<string>("400+");
+  // Fixed fields state start empty; placeholders will show examples
+  const [topics, setTopics] = React.useState<string>("");
+  const [lessons, setLessons] = React.useState<string>("");
+  const [exercises, setExercises] = React.useState<string>("");
+  const [hours, setHours] = React.useState<string>("");
 
   // Custom fields state
   const [customLabel, setCustomLabel] = React.useState<string>("");
@@ -96,7 +96,12 @@ const CourseIncludes: React.FC = () => {
                 <div className="text-sm text-gray-700 whitespace-nowrap">Số chuyên đề</div>
               </div>
               <div className="flex-1 min-w-0">
-                <Input value={topics} onChange={(e) => setTopics(e.target.value)} className="w-full" />
+                <Input
+                  value={topics}
+                  onChange={(e) => setTopics(e.target.value)}
+                  placeholder="Ví dụ: 20+ Chuyên đề"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -106,7 +111,12 @@ const CourseIncludes: React.FC = () => {
                 <div className="text-sm text-gray-700 whitespace-nowrap">Số bài học</div>
               </div>
               <div className="flex-1 min-w-0">
-                <Input value={lessons} onChange={(e) => setLessons(e.target.value)} className="w-full" />
+                <Input
+                  value={lessons}
+                  onChange={(e) => setLessons(e.target.value)}
+                  placeholder="Ví dụ: 150+ Bài học"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -116,7 +126,12 @@ const CourseIncludes: React.FC = () => {
                 <div className="text-sm text-gray-700 whitespace-nowrap">Số bài tập</div>
               </div>
               <div className="flex-1 min-w-0">
-                <Input value={exercises} onChange={(e) => setExercises(e.target.value)} className="w-full" />
+                <Input
+                  value={exercises}
+                  onChange={(e) => setExercises(e.target.value)}
+                  placeholder="Ví dụ: 200+ Bài tập"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -126,14 +141,19 @@ const CourseIncludes: React.FC = () => {
                 <div className="text-sm text-gray-700 whitespace-nowrap">Số giờ học</div>
               </div>
               <div className="flex-1 min-w-0">
-                <Input value={hours} onChange={(e) => setHours(e.target.value)} className="w-full" />
+                <Input
+                  value={hours}
+                  onChange={(e) => setHours(e.target.value)}
+                  placeholder="Ví dụ: 400+ Giờ học"
+                  className="w-full"
+                />
               </div>
             </div>
           </div>
 
           <hr className="my-2" />
 
-          {/* Add custom items: Now only label + icon picker */}
+          {/* Add custom items: single label + icon picker */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Thêm mục tùy chỉnh</div>
