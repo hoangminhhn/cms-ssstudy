@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { DateRange } from 'react-day-picker';
 
 interface DateRangePickerProps {
   date: { from?: Date; to?: Date } | undefined;
@@ -13,6 +14,9 @@ interface DateRangePickerProps {
 }
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({ date, setDate }) => {
+  // Only pass a DateRange when `from` exists to satisfy the DateRange type
+  const selectedRange = date?.from ? (date as DateRange) : undefined;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -44,7 +48,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ date, setDate }) => {
           initialFocus
           mode="range"
           defaultMonth={date?.from}
-          selected={date}
+          selected={selectedRange}
           onSelect={setDate}
           numberOfMonths={2}
         />
