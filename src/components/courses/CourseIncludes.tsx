@@ -147,7 +147,7 @@ const CourseIncludes: React.FC = () => {
                 <Input
                   value={customLabel}
                   onChange={(e) => setCustomLabel(e.target.value)}
-                  placeholder="Ví dụ: Bài tập có đáp án"
+                  placeholder="Ví dụ: 20+ Bài giảng livestream tương tác"
                   className="flex-1 min-w-0"
                 />
 
