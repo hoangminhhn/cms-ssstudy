@@ -176,9 +176,11 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             </div>
 
-            {/* Very tight 2x2 layout with 40px horizontal gap between column 1 and column 2 */}
+            {/* Fixed-width two-column layout with exactly 40px horizontal gap.
+                Each column is constrained so the pair doesn't stretch across the whole container,
+                removing the large empty area you circled. */}
             {useScoringConfig && (
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-[40px]">
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-[minmax(0,260px)_minmax(0,260px)] gap-y-2 gap-x-[40px] items-center">
                 <div className="flex items-center gap-2">
                   <div className="text-sm leading-none">Trả lời đúng 1 ý</div>
                   <Input
