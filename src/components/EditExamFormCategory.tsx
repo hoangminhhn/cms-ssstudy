@@ -176,9 +176,9 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             </div>
 
-            {/* Very tight 2x2 layout: minimal horizontal gap, small inputs and labels aligned close */}
+            {/* Very tight 2x2 layout with 40px horizontal gap between column 1 and column 2 */}
             {useScoringConfig && (
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-3">
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-[40px]">
                 <div className="flex items-center gap-2">
                   <div className="text-sm leading-none">Trả lời đúng 1 ý</div>
                   <Input
