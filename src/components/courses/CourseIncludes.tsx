@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -42,8 +42,8 @@ const CourseIncludes: React.FC = () => {
 
   const [customItems, setCustomItems] = React.useState<CustomInclude[]>([]);
 
-  // Which item's icon picker is open (id) — used to control popovers per-item
-  const [openPickerId, setOpenPickerId] = React.useState<string | null>(null);
+  // dialogOpenId: null | "new" | itemId
+  const [dialogOpenId, setDialogOpenId] = React.useState<string | null>(null);
 
   const handleAddCustom = () => {
     const label = customLabel.trim();
@@ -71,13 +71,46 @@ const CourseIncludes: React.FC = () => {
 
   const handleUpdateItemIcon = (id: string, key: BuiltInIconKey) => {
     setCustomItems((prev) => prev.map((it) => (it.id === id ? { ...it, builtInKey: key } : it)));
-    setOpenPickerId(null);
+    setDialogOpenId(null);
     toast.success("Đã cập nhật icon.");
   };
 
   const handleUpdateNewIcon = (key: BuiltInIconKey) => {
     setSelectedIconForNew(key);
-    setOpenPickerId(null);
+    setDialogOpenId(null);
+  };
+
+  // helper to render the modal content
+  const renderIconPickerContent = (targetId: string | null) => {
+    const isForNew = targetId === "new";
+    const currentKey = isForNew ? selectedIconForNew : customItems.find((it) => it.id === targetId)?.builtInKey;
+
+    return (
+      <div className="p-2">
+        <div className="grid grid-cols-4 gap-2">
+          {AVAILABLE_ICON_KEYS.map((k) => (
+            <button
+              key={k}
+              onClick={() => {
+                if (isForNew) {
+                  handleUpdateNewIcon(k);
+                } else if (targetId) {
+                  handleUpdateItemIcon(targetId, k);
+                }
+              }}
+              className={cn(
+                "p-3 rounded-md flex items-center justify-center hover:bg-gray-100",
+                k === currentKey ? "ring-2 ring-orange-300" : ""
+              )}
+              aria-label={`Chọn icon ${k}`}
+              title={k}
+            >
+              {React.createElement(BUILT_IN_ICONS[k], { className: "h-6 w-6 text-gray-700" })}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -89,7 +122,6 @@ const CourseIncludes: React.FC = () => {
         <div className="space-y-3">
           {/* Fixed 4 rows */}
           <div className="space-y-2">
-            {/* Each row: left = icon+title (natural width), right = input (flex-1, fills remaining) */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-3 flex-shrink-0">
                 <Book className="h-5 w-5 text-gray-600" />
@@ -153,7 +185,7 @@ const CourseIncludes: React.FC = () => {
 
           <hr className="my-2" />
 
-          {/* Add custom items: single label + icon picker */}
+          {/* Add custom items: single label + modal icon picker */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Thêm mục tùy chỉnh</div>
@@ -173,37 +205,16 @@ const CourseIncludes: React.FC = () => {
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Popover open={openPickerId === "new"} onOpenChange={(open) => setOpenPickerId(open ? "new" : null)}>
-                      <div>
-                        <PopoverTrigger asChild>
-                          <button
-                            className="h-9 w-9 rounded-md border flex items-center justify-center bg-white hover:bg-gray-50"
-                            aria-label="Click để thay đổi icon"
-                            title="Click để thay đổi icon"
-                          >
-                            {React.createElement(BUILT_IN_ICONS[selectedIconForNew], {
-                              className: "h-5 w-5 text-gray-600",
-                            })}
-                          </button>
-                        </PopoverTrigger>
-
-                        <PopoverContent className="w-[240px] p-3 grid grid-cols-4 gap-2">
-                          {AVAILABLE_ICON_KEYS.map((k) => (
-                            <button
-                              key={k}
-                              onClick={() => handleUpdateNewIcon(k)}
-                              className={cn(
-                                "p-2 rounded-md flex items-center justify-center hover:bg-gray-100",
-                                k === selectedIconForNew ? "ring-2 ring-orange-300" : ""
-                              )}
-                              aria-label={`Chọn icon ${k}`}
-                            >
-                              {React.createElement(BUILT_IN_ICONS[k], { className: "h-5 w-5 text-gray-600" })}
-                            </button>
-                          ))}
-                        </PopoverContent>
-                      </div>
-                    </Popover>
+                    <button
+                      onClick={() => setDialogOpenId("new")}
+                      className="h-9 w-9 rounded-md border flex items-center justify-center bg-white hover:bg-gray-50"
+                      aria-label="Click để thay đổi icon"
+                      title="Click để thay đổi icon"
+                    >
+                      {React.createElement(BUILT_IN_ICONS[selectedIconForNew], {
+                        className: "h-5 w-5 text-gray-600",
+                      })}
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>click để thay đổi icon</TooltipContent>
                 </Tooltip>
@@ -222,40 +233,19 @@ const CourseIncludes: React.FC = () => {
                 <div key={it.id} className="flex items-center gap-3 justify-between border rounded px-3 py-2 bg-white dark:bg-gray-800">
                   <div className="flex items-center gap-3 flex-shrink-0 min-w-0">
                     <div className="flex items-center gap-2">
-                      <Popover open={openPickerId === it.id} onOpenChange={(open) => setOpenPickerId(open ? it.id : null)}>
-                        <div className="flex items-center gap-2">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <PopoverTrigger asChild>
-                                <button
-                                  className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
-                                  aria-label="Click để thay đổi icon"
-                                  title="Click để thay đổi icon"
-                                >
-                                  {React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-4 w-4 text-gray-700" })}
-                                </button>
-                              </PopoverTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>click để thay đổi icon</TooltipContent>
-                          </Tooltip>
-
-                          <PopoverContent className="w-[240px] p-3 grid grid-cols-4 gap-2">
-                            {AVAILABLE_ICON_KEYS.map((k) => (
-                              <button
-                                key={k}
-                                onClick={() => handleUpdateItemIcon(it.id, k)}
-                                className={cn(
-                                  "p-2 rounded-md flex items-center justify-center hover:bg-gray-100",
-                                  k === it.builtInKey ? "ring-2 ring-orange-300" : ""
-                                )}
-                                aria-label={`Chọn icon ${k}`}
-                              >
-                                {React.createElement(BUILT_IN_ICONS[k], { className: "h-5 w-5 text-gray-600" })}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </div>
-                      </Popover>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => setDialogOpenId(it.id)}
+                            className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+                            aria-label="Click để thay đổi icon"
+                            title="Click để thay đổi icon"
+                          >
+                            {React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-4 w-4 text-gray-700" })}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>click để thay đổi icon</TooltipContent>
+                      </Tooltip>
 
                       <div className="text-sm truncate">{it.label}</div>
                     </div>
@@ -270,6 +260,23 @@ const CourseIncludes: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Dialog used for icon selection (centered) */}
+        <Dialog open={dialogOpenId !== null} onOpenChange={(open) => { if (!open) setDialogOpenId(null); }}>
+          <DialogContent className="max-w-md w-full">
+            <DialogHeader>
+              <DialogTitle>Chọn icon</DialogTitle>
+            </DialogHeader>
+
+            <div className="mt-2">
+              {renderIconPickerContent(dialogOpenId)}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDialogOpenId(null)}>Đóng</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
