@@ -339,9 +339,8 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                     <Select
                       value={group.subSubjects.length > 0 ? group.subSubjects[0].name : ""}
                       onValueChange={(val) => handleSingleSubjectChange(group.id, val)}
-                      className="w-48"
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-48">
                         <SelectValue placeholder="Lựa chọn môn" />
                       </SelectTrigger>
                       <SelectContent>
@@ -394,7 +393,6 @@ const GroupPartModal: React.FC<GroupPartModalProps> = ({ isOpen, onClose, onSave
                         onValueChange={(val) =>
                           setNewSubjectSelections((prev) => ({ ...prev, [group.id]: val }))
                         }
-                        className="flex-1 w-48"
                       >
                         <SelectTrigger className="w-full min-w-[150px]">
                           <SelectValue placeholder="Lựa chọn môn" />

@@ -87,7 +87,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         ? parts.find(p => p.id === editingPartId)!.questions[editingQuestionIndex].id
         : Date.now().toString(),
       correctAnswer: String.fromCharCode(65 + question.correctOptionIndex),
-      solution: question.solution || question.explanation,
+      solution: question.explanation || "", // use explanation field from MultipleChoiceQuestion
       videoLink: question.videoLink,
       uploadDate: new Date().toLocaleDateString(),
       documentLink: undefined,
