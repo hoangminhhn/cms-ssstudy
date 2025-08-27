@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Check, Trash2 } from "lucide-react";
+import SortableJS from "sortablejs";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -313,13 +314,47 @@ const AddClass: React.FC = () => {
     toast.success("Đã xóa thông tin nổi bật.");
   };
 
+  // Drag & drop: SortableJS setup for highlights
+  const highlightsRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!highlightsRef.current) return;
+    const sortable = SortableJS.create(highlightsRef.current, {
+      animation: 150,
+      handle: ".drag-handle",
+      onEnd: (evt) => {
+        const oldIndex = evt.oldIndex;
+        const newIndex = evt.newIndex;
+        if (typeof oldIndex !== "number" || typeof newIndex !== "number") return;
+        setHighlights(prev => {
+          const next = [...prev];
+          const [moved] = next.splice(oldIndex, 1);
+          next.splice(newIndex, 0, moved);
+          return next;
+        });
+        toast.success("Đã thay đổi thứ tự thông tin nổi bật.");
+      },
+    });
+
+    return () => {
+      sortable.destroy();
+    };
+  }, [highlightsRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // helper to render two-column preview grid split evenly
   const renderHighlightsGrid = () => {
-    // We'll display items in two columns responsively; using CSS grid with 2 columns
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div ref={highlightsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4" aria-live="polite">
         {highlights.map((h, idx) => (
-          <div key={idx} className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 border rounded-md">
+          <div
+            key={idx}
+            className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 border rounded-md"
+            role="group"
+            aria-label={`Thông tin nổi bật ${idx + 1}`}
+          >
+            <div className="drag-handle cursor-move select-none mr-1 text-gray-400" aria-hidden title="Kéo để thay đổi vị trí">
+              ≡
+            </div>
             <div className="flex-shrink-0 mt-0.5">
               <div className="h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
                 <Check className="h-4 w-4" />
@@ -327,7 +362,7 @@ const AddClass: React.FC = () => {
             </div>
             <div className="flex-1 text-sm text-gray-700 dark:text-gray-200">{h}</div>
             <div className="ml-2">
-              <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-50" onClick={() => removeHighlight(idx)} aria-label={`Xóa highlight ${idx}`}>
+              <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-50" onClick={() => removeHighlight(idx)} aria-label={`Xóa highlight ${idx + 1}`}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -930,7 +965,7 @@ const AddClass: React.FC = () => {
               )}
             </div>
 
-            <div className="text-sm text-muted-foreground">Những nội dung trên sẽ hiển thị cho người dùng với icon mặc định.</div>
+            <div className="text-sm text-muted-foreground">Những nội dung trên sẽ hiển thị cho người dùng với icon mặc định; kéo thả để thay đổi vị trí.</div>
           </div>
         </CardContent>
       </Card>
