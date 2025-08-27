@@ -5,48 +5,23 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import AddBookForm from '@/components/AddBookForm';
-import BookCategoryManagement from '@/components/BookCategoryManagement'; // Import new component
-import EditBookCategoryForm from '@/components/EditBookCategoryForm'; // Import new component
+import AddBookForm from '@/components/AddBookForm'; // Import the new AddBookForm
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const activeTab = searchParams.get('tab') || 'all-books'; // Default to 'all-books'
-  const categoryId = searchParams.get('categoryId'); // Get categoryId for editing
-
-  const getHeaderTitle = () => {
-    switch (activeTab) {
-      case 'all-books':
-        return 'Quản lý sách';
-      case 'add-book':
-        return 'Thêm sách mới';
-      case 'book-categories':
-        return 'Danh mục sách';
-      case 'add-category':
-        return 'Thêm danh mục sách'; // This tab will now be handled by BookCategoryManagement
-      case 'edit-category':
-        return `Chỉnh sửa danh mục sách #${categoryId}`;
-      case 'book-reviews':
-        return 'Đánh giá sách';
-      case 'add-review':
-        return 'Thêm đánh giá sách';
-      default:
-        return 'Quản lý sách';
-    }
-  };
 
   const renderContent = () => {
     switch (activeTab) {
       case 'all-books':
         return <BookTable />;
       case 'add-book':
-        return <AddBookForm />;
+        return <AddBookForm />; {/* Render AddBookForm here */}
       case 'book-categories':
-      case 'add-category': // Add category form is part of BookCategoryManagement
-        return <BookCategoryManagement />;
-      case 'edit-category':
-        return <EditBookCategoryForm />;
+        return <div className="p-4">Nội dung cho "Danh mục sách" sẽ ở đây.</div>;
+      case 'add-category':
+        return <div className="p-4">Nội dung cho "Thêm danh mục" sẽ ở đây.</div>;
       case 'book-reviews':
         return <div className="p-4">Nội dung cho "Đánh giá sách" sẽ ở đây.</div>;
       case 'add-review':
@@ -57,7 +32,7 @@ const BookManagement: React.FC = () => {
   };
 
   return (
-    <Layout headerTitle={getHeaderTitle()}>
+    <Layout headerTitle="Quản lý sách">
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
         {/* Mobile content - This section is for a placeholder mobile submenu implementation */}
         <div className="lg:hidden w-full overflow-x-hidden">
@@ -71,7 +46,7 @@ const BookManagement: React.FC = () => {
               <ChevronRight className="h-4 w-4" />
               <span className="text-sm font-semibold">MỞ RỘNG</span>
             </Button>
-            <h2 className="text-lg font-semibold">{getHeaderTitle()}</h2>
+            <h2 className="text-lg font-semibold">Quản lý sách</h2>
             <div className="w-16" /> {/* Placeholder */}
           </div>
         </div>
