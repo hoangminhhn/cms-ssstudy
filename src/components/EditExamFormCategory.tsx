@@ -176,13 +176,11 @@ const EditExamFormCategory: React.FC = () => {
               </div>
             </div>
 
-            {/* Compact 2x2 layout for percent fields */}
+            {/* Tight 2x2 layout: small horizontal gap and compact label/input alignment */}
             {useScoringConfig && (
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <Label className="text-sm">Trả lời đúng 1 ý</Label>
-                  </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+                <div className="flex items-center gap-3">
+                  <div className="text-sm min-w-[160px]">Trả lời đúng 1 ý</div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -196,10 +194,8 @@ const EditExamFormCategory: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <Label className="text-sm">Trả lời đúng 2 ý</Label>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-sm min-w-[160px]">Trả lời đúng 2 ý</div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -213,10 +209,8 @@ const EditExamFormCategory: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <Label className="text-sm">Trả lời đúng 3 ý</Label>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-sm min-w-[160px]">Trả lời đúng 3 ý</div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -230,10 +224,8 @@ const EditExamFormCategory: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <Label className="text-sm">Trả lời đúng 4 ý</Label>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-sm min-w-[160px]">Trả lời đúng 4 ý</div>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
