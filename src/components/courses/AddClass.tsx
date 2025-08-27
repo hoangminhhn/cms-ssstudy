@@ -902,14 +902,13 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New: Highlights panel placed under 'Nội dung' - left half for highlights, right half reserved */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left column: Highlights list */}
+      {/* Split into two separate cards: left = Highlights, right = Placeholder for future features */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Input
@@ -963,16 +962,22 @@ const AddClass: React.FC = () => {
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground">Danh sách có thể kéo-thả để thay đổi thứ tự.</p>
+              <p className="text-sm text-muted-foreground">Kéo-thả để thay đổi thứ tự các mục.</p>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Right column: placeholder for future features (keeps it empty for your later use) */}
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[150px] flex items-center justify-center">
-              <div className="text-sm text-muted-foreground">Khung để bạn thêm chức năng khác (bên phải)</div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-muted-foreground">Khung để bạn thêm chức năng khác</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="min-h-[180px] flex items-center justify-center text-sm text-muted-foreground">
+              Bên phải là khu vực riêng — bạn có thể thêm bảng chức năng mới tại đây.
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Footer buttons placed outside the Card */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
