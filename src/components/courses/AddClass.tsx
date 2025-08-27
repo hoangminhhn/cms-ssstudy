@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { Check, Trash2 } from "lucide-react";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -117,6 +118,7 @@ const AddClass: React.FC = () => {
       note,
       shortDescription,
       fullContent,
+      highlights,
     });
   };
 
@@ -162,6 +164,8 @@ const AddClass: React.FC = () => {
     setNote("");
     setShortDescription("");
     setFullContent("");
+    setHighlights([]);
+    setNewHighlight("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -283,6 +287,56 @@ const AddClass: React.FC = () => {
     'link', 'image', 'video'
   ];
   // -- End content config --
+
+  // -- New: Highlights (Thông tin nổi bật) panel --
+  const [highlights, setHighlights] = useState<string[]>([
+    "Đảm bảo đầu ra.",
+    "Có kiến thức về cấu trúc và cách tiếp cận bài thi IELTS hiệu quả.",
+    "Hình thành tư duy học đúng. Bỏ Tư duy đọc dịch, viết dịch, nói dịch.",
+    "Nói và viết một đoạn/ một bài nhanh, lưu loát, tự nhiên và liên kết, kể cả khi gặp chủ đề lạ.",
+  ]);
+  const [newHighlight, setNewHighlight] = useState<string>("");
+
+  const addHighlight = () => {
+    const trimmed = newHighlight.trim();
+    if (!trimmed) {
+      toast.error("Vui lòng nhập nội dung nổi bật.");
+      return;
+    }
+    setHighlights(prev => [...prev, trimmed]);
+    setNewHighlight("");
+    toast.success("Đã thêm thông tin nổi bật.");
+  };
+
+  const removeHighlight = (index: number) => {
+    setHighlights(prev => prev.filter((_, i) => i !== index));
+    toast.success("Đã xóa thông tin nổi bật.");
+  };
+
+  // helper to render two-column preview grid split evenly
+  const renderHighlightsGrid = () => {
+    // We'll display items in two columns responsively; using CSS grid with 2 columns
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {highlights.map((h, idx) => (
+          <div key={idx} className="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 border rounded-md">
+            <div className="flex-shrink-0 mt-0.5">
+              <div className="h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                <Check className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="flex-1 text-sm text-gray-700 dark:text-gray-200">{h}</div>
+            <div className="ml-2">
+              <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-50" onClick={() => removeHighlight(idx)} aria-label={`Xóa highlight ${idx}`}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  // -- End highlights --
 
   return (
     <div className="space-y-6">
@@ -826,7 +880,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* New: Full content panel (Nội dung) */}
+      {/* Full content panel (Nội dung) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Nội dung</CardTitle>
@@ -843,6 +897,41 @@ const AddClass: React.FC = () => {
             />
           </div>
           <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
+        </CardContent>
+      </Card>
+
+      {/* NEW: Featured highlights panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="flex gap-2 items-center">
+              <Input
+                placeholder="Nhập thông tin nổi bật..."
+                value={newHighlight}
+                onChange={(e) => setNewHighlight(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addHighlight();
+                  }
+                }}
+              />
+              <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addHighlight}>Thêm</Button>
+            </div>
+
+            <div>
+              {highlights.length === 0 ? (
+                <div className="text-muted-foreground text-sm">Chưa có thông tin nổi bật nào.</div>
+              ) : (
+                renderHighlightsGrid()
+              )}
+            </div>
+
+            <div className="text-sm text-muted-foreground">Những nội dung trên sẽ hiển thị cho người dùng với icon mặc định.</div>
+          </div>
         </CardContent>
       </Card>
 
