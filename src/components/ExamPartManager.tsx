@@ -104,8 +104,14 @@ const ExamPartManager: React.FC = () => {
     toast.success("Đã cập nhật tên phần.");
   };
 
+  // counts for pills:
+  const countAll = parts.filter((p) => !p.hidden && !p.deleted).length;
+  const countHidden = parts.filter((p) => p.hidden && !p.deleted).length;
+  const countDeleted = parts.filter((p) => p.deleted).length;
+
+  // visibleParts per current filter:
   const visibleParts = parts.filter((p) => {
-    if (filter === "all") return !p.deleted;
+    if (filter === "all") return !p.hidden && !p.deleted; // only show non-hidden, non-deleted
     if (filter === "hidden") return !!p.hidden && !p.deleted;
     if (filter === "deleted") return !!p.deleted;
     return true;
@@ -132,28 +138,39 @@ const ExamPartManager: React.FC = () => {
           </div>
         </div>
 
-        {/* Filter pills under the input row */}
+        {/* Filter pills under the input row with counts */}
         <div className="mb-4 flex items-center gap-2">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-1 rounded-md text-sm ${filter === "all" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
+            className={`px-3 py-1 rounded-md text-sm inline-flex items-center gap-2 ${filter === "all" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
             aria-pressed={filter === "all"}
+            aria-label={`Tất cả (${countAll})`}
+            title={`Tất cả (${countAll})`}
           >
-            Tất cả
+            <span>Tất cả</span>
+            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countAll}</span>
           </button>
+
           <button
             onClick={() => setFilter("hidden")}
-            className={`px-3 py-1 rounded-md text-sm ${filter === "hidden" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
+            className={`px-3 py-1 rounded-md text-sm inline-flex items-center gap-2 ${filter === "hidden" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
             aria-pressed={filter === "hidden"}
+            aria-label={`Ẩn (${countHidden})`}
+            title={`Ẩn (${countHidden})`}
           >
-            Ẩn
+            <span>Ẩn</span>
+            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countHidden}</span>
           </button>
+
           <button
             onClick={() => setFilter("deleted")}
-            className={`px-3 py-1 rounded-md text-sm ${filter === "deleted" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
+            className={`px-3 py-1 rounded-md text-sm inline-flex items-center gap-2 ${filter === "deleted" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200"}`}
             aria-pressed={filter === "deleted"}
+            aria-label={`Xóa (${countDeleted})`}
+            title={`Xóa (${countDeleted})`}
           >
-            Xóa
+            <span>Xóa</span>
+            <span className="inline-block bg-white dark:bg-gray-900 text-xs text-muted-foreground px-2 py-0.5 rounded">{countDeleted}</span>
           </button>
         </div>
 
