@@ -357,6 +357,58 @@ const AddClass: React.FC = () => {
     return <Icon className="h-5 w-5" />;
   };
 
+  const handleCancel = () => {
+    // Reset form (preserve other behaviors)
+    setCode("");
+    setName("");
+    setStartDate("");
+    setEndDate("");
+    setClassification("Cả");
+    setRoom("");
+    setSubject("");
+    setCategory("");
+    setTeacher("");
+    setFeatured(false);
+    setVisible(true);
+    setImagePreview(null);
+
+    // Reset promotion fields
+    setPrice("");
+    setPromoPrice("");
+    setPromoFrom("");
+    setPromoTo("");
+    setPromoQuantity(0);
+    setPromoTimeMode("specific");
+
+    // Reset fees
+    setFeePerDay("");
+    setFee1Month("");
+    setFee3Months("");
+    setFee6Months("");
+    setFee12Months("");
+    setExpandedStudents(0);
+
+    // Reset other info
+    setStudyMode("Offline");
+    setShiftType("Ca đơn");
+    setAutoDeduct("Thủ công");
+    setFbPage("");
+    setFbGroup("");
+    setIntroVideo("");
+    setOrder(0);
+    setNote("");
+    setShortDescription("");
+    setFullContent("");
+
+    // Reset highlights & extras
+    setHighlights([]);
+    setExtras([]);
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (uploadIconInputRef.current) uploadIconInputRef.current.value = "";
+    toast.info("Đã hủy thay đổi.");
+  };
+
   return (
     <div className="space-y-6">
       {/* --- existing top parts (unchanged) --- */}
@@ -573,8 +625,6 @@ const AddClass: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* ... other existing cards & sections (omitted for brevity in code reading) ... */}
 
       {/* Full content panel (Nội dung) */}
       <Card>
@@ -797,8 +847,7 @@ const AddClass: React.FC = () => {
                                   {builtinIcons.map((b) => (
                                     <SelectItem key={b.key} value={b.key}>
                                       <div className="flex items-center gap-2">
-                                        <b className="text-orange-600"><b />{b.label}</b>
-                                        <span className="ml-2 text-xs text-muted-foreground"> </span>
+                                        <span className="text-orange-600">{b.label}</span>
                                       </div>
                                     </SelectItem>
                                   ))}
