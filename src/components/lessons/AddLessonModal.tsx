@@ -225,14 +225,17 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
               </Select>
             </div>
 
-            <div className="grid grid-cols-1 gap-2">
-              <div>
-                <Label className="text-sm">Link đề có đáp án</Label>
-                <Input value={linkWithAnswer} onChange={(e) => setLinkWithAnswer(e.target.value)} placeholder="URL (có đáp án)" />
-              </div>
-              <div>
-                <Label className="text-sm">Link đề không có đáp án</Label>
-                <Input value={linkWithoutAnswer} onChange={(e) => setLinkWithoutAnswer(e.target.value)} placeholder="URL (không đáp án)" />
+            {/* Updated: put both link inputs on the same row (side-by-side) */}
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-sm">Link đề có đáp án</Label>
+                  <Input value={linkWithAnswer} onChange={(e) => setLinkWithAnswer(e.target.value)} placeholder="URL (có đáp án)" />
+                </div>
+                <div>
+                  <Label className="text-sm">Link đề không có đáp án</Label>
+                  <Input value={linkWithoutAnswer} onChange={(e) => setLinkWithoutAnswer(e.target.value)} placeholder="URL (không đáp án)" />
+                </div>
               </div>
             </div>
           </div>
