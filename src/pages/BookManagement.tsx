@@ -8,6 +8,7 @@ import { ChevronRight } from 'lucide-react';
 import AddBookForm from '@/components/AddBookForm';
 import BookCategoryManagement from '@/components/BookCategoryManagement';
 import AddBookCategory from '@/components/AddBookCategory';
+import BookReviews from '@/components/BookReviews'; // NEW import
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -23,9 +24,9 @@ const BookManagement: React.FC = () => {
       case 'book-categories':
         return <BookCategoryManagement />;
       case 'add-category':
-        return <AddBookCategory />; // NEW: render AddBookCategory here
+        return <AddBookCategory />;
       case 'book-reviews':
-        return <div className="p-4">Nội dung cho "Đánh giá sách" sẽ ở đây.</div>;
+        return <BookReviews />; // NEW: render BookReviews here
       case 'add-review':
         return <div className="p-4">Nội dung cho "Thêm đánh giá sách" sẽ ở đây.</div>;
       default:
