@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -154,7 +153,7 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tên bài học" />
           </div>
 
-          {/* Updated layout: labels above controls */}
+          {/* Labels above controls */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <Label className="text-sm block mb-2">Miễn phí</Label>
@@ -196,7 +195,8 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Subject & Chapter */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <Label className="text-sm">Môn học</Label>
               <Select value={subject} onValueChange={setSubject}>
@@ -224,19 +224,17 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-            {/* Updated: put both link inputs on the same row (side-by-side) */}
+          {/* NEW: dedicated row for the two answer-link fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <Label className="text-sm">Link đề có đáp án</Label>
-                  <Input value={linkWithAnswer} onChange={(e) => setLinkWithAnswer(e.target.value)} placeholder="URL (có đáp án)" />
-                </div>
-                <div>
-                  <Label className="text-sm">Link đề không có đáp án</Label>
-                  <Input value={linkWithoutAnswer} onChange={(e) => setLinkWithoutAnswer(e.target.value)} placeholder="URL (không đáp án)" />
-                </div>
-              </div>
+              <Label className="text-sm">Link đề có đáp án</Label>
+              <Input value={linkWithAnswer} onChange={(e) => setLinkWithAnswer(e.target.value)} placeholder="URL (có đáp án)" />
+            </div>
+            <div>
+              <Label className="text-sm">Link đề không có đáp án</Label>
+              <Input value={linkWithoutAnswer} onChange={(e) => setLinkWithoutAnswer(e.target.value)} placeholder="URL (không đáp án)" />
             </div>
           </div>
 
