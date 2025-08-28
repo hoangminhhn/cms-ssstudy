@@ -46,6 +46,9 @@ const BookReviews: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
 
+  // NEW: selection state for checkboxes
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+
   const filtered = reviews.filter(
     (r) =>
       r.bookTitle.toLowerCase().includes(query.toLowerCase()) ||
@@ -81,6 +84,7 @@ const BookReviews: React.FC = () => {
   const handleDelete = (id: string) => {
     if (!confirm("Bạn có chắc muốn xóa đánh giá này?")) return;
     setReviews((prev) => prev.filter((r) => r.id !== id));
+    setSelectedIds((prev) => prev.filter((sid) => sid !== id));
     toast.success("Đã xóa đánh giá.");
   };
 
@@ -96,6 +100,43 @@ const BookReviews: React.FC = () => {
     }
     setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, reviewText: trimmed, updatedAt: new Date().toLocaleString() } : r)));
     toast.success("Đã cập nhật đánh giá.");
+  };
+
+  // NEW: toggle single selection
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      if (checked) {
+        if (!prev.includes(id)) return [...prev, id];
+        return prev;
+      } else {
+        return prev.filter((p) => p !== id);
+      }
+    });
+  };
+
+  // NEW: select all visible rows (current page)
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const idsToAdd = current.map((r) => r.id);
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...idsToAdd])));
+    } else {
+      // remove current page ids from selection
+      setSelectedIds((prev) => prev.filter((id) => !current.some((r) => r.id === id)));
+    }
+  };
+
+  const allCurrentSelected = current.length > 0 && current.every((r) => selectedIds.includes(r.id));
+
+  // NEW: bulk trash action (simulate move to trash by removing)
+  const handleBulkTrash = () => {
+    if (selectedIds.length === 0) {
+      toast.error("Chưa chọn mục nào.");
+      return;
+    }
+    if (!confirm(`Chuyển ${selectedIds.length} đánh giá vào thùng rác?`)) return;
+    setReviews((prev) => prev.filter((r) => !selectedIds.includes(r.id)));
+    setSelectedIds([]);
+    toast.success("Đã chuyển vào thùng rác.");
   };
 
   return (
@@ -121,11 +162,36 @@ const BookReviews: React.FC = () => {
             </div>
           </div>
 
+          {/* NEW: action bar shown when any selection exists */}
+          {selectedIds.length > 0 && (
+            <div className="mb-3 flex items-center justify-between rounded-md border border-orange-200 bg-orange-50 px-4 py-2">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleBulkTrash}
+                  className="inline-flex items-center gap-2 rounded-md bg-transparent px-2 py-1 text-orange-600 hover:bg-orange-100"
+                  aria-label="Chuyển vào thùng rác"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="text-sm font-medium">Chuyển vào thùng rác</span>
+                </button>
+                <div className="text-sm text-muted-foreground">{selectedIds.length} mục đã chọn</div>
+              </div>
+              <div className="text-sm text-muted-foreground">Bỏ chọn để ẩn thanh</div>
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y border">
               <thead className="bg-white">
                 <tr className="text-sm text-left text-orange-600">
-                  <th className="w-[48px] p-3"><input type="checkbox" disabled /></th>
+                  <th className="w-[48px] p-3">
+                    <input
+                      type="checkbox"
+                      checked={allCurrentSelected}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      aria-label="Chọn tất cả"
+                    />
+                  </th>
                   <th className="p-3">Tên sách</th>
                   <th className="p-3">Người đánh giá</th>
                   <th className="p-3">Đánh giá</th>
@@ -146,7 +212,12 @@ const BookReviews: React.FC = () => {
                   current.map((r) => (
                     <tr key={r.id} className="text-sm">
                       <td className="p-3 align-top">
-                        <input type="checkbox" />
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(r.id)}
+                          onChange={(e) => toggleSelect(r.id, e.target.checked)}
+                          aria-label={`Chọn đánh giá ${r.id}`}
+                        />
                       </td>
                       <td className="p-3 align-top">{r.bookTitle}</td>
                       <td className="p-3 align-top">{r.reviewer}</td>
