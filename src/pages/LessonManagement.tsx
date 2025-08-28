@@ -13,9 +13,9 @@ const mockLessons = [
 
 const LessonManagement: React.FC = () => {
   const [query, setQuery] = React.useState("");
-  const [grade, setGrade] = React.useState("");
-  const [subject, setSubject] = React.useState("");
-  const [teacher, setTeacher] = React.useState("");
+  const [grade, setGrade] = React.useState("all");
+  const [subject, setSubject] = React.useState("all");
+  const [teacher, setTeacher] = React.useState("all");
 
   const [items, setItems] = React.useState(mockLessons);
 

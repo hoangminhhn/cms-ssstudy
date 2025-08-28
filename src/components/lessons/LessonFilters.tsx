@@ -56,7 +56,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Cấp học" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 <SelectItem value="Lớp 10">Lớp 10</SelectItem>
                 <SelectItem value="Lớp 11">Lớp 11</SelectItem>
                 <SelectItem value="Lớp 12">Lớp 12</SelectItem>
@@ -71,7 +71,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Môn học" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 <SelectItem value="Toán">Toán</SelectItem>
                 <SelectItem value="Văn">Văn</SelectItem>
                 <SelectItem value="Tiếng Anh">Tiếng Anh</SelectItem>
@@ -86,7 +86,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Giáo viên" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 <SelectItem value="GV A">Giáo viên A</SelectItem>
                 <SelectItem value="GV B">Giáo viên B</SelectItem>
               </SelectContent>
