@@ -7,7 +7,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Star, Image as ImageIcon, Upload } from "lucide-react";
+import { Star, Upload } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type BookOption = {
@@ -131,9 +131,26 @@ const AddBookReview: React.FC = () => {
               </div>
             </div>
 
-            {/* Avatar + Stars + Active */}
+            {/* Stars first, then Avatar, then Active (avatar is now after stars) */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
-              {/* Avatar picker */}
+              {/* Stars selector - moved to be first */}
+              <div>
+                <Label htmlFor="stars">Số sao</Label>
+                <Select value={String(stars)} onValueChange={(v) => setStars(Number(v))}>
+                  <SelectTrigger id="stars" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Avatar picker - moved to second column */}
               <div className="flex items-center gap-3">
                 <div className="flex-shrink-0">
                   <Avatar className="h-12 w-12">
@@ -166,23 +183,6 @@ const AddBookReview: React.FC = () => {
                     )}
                   </div>
                 </div>
-              </div>
-
-              {/* Stars selector */}
-              <div>
-                <Label htmlFor="stars">Số sao</Label>
-                <Select value={String(stars)} onValueChange={(v) => setStars(Number(v))}>
-                  <SelectTrigger id="stars" className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                    <SelectItem value="5">5</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
 
               {/* Active switch (span two columns on larger screens) */}
