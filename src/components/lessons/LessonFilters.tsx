@@ -35,8 +35,9 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
   return (
     <div className="space-y-4">
       <div className="bg-white dark:bg-gray-800 p-4 rounded-md border border-transparent shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
-          <div className="md:col-span-2">
+        {/* Use 7 columns so controls have space; search gets 3 cols, each select 1 col, actions 1 col */}
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-3 items-end">
+          <div className="md:col-span-3">
             <label className="sr-only">Search</label>
             <div className="relative">
               <Input
@@ -56,7 +57,8 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Cấp học" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                {/* show the field label when 'all' is selected so the trigger reads 'Cấp học' */}
+                <SelectItem value="all">Cấp học</SelectItem>
                 <SelectItem value="Lớp 10">Lớp 10</SelectItem>
                 <SelectItem value="Lớp 11">Lớp 11</SelectItem>
                 <SelectItem value="Lớp 12">Lớp 12</SelectItem>
@@ -71,7 +73,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Môn học" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="all">Môn học</SelectItem>
                 <SelectItem value="Toán">Toán</SelectItem>
                 <SelectItem value="Văn">Văn</SelectItem>
                 <SelectItem value="Tiếng Anh">Tiếng Anh</SelectItem>
@@ -86,23 +88,35 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
                 <SelectValue placeholder="Giáo viên" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="all">Giáo viên</SelectItem>
                 <SelectItem value="GV A">Giáo viên A</SelectItem>
                 <SelectItem value="GV B">Giáo viên B</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex items-center gap-2 md:justify-end">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={onFilter}>
-              LỌC KẾT QUẢ
-            </Button>
-            <Button variant="outline" onClick={() => { onAddChapter(); toast.success("Mở form thêm chương (mô phỏng)"); }}>
-              THÊM CHƯƠNG
-            </Button>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => { onAddLesson(); toast.success("Mở form thêm bài học (mô phỏng)"); }}>
-              THÊM BÀI HỌC
-            </Button>
+          <div className="md:col-span-1 flex items-center justify-end gap-2">
+            {/* Allow actions to wrap on small screens so they won't overlap */}
+            <div className="flex flex-wrap gap-2 justify-end">
+              <Button
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+                onClick={onFilter}
+              >
+                LỌC KẾT QUẢ
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => { onAddChapter(); toast.success("Mở form thêm chương (mô phỏng)"); }}
+              >
+                THÊM CHƯƠNG
+              </Button>
+              <Button
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+                onClick={() => { onAddLesson(); toast.success("Mở form thêm bài học (mô phỏng)"); }}
+              >
+                THÊM BÀI HỌC
+              </Button>
+            </div>
           </div>
         </div>
       </div>
