@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import AddBookForm from '@/components/AddBookForm'; // Import the new AddBookForm
+import BookCategoryManagement from '@/components/BookCategoryManagement'; // NEW: Book categories manager
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -19,7 +20,7 @@ const BookManagement: React.FC = () => {
       case 'add-book':
         return <AddBookForm />; {/* Render AddBookForm here */}
       case 'book-categories':
-        return <div className="p-4">Nội dung cho "Danh mục sách" sẽ ở đây.</div>;
+        return <BookCategoryManagement />; {/* NEW: show categories manager */}
       case 'add-category':
         return <div className="p-4">Nội dung cho "Thêm danh mục" sẽ ở đây.</div>;
       case 'book-reviews':
