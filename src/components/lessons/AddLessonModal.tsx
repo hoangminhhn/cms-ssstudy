@@ -153,10 +153,10 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tên bài học" />
           </div>
 
-          {/* Labels above controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <Label className="text-sm block mb-2">Miễn phí</Label>
+          {/* Updated layout: ensure each column is flex-col and there is enough vertical gap */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-col space-y-2">
+              <Label className="text-sm">Miễn phí</Label>
               <div className="flex items-center gap-4" role="radiogroup" aria-label="Miễn phí">
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input
@@ -181,23 +181,23 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
               </div>
             </div>
 
-            <div>
-              <Label className="text-sm block mb-2">Thời gian miễn phí</Label>
+            <div className="flex flex-col space-y-2">
+              <Label className="text-sm">Thời gian miễn phí</Label>
               <div className="flex gap-2 items-center">
-                <Input type="date" value={freeFrom} onChange={(e) => setFreeFrom(e.target.value)} disabled={!free} />
-                <Input type="date" value={freeTo} onChange={(e) => setFreeTo(e.target.value)} disabled={!free} />
+                <Input className="w-full" type="date" value={freeFrom} onChange={(e) => setFreeFrom(e.target.value)} disabled={!free} />
+                <Input className="w-full" type="date" value={freeTo} onChange={(e) => setFreeTo(e.target.value)} disabled={!free} />
               </div>
             </div>
 
-            <div>
-              <Label className="text-sm block mb-2">Lượt xem tối đa</Label>
+            <div className="flex flex-col space-y-2">
+              <Label className="text-sm">Lượt xem tối đa</Label>
               <Input type="number" value={String(maxViews)} onChange={(e) => setMaxViews(Number(e.target.value || 0))} />
             </div>
           </div>
 
           {/* Subject & Chapter */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
+            <div className="flex flex-col space-y-2">
               <Label className="text-sm">Môn học</Label>
               <Select value={subject} onValueChange={setSubject}>
                 <SelectTrigger className="w-full">
@@ -211,7 +211,7 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
               </Select>
             </div>
 
-            <div>
+            <div className="flex flex-col space-y-2">
               <Label className="text-sm">Chương học</Label>
               <Select value={chapter} onValueChange={setChapter}>
                 <SelectTrigger className="w-full">
@@ -226,13 +226,13 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             </div>
           </div>
 
-          {/* NEW: dedicated row for the two answer-link fields */}
+          {/* Dedicated row for the two answer-link fields (side-by-side on md+) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
+            <div className="flex flex-col space-y-2">
               <Label className="text-sm">Link đề có đáp án</Label>
               <Input value={linkWithAnswer} onChange={(e) => setLinkWithAnswer(e.target.value)} placeholder="URL (có đáp án)" />
             </div>
-            <div>
+            <div className="flex flex-col space-y-2">
               <Label className="text-sm">Link đề không có đáp án</Label>
               <Input value={linkWithoutAnswer} onChange={(e) => setLinkWithoutAnswer(e.target.value)} placeholder="URL (không đáp án)" />
             </div>
@@ -249,15 +249,15 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-3 items-end">
-              <div>
+              <div className="flex flex-col space-y-2">
                 <Label className="text-sm">Tiêu đề</Label>
                 <Input value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} placeholder="Tiêu đề" />
               </div>
-              <div>
+              <div className="flex flex-col space-y-2">
                 <Label className="text-sm">Link video</Label>
                 <Input value={videoLink} onChange={(e) => setVideoLink(e.target.value)} placeholder="https://..." />
               </div>
-              <div>
+              <div className="flex flex-col space-y-2">
                 <Label className="text-sm">Thời gian (phút)</Label>
                 <Input value={videoDuration} onChange={(e) => setVideoDuration(e.target.value)} placeholder="Ví dụ: 15" />
               </div>
