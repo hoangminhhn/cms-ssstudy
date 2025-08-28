@@ -154,29 +154,44 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tên bài học" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-            <div className="flex items-center gap-3">
-              <Label className="text-sm">Miễn phí</Label>
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="free" checked={free === true} onChange={() => setFree(true)} />
-                  <span>Có</span>
+          {/* Updated layout: labels above controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <Label className="text-sm block mb-2">Miễn phí</Label>
+              <div className="flex items-center gap-4" role="radiogroup" aria-label="Miễn phí">
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="free"
+                    checked={free === true}
+                    onChange={() => setFree(true)}
+                    className="h-4 w-4"
+                  />
+                  <span> Có</span>
                 </label>
-                <label className="flex items-center gap-2 ml-3">
-                  <input type="radio" name="free" checked={free === false} onChange={() => setFree(false)} />
-                  <span>Không</span>
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="free"
+                    checked={free === false}
+                    onChange={() => setFree(false)}
+                    className="h-4 w-4"
+                  />
+                  <span> Không</span>
                 </label>
               </div>
             </div>
 
-            <div className="flex gap-2 items-center">
-              <Label className="text-sm">Thời gian miễn phí</Label>
-              <Input type="date" value={freeFrom} onChange={(e) => setFreeFrom(e.target.value)} disabled={!free} />
-              <Input type="date" value={freeTo} onChange={(e) => setFreeTo(e.target.value)} disabled={!free} />
+            <div>
+              <Label className="text-sm block mb-2">Thời gian miễn phí</Label>
+              <div className="flex gap-2 items-center">
+                <Input type="date" value={freeFrom} onChange={(e) => setFreeFrom(e.target.value)} disabled={!free} />
+                <Input type="date" value={freeTo} onChange={(e) => setFreeTo(e.target.value)} disabled={!free} />
+              </div>
             </div>
 
             <div>
-              <Label className="text-sm">Lượt xem tối đa</Label>
+              <Label className="text-sm block mb-2">Lượt xem tối đa</Label>
               <Input type="number" value={String(maxViews)} onChange={(e) => setMaxViews(Number(e.target.value || 0))} />
             </div>
           </div>
