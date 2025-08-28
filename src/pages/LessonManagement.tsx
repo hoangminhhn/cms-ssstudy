@@ -19,6 +19,22 @@ interface ChapterData {
   subject: string;
 }
 
+interface LessonPayload {
+  id: string;
+  title: string;
+  free: boolean;
+  freeFrom?: string;
+  freeTo?: string;
+  maxViews: number;
+  subject: string;
+  chapter: string;
+  linkWithAnswer?: string;
+  linkWithoutAnswer?: string;
+  videos: any[];
+  exam?: string;
+  description?: string;
+}
+
 const LessonManagement: React.FC = () => {
   const [query, setQuery] = React.useState("");
   const [grade, setGrade] = React.useState("all");
@@ -53,7 +69,21 @@ const LessonManagement: React.FC = () => {
     setItems((prev) => [{ id, title: `Phần mới ${prev.length + 1}`, grade, subject, meta: "" }, ...prev]);
   };
 
-  const handleAddLesson = () => {
+  const handleAddLesson = (lesson?: LessonPayload) => {
+    if (lesson) {
+      setItems((prev) => [
+        {
+          id: lesson.id,
+          title: lesson.title,
+          grade: lesson.chapter || "",
+          subject: lesson.subject || "",
+          meta: lesson.description ? lesson.description.slice(0, 80) : "",
+        },
+        ...prev,
+      ]);
+      return;
+    }
+    // fallback: add simple
     const id = `l-${Date.now()}`;
     setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "" }, ...prev]);
   };

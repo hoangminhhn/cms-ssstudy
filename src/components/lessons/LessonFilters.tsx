@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import AddChapterModal from "./AddChapterModal";
+import AddLessonModal from "./AddLessonModal";
 
 interface ChapterData {
   id: string;
@@ -12,6 +13,22 @@ interface ChapterData {
   title: string;
   grade: string;
   subject: string;
+}
+
+interface LessonPayload {
+  id: string;
+  title: string;
+  free: boolean;
+  freeFrom?: string;
+  freeTo?: string;
+  maxViews: number;
+  subject: string;
+  chapter: string;
+  linkWithAnswer?: string;
+  linkWithoutAnswer?: string;
+  videos: any[];
+  exam?: string;
+  description?: string;
 }
 
 interface LessonFiltersProps {
@@ -25,7 +42,7 @@ interface LessonFiltersProps {
   setTeacher: (t: string) => void;
   onFilter: () => void;
   onAddChapter: (chapter?: ChapterData) => void;
-  onAddLesson: () => void;
+  onAddLesson: (lesson?: LessonPayload) => void;
 }
 
 const LessonFilters: React.FC<LessonFiltersProps> = ({
@@ -42,6 +59,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
   onAddLesson,
 }) => {
   const [isAddChapterOpen, setIsAddChapterOpen] = React.useState(false);
+  const [isAddLessonOpen, setIsAddLessonOpen] = React.useState(false);
 
   const handleOpenAddChapter = () => {
     setIsAddChapterOpen(true);
@@ -50,6 +68,14 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
   const handleSaveChapter = (chapter: ChapterData) => {
     // Pass chapter to parent
     onAddChapter(chapter);
+  };
+
+  const handleOpenAddLesson = () => {
+    setIsAddLessonOpen(true);
+  };
+
+  const handleSaveLesson = (lesson: LessonPayload) => {
+    onAddLesson(lesson);
   };
 
   return (
@@ -133,7 +159,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
             </Button>
             <Button
               className="bg-orange-500 hover:bg-orange-600 text-white"
-              onClick={() => { onAddLesson(); toast.success("Mở form thêm bài học (mô phỏng)"); }}
+              onClick={handleOpenAddLesson}
             >
               THÊM BÀI HỌC
             </Button>
@@ -145,6 +171,14 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
         open={isAddChapterOpen}
         onOpenChange={setIsAddChapterOpen}
         onSave={handleSaveChapter}
+      />
+
+      <AddLessonModal
+        open={isAddLessonOpen}
+        onOpenChange={setIsAddLessonOpen}
+        onSave={handleSaveLesson}
+        defaultSubject={subject !== "all" ? subject : undefined}
+        defaultChapter={undefined}
       />
     </>
   );
