@@ -153,8 +153,9 @@ const AddLessonModal: React.FC<AddLessonModalProps> = ({ open, onOpenChange, onS
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Tên bài học" />
           </div>
 
-          {/* Updated layout: ensure each column is flex-col and there is enough vertical gap */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Adjusted grid so middle column (Thời gian miễn phí) sits closer to the first (Miễn phí)
+              and right column is reserved for Lượt xem tối đa. This avoids overlap. */}
+          <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_180px] gap-4 items-start">
             <div className="flex flex-col space-y-2">
               <Label className="text-sm">Miễn phí</Label>
               <div className="flex items-center gap-4" role="radiogroup" aria-label="Miễn phí">
