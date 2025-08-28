@@ -11,6 +11,14 @@ const mockLessons = [
   // add more mock rows if needed
 ];
 
+interface ChapterData {
+  id: string;
+  code: string;
+  title: string;
+  grade: string;
+  subject: string;
+}
+
 const LessonManagement: React.FC = () => {
   const [query, setQuery] = React.useState("");
   const [grade, setGrade] = React.useState("all");
@@ -24,8 +32,23 @@ const LessonManagement: React.FC = () => {
     console.log("Filter applied", { query, grade, subject, teacher });
   };
 
-  const handleAddChapter = () => {
-    // stub: add a mock folder at top
+  const handleAddChapter = (chapter?: ChapterData) => {
+    // If chapter data provided from modal, add it with the provided title and meta
+    if (chapter) {
+      setItems((prev) => [
+        {
+          id: chapter.id,
+          title: `${chapter.code} - ${chapter.title}`,
+          grade: chapter.grade,
+          subject: chapter.subject,
+          meta: "",
+        },
+        ...prev,
+      ]);
+      return;
+    }
+
+    // Fallback: add a default mock chapter when no data provided
     const id = `l-${Date.now()}`;
     setItems((prev) => [{ id, title: `Phần mới ${prev.length + 1}`, grade, subject, meta: "" }, ...prev]);
   };
