@@ -7,7 +7,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Star } from "lucide-react";
+import { Star, Image as ImageIcon, Upload } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type BookOption = {
   id: string;
@@ -28,6 +29,10 @@ const AddBookReview: React.FC = () => {
   const [content, setContent] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(true);
 
+  // Avatar state + ref
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
   const selectedBook = SAMPLE_BOOKS.find((b) => b.id === bookId) ?? null;
 
   const resetForm = () => {
@@ -36,6 +41,8 @@ const AddBookReview: React.FC = () => {
     setStars(5);
     setContent("");
     setActive(true);
+    setAvatarPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSave = () => {
@@ -60,6 +67,7 @@ const AddBookReview: React.FC = () => {
       stars,
       content: content.trim(),
       active,
+      avatar: avatarPreview,
       updatedAt: new Date().toLocaleString(),
     };
 
@@ -67,6 +75,29 @@ const AddBookReview: React.FC = () => {
     toast.success("Đã thêm đánh giá sách.");
     resetForm();
   };
+
+  const handlePickAvatar = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatarPreview(String(reader.result));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // helper to show initials if no avatar
+  const reviewerInitials = React.useMemo(() => {
+    const name = reviewer.trim();
+    if (!name) return "NG";
+    const parts = name.split(" ").filter(Boolean);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }, [reviewer]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -100,7 +131,44 @@ const AddBookReview: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+            {/* Avatar + Stars + Active */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+              {/* Avatar picker */}
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0">
+                  <Avatar className="h-12 w-12">
+                    {avatarPreview ? (
+                      <AvatarImage src={avatarPreview} alt={reviewer || "avatar"} />
+                    ) : (
+                      <AvatarFallback>{reviewerInitials}</AvatarFallback>
+                    )}
+                  </Avatar>
+                </div>
+
+                <div className="flex flex-col">
+                  <Label className="text-sm">Ảnh đại diện</Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                      aria-label="Upload avatar"
+                    />
+                    <Button variant="outline" size="sm" onClick={handlePickAvatar} className="flex items-center gap-2">
+                      <Upload className="h-4 w-4" /> Chọn ảnh
+                    </Button>
+                    {avatarPreview && (
+                      <Button variant="ghost" size="sm" onClick={() => setAvatarPreview(null)}>
+                        Xóa
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Stars selector */}
               <div>
                 <Label htmlFor="stars">Số sao</Label>
                 <Select value={String(stars)} onValueChange={(v) => setStars(Number(v))}>
@@ -117,7 +185,8 @@ const AddBookReview: React.FC = () => {
                 </Select>
               </div>
 
-              <div className="sm:col-span-2 flex items-end justify-end">
+              {/* Active switch (span two columns on larger screens) */}
+              <div className="sm:col-span-2 flex items-center justify-end">
                 <div className="flex items-center gap-3">
                   <Label className="mb-0">Kích hoạt</Label>
                   <Switch checked={active} onCheckedChange={(v) => setActive(!!v)} />
@@ -148,6 +217,16 @@ const AddBookReview: React.FC = () => {
             <div className="space-y-4">
               <div className="border rounded p-4 bg-white dark:bg-gray-800">
                 <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0">
+                    <Avatar className="h-12 w-12">
+                      {avatarPreview ? (
+                        <AvatarImage src={avatarPreview} alt={reviewer || "avatar"} />
+                      ) : (
+                        <AvatarFallback>{reviewerInitials}</AvatarFallback>
+                      )}
+                    </Avatar>
+                  </div>
+
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <div>
