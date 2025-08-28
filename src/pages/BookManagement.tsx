@@ -9,6 +9,7 @@ import AddBookForm from '@/components/AddBookForm';
 import BookCategoryManagement from '@/components/BookCategoryManagement';
 import AddBookCategory from '@/components/AddBookCategory';
 import BookReviews from '@/components/BookReviews'; // NEW import
+import AddBookReview from '@/components/AddBookReview'; // NEW import
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -28,7 +29,7 @@ const BookManagement: React.FC = () => {
       case 'book-reviews':
         return <BookReviews />; // NEW: render BookReviews here
       case 'add-review':
-        return <div className="p-4">Nội dung cho "Thêm đánh giá sách" sẽ ở đây.</div>;
+        return <AddBookReview />; // NEW: render AddBookReview here
       default:
         return <BookTable />;
     }
