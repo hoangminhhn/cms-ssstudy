@@ -5,8 +5,9 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import AddBookForm from '@/components/AddBookForm'; // Import the new AddBookForm
-import BookCategoryManagement from '@/components/BookCategoryManagement'; // NEW: Book categories manager
+import AddBookForm from '@/components/AddBookForm';
+import BookCategoryManagement from '@/components/BookCategoryManagement';
+import AddBookCategory from '@/components/AddBookCategory';
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -18,11 +19,11 @@ const BookManagement: React.FC = () => {
       case 'all-books':
         return <BookTable />;
       case 'add-book':
-        return <AddBookForm />; {/* Render AddBookForm here */}
+        return <AddBookForm />;
       case 'book-categories':
-        return <BookCategoryManagement />; {/* NEW: show categories manager */}
+        return <BookCategoryManagement />;
       case 'add-category':
-        return <div className="p-4">Nội dung cho "Thêm danh mục" sẽ ở đây.</div>;
+        return <AddBookCategory />; // NEW: render AddBookCategory here
       case 'book-reviews':
         return <div className="p-4">Nội dung cho "Đánh giá sách" sẽ ở đây.</div>;
       case 'add-review':
@@ -35,7 +36,7 @@ const BookManagement: React.FC = () => {
   return (
     <Layout headerTitle="Quản lý sách">
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        {/* Mobile content - This section is for a placeholder mobile submenu implementation */}
+        {/* Mobile content - placeholder for submenu sheet/drawer */}
         <div className="lg:hidden w-full overflow-x-hidden">
           <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 dark:bg-gray-800">
             <Button
@@ -51,6 +52,7 @@ const BookManagement: React.FC = () => {
             <div className="w-16" /> {/* Placeholder */}
           </div>
         </div>
+
         {renderContent()}
       </div>
       <MadeWithDyad />
