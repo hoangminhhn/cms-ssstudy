@@ -12,7 +12,6 @@ import ScoreReportPage from "./pages/ScoreReportPage";
 import CourseManagement from "./pages/CourseManagement";
 import LessonManagement from "./pages/LessonManagement";
 import QuizManagement from "./pages/QuizManagement";
-import DocumentManagement from "./pages/DocumentManagement";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +30,6 @@ const App = () => (
           <Route path="/courses" element={<CourseManagement />} />
           <Route path="/lessons" element={<LessonManagement />} />
           <Route path="/quizzes" element={<QuizManagement />} />
-          <Route path="/documents" element={<DocumentManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
