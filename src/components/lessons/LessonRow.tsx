@@ -8,19 +8,28 @@ export interface LessonRowProps {
   grade?: string;
   subject?: string;
   meta?: string;
-  onOpen?: (id: string) => void;
+  type?: "chapter" | "lesson";
+  onOpen?: (id: string, type?: "chapter" | "lesson") => void;
 }
 
-const LessonRow: React.FC<LessonRowProps> = ({ id, title, grade, subject, meta, onOpen }) => {
+const LessonRow: React.FC<LessonRowProps> = ({ id, title, grade, subject, meta, type, onOpen }) => {
   return (
     <div
-      className="flex items-center gap-4 p-4 rounded-md border border-transparent hover:border-gray-200 dark:hover:border-gray-700 bg-white dark:bg-gray-800"
+      className={cn(
+        "flex items-center gap-4 p-4 rounded-md border border-transparent hover:border-gray-200 dark:hover:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer transition-colors",
+        type === "chapter" && "hover:bg-orange-50 dark:hover:bg-orange-900/20"
+      )}
       role="button"
-      onClick={() => onOpen?.(id)}
+      onClick={() => onOpen?.(id, type)}
     >
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-md bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-200">
-          <Folder className="h-6 w-6" />
+        <div className={cn(
+          "p-2 rounded-md",
+          type === "chapter" 
+            ? "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400" 
+            : "bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-200"
+        )}>
+          {type === "chapter" ? <Folder className="h-6 w-6" /> : <FileText className="h-6 w-6" />}
         </div>
       </div>
 
@@ -44,7 +53,7 @@ const LessonRow: React.FC<LessonRowProps> = ({ id, title, grade, subject, meta, 
       <div className="text-sm text-muted-foreground flex items-center gap-2">
         <div className="flex items-center gap-1">
           <FileText className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs">Thư mục</span>
+          <span className="text-xs">{type === "chapter" ? "Chương" : "Bài học"}</span>
         </div>
       </div>
     </div>

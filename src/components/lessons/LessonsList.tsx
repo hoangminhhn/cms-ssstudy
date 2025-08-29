@@ -9,11 +9,12 @@ interface LessonItem {
   grade?: string;
   subject?: string;
   meta?: string;
+  type?: "chapter" | "lesson";
 }
 
 interface LessonsListProps {
   items: LessonItem[];
-  onOpen?: (id: string) => void;
+  onOpen?: (id: string, type?: "chapter" | "lesson") => void;
 }
 
 const LessonsList: React.FC<LessonsListProps> = ({ items, onOpen }) => {
@@ -46,6 +47,7 @@ const LessonsList: React.FC<LessonsListProps> = ({ items, onOpen }) => {
                   grade={it.grade}
                   subject={it.subject}
                   meta={it.meta}
+                  type={it.type}
                   onOpen={onOpen}
                 />
               ))}

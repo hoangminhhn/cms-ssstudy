@@ -3,11 +3,14 @@ import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LessonFilters from "@/components/lessons/LessonFilters";
 import LessonsList from "@/components/lessons/LessonsList";
+import ChapterContentModal from "@/components/lessons/ChapterContentModal";
 
 const mockLessons = [
-  { id: "l1", title: "[2007] TOÁN 12", grade: "Lớp 12", subject: "Toán", meta: "" },
-  { id: "l2", title: "ĐỀ THI HỌC KỲ II - TOÁN 12", grade: "", subject: "Toán", meta: "" },
-  { id: "l3", title: "I. ĐỀ THI GIỮA HỌC KỲ I - TOÁN 12", grade: "", subject: "Toán", meta: "" },
+  { id: "l1", title: "[2007] TOÁN 12", grade: "Lớp 12", subject: "Toán", meta: "", type: "lesson" },
+  { id: "l2", title: "ĐỀ THI HỌC KỲ II - TOÁN 12", grade: "", subject: "Toán", meta: "", type: "lesson" },
+  { id: "l3", title: "I. ĐỀ THI GIỮA HỌC KỲ I - TOÁN 12", grade: "", subject: "Toán", meta: "", type: "lesson" },
+  { id: "c1", title: "Chương 1: Số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "c2", title: "Chương 2: Phương trình bậc hai", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
   // add more mock rows if needed
 ];
 
@@ -42,6 +45,8 @@ const LessonManagement: React.FC = () => {
   const [teacher, setTeacher] = React.useState("all");
 
   const [items, setItems] = React.useState(mockLessons);
+  const [selectedChapter, setSelectedChapter] = React.useState<typeof mockLessons[0] | null>(null);
+  const [isChapterModalOpen, setIsChapterModalOpen] = React.useState(false);
 
   const handleFilter = () => {
     // For demo we just log and don't change mock content; extend to real filter later
@@ -58,6 +63,7 @@ const LessonManagement: React.FC = () => {
           grade: chapter.grade,
           subject: chapter.subject,
           meta: "",
+          type: "chapter",
         },
         ...prev,
       ]);
@@ -65,8 +71,8 @@ const LessonManagement: React.FC = () => {
     }
 
     // Fallback: add a default mock chapter when no data provided
-    const id = `l-${Date.now()}`;
-    setItems((prev) => [{ id, title: `Phần mới ${prev.length + 1}`, grade, subject, meta: "" }, ...prev]);
+    const id = `c-${Date.now()}`;
+    setItems((prev) => [{ id, title: `Chương mới ${prev.length + 1}`, grade, subject, meta: "", type: "chapter" }, ...prev]);
   };
 
   const handleAddLesson = (lesson?: LessonPayload) => {
@@ -78,6 +84,7 @@ const LessonManagement: React.FC = () => {
           grade: lesson.chapter || "",
           subject: lesson.subject || "",
           meta: lesson.description ? lesson.description.slice(0, 80) : "",
+          type: "lesson",
         },
         ...prev,
       ]);
@@ -85,11 +92,19 @@ const LessonManagement: React.FC = () => {
     }
     // fallback: add simple
     const id = `l-${Date.now()}`;
-    setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "" }, ...prev]);
+    setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "", type: "lesson" }, ...prev]);
   };
 
-  const handleOpen = (id: string) => {
-    alert(`Mở mục ${id} (mô phỏng)`);
+  const handleOpen = (id: string, type?: "chapter" | "lesson") => {
+    if (type === "chapter") {
+      const chapter = items.find(item => item.id === id && item.type === "chapter");
+      if (chapter) {
+        setSelectedChapter(chapter);
+        setIsChapterModalOpen(true);
+      }
+    } else {
+      alert(`Mở bài học ${id} (mô phỏng)`);
+    }
   };
 
   return (
@@ -111,6 +126,14 @@ const LessonManagement: React.FC = () => {
 
         <LessonsList items={items} onOpen={handleOpen} />
       </div>
+
+      {selectedChapter && (
+        <ChapterContentModal
+          open={isChapterModalOpen}
+          onOpenChange={setIsChapterModalOpen}
+          chapter={selectedChapter}
+        />
+      )}
 
       <MadeWithDyad />
     </Layout>
