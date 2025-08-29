@@ -25,7 +25,7 @@ const AddSubject: React.FC = () => {
   const [name, setName] = React.useState("");
   const [code, setCode] = React.useState("");
   const [fbLink, setFbLink] = React.useState("");
-  const [teacher, setTeacher] = React.useState<string>("");
+  const [teacher, setTeacher] = React.useState<string>(""); // empty means no selection
   const [assistant, setAssistant] = React.useState<string>("");
   const [order, setOrder] = React.useState<number | "">(0);
   const [mode, setMode] = React.useState<"Offline" | "Online">("Offline");
@@ -79,13 +79,11 @@ const AddSubject: React.FC = () => {
 
     if (andAddNew) {
       resetForm();
-      // focus first field (optional)
       const el = document.getElementById("subject-name");
       if (el) (el as HTMLInputElement).focus();
       return;
     }
 
-    // Navigate back to subject list
     navigate("/courses?tab=subjects");
   };
 
@@ -120,7 +118,6 @@ const AddSubject: React.FC = () => {
                     <SelectValue placeholder="-- Chọn giáo viên --" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">-- Chọn giáo viên --</SelectItem>
                     {MOCK_TEACHERS.map((t) => (
                       <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
                     ))}
@@ -135,7 +132,6 @@ const AddSubject: React.FC = () => {
                     <SelectValue placeholder="-- Chọn trợ giảng --" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">-- Chọn trợ giảng --</SelectItem>
                     {MOCK_ASSISTANTS.map((a) => (
                       <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
                     ))}
