@@ -121,28 +121,6 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={() => { setQuery(""); setPage(1); toast.info("Đã xóa tìm kiếm."); }}>Đặt lại</Button>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => toast.info("Thêm danh mục (demo)")}>Thêm danh mục</Button>
-              <Button variant="outline" onClick={handleBulkDelete}>Xóa mục chọn</Button>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="text-sm text-muted-foreground">Hiển thị</div>
-              <Select value={String(itemsPerPage)} onValueChange={(v) => { setItemsPerPage(Number(v)); setPage(1); }}>
-                <SelectTrigger className="w-[80px] h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
