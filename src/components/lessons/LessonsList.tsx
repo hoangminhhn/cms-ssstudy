@@ -16,14 +16,12 @@ interface LessonItem {
 
 interface LessonsListProps {
   items: LessonItem[];
-  onAddLesson?: (chapterId: string) => void;
   onEditLesson?: (lessonId: string) => void;
   onDeleteLesson?: (lessonId: string) => void;
 }
 
 const LessonsList: React.FC<LessonsListProps> = ({ 
   items, 
-  onAddLesson, 
   onEditLesson, 
   onDeleteLesson 
 }) => {
@@ -76,7 +74,6 @@ const LessonsList: React.FC<LessonsListProps> = ({
                   key={group.chapter.id}
                   chapter={group.chapter}
                   lessons={group.lessons}
-                  onAddLesson={onAddLesson}
                   onEditLesson={onEditLesson}
                   onDeleteLesson={onDeleteLesson}
                 />

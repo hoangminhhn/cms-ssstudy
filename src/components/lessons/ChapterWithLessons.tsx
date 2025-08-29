@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Folder, FileText, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Folder, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,6 @@ interface LessonItem {
 interface ChapterWithLessonsProps {
   chapter: LessonItem;
   lessons: LessonItem[];
-  onAddLesson: (chapterId: string) => void;
   onEditLesson?: (lessonId: string) => void;
   onDeleteLesson?: (lessonId: string) => void;
 }
@@ -25,7 +24,6 @@ interface ChapterWithLessonsProps {
 const ChapterWithLessons: React.FC<ChapterWithLessonsProps> = ({
   chapter,
   lessons,
-  onAddLesson,
   onEditLesson,
   onDeleteLesson
 }) => {
@@ -62,17 +60,6 @@ const ChapterWithLessons: React.FC<ChapterWithLessonsProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            className="bg-orange-500 hover:bg-orange-600 text-white"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddLesson(chapter.id);
-            }}
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Thêm bài học
-          </Button>
           {isExpanded ? (
             <ChevronDown className="h-5 w-5 text-muted-foreground" />
           ) : (

@@ -47,7 +47,6 @@ const LessonManagement: React.FC = () => {
 
   const [items, setItems] = React.useState(mockLessons);
   const [isAddLessonModalOpen, setIsAddLessonModalOpen] = React.useState(false);
-  const [selectedChapterId, setSelectedChapterId] = React.useState<string | null>(null);
 
   const handleFilter = () => {
     console.log("Filter applied", { query, grade, subject, teacher });
@@ -95,11 +94,6 @@ const LessonManagement: React.FC = () => {
     setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "", type: "lesson", duration: "15 phút", free: false }, ...prev]);
   };
 
-  const handleAddLessonToChapter = (chapterId: string) => {
-    setSelectedChapterId(chapterId);
-    setIsAddLessonModalOpen(true);
-  };
-
   const handleEditLesson = (lessonId: string) => {
     alert(`Chỉnh sửa bài học ${lessonId} (mô phỏng)`);
   };
@@ -129,7 +123,6 @@ const LessonManagement: React.FC = () => {
 
         <LessonsList 
           items={items}
-          onAddLesson={handleAddLessonToChapter}
           onEditLesson={handleEditLesson}
           onDeleteLesson={handleDeleteLesson}
         />
@@ -139,7 +132,6 @@ const LessonManagement: React.FC = () => {
         open={isAddLessonModalOpen}
         onOpenChange={setIsAddLessonModalOpen}
         onSave={handleAddLesson}
-        defaultChapter={selectedChapterId || undefined}
       />
 
       <MadeWithDyad />
