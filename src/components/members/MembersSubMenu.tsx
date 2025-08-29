@@ -11,7 +11,7 @@ interface SubMenuItem {
 }
 
 const subMenuItems: SubMenuItem[] = [
-  { id: "all-members", label: "Thành viên", icon: Users, path: "/members?tab=all-members" },
+  { id: "all-members", label: "Tất cả thành viên", icon: Users, path: "/members?tab=all-members" },
   { id: "add-member", label: "Thêm thành viên", icon: UserPlus, path: "/members?tab=add-member" },
   { id: "admins", label: "Quản trị viên", icon: ShieldCheck, path: "/members?tab=admins" },
   { id: "add-admin", label: "Thêm quản trị viên", icon: UserPlusAlt, path: "/members?tab=add-admin" },
