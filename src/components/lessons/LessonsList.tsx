@@ -1,23 +1,25 @@
 import React from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import LessonRow, { LessonRowProps } from "./LessonRow";
+import LessonRow, { LessonItem, LessonItem as LessonItemType } from "./LessonRow";
 import { Card, CardContent } from "@/components/ui/card";
-
-interface LessonItem {
-  id: string;
-  title: string;
-  grade?: string;
-  subject?: string;
-  meta?: string;
-  type?: "chapter" | "lesson";
-}
 
 interface LessonsListProps {
   items: LessonItem[];
-  onOpen?: (id: string, type?: "chapter" | "lesson") => void;
+  expandedChapterId?: string | null;
+  onToggleExpand?: (id: string) => void;
+  chapterLessons?: Record<string, LessonItemType[]>;
+  onEditLesson?: (id: string) => void;
+  onDeleteLesson?: (id: string) => void;
 }
 
-const LessonsList: React.FC<LessonsListProps> = ({ items, onOpen }) => {
+const LessonsList: React.FC<LessonsListProps> = ({ 
+  items, 
+  expandedChapterId, 
+  onToggleExpand, 
+  chapterLessons = {},
+  onEditLesson,
+  onDeleteLesson
+}) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
 
@@ -28,7 +30,6 @@ const LessonsList: React.FC<LessonsListProps> = ({ items, onOpen }) => {
 
   React.useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemsPerPage, items.length, totalPages]);
 
   return (
@@ -36,19 +37,23 @@ const LessonsList: React.FC<LessonsListProps> = ({ items, onOpen }) => {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           {currentItems.length === 0 ? (
-            <div className="text-center text-muted-foreground p-6">Không tìm thấy mục nào.</div>
+            <div className="text-center text-muted-foreground p-6">Không tìm thấy chương nào.</div>
           ) : (
             <div className="space-y-3">
-              {currentItems.map((it) => (
+              {currentItems.map((item) => (
                 <LessonRow
-                  key={it.id}
-                  id={it.id}
-                  title={it.title}
-                  grade={it.grade}
-                  subject={it.subject}
-                  meta={it.meta}
-                  type={it.type}
-                  onOpen={onOpen}
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  grade={item.grade}
+                  subject={item.subject}
+                  meta={item.meta}
+                  type="chapter"
+                  isExpanded={expandedChapterId === item.id}
+                  onToggleExpand={onToggleExpand}
+                  lessons={chapterLessons[item.id] || []}
+                  onEditLesson={onEditLesson}
+                  onDeleteLesson={onDeleteLesson}
                 />
               ))}
             </div>
