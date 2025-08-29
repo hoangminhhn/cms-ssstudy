@@ -11,7 +11,6 @@ import WordExamUploadPage from "./pages/WordExamUploadPage";
 import ScoreReportPage from "./pages/ScoreReportPage";
 import CourseManagement from "./pages/CourseManagement";
 import LessonManagement from "./pages/LessonManagement";
-import TestManagement from "./pages/TestManagement";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +28,6 @@ const App = () => (
           <Route path="/score-reports/:examId" element={<ScoreReportPage />} />
           <Route path="/courses" element={<CourseManagement />} />
           <Route path="/lessons" element={<LessonManagement />} />
-          <Route path="/tests" element={<TestManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
