@@ -7,6 +7,7 @@ import ExamSubMenu from './ExamSubMenu';
 import WordExamSubMenu from './WordExamSubMenu';
 import CourseSubMenu from './CourseSubMenu';
 import DocumentsSubMenu from './Documents/DocumentsSubMenu';
+import MembersSubMenu from './members/MembersSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -70,6 +71,8 @@ const Sidebar: React.FC = () => {
       setOpenSubMenu('courses');
     } else if (location.pathname.startsWith('/documents')) {
       setOpenSubMenu('documents');
+    } else if (location.pathname.startsWith('/members')) {
+      setOpenSubMenu('members');
     } else {
       setOpenSubMenu(null);
     }
@@ -152,7 +155,17 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'documents' && <DocumentsSubMenu />}
 
-            <NavItem icon={Users} label="Thành viên" to="/members" isActive={location.pathname === '/members'} />
+            {/* Members parent with submenu */}
+            <NavItem
+              icon={Users}
+              label="Thành viên"
+              onClick={() => handleParentClick('members')}
+              isActive={location.pathname.startsWith('/members')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'members'}
+            />
+            {openSubMenu === 'members' && <MembersSubMenu />}
+
             <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" isActive={location.pathname === '/orders'} />
             <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" isActive={location.pathname === '/promotions'} />
             <NavItem icon={Newspaper} label="Tin tức" to="/news" isActive={location.pathname === '/news'} />
