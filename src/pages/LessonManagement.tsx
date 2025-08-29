@@ -3,15 +3,16 @@ import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LessonFilters from "@/components/lessons/LessonFilters";
 import LessonsList from "@/components/lessons/LessonsList";
-import ChapterContentModal from "@/components/lessons/ChapterContentModal";
+import AddLessonModal from "./lessons/AddLessonModal";
 
 const mockLessons = [
-  { id: "l1", title: "[2007] TOÁN 12", grade: "Lớp 12", subject: "Toán", meta: "", type: "lesson" },
-  { id: "l2", title: "ĐỀ THI HỌC KỲ II - TOÁN 12", grade: "", subject: "Toán", meta: "", type: "lesson" },
-  { id: "l3", title: "I. ĐỀ THI GIỮA HỌC KỲ I - TOÁN 12", grade: "", subject: "Toán", meta: "", type: "lesson" },
   { id: "c1", title: "Chương 1: Số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "l1", title: "Bài 1: Khái niệm số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "15 phút", free: true },
+  { id: "l2", title: "Bài 2: Phép cộng và trừ số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "20 phút", free: false },
   { id: "c2", title: "Chương 2: Phương trình bậc hai", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
-  // add more mock rows if needed
+  { id: "l3", title: "Bài 1: Phương trình bậc hai", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "25 phút", free: false },
+  { id: "c3", title: "Chương 3: Hệ phương trình", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "l4", title: "Bài 1: Hệ phương trình tuyến tính", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "30 phút", free: false },
 ];
 
 interface ChapterData {
@@ -45,16 +46,14 @@ const LessonManagement: React.FC = () => {
   const [teacher, setTeacher] = React.useState("all");
 
   const [items, setItems] = React.useState(mockLessons);
-  const [selectedChapter, setSelectedChapter] = React.useState<typeof mockLessons[0] | null>(null);
-  const [isChapterModalOpen, setIsChapterModalOpen] = React.useState(false);
+  const [isAddLessonModalOpen, setIsAddLessonModalOpen] = React.useState(false);
+  const [selectedChapterId, setSelectedChapterId] = React.useState<string | null>(null);
 
   const handleFilter = () => {
-    // For demo we just log and don't change mock content; extend to real filter later
     console.log("Filter applied", { query, grade, subject, teacher });
   };
 
   const handleAddChapter = (chapter?: ChapterData) => {
-    // If chapter data provided from modal, add it with the provided title and meta
     if (chapter) {
       setItems((prev) => [
         {
@@ -70,7 +69,6 @@ const LessonManagement: React.FC = () => {
       return;
     }
 
-    // Fallback: add a default mock chapter when no data provided
     const id = `c-${Date.now()}`;
     setItems((prev) => [{ id, title: `Chương mới ${prev.length + 1}`, grade, subject, meta: "", type: "chapter" }, ...prev]);
   };
@@ -85,6 +83,8 @@ const LessonManagement: React.FC = () => {
           subject: lesson.subject || "",
           meta: lesson.description ? lesson.description.slice(0, 80) : "",
           type: "lesson",
+          duration: "15 phút",
+          free: lesson.free,
         },
         ...prev,
       ]);
@@ -92,18 +92,21 @@ const LessonManagement: React.FC = () => {
     }
     // fallback: add simple
     const id = `l-${Date.now()}`;
-    setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "", type: "lesson" }, ...prev]);
+    setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "", type: "lesson", duration: "15 phút", free: false }, ...prev]);
   };
 
-  const handleOpen = (id: string, type?: "chapter" | "lesson") => {
-    if (type === "chapter") {
-      const chapter = items.find(item => item.id === id && item.type === "chapter");
-      if (chapter) {
-        setSelectedChapter(chapter);
-        setIsChapterModalOpen(true);
-      }
-    } else {
-      alert(`Mở bài học ${id} (mô phỏng)`);
+  const handleAddLessonToChapter = (chapterId: string) => {
+    setSelectedChapterId(chapterId);
+    setIsAddLessonModalOpen(true);
+  };
+
+  const handleEditLesson = (lessonId: string) => {
+    alert(`Chỉnh sửa bài học ${lessonId} (mô phỏng)`);
+  };
+
+  const handleDeleteLesson = (lessonId: string) => {
+    if (confirm("Bạn có chắc muốn xóa bài học này?")) {
+      setItems((prev) => prev.filter(item => item.id !== lessonId));
     }
   };
 
@@ -124,16 +127,20 @@ const LessonManagement: React.FC = () => {
           onAddLesson={handleAddLesson}
         />
 
-        <LessonsList items={items} onOpen={handleOpen} />
+        <LessonsList 
+          items={items}
+          onAddLesson={handleAddLessonToChapter}
+          onEditLesson={handleEditLesson}
+          onDeleteLesson={handleDeleteLesson}
+        />
       </div>
 
-      {selectedChapter && (
-        <ChapterContentModal
-          open={isChapterModalOpen}
-          onOpenChange={setIsChapterModalOpen}
-          chapter={selectedChapter}
-        />
-      )}
+      <AddLessonModal
+        open={isAddLessonModalOpen}
+        onOpenChange={setIsAddLessonModalOpen}
+        onSave={handleAddLesson}
+        defaultChapter={selectedChapterId || undefined}
+      />
 
       <MadeWithDyad />
     </Layout>
