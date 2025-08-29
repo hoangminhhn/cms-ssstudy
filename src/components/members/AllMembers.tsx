@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { LayoutGrid, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 type Member = {
   id: string;
@@ -99,10 +98,7 @@ const AllMembers: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-4 flex flex-col md:flex-row gap-3 items-center">
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <Link to="/members?tab=add-member">
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Tạo</Button>
-              </Link>
+            <div className="flex items-center gap-2 w-full">
               <div className="relative flex-1 md:flex-none">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
