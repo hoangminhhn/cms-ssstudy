@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Search, MoreHorizontal, Eye, Edit, Trash2, Download } from 'lucide-react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Document {
   id: string;
@@ -89,6 +90,7 @@ const DocumentTable: React.FC = () => {
   const [subjectFilter, setSubjectFilter] = React.useState(subjects[0]);
   const [gradeFilter, setGradeFilter] = React.useState(grades[0]);
   const [statusFilter, setStatusFilter] = React.useState(statuses[0]);
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const filteredDocuments = React.useMemo(() => {
     return documents.filter(doc => {
@@ -103,9 +105,26 @@ const DocumentTable: React.FC = () => {
     });
   }, [documents, searchTerm, categoryFilter, subjectFilter, gradeFilter, statusFilter]);
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(filteredDocuments.map(doc => doc.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelect = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedIds(prev => [...prev, id]);
+    } else {
+      setSelectedIds(prev => prev.filter(docId => docId !== id));
+    }
+  };
+
   const handleDelete = (id: string) => {
     if (confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) {
       setDocuments(documents.filter(doc => doc.id !== id));
+      setSelectedIds(prev => prev.filter(docId => docId !== id));
     }
   };
 
@@ -180,28 +199,42 @@ const DocumentTable: React.FC = () => {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Tên tài liệu</TableHead>
-                <TableHead>Danh mục</TableHead>
-                <TableHead>Môn học</TableHead>
-                <TableHead>Lớp</TableHead>
-                <TableHead>Ngày tải lên</TableHead>
-                <TableHead>Kích thước</TableHead>
-                <TableHead>Lượt tải</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
+              <TableRow className="bg-orange-50">
+                <TableHead className="w-[48px]">
+                  <Checkbox 
+                    checked={selectedIds.length === filteredDocuments.length && filteredDocuments.length > 0}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Chọn tất cả"
+                  />
+                </TableHead>
+                <TableHead className="text-orange-600">Tên tài liệu</TableHead>
+                <TableHead className="text-orange-600">Danh mục</TableHead>
+                <TableHead className="text-orange-600">Môn học</TableHead>
+                <TableHead className="text-orange-600">Lớp</TableHead>
+                <TableHead className="text-orange-600">Ngày tải lên</TableHead>
+                <TableHead className="text-orange-600">Kích thước</TableHead>
+                <TableHead className="text-orange-600">Lượt tải</TableHead>
+                <TableHead className="text-orange-600">Trạng thái</TableHead>
+                <TableHead className="text-orange-600 text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredDocuments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                     Không tìm thấy tài liệu nào
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredDocuments.map((doc) => (
                   <TableRow key={doc.id}>
+                    <TableCell>
+                      <Checkbox 
+                        checked={selectedIds.includes(doc.id)}
+                        onCheckedChange={(checked) => handleSelect(doc.id, checked as boolean)}
+                        aria-label={`Chọn tài liệu ${doc.title}`}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{doc.title}</TableCell>
                     <TableCell>{doc.category}</TableCell>
                     <TableCell>{doc.subject}</TableCell>
