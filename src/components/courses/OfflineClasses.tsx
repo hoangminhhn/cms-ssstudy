@@ -5,7 +5,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Search, Pencil, SlidersHorizontal, Users, Copy, Trash2 } from "lucide-react";
+import { Search, Filter, Pencil, SlidersHorizontal, Users, Copy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface OfflineClass {
