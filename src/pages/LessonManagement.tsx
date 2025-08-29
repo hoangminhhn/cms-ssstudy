@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LessonFilters from "@/components/lessons/LessonFilters";
 import LessonsList from "@/components/lessons/LessonsList";
-import AddLessonModal from "./lessons/AddLessonModal";
+import AddLessonModal from "@/components/lessons/AddLessonModal";
 
 const mockLessons = [
   { id: "c1", title: "Chương 1: Số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
