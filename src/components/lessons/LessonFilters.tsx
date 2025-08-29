@@ -66,6 +66,7 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
   };
 
   const handleSaveChapter = (chapter: ChapterData) => {
+    // Pass chapter to parent
     onAddChapter(chapter);
   };
 
@@ -155,6 +156,12 @@ const LessonFilters: React.FC<LessonFiltersProps> = ({
               onClick={handleOpenAddChapter}
             >
               THÊM CHƯƠNG
+            </Button>
+            <Button
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+              onClick={handleOpenAddLesson}
+            >
+              THÊM BÀI HỌC
             </Button>
           </div>
         </div>
