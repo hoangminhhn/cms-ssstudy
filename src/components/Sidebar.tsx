@@ -10,7 +10,7 @@ import WordExamSubMenu from './WordExamSubMenu';
 import CourseSubMenu from './CourseSubMenu';
 import DocumentsSubMenu from './Documents/DocumentsSubMenu';
 import MembersSubMenu from './members/MembersSubMenu';
-import OrdersSubMenu from '@/components/OrdersSubMenu';
+import OrdersSubMenu from './OrdersSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
