@@ -34,21 +34,21 @@ const OrderManagement: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'all-orders':
-        return <AllOrdersTable />;
+        return <AllOrdersTable initialStatusFilter="all" />;
+      case 'pending':
+        return <AllOrdersTable initialStatusFilter="Chờ xử lý" />;
+      case 'processing':
+        return <AllOrdersTable initialStatusFilter="Đang xử lý" />;
+      case 'paid':
+        return <AllOrdersTable initialStatusFilter="Đã thanh toán" />;
+      case 'shipping':
+        return <AllOrdersTable initialStatusFilter="Đang giao" />;
+      case 'success':
+        return <AllOrdersTable initialStatusFilter="Hoàn thành" />;
+      case 'cancelled':
+        return <AllOrdersTable initialStatusFilter="Huỷ" />;
       default:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>{getHeaderTitle()}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Nội dung cho "{getHeaderTitle()}" sẽ được hiện thực ở đây. Hiện tại dùng placeholder — nếu bạn muốn,
-                mình sẽ mở rộng để lọc bảng đơn hàng theo trạng thái tương ứng.
-              </p>
-            </CardContent>
-          </Card>
-        );
+        return <AllOrdersTable initialStatusFilter="all" />;
     }
   };
 
