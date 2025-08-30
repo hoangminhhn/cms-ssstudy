@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { DateRangePicker } from "@/components/DateRangePicker";
+import DateRangePicker from '@/components/DateRangePicker';
 import { Search, Eye, Trash2, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import { useMemo, useState, useEffect } from "react";
