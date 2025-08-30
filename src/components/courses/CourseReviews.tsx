@@ -118,12 +118,9 @@ const CourseReviews: React.FC = () => {
             </div>
           </div>
 
-          {/* Action bar */}
+          {/* Action bar - buttons 'Đặt lại' and 'Xóa mục chọn' removed as requested */}
           <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => { setQuery(""); setPage(1); toast.info("Đã xóa tìm kiếm."); }}>Đặt lại</Button>
-              <Button variant="ghost" onClick={handleBulkDelete}>Xóa mục chọn</Button>
-            </div>
+            <div /> {/* left intentionally empty after removal */}
             <div className="text-sm text-muted-foreground">
               Hiển thị {total === 0 ? 0 : startIndex + 1} đến {endIndex} trong tổng số {total}
             </div>
