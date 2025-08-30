@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
-import RecentOrdersTable from '@/components/RecentOrdersTable';
+import AllOrdersTable from '@/components/Orders/AllOrdersTable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const OrderManagement: React.FC = () => {
@@ -34,10 +34,8 @@ const OrderManagement: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'all-orders':
-        // reuse the existing RecentOrdersTable component
-        return <RecentOrdersTable />;
+        return <AllOrdersTable />;
       default:
-        // placeholder cards for other tabs — replace with filtered tables if you want full functionality
         return (
           <Card>
             <CardHeader>
@@ -64,10 +62,8 @@ const OrderManagement: React.FC = () => {
             <div className="w-16" />
           </div>
         </div>
-
         {renderContent()}
       </div>
-
       <MadeWithDyad />
     </Layout>
   );
