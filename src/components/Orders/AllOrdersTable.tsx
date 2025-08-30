@@ -116,10 +116,14 @@ const paymentOptions = [
 const formatVnd = (n: number) =>
   n.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 });
 
-const AllOrdersTable: React.FC = () => {
+interface AllOrdersTableProps {
+  presetStatus?: OrderStatus | "all";
+}
+
+const AllOrdersTable: React.FC<AllOrdersTableProps> = ({ presetStatus }) => {
   const [orders, setOrders] = useState<OrderRecord[]>(demoOrders);
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>(presetStatus ?? "all");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
@@ -140,7 +144,9 @@ const AllOrdersTable: React.FC = () => {
         if (!match) return false;
       }
 
-      if (statusFilter !== "all" && o.status !== statusFilter) return false;
+      // use preset if provided (presetStatus may be 'all' to mean no preset)
+      const effectiveStatus = presetStatus && presetStatus !== "all" ? presetStatus : statusFilter;
+      if (effectiveStatus !== "all" && o.status !== effectiveStatus) return false;
       if (paymentFilter !== "all" && o.paymentMethod !== paymentFilter) return false;
 
       if (dateRange?.from) {
@@ -157,12 +163,12 @@ const AllOrdersTable: React.FC = () => {
 
       return true;
     });
-  }, [orders, query, statusFilter, paymentFilter, dateRange]);
+  }, [orders, query, statusFilter, paymentFilter, dateRange, presetStatus]);
 
   useEffect(() => {
     // reset page if filters change
     setCurrentPage(1);
-  }, [query, statusFilter, paymentFilter, dateRange, itemsPerPage]);
+  }, [query, statusFilter, paymentFilter, dateRange, itemsPerPage, presetStatus]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -188,7 +194,7 @@ const AllOrdersTable: React.FC = () => {
       <div className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>Tất cả đơn hàng</CardTitle>
+            <CardTitle>{presetStatus && presetStatus !== "all" ? `Đơn hàng - ${presetStatus}` : "Tất cả đơn hàng"}</CardTitle>
           </CardHeader>
           <CardContent>
             {/* Filters row */}
@@ -204,18 +210,25 @@ const AllOrdersTable: React.FC = () => {
               </div>
 
               <div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statusOptions.map((s) => (
-                      <SelectItem key={s.value} value={s.value}>
-                        {s.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {/* when presetStatus provided (and not 'all') show label instead of editable select */}
+                {presetStatus && presetStatus !== "all" ? (
+                  <div className="h-9 flex items-center px-3 rounded border bg-gray-50 dark:bg-gray-800">
+                    <span className="text-sm font-medium">{presetStatus}</span>
+                  </div>
+                ) : (
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-full h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((s) => (
+                        <SelectItem key={s.value} value={s.value}>
+                          {s.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
 
               <div>
