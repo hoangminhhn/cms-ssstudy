@@ -1,3 +1,5 @@
+// NOTE: This file is based on the existing Sidebar component with a minor addition:
+// - import OrdersSubMenu and include '/orders' checks so the Orders submenu is shown
 import React from 'react';
 import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -8,6 +10,7 @@ import WordExamSubMenu from './WordExamSubMenu';
 import CourseSubMenu from './CourseSubMenu';
 import DocumentsSubMenu from './Documents/DocumentsSubMenu';
 import MembersSubMenu from './members/MembersSubMenu';
+import OrdersSubMenu from '@/components/OrdersSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -73,6 +76,8 @@ const Sidebar: React.FC = () => {
       setOpenSubMenu('documents');
     } else if (location.pathname.startsWith('/members')) {
       setOpenSubMenu('members');
+    } else if (location.pathname.startsWith('/orders')) {
+      setOpenSubMenu('orders');
     } else {
       setOpenSubMenu(null);
     }
@@ -166,7 +171,17 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'members' && <MembersSubMenu />}
 
-            <NavItem icon={ShoppingCart} label="Đơn hàng" to="/orders" isActive={location.pathname === '/orders'} />
+            {/* Orders parent with submenu */}
+            <NavItem
+              icon={ShoppingCart}
+              label="Đơn hàng"
+              onClick={() => handleParentClick('orders')}
+              isActive={location.pathname.startsWith('/orders')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'orders'}
+            />
+            {openSubMenu === 'orders' && <OrdersSubMenu />}
+
             <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" isActive={location.pathname === '/promotions'} />
             <NavItem icon={Newspaper} label="Tin tức" to="/news" isActive={location.pathname === '/news'} />
             <NavItem icon={Bell} label="Thông báo" to="/notifications" isActive={location.pathname === '/notifications'} />

@@ -5,15 +5,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import BookManagement from "./pages/BookManagement";
-import ExamManagement from "./pages/ExamManagement";
-import WordExamUploadPage from "./pages/WordExamUploadPage";
-import ScoreReportPage from "./pages/ScoreReportPage";
-import CourseManagement from "./pages/CourseManagement";
-import LessonManagement from "./pages/LessonManagement";
-import QuizManagement from "./pages/QuizManagement";
-import DocumentManagement from "./pages/DocumentManagement";
-import MemberManagement from "./pages/MemberManagement";
+import BookManagement from "@/pages/BookManagement";
+import ExamManagement from "@/pages/ExamManagement";
+import WordExamUploadPage from "@/pages/WordExamUploadPage";
+import ScoreReportPage from "@/pages/ScoreReportPage";
+import CourseManagement from "@/pages/CourseManagement";
+import LessonManagement from "@/pages/LessonManagement";
+import QuizManagement from "@/pages/QuizManagement";
+import DocumentManagement from "@/pages/DocumentManagement";
+import MemberManagement from "@/pages/MemberManagement";
+import OrderManagement from "@/pages/OrderManagement";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/quizzes" element={<QuizManagement />} />
           <Route path="/documents" element={<DocumentManagement />} />
           <Route path="/members" element={<MemberManagement />} />
+          <Route path="/orders" element={<OrderManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
