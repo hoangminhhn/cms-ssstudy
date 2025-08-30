@@ -15,6 +15,7 @@ import QuizManagement from "@/pages/QuizManagement";
 import DocumentManagement from "@/pages/DocumentManagement";
 import MemberManagement from "@/pages/MemberManagement";
 import OrderManagement from "@/pages/OrderManagement";
+import PromotionManagement from "@/pages/PromotionManagement";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/documents" element={<DocumentManagement />} />
           <Route path="/members" element={<MemberManagement />} />
           <Route path="/orders" element={<OrderManagement />} />
+          <Route path="/promotions" element={<PromotionManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
