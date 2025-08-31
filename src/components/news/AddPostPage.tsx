@@ -136,10 +136,6 @@ const AddPostPage: React.FC = () => {
               className="w-full"
             />
           </div>
-
-          <div className="flex items-center gap-2 ml-auto">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleCreateDummy}>TẠO BÀI VIẾT</Button>
-          </div>
         </div>
       </div>
 
