@@ -3,6 +3,7 @@ import Layout from '@/components/Layout';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import AllNotifications from '@/components/notifications/AllNotifications';
+import AddNotification from '@/components/notifications/AddNotification';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 
@@ -27,11 +28,7 @@ const NotificationManagement: React.FC = () => {
       case 'all-notifications':
         return <AllNotifications />;
       case 'add-notification':
-        return (
-          <div className="p-4">
-            <div className="text-muted-foreground">Form thêm thông báo (placeholder).</div>
-          </div>
-        );
+        return <AddNotification />;
       default:
         return <AllNotifications />;
     }
