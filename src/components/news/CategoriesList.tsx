@@ -118,10 +118,7 @@ const CategoriesList: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => { setQuery(""); setPage(1); toast.success("Đã đặt lại bộ lọc tìm kiếm."); }}>Đặt lại</Button>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => toast.info("Tạo danh mục (demo).")}>Thêm danh mục</Button>
-          </div>
+          {/* Removed the previous two buttons per request */}
         </div>
       </div>
 
