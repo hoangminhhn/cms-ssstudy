@@ -4,6 +4,7 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useLocation } from "react-router-dom";
 import AddPostPage from "@/components/news/AddPostPage";
 import CreatePostForm from "@/components/news/CreatePostForm";
+import CategoriesList from "@/components/news/CategoriesList";
 
 const NewsPage: React.FC = () => {
   const location = useLocation();
@@ -32,7 +33,7 @@ const NewsPage: React.FC = () => {
       case "posts":
         return <AddPostPage />;
       case "categories":
-        return <div className="p-4">Quản lý danh mục (coming soon)</div>;
+        return <CategoriesList />;
       case "add-category":
         return <div className="p-4">Thêm danh mục (coming soon)</div>;
       default:
