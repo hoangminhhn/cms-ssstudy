@@ -17,6 +17,7 @@ import MemberManagement from "@/pages/MemberManagement";
 import OrderManagement from "@/pages/OrderManagement";
 import PromotionManagement from "@/pages/PromotionManagement";
 import NewsPage from "@/pages/NewsPage";
+import NotificationManagement from "@/pages/NotificationManagement";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/orders" element={<OrderManagement />} />
           <Route path="/promotions" element={<PromotionManagement />} />
           <Route path="/news" element={<NewsPage />} />
+          <Route path="/notifications" element={<NotificationManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

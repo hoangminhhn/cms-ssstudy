@@ -12,6 +12,7 @@ import DocumentsSubMenu from './Documents/DocumentsSubMenu';
 import MembersSubMenu from './members/MembersSubMenu';
 import OrdersSubMenu from './OrdersSubMenu';
 import NewsSubMenu from './news/NewsSubMenu';
+import NotificationsSubMenu from './notifications/NotificationsSubMenu';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -81,6 +82,8 @@ const Sidebar: React.FC = () => {
       setOpenSubMenu('orders');
     } else if (location.pathname.startsWith('/news')) {
       setOpenSubMenu('news');
+    } else if (location.pathname.startsWith('/notifications')) {
+      setOpenSubMenu('notifications');
     } else {
       setOpenSubMenu(null);
     }
@@ -195,8 +198,19 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'news' && <NewsSubMenu />}
 
+            {/* Notifications parent with submenu */}
+            <NavItem
+              icon={Bell}
+              label="Thông báo"
+              onClick={() => handleParentClick('notifications')}
+              isActive={location.pathname.startsWith('/notifications')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'notifications'}
+            />
+            {openSubMenu === 'notifications' && <NotificationsSubMenu />}
+
             <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" isActive={location.pathname === '/promotions'} />
-            <NavItem icon={Bell} label="Thông báo" to="/notifications" isActive={location.pathname === '/notifications'} />
+            <NavItem icon={Bell} label="Thông báo (chung)" to="/notifications" isActive={location.pathname === '/notifications'} />
             <NavItem icon={Settings} label="Quản lý trang" to="/page-management" isActive={location.pathname === '/page-management'} />
             <NavItem icon={DollarSign} label="Giao dịch" to="/transactions" isActive={location.pathname === '/transactions'} />
             <NavItem icon={CreditCard} label="Học phí" to="/tuition" isActive={location.pathname === '/tuition'} />
