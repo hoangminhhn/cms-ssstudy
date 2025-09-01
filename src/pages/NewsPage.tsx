@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useLocation } from "react-router-dom";
 import AddPostPage from "@/components/news/AddPostPage";
+import CreatePostForm from "@/components/news/CreatePostForm";
 
 const NewsPage: React.FC = () => {
   const location = useLocation();
@@ -27,9 +28,9 @@ const NewsPage: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "add-post":
-        return <AddPostPage />;
+        return <CreatePostForm />;
       case "posts":
-        return <AddPostPage />; // reuse list UI for posts view for now
+        return <AddPostPage />;
       case "categories":
         return <div className="p-4">Quản lý danh mục (coming soon)</div>;
       case "add-category":
