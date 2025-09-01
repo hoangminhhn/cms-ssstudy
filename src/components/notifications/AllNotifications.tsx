@@ -173,7 +173,13 @@ const AllNotifications: React.FC = () => {
                         <button title="Chỉnh sửa" className="p-2 rounded hover:bg-gray-100" onClick={() => handleEdit(it.id)}>
                           <Pencil className="h-4 w-4" />
                         </button>
-                        <button title={it.enabled ? "Tắt thông báo" : "Bật thông báo"} className="p-2 rounded hover:bg-gray-100" onClick={() => toggleEnabled(it.id)}>
+                        {/* Tooltip/title changed: when enabled show "Gửi thông báo" instead of "Tắt thông báo" */}
+                        <button
+                          title={it.enabled ? "Gửi thông báo" : "Bật thông báo"}
+                          className="p-2 rounded hover:bg-gray-100"
+                          onClick={() => toggleEnabled(it.id)}
+                          aria-label={it.enabled ? "Gửi thông báo" : "Bật thông báo"}
+                        >
                           <Bell className="h-4 w-4" />
                         </button>
                         <button title="Xóa" className="p-2 rounded hover:bg-gray-100 text-red-600" onClick={() => handleDelete(it.id)}>
