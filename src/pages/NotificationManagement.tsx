@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import AllNotifications from '@/components/notifications/AllNotifications';
-import AddNotification from '@/components/notifications/AddNotification';
+import AddNotification from '../components/notifications/AddNotification';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 
