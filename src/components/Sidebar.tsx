@@ -1,5 +1,5 @@
-// NOTE: This file is based on the existing Sidebar component with a minor addition:
-// - import NewsSubMenu and include '/news' checks so the News submenu is shown
+// NOTE: This file is based on the existing Sidebar component with a minor removal:
+// - Removed the duplicate NavItem for "Thông báo (chung)" linking to /notifications
 import React from 'react';
 import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -210,7 +210,6 @@ const Sidebar: React.FC = () => {
             {openSubMenu === 'notifications' && <NotificationsSubMenu />}
 
             <NavItem icon={Gift} label="Khuyến mãi" to="/promotions" isActive={location.pathname === '/promotions'} />
-            <NavItem icon={Bell} label="Thông báo (chung)" to="/notifications" isActive={location.pathname === '/notifications'} />
             <NavItem icon={Settings} label="Quản lý trang" to="/page-management" isActive={location.pathname === '/page-management'} />
             <NavItem icon={DollarSign} label="Giao dịch" to="/transactions" isActive={location.pathname === '/transactions'} />
             <NavItem icon={CreditCard} label="Học phí" to="/tuition" isActive={location.pathname === '/tuition'} />
