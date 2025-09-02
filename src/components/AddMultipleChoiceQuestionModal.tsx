@@ -159,7 +159,9 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">
             Các lựa chọn
           </Label>
-          <div className="space-y-3">
+
+          {/* Wrap options with RadioGroup to satisfy RadioGroupItem usage */}
+          <RadioGroup value={String(correctOptionIndex)} onValueChange={(val) => setCorrectOptionIndex(Number(val))} className="space-y-3">
             {options.map((opt, idx) => {
               const letter = String.fromCharCode(65 + idx);
               return (
@@ -169,8 +171,6 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
                       value={String(idx)}
                       id={`option-${idx}`}
                       className="h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
-                      onClick={() => setCorrectOptionIndex(idx)}
-                      checked={correctOptionIndex === idx}
                     />
                     <span className="select-none font-semibold text-gray-700 dark:text-gray-300">{letter}.</span>
                   </div>
@@ -233,7 +233,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
                 </div>
               );
             })}
-          </div>
+          </RadioGroup>
         </section>
 
         <section className="space-y-2">
