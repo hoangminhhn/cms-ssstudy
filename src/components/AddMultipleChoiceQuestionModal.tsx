@@ -9,7 +9,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import FormulaComposerDialog from "@/components/FormulaComposerDialog";
+import FormulaComposerDialog from "./FormulaComposerDialog";
 import { Input } from "@/components/ui/input";
 
 interface AddMultipleChoiceQuestionModalProps {
