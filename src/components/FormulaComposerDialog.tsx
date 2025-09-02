@@ -16,10 +16,8 @@ interface FormulaComposerDialogProps {
 }
 
 /**
- * Simple formula composer dialog with an insertion keypad:
- * - Tabs for groups (Basic, Operators, Functions, Symbols)
- * - Grid of buttons that insert LaTeX snippets at caret
- * - Live KaTeX preview (display mode)
+ * Larger keypad layout placed below the editor/preview.
+ * Expanded "123" group contains many keys (~32) to match screenshot needs.
  */
 const BUTTON_GROUPS: {
   id: string;
@@ -27,42 +25,34 @@ const BUTTON_GROUPS: {
   buttons: { title: string; latex: string; className?: string }[];
 }[] = [
   {
-    id: "basic",
-    label: "123",
+    id: "vars",
+    label: "x n",
     buttons: [
-      { title: "7", latex: "7" },
-      { title: "8", latex: "8" },
-      { title: "9", latex: "9" },
-      { title: "÷", latex: "\\div" },
-
-      { title: "4", latex: "4" },
-      { title: "5", latex: "5" },
-      { title: "6", latex: "6" },
-      { title: "×", latex: "\\times" },
-
-      { title: "1", latex: "1" },
-      { title: "2", latex: "2" },
-      { title: "3", latex: "3" },
-      { title: "−", latex: "-" },
-
-      { title: "○", latex: "\\circ" },
-      { title: "0", latex: "0" },
-      { title: ".", latex: "." },
-      { title: "+", latex: "+" },
+      { title: "x", latex: "x" },
+      { title: "n", latex: "n" },
+      { title: "a", latex: "a" },
+      { title: "b", latex: "b" },
+      { title: "c", latex: "c" },
+      { title: "y", latex: "y" },
+      { title: "z", latex: "z" },
+      { title: "t", latex: "t" },
     ],
   },
   {
-    id: "relations",
-    label: "<>",
+    id: "basic",
+    label: "123",
+    // expanded set (~32 keys) - digits, parentheses, dots, equals, arithmetic, common composites
     buttons: [
-      { title: "<", latex: "<" },
-      { title: ">", latex: ">" },
-      { title: "≤", latex: "\\le" },
-      { title: "≥", latex: "\\ge" },
-      { title: "=", latex: "=" },
-      { title: "≠", latex: "\\ne" },
-      { title: "≈", latex: "\\approx" },
-      { title: "∈", latex: "\\in" },
+      { title: "7", latex: "7" }, { title: "8", latex: "8" }, { title: "9", latex: "9" }, { title: "÷", latex: "\\div" },
+      { title: "4", latex: "4" }, { title: "5", latex: "5" }, { title: "6", latex: "6" }, { title: "×", latex: "\\times" },
+      { title: "1", latex: "1" }, { title: "2", latex: "2" }, { title: "3", latex: "3" }, { title: "−", latex: "-" },
+      { title: "0", latex: "0" }, { title: ".", latex: "." }, { title: "=", latex: "=" }, { title: "+", latex: "+" },
+
+      { title: "(", latex: "(" }, { title: ")", latex: ")" }, { title: "[", latex: "[" }, { title: "]", latex: "]" },
+      { title: "{", latex: "\\{" }, { title: "}", latex: "\\}" }, { title: "|", latex: "\\mid" }, { title: ":", latex: ":" },
+
+      { title: "∘", latex: "\\circ" }, { title: "°", latex: "^{\\circ}" }, { title: "•", latex: "\\bullet" }, { title: "·", latex: "\\cdot" },
+      { title: "…", latex: "\\dots" }, { title: "‰", latex: "\\permil" }, { title: "∗", latex: "\\ast" }, { title: "±", latex: "\\pm" },
     ],
   },
   {
@@ -70,13 +60,13 @@ const BUTTON_GROUPS: {
     label: "f()",
     buttons: [
       { title: "√", latex: "\\sqrt{ }" },
+      { title: "x^2", latex: "x^{2}" },
+      { title: "x^n", latex: "x^{n}" },
+      { title: "n√x", latex: "\\sqrt[n]{ }" },
       { title: "∫", latex: "\\int_{ }^{ }" },
       { title: "∑", latex: "\\sum_{ }^{ }" },
       { title: "lim", latex: "\\lim_{ }" },
-      { title: "sin", latex: "\\sin" },
-      { title: "cos", latex: "\\cos" },
-      { title: "tan", latex: "\\tan" },
-      { title: "log", latex: "\\log" },
+      { title: "∞", latex: "\\infty" },
     ],
   },
   {
@@ -90,7 +80,7 @@ const BUTTON_GROUPS: {
       { title: "β", latex: "\\beta" },
       { title: "γ", latex: "\\gamma" },
       { title: "θ", latex: "\\theta" },
-      { title: "∞", latex: "\\infty" },
+      { title: "∈", latex: "\\in" },
     ],
   },
 ];
@@ -102,14 +92,13 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
   onConfirm,
 }) => {
   const [latex, setLatex] = React.useState<string>(initialLatex);
-  const [activeGroup, setActiveGroup] = React.useState<string>(BUTTON_GROUPS[0].id);
+  const [activeGroup, setActiveGroup] = React.useState<string>(BUTTON_GROUPS[1].id); // default to '123'
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
 
   React.useEffect(() => {
     if (isOpen) {
       setLatex(initialLatex);
-      setActiveGroup(BUTTON_GROUPS[0].id);
-      // focus textarea on open (small delay to ensure rendered)
+      setActiveGroup(BUTTON_GROUPS[1].id);
       setTimeout(() => textareaRef.current?.focus(), 50);
     }
   }, [isOpen, initialLatex]);
@@ -122,11 +111,9 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
     }
   }, [latex]);
 
-  // Insert snippet at caret position of textarea
   const insertAtCaret = (snippet: string) => {
     const ta = textareaRef.current;
     if (!ta) {
-      // fallback append
       setLatex((prev) => prev + snippet);
       return;
     }
@@ -136,10 +123,7 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
     const after = latex.substring(end);
     const newValue = before + snippet + after;
     setLatex(newValue);
-    // place caret after inserted snippet
     const newPos = start + snippet.length;
-    // update textarea value and selection after state set
-    // use setTimeout to ensure DOM updated
     setTimeout(() => {
       ta.focus();
       ta.setSelectionRange(newPos, newPos);
@@ -165,7 +149,6 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
         ta.setSelectionRange(pos, pos);
       }, 0);
     } else if (start !== end) {
-      // delete selection
       const before = latex.substring(0, start);
       const after = latex.substring(end);
       const newValue = before + after;
@@ -189,17 +172,40 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-3xl w-full">
+      <DialogContent className="max-w-4xl w-full">
         <DialogHeader>
           <DialogTitle>Chèn công thức (LaTeX)</DialogTitle>
         </DialogHeader>
 
-        <div className="p-2 space-y-4">
-          <div>
-            <Label className="mb-2">Bộ phím công thức</Label>
+        <div className="p-3 space-y-4">
+          {/* Editor + Preview top section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="mb-2">LaTeX (raw)</Label>
+              <textarea
+                ref={textareaRef}
+                value={latex}
+                onChange={(e) => setLatex(e.target.value)}
+                className="w-full min-h-[160px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
+                aria-label="LaTeX editor"
+              />
+              <div className="mt-2 text-sm text-muted-foreground">Bạn có thể nhập thủ công hoặc dùng bộ phím bên dưới.</div>
+            </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 mb-2">
+            <div>
+              <Label className="mb-2">Xem trước</Label>
+              <div
+                className="min-h-[160px] rounded-md border p-3 bg-white dark:bg-gray-800"
+                aria-live="polite"
+                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              />
+            </div>
+          </div>
+
+          {/* Keypad section fixed below editor */}
+          <div className="border-t pt-3">
+            <div className="flex items-center gap-2 mb-3">
+              {/* Small tabs above the keypad */}
               {BUTTON_GROUPS.map((g) => (
                 <button
                   key={g.id}
@@ -232,43 +238,19 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
               </div>
             </div>
 
-            {/* Buttons grid */}
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 bg-gray-50 p-3 rounded-md">
+            {/* Expanded keypad grid */}
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
               {(BUTTON_GROUPS.find((b) => b.id === activeGroup)?.buttons || []).map((btn, idx) => (
                 <button
                   key={idx}
                   onClick={() => insertAtCaret(btn.latex)}
-                  className="rounded border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 py-2 text-sm text-center"
+                  className="rounded border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 py-3 text-sm text-center"
                   title={btn.title}
                   aria-label={`Chèn ${btn.title}`}
                 >
                   {btn.title}
                 </button>
               ))}
-            </div>
-          </div>
-
-          {/* Editor and preview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label className="mb-2">LaTeX (raw)</Label>
-              <textarea
-                ref={textareaRef}
-                value={latex}
-                onChange={(e) => setLatex(e.target.value)}
-                className="w-full min-h-[160px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
-                aria-label="LaTeX editor"
-              />
-              <div className="mt-2 text-sm text-muted-foreground">Bạn có thể chèn công thức từ bộ phím hoặc nhập thủ công.</div>
-            </div>
-
-            <div>
-              <Label className="mb-2">Xem trước</Label>
-              <div
-                className="min-h-[160px] rounded-md border p-3 bg-white dark:bg-gray-800"
-                aria-live="polite"
-                dangerouslySetInnerHTML={{ __html: previewHtml }}
-              />
             </div>
           </div>
         </div>
