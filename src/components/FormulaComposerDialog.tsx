@@ -173,46 +173,54 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="max-w-4xl w-full">
-        <DialogHeader>
-          <DialogTitle>Chèn công thức (LaTeX)</DialogTitle>
-        </DialogHeader>
+        <div className="flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Chèn công thức (LaTeX)</DialogTitle>
+          </DialogHeader>
 
-        <div className="p-3 space-y-4">
-          {/* Editor + Preview top section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label className="mb-2">LaTeX (raw)</Label>
-              <textarea
-                ref={textareaRef}
-                value={latex}
-                onChange={(e) => setLatex(e.target.value)}
-                className="w-full min-h-[160px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
-                aria-label="LaTeX editor"
-              />
-              <div className="mt-2 text-sm text-muted-foreground">Bạn có thể nhập thủ công hoặc dùng bộ phím bên dưới.</div>
-            </div>
+          {/* Scrollable content area (editor + preview). Keypad below remains fixed. */}
+          <div className="max-h-[60vh] overflow-auto p-3">
+            <div className="p-0 space-y-4">
+              {/* Editor + Preview top section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="mb-2">LaTeX (raw)</Label>
+                  <textarea
+                    ref={textareaRef}
+                    value={latex}
+                    onChange={(e) => setLatex(e.target.value)}
+                    className="w-full min-h-[180px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
+                    aria-label="LaTeX editor"
+                  />
+                  <div className="mt-2 text-sm text-muted-foreground">Bạn có thể nhập thủ công hoặc dùng bộ phím bên dưới.</div>
+                </div>
 
-            <div>
-              <Label className="mb-2">Xem trước</Label>
-              <div
-                className="min-h-[160px] rounded-md border p-3 bg-white dark:bg-gray-800"
-                aria-live="polite"
-                dangerouslySetInnerHTML={{ __html: previewHtml }}
-              />
+                <div>
+                  <Label className="mb-2">Xem trước</Label>
+                  <div
+                    className="min-h-[180px] rounded-md border p-3 bg-white dark:bg-gray-800"
+                    aria-live="polite"
+                    dangerouslySetInnerHTML={{ __html: previewHtml }}
+                  />
+                </div>
+              </div>
+
+              {/* Extra spacing so content scrolls nicely above keypad */}
+              <div className="h-2" />
             </div>
           </div>
 
-          {/* Keypad section fixed below editor */}
-          <div className="border-t pt-3">
+          {/* Keypad area pinned below (not in scrollable container) */}
+          <div className="border-t bg-gray-50 dark:bg-gray-900 p-3">
             <div className="flex items-center gap-2 mb-3">
-              {/* Small tabs above the keypad */}
+              {/* Tabs */}
               {BUTTON_GROUPS.map((g) => (
                 <button
                   key={g.id}
                   onClick={() => setActiveGroup(g.id)}
                   className={cn(
                     "px-3 py-1 rounded-md text-sm",
-                    activeGroup === g.id ? "bg-orange-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                    activeGroup === g.id ? "bg-orange-500 text-white" : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border"
                   )}
                   aria-pressed={activeGroup === g.id}
                 >
@@ -224,21 +232,21 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
                 <button
                   onClick={handleBackspace}
                   title="Backspace"
-                  className="px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                  className="px-3 py-1 rounded-md bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border"
                 >
                   ⌫
                 </button>
                 <button
                   onClick={handleClear}
                   title="Clear"
-                  className="px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                  className="px-3 py-1 rounded-md bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border"
                 >
                   Clear
                 </button>
               </div>
             </div>
 
-            {/* Expanded keypad grid */}
+            {/* Expanded keypad grid; using responsive columns */}
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
               {(BUTTON_GROUPS.find((b) => b.id === activeGroup)?.buttons || []).map((btn, idx) => (
                 <button
@@ -253,12 +261,12 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
               ))}
             </div>
           </div>
-        </div>
 
-        <DialogFooter className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>Hủy</Button>
-          <Button onClick={handleConfirm} className="bg-orange-500 hover:bg-orange-600 text-white">Chèn</Button>
-        </DialogFooter>
+          <DialogFooter className="flex justify-end gap-2 mt-2">
+            <Button variant="outline" onClick={onClose}>Hủy</Button>
+            <Button onClick={handleConfirm} className="bg-orange-500 hover:bg-orange-600 text-white">Chèn</Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
