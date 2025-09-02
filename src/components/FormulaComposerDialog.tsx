@@ -179,9 +179,9 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
           </DialogHeader>
 
           {/* Scrollable content area (editor + preview). Keypad below remains fixed. */}
-          <div className="max-h-[60vh] overflow-auto p-3">
+          <div className="max-h-[56vh] overflow-auto p-3">
             <div className="p-0 space-y-4">
-              {/* Editor + Preview top section */}
+              {/* Editor + Preview top section with slightly reduced heights */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label className="mb-2">LaTeX (raw)</Label>
@@ -189,7 +189,7 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
                     ref={textareaRef}
                     value={latex}
                     onChange={(e) => setLatex(e.target.value)}
-                    className="w-full min-h-[180px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
+                    className="w-full min-h-[140px] rounded-md border px-3 py-2 resize-vertical bg-white dark:bg-gray-800 dark:border-gray-700 text-sm"
                     aria-label="LaTeX editor"
                   />
                   <div className="mt-2 text-sm text-muted-foreground">Bạn có thể nhập thủ công hoặc dùng bộ phím bên dưới.</div>
@@ -198,7 +198,7 @@ const FormulaComposerDialog: React.FC<FormulaComposerDialogProps> = ({
                 <div>
                   <Label className="mb-2">Xem trước</Label>
                   <div
-                    className="min-h-[180px] rounded-md border p-3 bg-white dark:bg-gray-800"
+                    className="min-h-[140px] rounded-md border p-3 bg-white dark:bg-gray-800"
                     aria-live="polite"
                     dangerouslySetInnerHTML={{ __html: previewHtml }}
                   />
