@@ -21,6 +21,9 @@ interface AddMultipleChoiceQuestionModalProps {
   difficulty?: "Nhận biết" | "Thông hiểu" | "Vận dụng" | "Vận dụng cao";
   explanation?: string;
   videoLink?: string;
+
+  // New: label for the type of question (e.g. "Trắc nghiệm đúng sai", "Kéo thả", etc.)
+  questionTypeLabel?: string;
 }
 
 export interface MultipleChoiceQuestion {
@@ -45,6 +48,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
   difficulty: initialDifficulty = "Nhận biết",
   explanation: initialExplanation = "",
   videoLink: initialVideoLink = "",
+  questionTypeLabel = "Trắc nghiệm",
 }) => {
   const [questionText, setQuestionText] = useState<string>(initialQuestionText);
   const [options, setOptions] = useState<string[]>(initialOptions);
@@ -96,7 +100,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       <DialogContent className="max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            Câu {questionNumber} - Trắc nghiệm
+            Câu {questionNumber} - {questionTypeLabel}
           </DialogTitle>
         </DialogHeader>
 

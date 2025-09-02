@@ -37,6 +37,15 @@ interface ExamPartQuestionsProps {
   onAddOrUpdateQuestion: (partId: string, questionId: string | null, newQuestion: Question) => void;
 }
 
+const questionTypeLabels: Record<string, string> = {
+  "multiple-choice": "Trắc nghiệm",
+  "true-false": "Trắc nghiệm đúng sai",
+  "short-answer": "Điền số/Trả lời ngắn",
+  "drag-drop": "Kéo thả",
+  "multiple-answer": "TN Nhiều đáp án",
+  "true-false-2": "Đúng/Sai",
+};
+
 const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   parts,
   onDeleteAll,
@@ -59,13 +68,17 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
   // New state for Exam Config modal
   const [isExamConfigOpen, setIsExamConfigOpen] = React.useState(false);
 
+  // New state: which question type opened the modal
+  const [modalQuestionType, setModalQuestionType] = React.useState<string>('multiple-choice');
+
   React.useEffect(() => {
     if (parts.length > 0 && !parts.find(p => p.id === selectedTab)) {
       setSelectedTab(parts[0].id);
     }
   }, [parts, selectedTab]);
 
-  const handleAddMultipleChoice = () => {
+  const handleOpenQuestionModal = (type: string) => {
+    setModalQuestionType(type);
     setEditingQuestion(null);
     setEditingQuestionIndex(null);
     setEditingPartId(selectedTab);
@@ -119,6 +132,8 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
     setEditingQuestion(editingQ);
     setEditingQuestionIndex(questionIndex);
     setEditingPartId(partId);
+    // keep existing modal type or set to multiple-choice by default
+    setModalQuestionType('multiple-choice');
     setIsModalOpen(true);
   };
 
@@ -158,7 +173,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
           <div className="flex items-center gap-2">
             <Button
               className="bg-cyan-500 hover:bg-cyan-600 text-white text-xs px-3 h-8 max-w-[140px] truncate"
-              onClick={onAddDefaultPart}
+              onClick={() => onAddDefaultPart()}
             >
               + Phần thi mặc định
             </Button>
@@ -310,22 +325,22 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
                     </Table>
                   )}
                   <div className="flex flex-wrap gap-2 mt-4 px-2">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={handleAddMultipleChoice}>
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('multiple-choice')}>
                       +TRẮC NGHIỆM
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('true-false')}>
                       +TRẮC NGHIỆM ĐÚNG SAI
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('short-answer')}>
                       +ĐIỀN SỐ/TRẢ LỜI NGẮN
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('drag-drop')}>
                       +KÉO THẢ
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('multiple-answer')}>
                       +TN NHIỀU ĐÁP ÁN
                     </Button>
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
+                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate" onClick={() => handleOpenQuestionModal('true-false-2')}>
                       +ĐÚNG/SAI
                     </Button>
                     <Button className="bg-cyan-500 hover:bg-cyan-600 text-white flex-1 min-w-[120px] text-xs px-3 h-8 truncate">
@@ -345,6 +360,7 @@ const ExamPartQuestions: React.FC<ExamPartQuestionsProps> = ({
         onSave={handleSaveQuestion}
         questionNumber={editingQuestionIndex !== null ? editingQuestionIndex + 1 : parts.findIndex(p => p.id === editingPartId) + 1}
         {...(editingQuestion ? { ...editingQuestion } : {})}
+        questionTypeLabel={questionTypeLabels[modalQuestionType] ?? "Trắc nghiệm"}
       />
 
       <GroupPartModal
