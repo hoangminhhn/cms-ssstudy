@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 
 interface AddMultipleChoiceQuestionModalProps {
   isOpen: boolean;
@@ -14,7 +17,6 @@ interface AddMultipleChoiceQuestionModalProps {
   onSave: (question: MultipleChoiceQuestion) => void;
   questionNumber: number;
 
-  // New props for editing existing question
   questionText?: string;
   options?: string[];
   correctOptionIndex?: number;
@@ -22,7 +24,6 @@ interface AddMultipleChoiceQuestionModalProps {
   explanation?: string;
   videoLink?: string;
 
-  // New: label for the type of question (e.g. "Trắc nghiệm đúng sai", "Kéo thả", etc.)
   questionTypeLabel?: string;
 }
 
@@ -57,7 +58,11 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
   const [explanation, setExplanation] = useState<string>(initialExplanation);
   const [videoLink, setVideoLink] = useState<string>(initialVideoLink);
 
-  // Reset state when modal opens or initial props change
+  // Per-option formula editor state keyed by index
+  const [formulaDrafts, setFormulaDrafts] = useState<Record<number, string>>({});
+  const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
+  const [previewHtml, setPreviewHtml] = useState<Record<number, string>>({});
+
   useEffect(() => {
     if (isOpen) {
       setQuestionText(initialQuestionText);
@@ -66,13 +71,18 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       setDifficulty(initialDifficulty);
       setExplanation(initialExplanation);
       setVideoLink(initialVideoLink);
+      setFormulaDrafts({});
+      setOpenPopoverIndex(null);
+      setPreviewHtml({});
     }
   }, [isOpen, initialQuestionText, initialOptions, initialCorrectOptionIndex, initialDifficulty, initialExplanation, initialVideoLink]);
 
   const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
+    setOptions((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
   };
 
   const handleSave = () => {
@@ -80,7 +90,7 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       alert("Vui lòng nhập nội dung câu hỏi.");
       return;
     }
-    if (options.filter(opt => opt.trim() !== "").length < 2) {
+    if (options.filter((opt) => opt.trim() !== "").length < 2) {
       alert("Vui lòng nhập ít nhất 2 lựa chọn.");
       return;
     }
@@ -92,7 +102,35 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
       explanation,
       videoLink,
     });
-    // Reset handled by parent on close
+  };
+
+  // Formula handling
+  const updateFormulaDraft = (index: number, value: string) => {
+    setFormulaDrafts((prev) => ({ ...prev, [index]: value }));
+    // render preview (try/catch)
+    try {
+      const html = katex.renderToString(value || "\\; ", { throwOnError: false, displayMode: true });
+      setPreviewHtml((p) => ({ ...p, [index]: html }));
+    } catch (err) {
+      setPreviewHtml((p) => ({ ...p, [index]: "<span class='text-red-500'>Invalid formula</span>" }));
+    }
+  };
+
+  const insertFormulaIntoOption = (index: number) => {
+    const latex = (formulaDrafts[index] || "").trim();
+    if (!latex) {
+      // nothing to insert
+      setOpenPopoverIndex(null);
+      return;
+    }
+    // Append as inline LaTeX between $...$
+    setOptions((prev) => {
+      const next = [...prev];
+      const suffix = ` $${latex}$`;
+      next[index] = (next[index] || "") + suffix;
+      return next;
+    });
+    setOpenPopoverIndex(null);
   };
 
   return (
@@ -104,7 +142,6 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           </DialogTitle>
         </DialogHeader>
 
-        {/* Câu hỏi */}
         <section className="space-y-2">
           <Label htmlFor="question-text" className="text-lg font-medium text-gray-700 dark:text-gray-300">
             Câu hỏi
@@ -118,28 +155,26 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           />
         </section>
 
-        {/* Các lựa chọn */}
         <section className="space-y-3">
           <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">
             Các lựa chọn
           </Label>
-          <RadioGroup
-            value={String(correctOptionIndex)}
-            onValueChange={(val) => setCorrectOptionIndex(Number(val))}
-            className="space-y-3"
-          >
+          <div className="space-y-3">
             {options.map((opt, idx) => {
               const letter = String.fromCharCode(65 + idx);
               return (
-                <div key={idx} className="flex items-center gap-3">
+                <div key={idx} className="relative group flex items-center gap-3">
                   <div className="flex items-center gap-1 min-w-[3.5rem]">
                     <RadioGroupItem
                       value={String(idx)}
                       id={`option-${idx}`}
                       className="h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
+                      onClick={() => setCorrectOptionIndex(idx)}
+                      checked={correctOptionIndex === idx}
                     />
                     <span className="select-none font-semibold text-gray-700 dark:text-gray-300">{letter}.</span>
                   </div>
+
                   <input
                     type="text"
                     value={opt}
@@ -147,17 +182,62 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
                     placeholder={`Lựa chọn ${letter}`}
                     className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                   />
+
+                  {/* Inline Formula button - appears on hover/focus of group */}
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                    <Popover open={openPopoverIndex === idx} onOpenChange={(open) => setOpenPopoverIndex(open ? idx : null)}>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label={`Chèn công thức cho lựa chọn ${letter}`}
+                          title="Chèn công thức"
+                          className="h-8 w-8 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center justify-center text-sm font-semibold"
+                        >
+                          ∑
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[320px] p-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm">Nhập LaTeX</Label>
+                          <textarea
+                            value={formulaDrafts[idx] ?? ""}
+                            onChange={(e) => updateFormulaDraft(idx, e.target.value)}
+                            className="w-full min-h-[80px] rounded-md border px-2 py-2 text-sm bg-white dark:bg-gray-800"
+                            placeholder="Ví dụ: \frac{a}{b} hoặc x^2 + y^2 = z^2"
+                            aria-label={`LaTeX cho lựa chọn ${letter}`}
+                          />
+
+                          <div>
+                            <Label className="text-sm">Xem trước</Label>
+                            <div className="mt-2 min-h-[44px] rounded-md border bg-white dark:bg-gray-900 p-2">
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: previewHtml[idx] ?? (formulaDrafts[idx] ? katex.renderToString(formulaDrafts[idx], { throwOnError: false, displayMode: true }) : "<span class='text-muted-foreground'>Preview</span>"),
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => { setOpenPopoverIndex(null); }}>
+                              Hủy
+                            </Button>
+                            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => insertFormulaIntoOption(idx)}>
+                              Chèn
+                            </Button>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               );
             })}
-          </RadioGroup>
+          </div>
         </section>
 
-        {/* Độ khó */}
         <section className="space-y-2">
-          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">
-            Độ khó
-          </Label>
+          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300">Độ khó</Label>
           <RadioGroup
             value={difficulty}
             onValueChange={(val) => setDifficulty(val as MultipleChoiceQuestion["difficulty"])}
@@ -165,24 +245,15 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           >
             {["Nhận biết", "Thông hiểu", "Vận dụng", "Vận dụng cao"].map((level) => (
               <div key={level} className="flex items-center gap-2">
-                <RadioGroupItem
-                  value={level}
-                  id={`difficulty-${level}`}
-                  className="h-5 w-5 text-orange-600 focus:ring-2 focus:ring-orange-400"
-                />
-                <Label htmlFor={`difficulty-${level}`} className="cursor-pointer select-none text-gray-900 dark:text-gray-100">
-                  {level}
-                </Label>
+                <RadioGroupItem value={level} id={`difficulty-${level}`} className="h-5 w-5 text-orange-600" />
+                <Label htmlFor={`difficulty-${level}`} className="cursor-pointer select-none text-gray-900 dark:text-gray-100">{level}</Label>
               </div>
             ))}
           </RadioGroup>
         </section>
 
-        {/* Lời giải */}
         <section className="space-y-2">
-          <Label htmlFor="explanation" className="text-lg font-medium text-gray-700 dark:text-gray-300">
-            Lời giải
-          </Label>
+          <Label htmlFor="explanation" className="text-lg font-medium text-gray-700 dark:text-gray-300">Lời giải</Label>
           <ReactQuill
             theme="snow"
             value={explanation}
@@ -192,11 +263,8 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           />
         </section>
 
-        {/* Video tham khảo */}
         <section className="space-y-2">
-          <Label htmlFor="video-link" className="text-lg font-medium text-gray-700 dark:text-gray-300">
-            Video tham khảo
-          </Label>
+          <Label htmlFor="video-link" className="text-lg font-medium text-gray-700 dark:text-gray-300">Video tham khảo</Label>
           <input
             id="video-link"
             type="text"
@@ -207,12 +275,9 @@ const AddMultipleChoiceQuestionModal: React.FC<AddMultipleChoiceQuestionModalPro
           />
         </section>
 
-        {/* Nút hành động */}
         <DialogFooter className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
           <Button variant="outline" onClick={onClose}>Hủy</Button>
-          <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">
-            Cập nhật
-          </Button>
+          <Button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 text-white">Cập nhật</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
