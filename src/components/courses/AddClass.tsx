@@ -51,14 +51,19 @@ const AddClass: React.FC = () => {
   const [fee12Months, setFee12Months] = useState<string>("");
   const [expandedStudents, setExpandedStudents] = useState<number>(0);
 
-  // Thông tin khác (existing states reused)
+  // Thông tin khác (moved fields will be shown below Ghi chú)
   const [studyMode, setStudyMode] = useState<"Offline" | "Online">("Offline");
   const [shiftType, setShiftType] = useState<"Ca đơn" | "Ca đúp">("Ca đơn");
   const [autoDeduct, setAutoDeduct] = useState<"Tự động" | "Thủ công">("Thủ công");
   const [fbPage, setFbPage] = useState<string>("");
   const [fbGroup, setFbGroup] = useState<string>("");
+  // moved fields (now placed with Ghi chú)
   const [introVideo, setIntroVideo] = useState<string>("");
   const [order, setOrder] = useState<number>(0);
+
+  // New field requested: Học viên đã học
+  const [studentsLearned, setStudentsLearned] = useState<number>(0);
+
   const [note, setNote] = useState<string>("");
 
   useEffect(() => {
@@ -118,6 +123,7 @@ const AddClass: React.FC = () => {
       fbGroup,
       introVideo,
       order,
+      studentsLearned,
       note,
     });
   };
@@ -161,6 +167,7 @@ const AddClass: React.FC = () => {
     setFbGroup("");
     setIntroVideo("");
     setOrder(0);
+    setStudentsLearned(0);
     setNote("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -209,7 +216,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    // filtering happens automatically via useEffect; keep handler for potential analytics
     toast.success("Đã lọc chương.");
   };
 
@@ -327,7 +333,6 @@ const AddClass: React.FC = () => {
     toast.success("Đã xóa thông tin nổi bật.");
   };
 
-  // Small helper for keyboard add (Enter)
   const onHighlightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -489,7 +494,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Giá và khuyến mãi card directly under Thông tin chung */}
+      {/* Giá và khuyến mãi */}
       <Card>
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
@@ -640,7 +645,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Thông tin khác (added under Học phí) */}
+      {/* Thông tin khác */}
       <Card>
         <CardHeader>
           <CardTitle>Thông tin khác</CardTitle>
@@ -724,18 +729,28 @@ const AddClass: React.FC = () => {
               />
             </div>
 
-            {/* Video giới thiệu khóa học */}
-            <div className="md:col-span-1">
+            {/* Spacer so that Ghi chú sits on its own row below previous small fields */}
+            <div className="md:col-span-12">
+              <Label className="text-xs">GHI CHÚ</Label>
+              <Textarea
+                placeholder="Nhập nội dung ghi chú"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="mt-2 min-h-[120px]"
+              />
+            </div>
+
+            {/* Now moved fields: introVideo, order, and new 'Học viên đã học' placed on same row with Ghi chú (below textarea) */}
+            <div className="md:col-span-4 grid grid-cols-1 gap-2">
               <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
               <Input
-                placeholder=""
+                placeholder="Link video giới thiệu"
                 value={introVideo}
                 onChange={(e) => setIntroVideo(e.target.value)}
               />
             </div>
 
-            {/* Thứ tự */}
-            <div className="md:col-span-1">
+            <div className="md:col-span-4 grid grid-cols-1 gap-2">
               <Label className="text-xs">THỨ TỰ</Label>
               <Input
                 type="number"
@@ -744,14 +759,13 @@ const AddClass: React.FC = () => {
               />
             </div>
 
-            {/* Ghi chú full-width */}
-            <div className="md:col-span-12">
-              <Label className="text-xs">GHI CHÚ</Label>
-              <Textarea
-                placeholder="Nhập nội dung ghi chú"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                className="mt-2"
+            <div className="md:col-span-4 grid grid-cols-1 gap-2">
+              <Label className="text-xs">HỌC VIÊN ĐÃ HỌC</Label>
+              <Input
+                type="number"
+                min={0}
+                value={String(studentsLearned)}
+                onChange={(e) => setStudentsLearned(Number(e.target.value || 0))}
               />
             </div>
           </div>
@@ -993,7 +1007,7 @@ const AddClass: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* NEW: CourseIncludes component on the right column */}
+        {/* CourseIncludes component on the right column */}
         <div>
           <CourseIncludes />
         </div>
