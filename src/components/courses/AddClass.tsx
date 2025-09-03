@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,7 +34,7 @@ const AddClass: React.FC = () => {
   const [featured, setFeatured] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  // Giá và khuyến mãi
+  // Giá và khuyến mãi (mới)
   const [price, setPrice] = useState<string>("");
   const [promoPrice, setPromoPrice] = useState<string>("");
   const [differencePercent, setDifferencePercent] = useState<number>(0);
@@ -41,7 +43,7 @@ const AddClass: React.FC = () => {
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
 
-  // Học phí
+  // Học phí (other fields)
   const [feePerDay, setFeePerDay] = useState<string>("");
   const [fee1Month, setFee1Month] = useState<string>("");
   const [fee3Months, setFee3Months] = useState<string>("");
@@ -490,6 +492,92 @@ const AddClass: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* NEW: Giá và khuyến mãi card directly under Thông tin chung */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Giá và khuyến mãi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-center">
+            <div className="md:col-span-1">
+              <Label htmlFor="price">Giá khóa học</Label>
+              <Input
+                id="price"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Nhập giá"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Label htmlFor="promoPrice">Giá khuyến mãi</Label>
+              <Input
+                id="promoPrice"
+                value={promoPrice}
+                onChange={(e) => setPromoPrice(e.target.value)}
+                placeholder="Nhập giá khuyến mãi"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Label>Chênh lệch</Label>
+              <div className="mt-1">
+                <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded text-center text-sm font-medium">
+                  {differencePercent}% 
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="promoTimeMode">Chọn thời gian khuyến mãi</Label>
+              <Select value={promoTimeMode} onValueChange={(v) => setPromoTimeMode(v)}>
+                <SelectTrigger id="promoTimeMode">
+                  <SelectValue placeholder="Khoảng thời gian" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="specific">Khoảng thời gian cụ thể</SelectItem>
+                  <SelectItem value="always">Luôn luôn</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="md:col-span-2 grid grid-cols-2 gap-2">
+              <div>
+                <Label htmlFor="promoFrom">Từ ngày</Label>
+                <Input
+                  id="promoFrom"
+                  type="date"
+                  value={promoFrom}
+                  onChange={(e) => setPromoFrom(e.target.value)}
+                  disabled={promoTimeMode !== "specific"}
+                />
+              </div>
+              <div>
+                <Label htmlFor="promoTo">Đến ngày</Label>
+                <Input
+                  id="promoTo"
+                  type="date"
+                  value={promoTo}
+                  onChange={(e) => setPromoTo(e.target.value)}
+                  disabled={promoTimeMode !== "specific"}
+                />
+              </div>
+            </div>
+
+            <div className="md:col-span-1">
+              <Label htmlFor="promoQuantity">Số lượng khuyến mãi</Label>
+              <Input
+                id="promoQuantity"
+                type="number"
+                value={String(promoQuantity)}
+                onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
+                min={0}
+              />
             </div>
           </div>
         </CardContent>
