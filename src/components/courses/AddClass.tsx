@@ -119,9 +119,6 @@ const AddClass: React.FC = () => {
       introVideo,
       order,
       note,
-      shortDescription,
-      fullContent,
-      highlights,
     });
   };
 
@@ -165,11 +162,6 @@ const AddClass: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
-    setShortDescription("");
-    setFullContent("");
-
-    // Reset highlights
-    setHighlights([]);
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -583,11 +575,72 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* ... (remaining cards unchanged) ... */}
-      {/* Notes: To keep response concise, the rest of the AddClass content remains the same as before,
-          except the "Highlights + placeholder" section below is updated to show CourseIncludes on the right. */}
+      {/* NEW: Học phí card directly under Giá và khuyến mãi */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Học phí</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-7 gap-4 items-end">
+            <div className="flex flex-col">
+              <Label className="text-xs uppercase text-muted-foreground">Theo ngày</Label>
+              <Input
+                placeholder=""
+                value={feePerDay}
+                onChange={(e) => setFeePerDay(e.target.value)}
+              />
+            </div>
 
-      {/* Feature panels (unchanged) */}
+            <div className="flex flex-col">
+              <Label className="text-xs uppercase text-muted-foreground">1 ngày/1 tháng</Label>
+              <Input
+                placeholder=""
+                value={fee1Month}
+                onChange={(e) => setFee1Month(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <Label className="text-xs uppercase text-muted-foreground">1 ngày/3 tháng</Label>
+              <Input
+                placeholder=""
+                value={fee3Months}
+                onChange={(e) => setFee3Months(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <Label className="text-xs uppercase text-muted-foreground">1 ngày/6 tháng</Label>
+              <Input
+                placeholder=""
+                value={fee6Months}
+                onChange={(e) => setFee6Months(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <Label className="text-xs uppercase text-muted-foreground">1 ngày/12 tháng</Label>
+              <Input
+                placeholder=""
+                value={fee12Months}
+                onChange={(e) => setFee12Months(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col md:col-span-2">
+              <Label className="text-xs uppercase text-muted-foreground">Số học sinh (mở rộng)</Label>
+              <Input
+                type="number"
+                min={0}
+                value={String(expandedStudents)}
+                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ... (remaining cards unchanged) ... */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -638,7 +691,6 @@ const AddClass: React.FC = () => {
       <Card>
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left column: selected chapters */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
@@ -671,7 +723,6 @@ const AddClass: React.FC = () => {
               )}
             </div>
 
-            {/* Right column: all chapters with search */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
