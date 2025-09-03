@@ -43,7 +43,7 @@ const AddClass: React.FC = () => {
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
 
-  // Học phí (other fields)
+  // Học phí
   const [feePerDay, setFeePerDay] = useState<string>("");
   const [fee1Month, setFee1Month] = useState<string>("");
   const [fee3Months, setFee3Months] = useState<string>("");
@@ -119,9 +119,6 @@ const AddClass: React.FC = () => {
       introVideo,
       order,
       note,
-      shortDescription,
-      fullContent,
-      highlights,
     });
   };
 
@@ -165,11 +162,6 @@ const AddClass: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
-    setShortDescription("");
-    setFullContent("");
-
-    // Reset highlights
-    setHighlights([]);
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -220,73 +212,6 @@ const AddClass: React.FC = () => {
     // filtering happens automatically via useEffect; keep handler for potential analytics
     toast.success("Đã lọc chương.");
   };
-
-  // -- Short description editor state and toolbar config --
-  const [shortDescription, setShortDescription] = useState<string>("");
-
-  const quillModules = {
-    toolbar: [
-      [{ font: [] }, { size: [] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ script: "sub" }, { script: "super" }],
-      [{ color: [] }, { background: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-      [{ align: [] }],
-      ["blockquote", "code-block"],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
-  };
-
-  const quillFormats = [
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "script",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "indent",
-    "align",
-    "blockquote",
-    "code-block",
-    "link",
-    "image",
-    "video",
-  ];
-
-  // -- Full content (Nội dung) editor state and toolbar (more complete) --
-  const [fullContent, setFullContent] = useState<string>("");
-
-  const contentModules = {
-    toolbar: [
-      [{ font: [] }, { size: [] }],
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "underline", "italic", "strike"],
-      [{ script: "sub" }, { script: "super" }],
-      [{ color: [] }, { background: [] }],
-      [{ align: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-      ["blockquote", "code-block", "formula"],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
-  };
-
-  const contentFormats = [
-    "font", "size", "header",
-    "bold", "italic", "underline", "strike",
-    "script", "color", "background",
-    "align", "list", "bullet", "indent",
-    "blockquote", "code-block", "formula",
-    "link", "image", "video"
-  ];
 
   // -- Highlights (Thông tin nổi bật) feature --
   interface HighlightItem {
@@ -497,7 +422,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Giá và khuyến mãi card directly under Thông tin chung */}
+      {/* Giá và khuyến mãi */}
       <Card>
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
@@ -583,11 +508,73 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* ... (remaining cards unchanged) ... */}
-      {/* Notes: To keep response concise, the rest of the AddClass content remains the same as before,
-          except the "Highlights + placeholder" section below is updated to show CourseIncludes on the right. */}
+      {/* Học phí */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Học phí</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 items-end">
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">THEO NGÀY</Label>
+              <Input
+                placeholder=""
+                value={feePerDay}
+                onChange={(e) => setFeePerDay(e.target.value)}
+              />
+            </div>
 
-      {/* Feature panels (unchanged) */}
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">1 NGÀY/1 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee1Month}
+                onChange={(e) => setFee1Month(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">1 NGÀY/3 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee3Months}
+                onChange={(e) => setFee3Months(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">1 NGÀY/6 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee6Months}
+                onChange={(e) => setFee6Months(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">1 NGÀY/12 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee12Months}
+                onChange={(e) => setFee12Months(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase">SỐ HỌC SINH (MỞ RỘNG)</Label>
+              <Input
+                type="number"
+                value={String(expandedStudents)}
+                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
+                min={0}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ... remaining content unchanged ... */}
+
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -634,11 +621,10 @@ const AddClass: React.FC = () => {
         </Card>
       </div>
 
-      {/* Chapters two-column panel (no separate title) */}
+      {/* Chapters two-column panel */}
       <Card>
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left column: selected chapters */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
@@ -671,7 +657,6 @@ const AddClass: React.FC = () => {
               )}
             </div>
 
-            {/* Right column: all chapters with search */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
@@ -719,7 +704,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Short description panel (Mô tả ngắn) */}
+      {/* Short description */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
@@ -729,8 +714,17 @@ const AddClass: React.FC = () => {
             <ReactQuill
               value={shortDescription}
               onChange={setShortDescription}
-              modules={quillModules}
-              formats={quillFormats}
+              modules={{
+                toolbar: [
+                  [{ font: [] }, { size: [] }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  [{ align: [] }],
+                  ["link", "image"],
+                  ["clean"],
+                ],
+              }}
+              formats={["font","size","bold","italic","underline","strike","list","bullet","align","link","image"]}
               placeholder="Nhập mô tả ngắn..."
               className="min-h-[220px] bg-white text-sm"
             />
@@ -738,97 +732,6 @@ const AddClass: React.FC = () => {
           <div className="text-sm text-muted-foreground mt-2">Mô tả ngắn sẽ hiển thị ở trang khóa học và giúp học viên nắm nhanh nội dung.</div>
         </CardContent>
       </Card>
-
-      {/* Full content panel (Nội dung) */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Nội dung</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="border rounded-md overflow-hidden">
-            <ReactQuill
-              value={fullContent}
-              onChange={setFullContent}
-              modules={contentModules}
-              formats={contentFormats}
-              placeholder="Nhập nội dung chi tiết khóa học..."
-              className="min-h-[420px] bg-white text-sm"
-            />
-          </div>
-          <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
-        </CardContent>
-      </Card>
-
-      {/* Split into two separate cards: left = Highlights, right = CourseIncludes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Nhập thông tin nổi bật..."
-                  value={newHighlightText}
-                  onChange={(e) => setNewHighlightText(e.target.value)}
-                  onKeyDown={onHighlightKeyDown}
-                  aria-label="Nhập thông tin nổi bật"
-                />
-                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddHighlight}>
-                  Thêm
-                </Button>
-              </div>
-
-              <div ref={highlightsListRef} className="space-y-2" aria-label="Danh sách thông tin nổi bật sắp xếp được">
-                {highlights.length === 0 ? (
-                  <div className="text-sm text-muted-foreground p-4 border rounded">Chưa có thông tin nổi bật nào.</div>
-                ) : (
-                  highlights.map((h) => (
-                    <div
-                      key={h.id}
-                      className="flex items-center gap-3 border rounded p-3 bg-white dark:bg-gray-800"
-                    >
-                      <button
-                        className="drag-handle p-1 text-gray-400 hover:text-gray-600"
-                        aria-label="Kéo để thay đổi vị trí"
-                        title="Kéo để thay đổi vị trí"
-                      >
-                        <span className="select-none" aria-hidden>☰</span>
-                      </button>
-
-                      <div className="flex-1 flex items-center gap-3">
-                        <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
-                          <Check className="h-4 w-4" />
-                        </div>
-                        <div className="text-sm">{h.text}</div>
-                      </div>
-
-                      <div>
-                        <Button
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeleteHighlight(h.id)}
-                          aria-label={`Xóa thông tin nổi bật ${h.text}`}
-                        >
-                          Xóa
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <p className="text-sm text-muted-foreground">Kéo-thả để thay đổi thứ tự các mục.</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* NEW: CourseIncludes component on the right column */}
-        <div>
-          <CourseIncludes />
-        </div>
-      </div>
 
       {/* Footer buttons placed outside the Card */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
