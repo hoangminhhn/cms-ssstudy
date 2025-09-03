@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar, Check } from "lucide-react";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import SortableJS from "sortablejs";
@@ -60,6 +59,10 @@ const AddClass: React.FC = () => {
   const [introVideo, setIntroVideo] = useState<string>("");
   const [order, setOrder] = useState<number>(0);
   const [note, setNote] = useState<string>("");
+
+  // Short description & full content (ensure declared)
+  const [shortDescription, setShortDescription] = useState<string>("");
+  const [fullContent, setFullContent] = useState<string>("");
 
   useEffect(() => {
     const p = Number(price || 0);
@@ -119,6 +122,8 @@ const AddClass: React.FC = () => {
       introVideo,
       order,
       note,
+      shortDescription,
+      fullContent,
     });
   };
 
@@ -162,6 +167,9 @@ const AddClass: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
+    setShortDescription("");
+    setFullContent("");
+    setHighlights([]);
 
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
@@ -573,8 +581,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* ... remaining content unchanged ... */}
-
+      {/* Remaining content */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
