@@ -51,7 +51,7 @@ const AddClass: React.FC = () => {
   const [fee12Months, setFee12Months] = useState<string>("");
   const [expandedStudents, setExpandedStudents] = useState<number>(0);
 
-  // Thông tin khác
+  // Thông tin khác (existing states reused)
   const [studyMode, setStudyMode] = useState<"Offline" | "Online">("Offline");
   const [shiftType, setShiftType] = useState<"Ca đơn" | "Ca đúp">("Ca đơn");
   const [autoDeduct, setAutoDeduct] = useState<"Tự động" | "Thủ công">("Thủ công");
@@ -575,7 +575,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Học phí card directly under Giá và khuyến mãi */}
+      {/* Học phí */}
       <Card>
         <CardHeader>
           <CardTitle>Học phí</CardTitle>
@@ -634,6 +634,124 @@ const AddClass: React.FC = () => {
                 min={0}
                 value={String(expandedStudents)}
                 onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* NEW: Thông tin khác (added under Học phí) */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Thông tin khác</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+            {/* Hình thức học */}
+            <div className="md:col-span-2">
+              <Label className="text-xs">HÌNH THỨC HỌC</Label>
+              <div className="mt-2">
+                <RadioGroup value={studyMode} onValueChange={(v) => setStudyMode(v as "Offline" | "Online")}>
+                  <div className="flex items-center gap-4">
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Offline" id="mode-offline" />
+                      <span className="text-sm">Offline</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Online" id="mode-online" />
+                      <span className="text-sm">Online</span>
+                    </label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+
+            {/* Loại ca */}
+            <div className="md:col-span-2">
+              <Label className="text-xs">LOẠI CA</Label>
+              <div className="mt-2">
+                <RadioGroup value={shiftType} onValueChange={(v) => setShiftType(v as "Ca đơn" | "Ca đúp")}>
+                  <div className="flex items-center gap-4">
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Ca đơn" id="shift-single" />
+                      <span className="text-sm">Ca đơn</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Ca đúp" id="shift-double" />
+                      <span className="text-sm">Ca đúp</span>
+                    </label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+
+            {/* Tự động trừ buổi */}
+            <div className="md:col-span-2">
+              <Label className="text-xs">TỰ ĐỘNG TRỪ BUỔI</Label>
+              <div className="mt-2">
+                <RadioGroup value={autoDeduct} onValueChange={(v) => setAutoDeduct(v as "Tự động" | "Thủ công")}>
+                  <div className="flex items-center gap-4">
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Tự động" id="deduct-auto" />
+                      <span className="text-sm">Tự động</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <RadioGroupItem value="Thủ công" id="deduct-manual" />
+                      <span className="text-sm">Thủ công</span>
+                    </label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+
+            {/* Link Facebook Page */}
+            <div className="md:col-span-2">
+              <Label className="text-xs">LINK FACEBOOK PAGE</Label>
+              <Input
+                placeholder="https://www.facebook.com"
+                value={fbPage}
+                onChange={(e) => setFbPage(e.target.value)}
+              />
+            </div>
+
+            {/* Link Facebook Group */}
+            <div className="md:col-span-2">
+              <Label className="text-xs">LINK FACEBOOK GROUP</Label>
+              <Input
+                placeholder=""
+                value={fbGroup}
+                onChange={(e) => setFbGroup(e.target.value)}
+              />
+            </div>
+
+            {/* Video giới thiệu khóa học */}
+            <div className="md:col-span-1">
+              <Label className="text-xs">VIDEO GIỚI THIỆU KHÓA HỌC</Label>
+              <Input
+                placeholder=""
+                value={introVideo}
+                onChange={(e) => setIntroVideo(e.target.value)}
+              />
+            </div>
+
+            {/* Thứ tự */}
+            <div className="md:col-span-1">
+              <Label className="text-xs">THỨ TỰ</Label>
+              <Input
+                type="number"
+                value={String(order)}
+                onChange={(e) => setOrder(Number(e.target.value || 0))}
+              />
+            </div>
+
+            {/* Ghi chú full-width */}
+            <div className="md:col-span-12">
+              <Label className="text-xs">GHI CHÚ</Label>
+              <Textarea
+                placeholder="Nhập nội dung ghi chú"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="mt-2"
               />
             </div>
           </div>
