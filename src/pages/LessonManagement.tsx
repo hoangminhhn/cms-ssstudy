@@ -5,7 +5,18 @@ import LessonFilters from "@/components/lessons/LessonFilters";
 import LessonsList from "@/components/lessons/LessonsList";
 import AddLessonModal from "@/components/lessons/AddLessonModal";
 
-const mockLessons = [
+type LessonItem = {
+  id: string;
+  title: string;
+  grade?: string;
+  subject?: string;
+  meta?: string;
+  type?: "chapter" | "lesson";
+  duration?: string;
+  free?: boolean;
+};
+
+const mockLessons: LessonItem[] = [
   { id: "c1", title: "Chương 1: Số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
   { id: "l1", title: "Bài 1: Khái niệm số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "15 phút", free: true },
   { id: "l2", title: "Bài 2: Phép cộng và trừ số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "20 phút", free: false },
@@ -45,7 +56,7 @@ const LessonManagement: React.FC = () => {
   const [subject, setSubject] = React.useState("all");
   const [teacher, setTeacher] = React.useState("all");
 
-  const [items, setItems] = React.useState(mockLessons);
+  const [items, setItems] = React.useState<LessonItem[]>(mockLessons);
   const [isAddLessonModalOpen, setIsAddLessonModalOpen] = React.useState(false);
 
   const handleFilter = () => {
