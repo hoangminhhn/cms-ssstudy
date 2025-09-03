@@ -1,117 +1,142 @@
-"use client";
+import React from "react";
+import Layout from "@/components/Layout";
+import { MadeWithDyad } from "@/components/made-with-dyad";
+import LessonFilters from "@/components/lessons/LessonFilters";
+import LessonsList from "@/components/lessons/LessonsList";
+import AddLessonModal from "@/components/lessons/AddLessonModal";
 
-import React, { useState } from "react";
+const mockLessons = [
+  { id: "c1", title: "Chương 1: Số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "l1", title: "Bài 1: Khái niệm số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "15 phút", free: true },
+  { id: "l2", title: "Bài 2: Phép cộng và trừ số nguyên", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "20 phút", free: false },
+  { id: "c2", title: "Chương 2: Phương trình bậc hai", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "l3", title: "Bài 1: Phương trình bậc hai", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "25 phút", free: false },
+  { id: "c3", title: "Chương 3: Hệ phương trình", grade: "Lớp 10", subject: "Toán", meta: "", type: "chapter" },
+  { id: "l4", title: "Bài 1: Hệ phương trình tuyến tính", grade: "Lớp 10", subject: "Toán", meta: "", type: "lesson", duration: "30 phút", free: false },
+];
 
-/**
- * This page replaces the previous LessonManagement implementation with a
- * type-safe version of LessonItem and a simple LessonsList component
- * so the items variable is correctly typed and the compiler error is resolved.
- *
- * The key fix: use a discriminated union for `type` ("chapter" | "lesson")
- * and ensure all items adhere to that type (use explicit literal types).
- */
+interface ChapterData {
+  id: string;
+  code: string;
+  title: string;
+  grade: string;
+  subject: string;
+}
 
-/* Lesson item types */
-export type LessonItem =
-  | {
-      id: string;
-      title: string;
-      grade: string;
-      subject: string;
-      meta: string;
-      type: "chapter";
+interface LessonPayload {
+  id: string;
+  title: string;
+  free: boolean;
+  freeFrom?: string;
+  freeTo?: string;
+  maxViews: number;
+  subject: string;
+  chapter: string;
+  linkWithAnswer?: string;
+  linkWithoutAnswer?: string;
+  videos: any[];
+  exam?: string;
+  description?: string;
+}
+
+const LessonManagement: React.FC = () => {
+  const [query, setQuery] = React.useState("");
+  const [grade, setGrade] = React.useState("all");
+  const [subject, setSubject] = React.useState("all");
+  const [teacher, setTeacher] = React.useState("all");
+
+  const [items, setItems] = React.useState(mockLessons);
+  const [isAddLessonModalOpen, setIsAddLessonModalOpen] = React.useState(false);
+
+  const handleFilter = () => {
+    console.log("Filter applied", { query, grade, subject, teacher });
+  };
+
+  const handleAddChapter = (chapter?: ChapterData) => {
+    if (chapter) {
+      setItems((prev) => [
+        {
+          id: chapter.id,
+          title: `${chapter.code} - ${chapter.title}`,
+          grade: chapter.grade,
+          subject: chapter.subject,
+          meta: "",
+          type: "chapter",
+        },
+        ...prev,
+      ]);
+      return;
     }
-  | {
-      id: string;
-      title: string;
-      grade: string;
-      subject: string;
-      meta: string;
-      type: "lesson";
-      duration: string;
-      free: boolean;
-    };
 
-/* Simple LessonsList component used by this page */
-const LessonsList: React.FC<{
-  items: LessonItem[];
-  onEditLesson?: (item: LessonItem) => void;
-}> = ({ items, onEditLesson }) => {
-  return (
-    <div className="space-y-2">
-      {items.map((it) => (
-        <div
-          key={it.id}
-          className="p-3 border rounded flex items-center justify-between bg-white dark:bg-gray-800"
-        >
-          <div>
-            <div className="font-medium">{it.title}</div>
-            <div className="text-sm text-muted-foreground">
-              {it.grade} • {it.subject} • {it.meta}
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">Loại: {it.type}</div>
-            {"duration" in it && (
-              <div className="text-xs text-muted-foreground">Thời lượng: {it.duration} • {it.free ? "Miễn phí" : "Trả phí"}</div>
-            )}
-          </div>
-          <div>
-            <button
-              onClick={() => onEditLesson?.(it)}
-              className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Sửa
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+    const id = `c-${Date.now()}`;
+    setItems((prev) => [{ id, title: `Chương mới ${prev.length + 1}`, grade, subject, meta: "", type: "chapter" }, ...prev]);
+  };
 
-const LessonManagementPage: React.FC = () => {
-  // Ensure items are typed exactly as LessonItem[] with proper literal 'type' values
-  const [items] = useState<LessonItem[]>([
-    {
-      id: "1",
-      title: "Chương 1: Giới thiệu",
-      grade: "Khóa A",
-      subject: "Toán",
-      meta: "5 bài",
-      type: "chapter",
-    },
-    {
-      id: "2",
-      title: "Bài 1: Đại số cơ bản",
-      grade: "Khóa A",
-      subject: "Toán",
-      meta: "Video + bài tập",
-      type: "lesson",
-      duration: "12:34",
-      free: true,
-    },
-    {
-      id: "3",
-      title: "Bài 2: Phép cộng",
-      grade: "Khóa A",
-      subject: "Toán",
-      meta: "Video",
-      type: "lesson",
-      duration: "08:20",
-      free: false,
-    },
-  ]);
+  const handleAddLesson = (lesson?: LessonPayload) => {
+    if (lesson) {
+      setItems((prev) => [
+        {
+          id: lesson.id,
+          title: lesson.title,
+          grade: lesson.chapter || "",
+          subject: lesson.subject || "",
+          meta: lesson.description ? lesson.description.slice(0, 80) : "",
+          type: "lesson",
+          duration: "15 phút",
+          free: lesson.free,
+        },
+        ...prev,
+      ]);
+      return;
+    }
+    // fallback: add simple
+    const id = `l-${Date.now()}`;
+    setItems((prev) => [{ id, title: `Bài học mới ${prev.length + 1}`, grade, subject, meta: "", type: "lesson", duration: "15 phút", free: false }, ...prev]);
+  };
 
-  const handleEditLesson = (item: LessonItem) => {
-    // no-op for demo; in real app this would open the edit modal/page
-    console.log("Edit lesson", item);
+  const handleEditLesson = (lessonId: string) => {
+    alert(`Chỉnh sửa bài học ${lessonId} (mô phỏng)`);
+  };
+
+  const handleDeleteLesson = (lessonId: string) => {
+    if (confirm("Bạn có chắc muốn xóa bài học này?")) {
+      setItems((prev) => prev.filter(item => item.id !== lessonId));
+    }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Quản lý bài học</h1>
-      <LessonsList items={items} onEditLesson={handleEditLesson} />
-    </div>
+    <Layout headerTitle="Quản lý bài học">
+      <div className="flex flex-col gap-6 w-full overflow-x-hidden">
+        <LessonFilters
+          query={query}
+          setQuery={setQuery}
+          grade={grade}
+          setGrade={setGrade}
+          subject={subject}
+          setSubject={setSubject}
+          teacher={teacher}
+          setTeacher={setTeacher}
+          onFilter={handleFilter}
+          onAddChapter={handleAddChapter}
+          onAddLesson={handleAddLesson}
+        />
+
+        <LessonsList 
+          items={items}
+          onEditLesson={handleEditLesson}
+          onDeleteLesson={handleDeleteLesson}
+        />
+      </div>
+
+      <AddLessonModal
+        open={isAddLessonModalOpen}
+        onOpenChange={setIsAddLessonModalOpen}
+        onSave={handleAddLesson}
+      />
+
+      <MadeWithDyad />
+    </Layout>
   );
 };
 
-export default LessonManagementPage;
+export default LessonManagement;

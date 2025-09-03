@@ -42,8 +42,6 @@ const AddClass: React.FC = () => {
   const [promoFrom, setPromoFrom] = useState<string>("");
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
-  // New promo note field
-  const [promoNote, setPromoNote] = useState<string>("");
 
   // Học phí (other fields)
   const [feePerDay, setFeePerDay] = useState<string>("");
@@ -112,7 +110,6 @@ const AddClass: React.FC = () => {
       promoFrom,
       promoTo,
       promoQuantity,
-      promoNote,
       feePerDay,
       fee1Month,
       fee3Months,
@@ -153,7 +150,6 @@ const AddClass: React.FC = () => {
     setPromoTo("");
     setPromoQuantity(0);
     setPromoTimeMode("specific");
-    setPromoNote("");
 
     // Reset fees
     setFeePerDay("");
@@ -220,7 +216,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    // filtering happens automatically via useEffect; keep handler for potential analytics
     toast.success("Đã lọc chương.");
   };
 
@@ -338,7 +333,6 @@ const AddClass: React.FC = () => {
     toast.success("Đã xóa thông tin nổi bật.");
   };
 
-  // Small helper for keyboard add (Enter)
   const onHighlightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -500,7 +494,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Giá và khuyến mãi card directly under Thông tin chung */}
+      {/* Giá và khuyến mãi */}
       <Card>
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
@@ -580,17 +574,6 @@ const AddClass: React.FC = () => {
                 value={String(promoQuantity)}
                 onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
                 min={0}
-              />
-            </div>
-
-            {/* New promo note row spanning full width */}
-            <div className="md:col-span-8 mt-2">
-              <Label className="text-xs">GHI CHÚ KHUYẾN MÃI</Label>
-              <Textarea
-                placeholder="Nhập ghi chú liên quan đến khuyến mãi"
-                value={promoNote}
-                onChange={(e) => setPromoNote(e.target.value)}
-                className="mt-2"
               />
             </div>
           </div>
@@ -1024,7 +1007,7 @@ const AddClass: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* NEW: CourseIncludes component on the right column */}
+        {/* CourseIncludes component on the right column */}
         <div>
           <CourseIncludes />
         </div>
