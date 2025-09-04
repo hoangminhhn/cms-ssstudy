@@ -42,7 +42,7 @@ const AddClass: React.FC = () => {
   const [promoFrom, setPromoFrom] = useState<string>("");
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
-  const [promoNote, setPromoNote] = useState<string>(""); // NEW: promo note
+  const [promoNote, setPromoNote] = useState<string>(""); // promo note
 
   // Học phí (other fields)
   const [feePerDay, setFeePerDay] = useState<string>("");
@@ -106,7 +106,7 @@ const AddClass: React.FC = () => {
       promoFrom,
       promoTo,
       promoQuantity,
-      promoNote, // include promo note on save
+      promoNote,
       feePerDay,
       fee1Month,
       fee3Months,
@@ -146,7 +146,7 @@ const AddClass: React.FC = () => {
     setPromoTo("");
     setPromoQuantity(0);
     setPromoTimeMode("specific");
-    setPromoNote(""); // reset promo note
+    setPromoNote("");
 
     // Reset fees
     setFeePerDay("");
@@ -495,7 +495,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Giá và khuyến mãi card directly under Thông tin chung */}
+      {/* Giá và khuyến mãi */}
       <Card>
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
@@ -578,8 +578,8 @@ const AddClass: React.FC = () => {
               />
             </div>
 
-            {/* NEW: Promo note full width below on small screens span */}
-            <div className="md:col-span-8 mt-2">
+            {/* promoNote now occupies ~1/3 of the row */}
+            <div className="md:col-span-3">
               <Label htmlFor="promoNote">Ghi chú khuyến mãi</Label>
               <Textarea
                 id="promoNote"
@@ -593,11 +593,8 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* ... (remaining cards unchanged) ... */}
-      {/* Notes: To keep response concise, the rest of the AddClass content remains the same as before,
-          except the "Highlights + placeholder" section below is updated to show CourseIncludes on the right. */}
+      {/* ... rest of the component remains unchanged ... */}
 
-      {/* Feature panels (unchanged) */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -644,11 +641,9 @@ const AddClass: React.FC = () => {
         </Card>
       </div>
 
-      {/* Chapters two-column panel (no separate title) */}
       <Card>
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left column: selected chapters */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
@@ -681,7 +676,6 @@ const AddClass: React.FC = () => {
               )}
             </div>
 
-            {/* Right column: all chapters with search */}
             <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
@@ -729,7 +723,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Short description panel (Mô tả ngắn) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
@@ -749,7 +742,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Full content panel (Nội dung) */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Nội dung</CardTitle>
@@ -769,7 +761,6 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Split into two separate cards: left = Highlights, right = CourseIncludes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
@@ -834,13 +825,11 @@ const AddClass: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* NEW: CourseIncludes component on the right column */}
         <div>
           <CourseIncludes />
         </div>
       </div>
 
-      {/* Footer buttons placed outside the Card */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
         <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU</Button>
