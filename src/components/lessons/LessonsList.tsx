@@ -3,7 +3,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import ChapterWithLessons from "./ChapterWithLessons";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface LessonItem {
+export interface LessonItem {
   id: string;
   title: string;
   grade?: string;
