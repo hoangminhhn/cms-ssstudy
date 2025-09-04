@@ -593,6 +593,77 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* NEW: Học phí card (placed under Giá và khuyến mãi) */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Học phí</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-6 items-center">
+            <div className="md:col-span-1">
+              <Label className="text-xs">THEO NGÀY</Label>
+              <Input
+                placeholder="Nhập theo ngày"
+                value={feePerDay}
+                onChange={(e) => setFeePerDay(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">1 NGÀY/1 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee1Month}
+                onChange={(e) => setFee1Month(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">1 NGÀY/3 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee3Months}
+                onChange={(e) => setFee3Months(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">1 NGÀY/6 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee6Months}
+                onChange={(e) => setFee6Months(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">1 NGÀY/12 THÁNG</Label>
+              <Input
+                placeholder=""
+                value={fee12Months}
+                onChange={(e) => setFee12Months(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Label className="text-xs">SỐ HỌC SINH (MỞ RỘNG)</Label>
+              <Input
+                type="number"
+                value={String(expandedStudents)}
+                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
+                className="mt-2"
+                min={0}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* ... rest of the component remains unchanged ... */}
 
       <div className="space-y-4">
@@ -640,88 +711,6 @@ const AddClass: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-orange-600 font-medium">Danh sách chương của khóa học</h3>
-                <div className="text-sm text-muted-foreground">{selectedChapters.length} chương</div>
-              </div>
-
-              {selectedChapters.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  Chưa có chương nào. Hãy thêm từ bên phải.
-                </div>
-              ) : (
-                <ul className="space-y-2">
-                  {selectedChapters.map((ch) => (
-                    <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
-                      <div className="text-sm font-medium">{ch.title}</div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemoveChapter(ch.id)}
-                          aria-label={`Xóa ${ch.title}`}
-                        >
-                          Xóa
-                        </Button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-800 min-h-[180px]">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-orange-600 font-medium">Tất cả chương</h3>
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Tìm chương..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-64"
-                    aria-label="Tìm chương"
-                  />
-                  <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSearchClick}>
-                    Tìm kiếm
-                  </Button>
-                </div>
-              </div>
-
-              {filteredChapters.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">Không tìm thấy chương.</div>
-              ) : (
-                <ul className="space-y-2">
-                  {filteredChapters.map((ch) => {
-                    const already = selectedChapters.some((s) => s.id === ch.id);
-                    return (
-                      <li key={ch.id} className="flex items-center justify-between rounded-md border px-3 py-2">
-                        <div className="text-sm">{ch.title}</div>
-                        <div>
-                          <Button
-                            size="sm"
-                            className={`px-3 py-1 ${already ? "bg-gray-200 text-gray-600" : "bg-green-500 hover:bg-green-600 text-white"}`}
-                            onClick={() => handleAddChapter(ch)}
-                            disabled={already}
-                            aria-label={`Thêm ${ch.title}`}
-                          >
-                            {already ? "Đã thêm" : "Thêm"}
-                          </Button>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
