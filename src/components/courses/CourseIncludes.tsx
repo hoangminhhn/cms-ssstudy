@@ -34,46 +34,81 @@ interface CustomInclude {
 
 const CourseIncludes: React.FC = () => {
   // Fixed fields state
-  const [topics, setTopics] = React.useState<string>("");
-  const [lessons, setLessons] = React.useState<string>("");
-  const [exercises, setExercises] = React.useState<string>("");
-  const [hours, setHours] = React.useState<string>("");
+  const [topics, setTopics] = useState<string>("");
+  const [lessons, setLessons] = useState<string>("");
+  const [exercises, setExercises] = useState<string>("");
+  const [hours, setHours] = useState<string>("");
 
   // Custom fields state
-  const [customLabel, setCustomLabel] = React.useState<string>("");
-  const [selectedIconForNew, setSelectedIconForNew] = React.useState<BuiltInIconKey>("Book");
+  const [customLabel, setCustomLabel] = useState<string>("");
+  const [selectedIconForNew, setSelectedIconForNew] = useState<BuiltInIconKey>("Book");
 
-  const [customItems, setCustomItems] = React.useState<CustomInclude[]>([]);
+  const [customItems, setCustomItems] = useState<CustomInclude[]>([]);
 
   // dialog state for icon picker (target 'new' or item id)
-  const [dialogOpenId, setDialogOpenId] = React.useState<string | null>(null);
+  const [dialogOpenId, setDialogOpenId] = useState<string | null>(null);
 
   // Sortable ref
   const listRef = useRef<HTMLDivElement | null>(null);
+  const sortableInstanceRef = useRef<any>(null);
 
   // Inline edit state
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState<string>("");
 
-  // init sortable for the custom items list
+  // Initialize Sortable once and protect against runtime errors
   useEffect(() => {
-    if (!listRef.current) return;
-    const sortable = SortableJS.create(listRef.current, {
-      animation: 150,
-      handle: ".drag-handle",
-      onEnd: (evt) => {
-        const oldIndex = evt.oldIndex;
-        const newIndex = evt.newIndex;
-        if (oldIndex === undefined || newIndex === undefined) return;
-        setCustomItems((prev) => {
-          const items = [...prev];
-          const [moved] = items.splice(oldIndex, 1);
-          items.splice(newIndex, 0, moved);
-          return items;
-        });
-      },
-    });
-    return () => sortable.destroy();
+    const el = listRef.current;
+    if (!el) return;
+
+    try {
+      // Destroy previous instance if any (safety)
+      if (sortableInstanceRef.current && typeof sortableInstanceRef.current.destroy === "function") {
+        try {
+          sortableInstanceRef.current.destroy();
+        } catch (e) {
+          // swallow cleanup error - we'll try to recreate below
+        }
+        sortableInstanceRef.current = null;
+      }
+
+      const sortable = SortableJS.create(el, {
+        animation: 150,
+        handle: ".drag-handle",
+        onEnd: (evt: any) => {
+          const oldIndex = evt.oldIndex;
+          const newIndex = evt.newIndex;
+          if (typeof oldIndex !== "number" || typeof newIndex !== "number") return;
+          setCustomItems((prev) => {
+            const items = [...prev];
+            const [moved] = items.splice(oldIndex, 1);
+            items.splice(newIndex, 0, moved);
+            return items;
+          });
+        },
+      });
+
+      sortableInstanceRef.current = sortable;
+    } catch (err) {
+      // If SortableJS fails to initialize for any reason, do not crash the whole page.
+      // Log and notify in dev, but keep the UI usable (users can still add/edit items, just no drag-drop).
+      // eslint-disable-next-line no-console
+      console.error("SortableJS init error in CourseIncludes:", err);
+    }
+
+    return () => {
+      try {
+        if (sortableInstanceRef.current && typeof sortableInstanceRef.current.destroy === "function") {
+          sortableInstanceRef.current.destroy();
+        }
+      } catch (e) {
+        // swallow cleanup errors
+      } finally {
+        sortableInstanceRef.current = null;
+      }
+    };
+    // We intentionally do not add `customItems` to deps; sortable is tied to the container element not items.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listRef.current]);
 
   // add new custom item
@@ -96,7 +131,6 @@ const CourseIncludes: React.FC = () => {
 
   const handleRemoveCustom = (id: string) => {
     setCustomItems((prev) => prev.filter((c) => c.id !== id));
-    // if currently editing the removed item, cancel edit
     if (editingId === id) {
       setEditingId(null);
       setEditingText("");
@@ -251,7 +285,7 @@ const CourseIncludes: React.FC = () => {
 
           <hr className="my-2" />
 
-          {/* Add custom items: single label + modal icon picker */}
+          {/* Add custom items */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">Thêm mục tùy chỉnh</div>
@@ -352,7 +386,7 @@ const CourseIncludes: React.FC = () => {
                               className="text-sm truncate cursor-text"
                               onDoubleClick={() => startInlineEdit(it)}
                               onClick={() => startInlineEdit(it)}
-                              title="Nhấp hoặc nhấp đúp để chỉnh sửa"
+                              title="Nhấp để chỉnh sửa"
                             >
                               {it.label}
                             </div>
