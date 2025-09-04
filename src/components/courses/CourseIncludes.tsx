@@ -384,7 +384,20 @@ const CourseIncludes: React.FC = () => {
                           ) : (
                             <div
                               className="text-sm truncate cursor-default outline-none"
-                              onDoubleClick={() => startInlineEdit(it)}
+                              onDoubleClick={(e) => {
+                                // prevent selection that happens on double click
+                                // by preventing default mouse behavior before starting edit
+                                e.preventDefault();
+                                startInlineEdit(it);
+                              }}
+                              onMouseDown={(e) => {
+                                // Prevent selection on mouse down so double-click won't select text.
+                                // This avoids the issue where the browser highlights text instead of letting our dblclick handler run cleanly.
+                                // We only prevent default when not currently editing.
+                                if (!editingId) {
+                                  e.preventDefault();
+                                }
+                              }}
                               tabIndex={0}
                               role="button"
                               onKeyDown={(e) => {
@@ -393,7 +406,7 @@ const CourseIncludes: React.FC = () => {
                                   startInlineEdit(it);
                                 }
                               }}
-                              title="Nhập 'double-click' hoặc nhấn Enter/Space để chỉnh sửa"
+                              title="Double-click hoặc nhấn Enter/Space để chỉnh sửa"
                               aria-label={`Mục nổi bật: ${it.label}. Nhấn Enter hoặc double-click để chỉnh sửa`}
                             >
                               {it.label}
