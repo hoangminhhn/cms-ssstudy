@@ -383,10 +383,17 @@ const CourseIncludes: React.FC = () => {
                             />
                           ) : (
                             <div
-                              className="text-sm truncate cursor-text"
+                              className="text-sm truncate cursor-pointer"
                               onDoubleClick={() => startInlineEdit(it)}
-                              onClick={() => startInlineEdit(it)}
-                              title="Nhấp để chỉnh sửa"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  // support keyboard activation for accessibility: enter/space triggers edit
+                                  e.preventDefault();
+                                  startInlineEdit(it);
+                                }
+                              }}
+                              title="Double-click để chỉnh sửa"
                             >
                               {it.label}
                             </div>
