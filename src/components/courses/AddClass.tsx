@@ -111,6 +111,15 @@ const AddClass: React.FC = () => {
     }
   }, [editingHighlightId]);
 
+  // Add missing handleCancel function to reset highlights and inputs
+  const handleCancel = () => {
+    setNewHighlightText("");
+    setHighlights([]);
+    setEditingHighlightId(null);
+    setEditingHighlightText("");
+    toast.info("Đã hủy thay đổi.");
+  };
+
   // ... (rest of AddClass component unchanged) ...
 
   return (
