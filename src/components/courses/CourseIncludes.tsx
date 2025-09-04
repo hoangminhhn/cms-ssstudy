@@ -149,7 +149,7 @@ const CourseIncludes: React.FC = () => {
     toast.success("Đã cập nhật icon.");
   };
 
-  // start inline edit
+  // start inline edit (ONLY on double-click or keyboard activation)
   const startInlineEdit = (item: CustomInclude) => {
     setEditingId(item.id);
     setEditingText(item.label);
@@ -383,10 +383,18 @@ const CourseIncludes: React.FC = () => {
                             />
                           ) : (
                             <div
-                              className="text-sm truncate cursor-text"
+                              className="text-sm truncate cursor-default outline-none"
                               onDoubleClick={() => startInlineEdit(it)}
-                              onClick={() => startInlineEdit(it)}
-                              title="Nhấp để chỉnh sửa"
+                              tabIndex={0}
+                              role="button"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  startInlineEdit(it);
+                                }
+                              }}
+                              title="Nhập 'double-click' hoặc nhấn Enter/Space để chỉnh sửa"
+                              aria-label={`Mục nổi bật: ${it.label}. Nhấn Enter hoặc double-click để chỉnh sửa`}
                             >
                               {it.label}
                             </div>
