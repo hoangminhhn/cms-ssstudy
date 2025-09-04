@@ -149,7 +149,7 @@ const CourseIncludes: React.FC = () => {
     toast.success("Đã cập nhật icon.");
   };
 
-  // start inline edit (ONLY on double-click or keyboard activation)
+  // start inline edit
   const startInlineEdit = (item: CustomInclude) => {
     setEditingId(item.id);
     setEditingText(item.label);
@@ -383,31 +383,10 @@ const CourseIncludes: React.FC = () => {
                             />
                           ) : (
                             <div
-                              className="text-sm truncate cursor-default outline-none"
-                              onDoubleClick={(e) => {
-                                // prevent selection that happens on double click
-                                // by preventing default mouse behavior before starting edit
-                                e.preventDefault();
-                                startInlineEdit(it);
-                              }}
-                              onMouseDown={(e) => {
-                                // Prevent selection on mouse down so double-click won't select text.
-                                // This avoids the issue where the browser highlights text instead of letting our dblclick handler run cleanly.
-                                // We only prevent default when not currently editing.
-                                if (!editingId) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              tabIndex={0}
-                              role="button"
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  startInlineEdit(it);
-                                }
-                              }}
-                              title="Double-click hoặc nhấn Enter/Space để chỉnh sửa"
-                              aria-label={`Mục nổi bật: ${it.label}. Nhấn Enter hoặc double-click để chỉnh sửa`}
+                              className="text-sm truncate cursor-text"
+                              onDoubleClick={() => startInlineEdit(it)}
+                              onClick={() => startInlineEdit(it)}
+                              title="Nhấp để chỉnh sửa"
                             >
                               {it.label}
                             </div>
