@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +10,7 @@ import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play } from "
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import SortableJS from "sortablejs";
 
 type BuiltInIconKey = "Book" | "FileText" | "Clock" | "FilePlus" | "Play" | "Image" | "Link";
 
@@ -21,16 +24,16 @@ const BUILT_IN_ICONS: Record<BuiltInIconKey, React.ComponentType<any>> = {
   Link: LinkIcon,
 };
 
+const AVAILABLE_ICON_KEYS = Object.keys(BUILT_IN_ICONS) as BuiltInIconKey[];
+
 interface CustomInclude {
   id: string;
   label: string;
   builtInKey: BuiltInIconKey;
 }
 
-const AVAILABLE_ICON_KEYS = Object.keys(BUILT_IN_ICONS) as BuiltInIconKey[];
-
 const CourseIncludes: React.FC = () => {
-  // Fixed fields state start empty; placeholders will show examples
+  // Fixed fields state
   const [topics, setTopics] = React.useState<string>("");
   const [lessons, setLessons] = React.useState<string>("");
   const [exercises, setExercises] = React.useState<string>("");
@@ -42,22 +45,49 @@ const CourseIncludes: React.FC = () => {
 
   const [customItems, setCustomItems] = React.useState<CustomInclude[]>([]);
 
-  // dialogOpenId: null | "new" | itemId
+  // dialog state for icon picker (target 'new' or item id)
   const [dialogOpenId, setDialogOpenId] = React.useState<string | null>(null);
 
+  // Sortable ref
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  // Inline edit state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState<string>("");
+
+  // init sortable for the custom items list
+  useEffect(() => {
+    if (!listRef.current) return;
+    const sortable = SortableJS.create(listRef.current, {
+      animation: 150,
+      handle: ".drag-handle",
+      onEnd: (evt) => {
+        const oldIndex = evt.oldIndex;
+        const newIndex = evt.newIndex;
+        if (oldIndex === undefined || newIndex === undefined) return;
+        setCustomItems((prev) => {
+          const items = [...prev];
+          const [moved] = items.splice(oldIndex, 1);
+          items.splice(newIndex, 0, moved);
+          return items;
+        });
+      },
+    });
+    return () => sortable.destroy();
+  }, [listRef.current]);
+
+  // add new custom item
   const handleAddCustom = () => {
     const label = customLabel.trim();
     if (!label) {
       toast.error("Vui lòng nhập nội dung cho mục bổ sung.");
       return;
     }
-
     const newItem: CustomInclude = {
       id: `ci-${Date.now()}`,
       label,
       builtInKey: selectedIconForNew,
     };
-
     setCustomItems((prev) => [...prev, newItem]);
     setCustomLabel("");
     setSelectedIconForNew("Book");
@@ -66,21 +96,52 @@ const CourseIncludes: React.FC = () => {
 
   const handleRemoveCustom = (id: string) => {
     setCustomItems((prev) => prev.filter((c) => c.id !== id));
+    // if currently editing the removed item, cancel edit
+    if (editingId === id) {
+      setEditingId(null);
+      setEditingText("");
+    }
     toast.success("Đã xóa mục.");
   };
 
   const handleUpdateItemIcon = (id: string, key: BuiltInIconKey) => {
+    if (id === "new") {
+      setSelectedIconForNew(key);
+      setDialogOpenId(null);
+      return;
+    }
     setCustomItems((prev) => prev.map((it) => (it.id === id ? { ...it, builtInKey: key } : it)));
     setDialogOpenId(null);
     toast.success("Đã cập nhật icon.");
   };
 
-  const handleUpdateNewIcon = (key: BuiltInIconKey) => {
-    setSelectedIconForNew(key);
-    setDialogOpenId(null);
+  // start inline edit
+  const startInlineEdit = (item: CustomInclude) => {
+    setEditingId(item.id);
+    setEditingText(item.label);
+    // focus will be handled via ref on the input (useEffect)
   };
 
-  // helper to render the modal content
+  // save inline edit
+  const saveInlineEdit = (id: string) => {
+    const trimmed = editingText.trim();
+    if (!trimmed) {
+      toast.error("Nội dung không được để trống.");
+      return;
+    }
+    setCustomItems((prev) => prev.map((it) => (it.id === id ? { ...it, label: trimmed } : it)));
+    setEditingId(null);
+    setEditingText("");
+    toast.success("Đã cập nhật mục.");
+  };
+
+  // cancel inline edit
+  const cancelInlineEdit = () => {
+    setEditingId(null);
+    setEditingText("");
+  };
+
+  // render icon picker
   const renderIconPickerContent = (targetId: string | null) => {
     const isForNew = targetId === "new";
     const currentKey = isForNew ? selectedIconForNew : customItems.find((it) => it.id === targetId)?.builtInKey;
@@ -88,30 +149,36 @@ const CourseIncludes: React.FC = () => {
     return (
       <div className="p-2">
         <div className="grid grid-cols-4 gap-2">
-          {AVAILABLE_ICON_KEYS.map((k) => (
-            <button
-              key={k}
-              onClick={() => {
-                if (isForNew) {
-                  handleUpdateNewIcon(k);
-                } else if (targetId) {
-                  handleUpdateItemIcon(targetId, k);
-                }
-              }}
-              className={cn(
-                "p-3 rounded-md flex items-center justify-center hover:bg-gray-100",
-                k === currentKey ? "ring-2 ring-orange-300" : ""
-              )}
-              aria-label={`Chọn icon ${k}`}
-              title={k}
-            >
-              {React.createElement(BUILT_IN_ICONS[k], { className: "h-6 w-6 text-gray-700" })}
-            </button>
-          ))}
+          {AVAILABLE_ICON_KEYS.map((k) => {
+            const isSelected = k === currentKey;
+            return (
+              <button
+                key={k}
+                onClick={() => handleUpdateItemIcon(targetId ?? "new", k)}
+                className={cn(
+                  "p-3 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700",
+                  isSelected ? "ring-2 ring-orange-300" : ""
+                )}
+                aria-label={`Chọn icon ${k}`}
+                title={k}
+              >
+                {React.createElement(BUILT_IN_ICONS[k], { className: "h-6 w-6 text-gray-700" })}
+              </button>
+            );
+          })}
         </div>
       </div>
     );
   };
+
+  // refs to focus inline edit input
+  const editInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingId]);
 
   return (
     <Card>
@@ -226,37 +293,86 @@ const CourseIncludes: React.FC = () => {
             </div>
           </div>
 
-          {/* Render custom items */}
+          {/* Render custom items (sortable + inline edit) */}
           {customItems.length > 0 && (
             <div className="mt-3 space-y-2">
-              {customItems.map((it) => (
-                <div key={it.id} className="flex items-center gap-3 justify-between border rounded px-3 py-2 bg-white dark:bg-gray-800">
-                  <div className="flex items-center gap-3 flex-shrink-0 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={() => setDialogOpenId(it.id)}
-                            className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
-                            aria-label="Click để thay đổi icon"
-                            title="Click để thay đổi icon"
-                          >
-                            {React.createElement(BUILT_IN_ICONS[it.builtInKey], { className: "h-4 w-4 text-gray-700" })}
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>click để thay đổi icon</TooltipContent>
-                      </Tooltip>
+              <div ref={listRef} className="space-y-2" aria-live="polite">
+                {customItems.map((it, idx) => {
+                  const IconComp = BUILT_IN_ICONS[it.builtInKey];
+                  const isEditing = editingId === it.id;
+                  return (
+                    <div
+                      key={it.id}
+                      data-id={it.id}
+                      className="flex items-center gap-3 justify-between border rounded px-3 py-2 bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <button
+                          className="drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600"
+                          aria-label="Kéo để thay đổi vị trí"
+                          title="Kéo để thay đổi vị trí"
+                        >
+                          ☰
+                        </button>
 
-                      <div className="text-sm truncate">{it.label}</div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => setDialogOpenId(it.id)}
+                              className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+                              aria-label="Bấm để thay đổi biểu tượng"
+                              title="Bấm để thay đổi biểu tượng"
+                            >
+                              <IconComp className="h-4 w-4 text-gray-700" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>click để thay đổi icon</TooltipContent>
+                        </Tooltip>
+
+                        <div className="flex-1 min-w-0">
+                          {isEditing ? (
+                            <input
+                              ref={editInputRef}
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value)}
+                              onBlur={() => saveInlineEdit(it.id)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  saveInlineEdit(it.id);
+                                } else if (e.key === "Escape") {
+                                  e.preventDefault();
+                                  cancelInlineEdit();
+                                }
+                              }}
+                              className="w-full bg-transparent border-b border-dashed focus:border-solid focus:outline-none py-1 text-sm"
+                              aria-label={`Chỉnh sửa nội dung ${it.label}`}
+                            />
+                          ) : (
+                            <div
+                              className="text-sm truncate cursor-text"
+                              onDoubleClick={() => startInlineEdit(it)}
+                              onClick={() => startInlineEdit(it)}
+                              title="Nhấp hoặc nhấp đúp để chỉnh sửa"
+                            >
+                              {it.label}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => startInlineEdit(it)} aria-label={`Chỉnh sửa ${it.label}`}>
+                          Sửa
+                        </Button>
+                        <Button variant="ghost" size="icon" className="text-red-600" onClick={() => handleRemoveCustom(it.id)} aria-label={`Xóa ${it.label}`}>
+                          Xóa
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => handleRemoveCustom(it.id)} className="text-red-600">
-                      Xóa
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
