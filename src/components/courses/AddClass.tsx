@@ -120,6 +120,12 @@ const AddClass: React.FC = () => {
     toast.info("Đã hủy thay đổi.");
   };
 
+  // Add missing handleSave function to avoid error
+  const handleSave = () => {
+    // For demo, just show toast and keep current state
+    toast.success("Đã lưu thông tin lớp (demo).");
+  };
+
   // ... (rest of AddClass component unchanged) ...
 
   return (
