@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play } from "lucide-react";
+import { Book, FileText, Clock, FilePlus, Image, Link as LinkIcon, Play, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -119,7 +119,6 @@ const CourseIncludes: React.FC = () => {
   const startInlineEdit = (item: CustomInclude) => {
     setEditingId(item.id);
     setEditingText(item.label);
-    // focus will be handled via ref on the input (useEffect)
   };
 
   // save inline edit
@@ -297,7 +296,7 @@ const CourseIncludes: React.FC = () => {
           {customItems.length > 0 && (
             <div className="mt-3 space-y-2">
               <div ref={listRef} className="space-y-2" aria-live="polite">
-                {customItems.map((it, idx) => {
+                {customItems.map((it) => {
                   const IconComp = BUILT_IN_ICONS[it.builtInKey];
                   const isEditing = editingId === it.id;
                   return (
@@ -362,9 +361,17 @@ const CourseIncludes: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => startInlineEdit(it)} aria-label={`Chỉnh sửa ${it.label}`}>
-                          Sửa
-                        </Button>
+                        {isEditing ? (
+                          <button
+                            onClick={() => saveInlineEdit(it.id)}
+                            title="Hoàn thành"
+                            className="h-8 w-8 rounded-md bg-green-600 hover:bg-green-700 flex items-center justify-center text-white"
+                            aria-label="Lưu"
+                          >
+                            <Check className="h-4 w-4" />
+                          </button>
+                        ) : null}
+
                         <Button variant="ghost" size="icon" className="text-red-600" onClick={() => handleRemoveCustom(it.id)} aria-label={`Xóa ${it.label}`}>
                           Xóa
                         </Button>
