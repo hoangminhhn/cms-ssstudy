@@ -42,6 +42,7 @@ const AddClass: React.FC = () => {
   const [promoFrom, setPromoFrom] = useState<string>("");
   const [promoTo, setPromoTo] = useState<string>("");
   const [promoQuantity, setPromoQuantity] = useState<number>(0);
+  const [promoNote, setPromoNote] = useState<string>(""); // NEW: promo note
 
   // Học phí (other fields)
   const [feePerDay, setFeePerDay] = useState<string>("");
@@ -105,6 +106,7 @@ const AddClass: React.FC = () => {
       promoFrom,
       promoTo,
       promoQuantity,
+      promoNote, // include promo note on save
       feePerDay,
       fee1Month,
       fee3Months,
@@ -119,9 +121,6 @@ const AddClass: React.FC = () => {
       introVideo,
       order,
       note,
-      shortDescription,
-      fullContent,
-      highlights,
     });
   };
 
@@ -147,6 +146,7 @@ const AddClass: React.FC = () => {
     setPromoTo("");
     setPromoQuantity(0);
     setPromoTimeMode("specific");
+    setPromoNote(""); // reset promo note
 
     // Reset fees
     setFeePerDay("");
@@ -165,10 +165,8 @@ const AddClass: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
-    setShortDescription("");
-    setFullContent("");
 
-    // Reset highlights
+    // Reset highlights etc. (if any)
     setHighlights([]);
 
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -577,6 +575,18 @@ const AddClass: React.FC = () => {
                 value={String(promoQuantity)}
                 onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
                 min={0}
+              />
+            </div>
+
+            {/* NEW: Promo note full width below on small screens span */}
+            <div className="md:col-span-8 mt-2">
+              <Label htmlFor="promoNote">Ghi chú khuyến mãi</Label>
+              <Textarea
+                id="promoNote"
+                value={promoNote}
+                onChange={(e) => setPromoNote(e.target.value)}
+                placeholder="Nhập ghi chú cho khuyến mãi (ví dụ: điều kiện, ghi chú hiển thị, mã riêng... )"
+                className="mt-2 min-h-[80px]"
               />
             </div>
           </div>
