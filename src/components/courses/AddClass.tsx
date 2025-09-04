@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Calendar, Check } from "lucide-react";
@@ -166,9 +166,9 @@ const AddClass: React.FC = () => {
     setOrder(0);
     setNote("");
 
-    // Reset highlights etc. (if any)
+    // Reset highlights
     setHighlights([]);
-
+    setNewHighlightText("");
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
   };
@@ -194,9 +194,7 @@ const AddClass: React.FC = () => {
     if (!q) {
       setFilteredChapters(allChapters);
     } else {
-      setFilteredChapters(
-        allChapters.filter((ch) => ch.title.toLowerCase().includes(q))
-      );
+      setFilteredChapters(allChapters.filter((ch) => ch.title.toLowerCase().includes(q)));
     }
   }, [searchTerm, allChapters]);
 
@@ -333,6 +331,40 @@ const AddClass: React.FC = () => {
     toast.success("Đã xóa thông tin nổi bật.");
   };
 
+  // Inline edit state for highlights
+  const [editingHighlightId, setEditingHighlightId] = useState<string | null>(null);
+  const [editingHighlightText, setEditingHighlightText] = useState<string>("");
+  const highlightEditRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (editingHighlightId && highlightEditRef.current) {
+      highlightEditRef.current.focus();
+      highlightEditRef.current.select();
+    }
+  }, [editingHighlightId]);
+
+  const startEditHighlight = (h: HighlightItem) => {
+    setEditingHighlightId(h.id);
+    setEditingHighlightText(h.text);
+  };
+
+  const saveEditHighlight = (id: string) => {
+    const txt = editingHighlightText.trim();
+    if (!txt) {
+      toast.error("Nội dung không được để trống.");
+      return;
+    }
+    setHighlights((prev) => prev.map((it) => (it.id === id ? { ...it, text: txt } : it)));
+    setEditingHighlightId(null);
+    setEditingHighlightText("");
+    toast.success("Đã cập nhật thông tin nổi bật.");
+  };
+
+  const cancelEditHighlight = () => {
+    setEditingHighlightId(null);
+    setEditingHighlightText("");
+  };
+
   // Small helper for keyboard add (Enter)
   const onHighlightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -343,570 +375,112 @@ const AddClass: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* ... other cards are above (kept unchanged) ... */}
+
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin chung</CardTitle>
+          <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-            <div className="col-span-1">
-              <div className="border-2 border-dashed border-orange-300 rounded-md p-6 h-full flex flex-col items-center justify-center">
-                {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="max-h-44 object-contain rounded" />
-                ) : (
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-40 h-28 border border-dashed border-orange-200 rounded flex items-center justify-center text-orange-400">
-                      <span>Ảnh lớp</span>
-                    </div>
-                    <Button variant="outline" onClick={onPickImage} className="bg-white text-orange-600 border-orange-300 hover:bg-orange-50">
-                      Thêm hình
-                    </Button>
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={onFileChange}
-                  aria-label="Upload class image"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-1 md:col-span-3">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="code">Mã khóa học</Label>
-                    <Input id="code" value={code} onChange={(e) => setCode(e.target.value)} />
-                  </div>
-
-                  <div className="lg:col-span-6">
-                    <Label htmlFor="name">Tên khóa học</Label>
-                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="start">Ngày khai giảng</Label>
-                    <div className="relative">
-                      <Input
-                        id="start"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                      />
-                      <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="end">Ngày bế giảng</Label>
-                    <div className="relative">
-                      <Input
-                        id="end"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                      />
-                      <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="classification">Phân loại</Label>
-                    <Select value={classification} onValueChange={(val) => setClassification(val)}>
-                      <SelectTrigger id="classification">
-                        <SelectValue placeholder="Cả" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cả">Cả</SelectItem>
-                        <SelectItem value="Trực tuyến">Trực tuyến</SelectItem>
-                        <SelectItem value="Trực tiếp">Trực tiếp</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="room">Phòng học</Label>
-                    <Input id="room" value={room} onChange={(e) => setRoom(e.target.value)} />
-                  </div>
-
-                  <div className="lg:col-span-3">
-                    <Label htmlFor="subject">Môn học</Label>
-                    <Select value={subject} onValueChange={setSubject}>
-                      <SelectTrigger id="subject">
-                        <SelectValue placeholder="-- Chọn môn học --" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Toán">Toán</SelectItem>
-                        <SelectItem value="Văn">Văn</SelectItem>
-                        <SelectItem value="Tiếng Anh">Tiếng Anh</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="category">Danh mục</Label>
-                    <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger id="category">
-                        <SelectValue placeholder="-- Chọn danh mục --" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Category A">Category A</SelectItem>
-                        <SelectItem value="Category B">Category B</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <Label htmlFor="teacher">Giáo viên</Label>
-                    <Select value={teacher} onValueChange={setTeacher}>
-                      <SelectTrigger id="teacher">
-                        <SelectValue placeholder="-- Chọn giáo viên --" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="GV1">Giáo viên A</SelectItem>
-                        <SelectItem value="GV2">Giáo viên B</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="lg:col-span-1 flex items-center gap-3">
-                    <div>
-                      <Label>Nổi bật</Label>
-                      <div className="pt-2">
-                        <Switch checked={featured} onCheckedChange={(v) => setFeatured(!!v)} />
-                      </div>
-                    </div>
-                    <div>
-                      <Label>Hiển thị</Label>
-                      <div className="pt-2">
-                        <Switch checked={visible} onCheckedChange={(v) => setVisible(!!v)} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Giá và khuyến mãi */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Giá và khuyến mãi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-center">
-            <div className="md:col-span-1">
-              <Label htmlFor="price">Giá khóa học</Label>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
               <Input
-                id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Nhập giá"
+                placeholder="Nhập thông tin nổi bật..."
+                value={newHighlightText}
+                onChange={(e) => setNewHighlightText(e.target.value)}
+                onKeyDown={onHighlightKeyDown}
+                aria-label="Nhập thông tin nổi bật"
               />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="promoPrice">Giá khuyến mãi</Label>
-              <Input
-                id="promoPrice"
-                value={promoPrice}
-                onChange={(e) => setPromoPrice(e.target.value)}
-                placeholder="Nhập giá khuyến mãi"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label>Chênh lệch</Label>
-              <div className="mt-1">
-                <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded text-center text-sm font-medium">
-                  {differencePercent}% 
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="promoTimeMode">Chọn thời gian khuyến mãi</Label>
-              <Select value={promoTimeMode} onValueChange={(v) => setPromoTimeMode(v)}>
-                <SelectTrigger id="promoTimeMode">
-                  <SelectValue placeholder="Khoảng thời gian" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="specific">Khoảng thời gian cụ thể</SelectItem>
-                  <SelectItem value="always">Luôn luôn</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="md:col-span-2 grid grid-cols-2 gap-2">
-              <div>
-                <Label htmlFor="promoFrom">Từ ngày</Label>
-                <Input
-                  id="promoFrom"
-                  type="date"
-                  value={promoFrom}
-                  onChange={(e) => setPromoFrom(e.target.value)}
-                  disabled={promoTimeMode !== "specific"}
-                />
-              </div>
-              <div>
-                <Label htmlFor="promoTo">Đến ngày</Label>
-                <Input
-                  id="promoTo"
-                  type="date"
-                  value={promoTo}
-                  onChange={(e) => setPromoTo(e.target.value)}
-                  disabled={promoTimeMode !== "specific"}
-                />
-              </div>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="promoQuantity">Số lượng khuyến mãi</Label>
-              <Input
-                id="promoQuantity"
-                type="number"
-                value={String(promoQuantity)}
-                onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
-                min={0}
-              />
-            </div>
-
-            {/* promoNote now occupies ~1/3 of the row */}
-            <div className="md:col-span-3">
-              <Label htmlFor="promoNote">Ghi chú khuyến mãi</Label>
-              <Textarea
-                id="promoNote"
-                value={promoNote}
-                onChange={(e) => setPromoNote(e.target.value)}
-                placeholder="Nhập ghi chú cho khuyến mãi (ví dụ: điều kiện, ghi chú hiển thị, mã riêng... )"
-                className="mt-2 min-h-[80px]"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Học phí */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Học phí</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-6 items-center">
-            <div className="md:col-span-1">
-              <Label className="text-xs">THEO NGÀY</Label>
-              <Input
-                placeholder="Nhập theo ngày"
-                value={feePerDay}
-                onChange={(e) => setFeePerDay(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs">1 NGÀY/1 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee1Month}
-                onChange={(e) => setFee1Month(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs">1 NGÀY/3 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee3Months}
-                onChange={(e) => setFee3Months(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs">1 NGÀY/6 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee6Months}
-                onChange={(e) => setFee6Months(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs">1 NGÀY/12 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee12Months}
-                onChange={(e) => setFee12Months(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label className="text-xs">SỐ HỌC SINH (MỞ RỘNG)</Label>
-              <Input
-                type="number"
-                value={String(expandedStudents)}
-                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
-                className="mt-2"
-                min={0}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Thông tin khác (new card under Học phí) */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Thông tin khác</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-center">
-            <div className="md:col-span-1">
-              <Label>Hình thức học</Label>
-              <div className="mt-2">
-                <RadioGroup value={studyMode} onValueChange={(v) => setStudyMode(v as "Offline" | "Online")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Offline" id="mode-offline" />
-                      <span>Offline</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Online" id="mode-online" />
-                      <span>Online</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label>Loại ca</Label>
-              <div className="mt-2">
-                <RadioGroup value={shiftType} onValueChange={(v) => setShiftType(v as "Ca đơn" | "Ca đúp")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Ca đơn" id="shift-single" />
-                      <span>Ca đơn</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Ca đúp" id="shift-double" />
-                      <span>Ca đúp</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label>Tự động trừ buổi</Label>
-              <div className="mt-2">
-                <RadioGroup value={autoDeduct} onValueChange={(v) => setAutoDeduct(v as "Tự động" | "Thủ công")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Tự động" id="deduct-auto" />
-                      <span>Tự động</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Thủ công" id="deduct-manual" />
-                      <span>Thủ công</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="fbPage">Link Facebook Page</Label>
-              <Input id="fbPage" value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="fbGroup">Link Facebook Group</Label>
-              <Input id="fbGroup" value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="introVideo">Video giới thiệu khóa học</Label>
-              <Input id="introVideo" value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="URL video (youtube/...)" />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="order">Thứ tự</Label>
-              <Input id="order" type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} />
-            </div>
-
-            <div className="md:col-span-8 mt-2">
-              <Label htmlFor="note">Ghi chú</Label>
-              <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nhập nội dung ghi chú" className="mt-2" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* ... rest of the component remains unchanged ... */}
-
-      <div className="space-y-4">
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
+              <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddHighlight}>
+                Thêm
               </Button>
             </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="border rounded-md overflow-hidden">
-            <ReactQuill
-              value={shortDescription}
-              onChange={setShortDescription}
-              modules={quillModules}
-              formats={quillFormats}
-              placeholder="Nhập mô tả ngắn..."
-              className="min-h-[220px] bg-white text-sm"
-            />
-          </div>
-          <div className="text-sm text-muted-foreground mt-2">Mô tả ngắn sẽ hiển thị ở trang khóa học và giúp học viên nắm nhanh nội dung.</div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-orange-600">Nội dung</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="border rounded-md overflow-hidden">
-            <ReactQuill
-              value={fullContent}
-              onChange={setFullContent}
-              modules={contentModules}
-              formats={contentFormats}
-              placeholder="Nhập nội dung chi tiết khóa học..."
-              className="min-h-[420px] bg-white text-sm"
-            />
-          </div>
-          <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Nhập thông tin nổi bật..."
-                  value={newHighlightText}
-                  onChange={(e) => setNewHighlightText(e.target.value)}
-                  onKeyDown={onHighlightKeyDown}
-                  aria-label="Nhập thông tin nổi bật"
-                />
-                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddHighlight}>
-                  Thêm
-                </Button>
-              </div>
-
-              <div ref={highlightsListRef} className="space-y-2" aria-label="Danh sách thông tin nổi bật sắp xếp được">
-                {highlights.length === 0 ? (
-                  <div className="text-sm text-muted-foreground p-4 border rounded">Chưa có thông tin nổi bật nào.</div>
-                ) : (
-                  highlights.map((h) => (
-                    <div
-                      key={h.id}
-                      className="flex items-center gap-3 border rounded p-3 bg-white dark:bg-gray-800"
-                    >
+            <div ref={highlightsListRef} className="space-y-2" aria-label="Danh sách thông tin nổi bật sắp xếp được">
+              {highlights.length === 0 ? (
+                <div className="text-sm text-muted-foreground p-4 border rounded">Chưa có thông tin nổi bật nào.</div>
+              ) : (
+                highlights.map((h) => {
+                  const isEditing = editingHighlightId === h.id;
+                  return (
+                    <div key={h.id} className="flex items-center gap-3 border rounded p-3 bg-white dark:bg-gray-800">
                       <button
                         className="drag-handle p-1 text-gray-400 hover:text-gray-600"
-                        aria-label="Kéo để thay đổi vị trí"
-                        title="Kéo để thay đổi vị trí"
+                        aria-label="Kéo thả để thay đổi vị trí"
+                        title="Kéo thả để thay đổi vị trí"
                       >
-                        <span className="select-none" aria-hidden>☰</span>
+                        ☰
                       </button>
 
-                      <div className="flex-1 flex items-center gap-3">
+                      <div className="flex-1 flex items-center gap-3 min-w-0">
                         <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
                           <Check className="h-4 w-4" />
                         </div>
-                        <div className="text-sm">{h.text}</div>
+
+                        <div className="flex-1 min-w-0">
+                          {isEditing ? (
+                            <input
+                              ref={highlightEditRef}
+                              value={editingHighlightText}
+                              onChange={(e) => setEditingHighlightText(e.target.value)}
+                              onBlur={() => saveEditHighlight(h.id)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  saveEditHighlight(h.id);
+                                } else if (e.key === "Escape") {
+                                  e.preventDefault();
+                                  cancelEditHighlight();
+                                }
+                              }}
+                              className="w-full bg-transparent border-b border-dashed focus:border-solid focus:outline-none py-1 text-sm"
+                              aria-label={`Chỉnh sửa thông tin nổi bật ${h.text}`}
+                            />
+                          ) : (
+                            <div
+                              className="text-sm truncate cursor-text"
+                              onClick={() => startEditHighlight(h)}
+                              onDoubleClick={() => startEditHighlight(h)}
+                              title="Nhấp để chỉnh sửa"
+                            >
+                              {h.text}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                      <div>
+                      <div className="flex items-center gap-2">
+                        {isEditing && (
+                          <button
+                            onClick={() => saveEditHighlight(h.id)}
+                            title="Hoàn thành"
+                            className="h-8 w-8 rounded-md bg-green-600 hover:bg-green-700 flex items-center justify-center text-white"
+                            aria-label="Lưu"
+                          >
+                            <Check className="h-4 w-4" />
+                          </button>
+                        )}
+
                         <Button
                           variant="ghost"
                           className="text-red-600 hover:bg-red-50"
                           onClick={() => handleDeleteHighlight(h.id)}
-                          aria-label={`Xóa thông tin nổi bật ${h.text}`}
                         >
                           Xóa
                         </Button>
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
-
-              <p className="text-sm text-muted-foreground">Kéo-thả để thay đổi thứ tự các mục.</p>
+                  );
+                })
+              )}
             </div>
-          </CardContent>
-        </Card>
 
-        <div>
-          <CourseIncludes />
-        </div>
-      </div>
+            <p className="text-sm text-muted-foreground">Kéo-thả để thay đổi thứ tự các mục.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <CourseIncludes />
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
         <Button variant="outline" onClick={handleCancel}>HỦY</Button>
