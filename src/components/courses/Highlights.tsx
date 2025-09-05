@@ -11,9 +11,7 @@ import { toast } from "sonner";
  * Highlights component (Thông tin nổi bật)
  * - Quản lý state nội bộ cho các mục nổi bật
  * - Cho phép thêm / xóa / kéo-thả để sắp xếp (SortableJS)
- * - Có keyboard support (Enter để thêm)
- *
- * Tách riêng để khi muốn chỉnh sửa chỉ cần sửa file này mà không ảnh hưởng tới AddClass.
+ * - Double-click vào mục để chỉnh sửa; khi đang chỉnh sửa chỉ hiện nút tick để lưu
  */
 
 type HighlightItem = {
@@ -27,12 +25,16 @@ const Highlights: React.FC = () => {
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const sortableRef = React.useRef<any>(null);
 
+  // Editing state
+  const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [editingValue, setEditingValue] = React.useState<string>("");
+  const editInputRef = React.useRef<HTMLInputElement | null>(null);
+
   React.useEffect(() => {
     const el = listRef.current;
     if (!el) return;
 
     try {
-      // destroy previous instance if present
       if (sortableRef.current && typeof sortableRef.current.destroy === "function") {
         try {
           sortableRef.current.destroy();
@@ -58,7 +60,6 @@ const Highlights: React.FC = () => {
 
       sortableRef.current = sortable;
     } catch (err) {
-      // avoid crashing the app if Sortable fails to initialize
       // eslint-disable-next-line no-console
       console.error("SortableJS init error (Highlights):", err);
     }
@@ -76,6 +77,16 @@ const Highlights: React.FC = () => {
     };
   }, [listRef.current]);
 
+  // Focus input when entering edit mode
+  React.useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      // Move caret to end
+      const val = editInputRef.current.value;
+      editInputRef.current.setSelectionRange(val.length, val.length);
+    }
+  }, [editingId]);
+
   const addItem = () => {
     const txt = value.trim();
     if (!txt) {
@@ -90,14 +101,52 @@ const Highlights: React.FC = () => {
 
   const removeItem = (id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));
+    // If we removed the item that was being edited, clear edit state
+    if (editingId === id) {
+      setEditingId(null);
+      setEditingValue("");
+    }
     toast.success("Đã xóa mục nổi bật.");
   };
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDownAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       addItem();
     }
+  };
+
+  const onKeyDownEdit = (e: React.KeyboardEvent<HTMLInputElement>, id: string) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveEdit(id);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      cancelEdit();
+    }
+  };
+
+  const startEdit = (item: HighlightItem) => {
+    setEditingId(item.id);
+    setEditingValue(item.text);
+  };
+
+  const saveEdit = (id: string) => {
+    const txt = editingValue.trim();
+    if (!txt) {
+      toast.error("Nội dung không được trống.");
+      return;
+    }
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, text: txt } : it)));
+    setEditingId(null);
+    setEditingValue("");
+    toast.success("Đã lưu thay đổi.");
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingValue("");
+    toast.info("Đã hủy chỉnh sửa.");
   };
 
   return (
@@ -107,7 +156,7 @@ const Highlights: React.FC = () => {
           placeholder="Nhập thông tin nổi bật..."
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={onKeyDown}
+          onKeyDown={onKeyDownAdd}
           aria-label="Thông tin nổi bật"
         />
         <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
@@ -131,10 +180,41 @@ const Highlights: React.FC = () => {
                 <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
                   <Check className="h-4 w-4" />
                 </div>
-                <div className="text-sm break-words">{it.text}</div>
+
+                {/* Display text or input when editing */}
+                {editingId === it.id ? (
+                  <input
+                    ref={editInputRef}
+                    className="flex-1 text-sm bg-white border rounded px-2 py-1"
+                    value={editingValue}
+                    onChange={(e) => setEditingValue(e.target.value)}
+                    onKeyDown={(e) => onKeyDownEdit(e, it.id)}
+                    aria-label={`Chỉnh sửa mục ${idx + 1}`}
+                  />
+                ) : (
+                  <div
+                    className="text-sm break-words cursor-text"
+                    onDoubleClick={() => startEdit(it)}
+                    title="Double-click để chỉnh sửa"
+                  >
+                    {it.text}
+                  </div>
+                )}
               </div>
 
-              <div>
+              <div className="flex items-center gap-2">
+                {/* Tick button only visible while editing this item */}
+                {editingId === it.id && (
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => saveEdit(it.id)}
+                    aria-label="Lưu chỉnh sửa"
+                    size="sm"
+                  >
+                    <Check className="w-4 h-4" />
+                  </Button>
+                )}
+
                 <Button variant="ghost" className="text-red-600 hover:bg-red-50" onClick={() => removeItem(it.id)}>
                   Xóa
                 </Button>
@@ -144,7 +224,7 @@ const Highlights: React.FC = () => {
         )}
       </div>
 
-      <p className="text-xs text-muted-foreground mt-2">Kéo-thả để thay đổi thứ tự các mục.</p>
+      <p className="text-xs text-muted-foreground mt-2">Kéo-thả để thay đổi thứ tự các mục. Double-click vào mục để chỉnh sửa; khi đang chỉnh sửa nhấn tick để lưu.</p>
     </div>
   );
 };
