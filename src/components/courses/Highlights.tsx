@@ -4,7 +4,6 @@ import React from "react";
 import SortableJS from "sortablejs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check } from "lucide-react";
 import { toast } from "sonner";
 
 /**
@@ -12,6 +11,8 @@ import { toast } from "sonner";
  * - Quản lý state nội bộ cho các mục nổi bật
  * - Cho phép thêm / xóa / kéo-thả để sắp xếp (SortableJS)
  * - Double-click vào mục để chỉnh sửa; khi đang chỉnh sửa chỉ hiện nút tick để lưu
+ *
+ * NOTE: Removed custom icon element so webuser's default icon will be used.
  */
 
 type HighlightItem = {
@@ -177,10 +178,7 @@ const Highlights: React.FC = () => {
               </button>
 
               <div className="flex-1 flex items-center gap-3">
-                <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
-                  <Check className="h-4 w-4" />
-                </div>
-
+                {/* Removed custom icon element so default webuser icon is used */}
                 {/* Display text or input when editing */}
                 {editingId === it.id ? (
                   <input
@@ -211,7 +209,7 @@ const Highlights: React.FC = () => {
                     aria-label="Lưu chỉnh sửa"
                     size="sm"
                   >
-                    <Check className="w-4 h-4" />
+                    ✔
                   </Button>
                 )}
 
