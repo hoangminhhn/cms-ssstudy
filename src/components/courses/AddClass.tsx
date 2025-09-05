@@ -394,6 +394,11 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* MOVE OtherInfo: placed immediately after Học phí (Fees) */}
+      <div>
+        <OtherInfo />
+      </div>
+
       {/* Học phí */}
       <Card>
         <CardHeader>
@@ -513,11 +518,6 @@ const AddClass: React.FC = () => {
         <div>
           <CourseIncludes />
         </div>
-      </div>
-
-      {/* NEW: OtherInfo is a separate component so editing it won't affect other cards */}
-      <div>
-        <OtherInfo />
       </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
