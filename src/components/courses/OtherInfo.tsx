@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const OtherInfo: React.FC = () => {
   const [studyMode, setStudyMode] = React.useState<"Offline" | "Online">("Offline");
