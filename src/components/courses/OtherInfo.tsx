@@ -124,8 +124,9 @@ const OtherInfo: React.FC = () => {
             <Input id="fbGroup" value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." />
           </div>
 
+          {/* Move introVideo to be on the same row as order and studentCount */}
           <div className="md:col-span-1">
-            <Label htmlFor="introVideo">Video giới thiệu khóa học</Label>
+            <Label htmlFor="introVideo">Video giới thiệu</Label>
             <Input id="introVideo" value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="URL video (youtube/...)" />
           </div>
 
@@ -134,7 +135,7 @@ const OtherInfo: React.FC = () => {
             <Input id="order" type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} />
           </div>
 
-          {/* NEW: Số lượng học viên */}
+          {/* NEW: Số lượng học viên placed in same row */}
           <div className="md:col-span-1">
             <Label htmlFor="studentCount">Số lượng học viên</Label>
             <Input
