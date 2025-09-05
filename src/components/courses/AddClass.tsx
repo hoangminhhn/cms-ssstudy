@@ -13,8 +13,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import SortableJS from "sortablejs";
 import CourseIncludes from "./CourseIncludes";
+import Highlights from "./Highlights"; // NEW: extracted component
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -166,9 +166,6 @@ const AddClass: React.FC = () => {
     setOrder(0);
     setNote("");
 
-    // Reset highlights etc. (if any)
-    setHighlights([]);
-
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
   };
@@ -215,7 +212,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    // filtering happens automatically via useEffect; keep handler for potential analytics
     toast.success("Đã lọc chương.");
   };
 
@@ -286,60 +282,8 @@ const AddClass: React.FC = () => {
     "link", "image", "video"
   ];
 
-  // -- Highlights (Thông tin nổi bật) feature --
-  interface HighlightItem {
-    id: string;
-    text: string;
-  }
-
-  const [highlights, setHighlights] = useState<HighlightItem[]>([]);
-  const [newHighlightText, setNewHighlightText] = useState("");
-  const highlightsListRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!highlightsListRef.current) return;
-
-    const sortable = SortableJS.create(highlightsListRef.current, {
-      animation: 150,
-      handle: ".drag-handle",
-      onEnd: (evt) => {
-        if (evt.oldIndex === undefined || evt.newIndex === undefined) return;
-        setHighlights((prev) => {
-          const items = [...prev];
-          const [moved] = items.splice(evt.oldIndex, 1);
-          items.splice(evt.newIndex, 0, moved);
-          return items;
-        });
-      },
-    });
-
-    return () => sortable.destroy();
-  }, [highlightsListRef.current]);
-
-  const handleAddHighlight = () => {
-    const text = newHighlightText.trim();
-    if (!text) {
-      toast.error("Vui lòng nhập nội dung nổi bật.");
-      return;
-    }
-    const id = `h-${Date.now()}`;
-    setHighlights((prev) => [...prev, { id, text }]);
-    setNewHighlightText("");
-    toast.success("Đã thêm thông tin nổi bật.");
-  };
-
-  const handleDeleteHighlight = (id: string) => {
-    setHighlights((prev) => prev.filter((h) => h.id !== id));
-    toast.success("Đã xóa thông tin nổi bật.");
-  };
-
-  // Small helper for keyboard add (Enter)
-  const onHighlightKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddHighlight();
-    }
-  };
+  // -- Highlights removed from AddClass and moved to separate component Highlights.tsx --
+  // This prevents accidental overwrites of the whole file when editing highlights.
 
   return (
     <div className="space-y-6">
@@ -578,14 +522,13 @@ const AddClass: React.FC = () => {
               />
             </div>
 
-            {/* promoNote now occupies ~1/3 of the row */}
             <div className="md:col-span-3">
               <Label htmlFor="promoNote">Ghi chú khuyến mãi</Label>
               <Textarea
                 id="promoNote"
                 value={promoNote}
                 onChange={(e) => setPromoNote(e.target.value)}
-                placeholder="Nhập ghi chú cho khuyến mãi (ví dụ: điều kiện, ghi chú hiển thị, mã riêng... )"
+                placeholder="Nhập ghi chú cho khuyến mãi"
                 className="mt-2 min-h-[80px]"
               />
             </div>
@@ -664,7 +607,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Thông tin khác (new card under Học phí) */}
+      {/* Thông tin khác */}
       <Card>
         <CardHeader>
           <CardTitle>Thông tin khác</CardTitle>
@@ -753,8 +696,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* ... rest of the component remains unchanged ... */}
-
+      {/* Các card phụ trợ */}
       <div className="space-y-4">
         <Card>
           <CardContent className="py-4 px-6">
@@ -801,6 +743,7 @@ const AddClass: React.FC = () => {
         </Card>
       </div>
 
+      {/* Mô tả ngắn */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
@@ -820,6 +763,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Nội dung */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Nội dung</CardTitle>
@@ -845,61 +789,8 @@ const AddClass: React.FC = () => {
             <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Nhập thông tin nổi bật..."
-                  value={newHighlightText}
-                  onChange={(e) => setNewHighlightText(e.target.value)}
-                  onKeyDown={onHighlightKeyDown}
-                  aria-label="Nhập thông tin nổi bật"
-                />
-                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddHighlight}>
-                  Thêm
-                </Button>
-              </div>
-
-              <div ref={highlightsListRef} className="space-y-2" aria-label="Danh sách thông tin nổi bật sắp xếp được">
-                {highlights.length === 0 ? (
-                  <div className="text-sm text-muted-foreground p-4 border rounded">Chưa có thông tin nổi bật nào.</div>
-                ) : (
-                  highlights.map((h) => (
-                    <div
-                      key={h.id}
-                      className="flex items-center gap-3 border rounded p-3 bg-white dark:bg-gray-800"
-                    >
-                      <button
-                        className="drag-handle p-1 text-gray-400 hover:text-gray-600"
-                        aria-label="Kéo để thay đổi vị trí"
-                        title="Kéo để thay đổi vị trí"
-                      >
-                        <span className="select-none" aria-hidden>☰</span>
-                      </button>
-
-                      <div className="flex-1 flex items-center gap-3">
-                        <div className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
-                          <Check className="h-4 w-4" />
-                        </div>
-                        <div className="text-sm">{h.text}</div>
-                      </div>
-
-                      <div>
-                        <Button
-                          variant="ghost"
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeleteHighlight(h.id)}
-                          aria-label={`Xóa thông tin nổi bật ${h.text}`}
-                        >
-                          Xóa
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <p className="text-sm text-muted-foreground">Kéo-thả để thay đổi thứ tự các mục.</p>
-            </div>
+            {/* Use extracted Highlights component to isolate edits */}
+            <Highlights />
           </CardContent>
         </Card>
 
