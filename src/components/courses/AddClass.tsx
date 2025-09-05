@@ -15,7 +15,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import CourseIncludes from "./CourseIncludes";
 import Highlights from "./Highlights";
-import OtherInfo from "./OtherInfo"; // NEW
+import OtherInfo from "./OtherInfo";
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -53,8 +53,6 @@ const AddClass: React.FC = () => {
   const [fee12Months, setFee12Months] = useState<string>("");
   const [expandedStudents, setExpandedStudents] = useState<number>(0);
 
-  // Thông tin khác (moved to OtherInfo component)
-
   useEffect(() => {
     const p = Number(price || 0);
     const pp = Number(promoPrice || 0);
@@ -79,7 +77,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleSave = () => {
-    // For now just show a toast confirmation
     toast.success("Đã lưu thông tin lớp.");
     console.log({
       code,
@@ -99,7 +96,6 @@ const AddClass: React.FC = () => {
   };
 
   const handleCancel = () => {
-    // Reset form (preserve other behaviors)
     setCode("");
     setName("");
     setStartDate("");
@@ -192,12 +188,7 @@ const AddClass: React.FC = () => {
                   <div className="lg:col-span-2">
                     <Label htmlFor="start">Ngày khai giảng</Label>
                     <div className="relative">
-                      <Input
-                        id="start"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                      />
+                      <Input id="start" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                       <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
@@ -205,12 +196,7 @@ const AddClass: React.FC = () => {
                   <div className="lg:col-span-2">
                     <Label htmlFor="end">Ngày bế giảng</Label>
                     <div className="relative">
-                      <Input
-                        id="end"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                      />
+                      <Input id="end" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                       <Calendar className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
@@ -306,30 +292,18 @@ const AddClass: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-center">
             <div className="md:col-span-1">
               <Label htmlFor="price">Giá khóa học</Label>
-              <Input
-                id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Nhập giá"
-              />
+              <Input id="price" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Nhập giá" />
             </div>
 
             <div className="md:col-span-1">
               <Label htmlFor="promoPrice">Giá khuyến mãi</Label>
-              <Input
-                id="promoPrice"
-                value={promoPrice}
-                onChange={(e) => setPromoPrice(e.target.value)}
-                placeholder="Nhập giá khuyến mãi"
-              />
+              <Input id="promoPrice" value={promoPrice} onChange={(e) => setPromoPrice(e.target.value)} placeholder="Nhập giá khuyến mãi" />
             </div>
 
             <div className="md:col-span-1">
               <Label>Chênh lệch</Label>
               <div className="mt-1">
-                <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded text-center text-sm font-medium">
-                  {differencePercent}% 
-                </div>
+                <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded text-center text-sm font-medium">{differencePercent}%</div>
               </div>
             </div>
 
@@ -349,55 +323,26 @@ const AddClass: React.FC = () => {
             <div className="md:col-span-2 grid grid-cols-2 gap-2">
               <div>
                 <Label htmlFor="promoFrom">Từ ngày</Label>
-                <Input
-                  id="promoFrom"
-                  type="date"
-                  value={promoFrom}
-                  onChange={(e) => setPromoFrom(e.target.value)}
-                  disabled={promoTimeMode !== "specific"}
-                />
+                <Input id="promoFrom" type="date" value={promoFrom} onChange={(e) => setPromoFrom(e.target.value)} disabled={promoTimeMode !== "specific"} />
               </div>
               <div>
                 <Label htmlFor="promoTo">Đến ngày</Label>
-                <Input
-                  id="promoTo"
-                  type="date"
-                  value={promoTo}
-                  onChange={(e) => setPromoTo(e.target.value)}
-                  disabled={promoTimeMode !== "specific"}
-                />
+                <Input id="promoTo" type="date" value={promoTo} onChange={(e) => setPromoTo(e.target.value)} disabled={promoTimeMode !== "specific"} />
               </div>
             </div>
 
             <div className="md:col-span-1">
               <Label htmlFor="promoQuantity">Số lượng khuyến mãi</Label>
-              <Input
-                id="promoQuantity"
-                type="number"
-                value={String(promoQuantity)}
-                onChange={(e) => setPromoQuantity(Number(e.target.value || 0))}
-                min={0}
-              />
+              <Input id="promoQuantity" type="number" value={String(promoQuantity)} onChange={(e) => setPromoQuantity(Number(e.target.value || 0))} min={0} />
             </div>
 
             <div className="md:col-span-3">
               <Label htmlFor="promoNote">Ghi chú khuyến mãi</Label>
-              <Textarea
-                id="promoNote"
-                value={promoNote}
-                onChange={(e) => setPromoNote(e.target.value)}
-                placeholder="Nhập ghi chú cho khuyến mãi"
-                className="mt-2 min-h-[80px]"
-              />
+              <Textarea id="promoNote" value={promoNote} onChange={(e) => setPromoNote(e.target.value)} placeholder="Nhập ghi chú cho khuyến mãi" className="mt-2 min-h-[80px]" />
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* MOVE OtherInfo: placed immediately after Học phí (Fees) */}
-      <div>
-        <OtherInfo />
-      </div>
 
       {/* Học phí */}
       <Card>
@@ -408,67 +353,39 @@ const AddClass: React.FC = () => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-6 items-center">
             <div className="md:col-span-1">
               <Label className="text-xs">THEO NGÀY</Label>
-              <Input
-                placeholder="Nhập theo ngày"
-                value={feePerDay}
-                onChange={(e) => setFeePerDay(e.target.value)}
-                className="mt-2"
-              />
+              <Input placeholder="Nhập theo ngày" value={feePerDay} onChange={(e) => setFeePerDay(e.target.value)} className="mt-2" />
             </div>
 
             <div>
               <Label className="text-xs">1 NGÀY/1 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee1Month}
-                onChange={(e) => setFee1Month(e.target.value)}
-                className="mt-2"
-              />
+              <Input placeholder="" value={fee1Month} onChange={(e) => setFee1Month(e.target.value)} className="mt-2" />
             </div>
 
             <div>
               <Label className="text-xs">1 NGÀY/3 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee3Months}
-                onChange={(e) => setFee3Months(e.target.value)}
-                className="mt-2"
-              />
+              <Input placeholder="" value={fee3Months} onChange={(e) => setFee3Months(e.target.value)} className="mt-2" />
             </div>
 
             <div>
               <Label className="text-xs">1 NGÀY/6 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee6Months}
-                onChange={(e) => setFee6Months(e.target.value)}
-                className="mt-2"
-              />
+              <Input placeholder="" value={fee6Months} onChange={(e) => setFee6Months(e.target.value)} className="mt-2" />
             </div>
 
             <div>
               <Label className="text-xs">1 NGÀY/12 THÁNG</Label>
-              <Input
-                placeholder=""
-                value={fee12Months}
-                onChange={(e) => setFee12Months(e.target.value)}
-                className="mt-2"
-              />
+              <Input placeholder="" value={fee12Months} onChange={(e) => setFee12Months(e.target.value)} className="mt-2" />
             </div>
 
             <div className="md:col-span-1">
               <Label className="text-xs">SỐ HỌC SINH (MỞ RỘNG)</Label>
-              <Input
-                type="number"
-                value={String(expandedStudents)}
-                onChange={(e) => setExpandedStudents(Number(e.target.value || 0))}
-                className="mt-2"
-                min={0}
-              />
+              <Input type="number" value={String(expandedStudents)} onChange={(e) => setExpandedStudents(Number(e.target.value || 0))} className="mt-2" min={0} />
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Place OtherInfo directly under the Fees card as requested */}
+      <OtherInfo />
 
       {/* Short / Full descriptions */}
       <Card>
@@ -477,13 +394,7 @@ const AddClass: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
-            <ReactQuill
-              value={shortDescription}
-              onChange={setShortDescription}
-              modules={{ toolbar: [["bold", "italic"], ["link", "image"]] }}
-              placeholder="Nhập mô tả ngắn..."
-              className="min-h-[220px] bg-white text-sm"
-            />
+            <ReactQuill value={shortDescription} onChange={setShortDescription} modules={{ toolbar: [["bold", "italic"], ["link", "image"]] }} placeholder="Nhập mô tả ngắn..." className="min-h-[220px] bg-white text-sm" />
           </div>
         </CardContent>
       </Card>
@@ -494,13 +405,7 @@ const AddClass: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
-            <ReactQuill
-              value={fullContent}
-              onChange={setFullContent}
-              modules={contentModules}
-              placeholder="Nội dung chi tiết..."
-              className="min-h-[420px] bg-white text-sm"
-            />
+            <ReactQuill value={fullContent} onChange={setFullContent} modules={contentModules} placeholder="Nội dung chi tiết..." className="min-h-[420px] bg-white text-sm" />
           </div>
         </CardContent>
       </Card>
