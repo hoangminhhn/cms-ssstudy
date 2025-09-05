@@ -19,6 +19,9 @@ const OtherInfo: React.FC = () => {
   const [order, setOrder] = React.useState<number>(0);
   const [note, setNote] = React.useState<string>("");
 
+  // NEW: student count field
+  const [studentCount, setStudentCount] = React.useState<number | "">(0);
+
   const handleSave = () => {
     // Demo save (local state only)
     console.log("OtherInfo saved", {
@@ -30,6 +33,7 @@ const OtherInfo: React.FC = () => {
       introVideo,
       order,
       note,
+      studentCount,
     });
     toast.success("Đã lưu Thông tin khác (mô phỏng).");
   };
@@ -44,6 +48,7 @@ const OtherInfo: React.FC = () => {
     setIntroVideo("");
     setOrder(0);
     setNote("");
+    setStudentCount(0);
     toast.info("Đã hủy thay đổi Thông tin khác.");
   };
 
@@ -129,7 +134,23 @@ const OtherInfo: React.FC = () => {
             <Input id="order" type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} />
           </div>
 
-          <div className="md:col-span-8 mt-2">
+          {/* NEW: Số lượng học viên */}
+          <div className="md:col-span-1">
+            <Label htmlFor="studentCount">Số lượng học viên</Label>
+            <Input
+              id="studentCount"
+              type="number"
+              min={0}
+              value={studentCount === "" ? "" : String(studentCount)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setStudentCount(v === "" ? "" : Number(v));
+              }}
+              placeholder="Nhập số"
+            />
+          </div>
+
+          <div className="md:col-span-7 mt-2">
             <Label htmlFor="note">Ghi chú</Label>
             <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nhập nội dung ghi chú" className="mt-2" />
           </div>
