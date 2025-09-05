@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Calendar, Check } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import CourseIncludes from "./CourseIncludes";
-import Highlights from "./Highlights"; // NEW: extracted component
+import Highlights from "./Highlights";
+import OtherInfo from "./OtherInfo"; // NEW
 
 const AddClass: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -52,15 +53,7 @@ const AddClass: React.FC = () => {
   const [fee12Months, setFee12Months] = useState<string>("");
   const [expandedStudents, setExpandedStudents] = useState<number>(0);
 
-  // Thông tin khác
-  const [studyMode, setStudyMode] = useState<"Offline" | "Online">("Offline");
-  const [shiftType, setShiftType] = useState<"Ca đơn" | "Ca đúp">("Ca đơn");
-  const [autoDeduct, setAutoDeduct] = useState<"Tự động" | "Thủ công">("Thủ công");
-  const [fbPage, setFbPage] = useState<string>("");
-  const [fbGroup, setFbGroup] = useState<string>("");
-  const [introVideo, setIntroVideo] = useState<string>("");
-  const [order, setOrder] = useState<number>(0);
-  const [note, setNote] = useState<string>("");
+  // Thông tin khác (moved to OtherInfo component)
 
   useEffect(() => {
     const p = Number(price || 0);
@@ -102,25 +95,6 @@ const AddClass: React.FC = () => {
       visible,
       price,
       promoPrice,
-      promoTimeMode,
-      promoFrom,
-      promoTo,
-      promoQuantity,
-      promoNote,
-      feePerDay,
-      fee1Month,
-      fee3Months,
-      fee6Months,
-      fee12Months,
-      expandedStudents,
-      studyMode,
-      shiftType,
-      autoDeduct,
-      fbPage,
-      fbGroup,
-      introVideo,
-      order,
-      note,
     });
   };
 
@@ -138,152 +112,36 @@ const AddClass: React.FC = () => {
     setFeatured(false);
     setVisible(true);
     setImagePreview(null);
-
-    // Reset promotion fields
-    setPrice("");
-    setPromoPrice("");
-    setPromoFrom("");
-    setPromoTo("");
-    setPromoQuantity(0);
-    setPromoTimeMode("specific");
-    setPromoNote("");
-
-    // Reset fees
-    setFeePerDay("");
-    setFee1Month("");
-    setFee3Months("");
-    setFee6Months("");
-    setFee12Months("");
-    setExpandedStudents(0);
-
-    // Reset other info
-    setStudyMode("Offline");
-    setShiftType("Ca đơn");
-    setAutoDeduct("Thủ công");
-    setFbPage("");
-    setFbGroup("");
-    setIntroVideo("");
-    setOrder(0);
-    setNote("");
-
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.info("Đã hủy thay đổi.");
   };
 
-  // -- Chapters feature states and helpers --
-  const allChaptersMock = [
-    { id: "c1", title: "Giới thiệu khóa học" },
-    { id: "c2", title: "Chương 1: Cơ bản" },
-    { id: "c3", title: "Chương 2: Trung cấp" },
-    { id: "c4", title: "Chương 3: Nâng cao" },
-    { id: "c5", title: "Tài liệu tham khảo" },
-    { id: "c6", title: "Bài tập & Đáp án" },
-    { id: "c7", title: "Phần mở rộng" },
-  ];
-
-  const [allChapters] = useState(allChaptersMock);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredChapters, setFilteredChapters] = useState(allChapters);
-  const [selectedChapters, setSelectedChapters] = useState<typeof allChaptersMock>([]);
-
-  useEffect(() => {
-    const q = searchTerm.trim().toLowerCase();
-    if (!q) {
-      setFilteredChapters(allChapters);
-    } else {
-      setFilteredChapters(
-        allChapters.filter((ch) => ch.title.toLowerCase().includes(q))
-      );
-    }
-  }, [searchTerm, allChapters]);
-
-  const handleAddChapter = (chapter: { id: string; title: string }) => {
-    if (selectedChapters.find((c) => c.id === chapter.id)) {
-      toast.info("Chương đã có trong danh sách.");
-      return;
-    }
-    setSelectedChapters((prev) => [...prev, chapter]);
-    toast.success(`Đã thêm: ${chapter.title}`);
-  };
-
-  const handleRemoveChapter = (chapterId: string) => {
-    setSelectedChapters((prev) => prev.filter((c) => c.id !== chapterId));
-    toast.success("Đã xóa chương.");
-  };
-
-  const handleSearchClick = () => {
-    toast.success("Đã lọc chương.");
-  };
-
-  // -- Short description editor state and toolbar config --
+  // short/full content states
   const [shortDescription, setShortDescription] = useState<string>("");
+  const [fullContent, setFullContent] = useState<string>("");
 
   const quillModules = {
     toolbar: [
       [{ font: [] }, { size: [] }],
       ["bold", "italic", "underline", "strike"],
-      [{ script: "sub" }, { script: "super" }],
-      [{ color: [] }, { background: [] }],
       [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
       [{ align: [] }],
-      ["blockquote", "code-block"],
       ["link", "image", "video"],
       ["clean"],
     ],
   };
-
-  const quillFormats = [
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "script",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "indent",
-    "align",
-    "blockquote",
-    "code-block",
-    "link",
-    "image",
-    "video",
-  ];
-
-  // -- Full content (Nội dung) editor state and toolbar (more complete) --
-  const [fullContent, setFullContent] = useState<string>("");
 
   const contentModules = {
     toolbar: [
       [{ font: [] }, { size: [] }],
       [{ header: [1, 2, 3, false] }],
       ["bold", "underline", "italic", "strike"],
-      [{ script: "sub" }, { script: "super" }],
-      [{ color: [] }, { background: [] }],
-      [{ align: [] }],
       [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-      ["blockquote", "code-block", "formula"],
+      [{ align: [] }],
       ["link", "image", "video"],
       ["clean"],
     ],
   };
-
-  const contentFormats = [
-    "font", "size", "header",
-    "bold", "italic", "underline", "strike",
-    "script", "color", "background",
-    "align", "list", "bullet", "indent",
-    "blockquote", "code-block", "formula",
-    "link", "image", "video"
-  ];
-
-  // -- Highlights removed from AddClass and moved to separate component Highlights.tsx --
-  // This prevents accidental overwrites of the whole file when editing highlights.
 
   return (
     <div className="space-y-6">
@@ -607,143 +465,7 @@ const AddClass: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Thông tin khác */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Thông tin khác</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-center">
-            <div className="md:col-span-1">
-              <Label>Hình thức học</Label>
-              <div className="mt-2">
-                <RadioGroup value={studyMode} onValueChange={(v) => setStudyMode(v as "Offline" | "Online")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Offline" id="mode-offline" />
-                      <span>Offline</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Online" id="mode-online" />
-                      <span>Online</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label>Loại ca</Label>
-              <div className="mt-2">
-                <RadioGroup value={shiftType} onValueChange={(v) => setShiftType(v as "Ca đơn" | "Ca đúp")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Ca đơn" id="shift-single" />
-                      <span>Ca đơn</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Ca đúp" id="shift-double" />
-                      <span>Ca đúp</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-1">
-              <Label>Tự động trừ buổi</Label>
-              <div className="mt-2">
-                <RadioGroup value={autoDeduct} onValueChange={(v) => setAutoDeduct(v as "Tự động" | "Thủ công")}>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Tự động" id="deduct-auto" />
-                      <span>Tự động</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <RadioGroupItem value="Thủ công" id="deduct-manual" />
-                      <span>Thủ công</span>
-                    </label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="fbPage">Link Facebook Page</Label>
-              <Input id="fbPage" value={fbPage} onChange={(e) => setFbPage(e.target.value)} placeholder="https://facebook.com/..." />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="fbGroup">Link Facebook Group</Label>
-              <Input id="fbGroup" value={fbGroup} onChange={(e) => setFbGroup(e.target.value)} placeholder="https://facebook.com/groups/..." />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="introVideo">Video giới thiệu khóa học</Label>
-              <Input id="introVideo" value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="URL video (youtube/...)" />
-            </div>
-
-            <div className="md:col-span-1">
-              <Label htmlFor="order">Thứ tự</Label>
-              <Input id="order" type="number" value={String(order)} onChange={(e) => setOrder(Number(e.target.value || 0))} />
-            </div>
-
-            <div className="md:col-span-8 mt-2">
-              <Label htmlFor="note">Ghi chú</Label>
-              <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Nhập nội dung ghi chú" className="mt-2" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Các card phụ trợ */}
-      <div className="space-y-4">
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Sách tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM SÁCH
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học tặng kèm</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="py-4 px-6">
-            <div className="flex items-center gap-3">
-              <div className="text-orange-600 font-medium text-lg">Khóa học đề xuất</div>
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                THÊM KHÓA HỌC
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Mô tả ngắn */}
+      {/* Short / Full descriptions */}
       <Card>
         <CardHeader>
           <CardTitle className="text-orange-600">Mô tả ngắn</CardTitle>
@@ -753,20 +475,17 @@ const AddClass: React.FC = () => {
             <ReactQuill
               value={shortDescription}
               onChange={setShortDescription}
-              modules={quillModules}
-              formats={quillFormats}
+              modules={{ toolbar: [["bold", "italic"], ["link", "image"]] }}
               placeholder="Nhập mô tả ngắn..."
               className="min-h-[220px] bg-white text-sm"
             />
           </div>
-          <div className="text-sm text-muted-foreground mt-2">Mô tả ngắn sẽ hiển thị ở trang khóa học và giúp học viên nắm nhanh nội dung.</div>
         </CardContent>
       </Card>
 
-      {/* Nội dung */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-orange-600">Nội dung</CardTitle>
+          <CardTitle className="text-orange-600">Nội dung chi tiết</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
@@ -774,12 +493,10 @@ const AddClass: React.FC = () => {
               value={fullContent}
               onChange={setFullContent}
               modules={contentModules}
-              formats={contentFormats}
-              placeholder="Nhập nội dung chi tiết khóa học..."
+              placeholder="Nội dung chi tiết..."
               className="min-h-[420px] bg-white text-sm"
             />
           </div>
-          <div className="text-sm text-muted-foreground mt-2">Nội dung chi tiết hỗ trợ định dạng nâng cao, chèn ảnh/video/công thức.</div>
         </CardContent>
       </Card>
 
@@ -789,7 +506,6 @@ const AddClass: React.FC = () => {
             <CardTitle className="text-orange-600">Thông tin nổi bật</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Use extracted Highlights component to isolate edits */}
             <Highlights />
           </CardContent>
         </Card>
@@ -797,6 +513,11 @@ const AddClass: React.FC = () => {
         <div>
           <CourseIncludes />
         </div>
+      </div>
+
+      {/* NEW: OtherInfo is a separate component so editing it won't affect other cards */}
+      <div>
+        <OtherInfo />
       </div>
 
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
