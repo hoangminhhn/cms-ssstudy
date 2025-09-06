@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
-import CourseIncludes from '@/components/courses/CourseIncludes';
+import BookCourseIncludes from '@/components/books/BookCourseIncludes';
 import Highlights from '@/components/courses/Highlights';
 
 const AddBookForm: React.FC = () => {
@@ -228,11 +228,11 @@ const AddBookForm: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* CourseIncludes remains as its own card/component (title removed) */}
+        {/* Use the isolated BookCourseIncludes component */}
         <Card>
           <CardHeader />
           <CardContent>
-            <CourseIncludes />
+            <BookCourseIncludes />
           </CardContent>
         </Card>
       </div>
