@@ -5,7 +5,7 @@ import SortableJS from "sortablejs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon, Check } from "lucide-react";
@@ -189,9 +189,7 @@ const BookIncludes: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Sách bao gồm</CardTitle>
-      </CardHeader>
+      <CardHeader />
       <CardContent>
         {/* Add row with icon picker button - inline and compact (drag handle removed from add-row) */}
         <div className="flex items-center gap-2 mb-3">
