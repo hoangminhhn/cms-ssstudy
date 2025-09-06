@@ -5,7 +5,6 @@ import SortableJS from "sortablejs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon, Check } from "lucide-react";
@@ -188,21 +187,20 @@ const BookIncludes: React.FC = () => {
   };
 
   return (
-    <Card>
-      <CardHeader />
-      <CardContent>
-        {/* Add row with icon picker button - inline and compact (drag handle removed from add-row) */}
+    // outer container without Card border/background
+    <div className="bg-transparent p-0">
+      {/* inner compact box that holds the inputs & list (matches the screenshot's inner bordered box) */}
+      <div className="rounded-lg p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        {/* Add row — compact sizes */}
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center gap-2 flex-1">
-            <Input
-              placeholder="Tên sách / tài nguyên"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="flex-1"
-              aria-label="Tên tài nguyên"
-              onDoubleClick={() => {}} // keep default
-            />
-          </div>
+          <Input
+            placeholder="Tên sách / tài nguyên"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="flex-1 h-9 text-sm"
+            aria-label="Tên tài nguyên"
+            onDoubleClick={() => {}}
+          />
 
           <Tooltip>
             <TooltipTrigger asChild>
@@ -219,7 +217,7 @@ const BookIncludes: React.FC = () => {
             <TooltipContent>Click để chọn icon</TooltipContent>
           </Tooltip>
 
-          <Button className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
+          <Button className="h-9 px-3 text-sm bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
         </div>
 
         {/* List */}
@@ -227,17 +225,17 @@ const BookIncludes: React.FC = () => {
           {items.length === 0 ? (
             <div className="text-sm text-muted-foreground p-3 border rounded">Chưa có tài nguyên kèm theo.</div>
           ) : (
-            items.map((it, idx) => {
+            items.map((it) => {
               const IconComp = BUILT_IN_ICONS[it.builtInKey ?? "Book"];
               const isEditing = editingId === it.id;
               return (
                 <div
                   key={it.id}
-                  className="flex items-center gap-3 border rounded p-2 bg-white dark:bg-gray-800 hover:shadow-sm"
+                  className="flex items-center gap-3 rounded p-2 bg-gray-50 dark:bg-gray-900 hover:shadow-sm"
                 >
-                  <div className="bi-drag cursor-move text-gray-300 select-none pl-1 pr-1">≡</div>
+                  <div className="bi-drag cursor-move text-gray-300 select-none pl-1 pr-1 text-sm">≡</div>
 
-                  <div className="h-9 w-9 rounded-md bg-gray-100 flex items-center justify-center text-gray-700">
+                  <div className="h-8 w-8 rounded-md bg-white dark:bg-gray-800 flex items-center justify-center text-gray-700 border">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
@@ -245,7 +243,7 @@ const BookIncludes: React.FC = () => {
                           className="p-1 rounded-md"
                           aria-label="Thay đổi icon"
                         >
-                          <IconComp className="h-5 w-5" />
+                          <IconComp className="h-4 w-4" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>Click để thay đổi icon</TooltipContent>
@@ -256,7 +254,7 @@ const BookIncludes: React.FC = () => {
                     {isEditing ? (
                       <input
                         autoFocus
-                        className="w-full border-b border-gray-300 focus:border-gray-500 px-1 py-1 text-sm"
+                        className="w-full border-b border-gray-200 focus:border-gray-400 px-1 py-1 text-sm bg-transparent"
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
                         onKeyDown={(e) => {
@@ -279,11 +277,11 @@ const BookIncludes: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     {isEditing ? (
                       <button
                         onClick={() => saveEdit(it.id)}
-                        className="h-9 w-9 rounded-md bg-green-600 hover:bg-green-700 flex items-center justify-center text-white"
+                        className="h-8 w-8 rounded-md bg-green-600 hover:bg-green-700 flex items-center justify-center text-white text-sm"
                         aria-label="Lưu"
                         title="Lưu"
                       >
@@ -293,7 +291,7 @@ const BookIncludes: React.FC = () => {
 
                     <button
                       onClick={() => removeItem(it.id)}
-                      className="text-sm text-red-600 hover:underline ml-2"
+                      className="text-sm text-red-600 hover:underline ml-1"
                       aria-label="Xóa"
                       title="Xóa"
                     >
@@ -322,8 +320,8 @@ const BookIncludes: React.FC = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
