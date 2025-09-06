@@ -194,12 +194,12 @@ const BookIncludes: React.FC = () => {
         {/* Add row — compact sizes */}
         <div className="flex items-center gap-2 mb-3">
           <Input
-            placeholder="Tên sách / tài nguyên"
+            placeholder="Ví dụ: 15+ Chuyên đề"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="flex-1 h-9 text-sm"
             aria-label="Tên tài nguyên"
-            onDoubleClick={() => {}}
+            onDoubleClick={() => {}} // keep default
           />
 
           <Tooltip>
