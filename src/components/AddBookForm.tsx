@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -79,15 +81,17 @@ const AddBookForm: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* NEW copied field placed beside the original, label changed to "Danh mục" */}
             <div>
-              <Label htmlFor="teacher">Giáo viên</Label>
+              <Label htmlFor="category">Danh mục</Label>
               <Select>
-                <SelectTrigger id="teacher">
-                  <SelectValue placeholder="Chọn giáo viên" />
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Chọn danh mục" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="gv1">Giáo viên A</SelectItem>
-                  <SelectItem value="gv2">Giáo viên B</SelectItem>
+                  <SelectItem value="category1">Danh mục 1</SelectItem>
+                  <SelectItem value="category2">Danh mục 2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -189,7 +193,6 @@ const AddBookForm: React.FC = () => {
           <CardTitle>Mô tả sản phẩm</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Placeholder for Rich Text Editor */}
           <div className="border rounded-md p-2 min-h-[150px] flex items-center justify-center text-muted-foreground">
             Rich Text Editor Placeholder
           </div>
@@ -202,7 +205,6 @@ const AddBookForm: React.FC = () => {
           <CardTitle>Nội dung</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Placeholder for Rich Text Editor */}
           <div className="border rounded-md p-2 min-h-[150px] flex items-center justify-center text-muted-foreground">
             Rich Text Editor Placeholder
           </div>
