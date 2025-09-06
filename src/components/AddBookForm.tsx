@@ -213,24 +213,26 @@ const AddBookForm: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Book-specific cards placed under "Nội dung" */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Điểm nổi bật của sách</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BookHighlights />
-        </CardContent>
-      </Card>
+      {/* NEW: Book-specific cards placed under "Nội dung" arranged side-by-side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Điểm nổi bật của sách</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BookHighlights />
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tài nguyên / Sách kèm theo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BookIncludes />
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Tài nguyên / Sách kèm theo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BookIncludes />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
