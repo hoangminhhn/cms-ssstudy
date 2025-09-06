@@ -218,12 +218,25 @@ const AddBookForm: React.FC = () => {
 
       {/* Insert copied cards (as separate components) below 'Nội dung' */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Highlights />
-        </div>
-        <div>
-          <CourseIncludes />
-        </div>
+        {/* Wrapped Highlights in a Card with explicit white background */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Thông tin nổi bật</CardTitle>
+          </CardHeader>
+          <CardContent className="bg-white">
+            <Highlights />
+          </CardContent>
+        </Card>
+
+        {/* CourseIncludes remains as its own card/component */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Khóa học bao gồm</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CourseIncludes />
+          </CardContent>
+        </Card>
       </div>
 
       {/* Footer Buttons */}
