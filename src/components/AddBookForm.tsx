@@ -9,6 +9,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
+import CourseIncludes from '@/components/courses/CourseIncludes';
+import Highlights from '@/components/courses/Highlights';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
@@ -83,7 +85,7 @@ const AddBookForm: React.FC = () => {
               </Select>
             </div>
 
-            {/* NEW copied field placed beside the original, label changed to "Danh mục" */}
+            {/* Duplicated field 'Danh mục' */}
             <div>
               <Label htmlFor="category">Danh mục</Label>
               <Select value={category} onValueChange={setCategory}>
@@ -213,6 +215,16 @@ const AddBookForm: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Insert copied cards (as separate components) below 'Nội dung' */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Highlights />
+        </div>
+        <div>
+          <CourseIncludes />
+        </div>
+      </div>
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
