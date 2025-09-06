@@ -5,20 +5,32 @@ import SortableJS from "sortablejs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-
-/**
- * BookIncludes
- * - Manage a small list of related resources for a book: recommended books or materials.
- * - Each item: title + source (e.g., publisher or link)
- * - Supports add, inline edit, delete, reorder (SortableJS)
- * - Distinct component specifically named for books to avoid duplication
- */
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type IncludeItem = {
   id: string;
   title: string;
   source?: string;
+  builtInKey?: BuiltInIconKey;
 };
+
+type BuiltInIconKey = "Book" | "FileText" | "Clock" | "FilePlus" | "Play" | "Image" | "Link";
+
+const BUILT_IN_ICONS: Record<BuiltInIconKey, React.ComponentType<any>> = {
+  Book,
+  FileText,
+  Clock,
+  FilePlus,
+  Play,
+  Image,
+  Link: LinkIcon,
+};
+
+const AVAILABLE_ICON_KEYS = Object.keys(BUILT_IN_ICONS) as BuiltInIconKey[];
 
 const BookIncludes: React.FC = () => {
   const [items, setItems] = React.useState<IncludeItem[]>([]);
@@ -31,6 +43,11 @@ const BookIncludes: React.FC = () => {
   const [editTitle, setEditTitle] = React.useState<string>("");
   const [editSource, setEditSource] = React.useState<string>("");
 
+  // Icon picker state
+  const [dialogOpenId, setDialogOpenId] = React.useState<string | null>(null); // item id or "new"
+  const [selectedIconForNew, setSelectedIconForNew] = React.useState<BuiltInIconKey>("Book");
+
+  // Initialize Sortable safely
   React.useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -84,10 +101,16 @@ const BookIncludes: React.FC = () => {
       toast.error("Vui lòng nhập tiêu đề tài nguyên.");
       return;
     }
-    const newIt: IncludeItem = { id: `bi-${Date.now()}`, title: t, source: source.trim() || undefined };
+    const newIt: IncludeItem = {
+      id: `bi-${Date.now()}`,
+      title: t,
+      source: source.trim() || undefined,
+      builtInKey: selectedIconForNew,
+    };
     setItems((p) => [...p, newIt]);
     setTitle("");
     setSource("");
+    setSelectedIconForNew("Book");
     toast.success("Đã thêm tài nguyên liên quan.");
   };
 
@@ -120,75 +143,175 @@ const BookIncludes: React.FC = () => {
     toast.success("Đã lưu thay đổi.");
   };
 
+  const handleOpenIconPicker = (id: string | "new") => {
+    setDialogOpenId(id);
+  };
+
+  const handleUpdateIcon = (targetId: string, key: BuiltInIconKey) => {
+    if (targetId === "new") {
+      setSelectedIconForNew(key);
+    } else {
+      setItems((prev) => prev.map((it) => (it.id === targetId ? { ...it, builtInKey: key } : it)));
+    }
+    setDialogOpenId(null);
+    toast.success("Đã cập nhật icon.");
+  };
+
+  const renderIconPickerContent = (targetId: string | null) => {
+    const isForNew = targetId === "new";
+    const currentKey = isForNew ? selectedIconForNew : items.find((it) => it.id === targetId)?.builtInKey ?? "Book";
+
+    return (
+      <div className="p-2">
+        <div className="grid grid-cols-4 gap-2">
+          {AVAILABLE_ICON_KEYS.map((k) => {
+            const isSelected = k === currentKey;
+            const IconComp = BUILT_IN_ICONS[k];
+            return (
+              <button
+                key={k}
+                onClick={() => handleUpdateIcon(targetId ?? "new", k)}
+                className={cn(
+                  "p-3 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700",
+                  isSelected ? "ring-2 ring-orange-300" : ""
+                )}
+                aria-label={`Chọn icon ${k}`}
+                title={k}
+              >
+                <IconComp className="h-6 w-6 text-gray-700" />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <Input
-          placeholder="Tên sách / tài nguyên đề xuất"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="sm:col-span-2"
-        />
-        <Input placeholder="Nguồn / Nhà xuất bản / Link" value={source} onChange={(e) => setSource(e.target.value)} />
-      </div>
-      <div className="flex justify-end">
-        <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>
-          Thêm tài nguyên
-        </Button>
-      </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Sách bao gồm</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Add row with icon picker button */}
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_56px_96px] gap-2 items-center mb-3">
+          <Input
+            placeholder="Tên sách / tài nguyên đề xuất"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full"
+            aria-label="Tên tài nguyên"
+          />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => handleOpenIconPicker("new")}
+                className="h-9 w-9 rounded-md border flex items-center justify-center bg-white hover:bg-gray-50"
+                aria-label="Chọn icon"
+                title="Chọn icon"
+              >
+                {/* show selectedIconForNew */}
+                {React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5 text-gray-600" })}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Click để chọn icon</TooltipContent>
+          </Tooltip>
 
-      <div ref={listRef} className="space-y-2">
-        {items.length === 0 ? (
-          <div className="text-sm text-muted-foreground p-3 border rounded">Chưa có tài nguyên kèm theo.</div>
-        ) : (
-          items.map((it, idx) => (
-            <div key={it.id} className="flex items-start gap-3 border rounded p-3 bg-white dark:bg-gray-800">
-              <div className="bi-drag cursor-move text-gray-400 select-none pt-1">≡</div>
+          <div className="flex gap-2">
+            <Input placeholder="Nguồn / Nhà xuất bản / Link" value={source} onChange={(e) => setSource(e.target.value)} />
+            <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
+          </div>
+        </div>
 
-              <div className="flex-1 min-w-0">
-                {editingId === it.id ? (
-                  <div className="grid grid-cols-1 gap-2">
-                    <input
-                      className="w-full border-b px-2 py-1"
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      placeholder="Tiêu đề"
-                    />
-                    <input
-                      className="w-full border-b px-2 py-1"
-                      value={editSource}
-                      onChange={(e) => setEditSource(e.target.value)}
-                      placeholder="Nguồn / Link"
-                    />
+        {/* List */}
+        <div ref={listRef} className="space-y-2">
+          {items.length === 0 ? (
+            <div className="text-sm text-muted-foreground p-3 border rounded">Chưa có tài nguyên kèm theo.</div>
+          ) : (
+            items.map((it, idx) => {
+              const IconComp = BUILT_IN_ICONS[it.builtInKey ?? "Book"];
+              const isEditing = editingId === it.id;
+              return (
+                <div key={it.id} className="flex items-start gap-3 border rounded p-3 bg-white dark:bg-gray-800">
+                  <div className="bi-drag cursor-move text-gray-400 select-none pt-1">≡</div>
+
+                  <div className="flex items-center gap-3">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => handleOpenIconPicker(it.id)}
+                          className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+                          aria-label="Thay đổi icon"
+                          title="Thay đổi icon"
+                        >
+                          <IconComp className="h-4 w-4 text-gray-700" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Click để thay đổi icon</TooltipContent>
+                    </Tooltip>
                   </div>
-                ) : (
-                  <>
-                    <div className="font-medium text-sm truncate">{it.title}</div>
-                    <div className="text-xs text-muted-foreground">{it.source ?? "Không có nguồn"}</div>
-                  </>
-                )}
-              </div>
 
-              <div className="flex flex-col gap-2">
-                {editingId === it.id ? (
-                  <>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => saveEdit(it.id)}>Lưu</Button>
-                    <Button variant="outline" size="sm" onClick={() => { setEditingId(null); setEditTitle(""); setEditSource(""); }}>Hủy</Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" size="icon" onClick={() => startEdit(it)}>Sửa</Button>
-                    <Button variant="ghost" size="icon" className="text-red-600" onClick={() => removeItem(it.id)}>Xóa</Button>
-                  </>
-                )}
-              </div>
+                  <div className="flex-1 min-w-0">
+                    {isEditing ? (
+                      <div className="grid grid-cols-1 gap-2">
+                        <input
+                          className="w-full border-b px-2 py-1"
+                          value={editTitle}
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          placeholder="Tiêu đề"
+                        />
+                        <input
+                          className="w-full border-b px-2 py-1"
+                          value={editSource}
+                          onChange={(e) => setEditSource(e.target.value)}
+                          placeholder="Nguồn / Link"
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <div className="font-medium text-sm truncate">{it.title}</div>
+                        <div className="text-xs text-muted-foreground">{it.source ?? "Không có nguồn"}</div>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {isEditing ? (
+                      <>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => saveEdit(it.id)}>Lưu</Button>
+                        <Button variant="outline" size="sm" onClick={() => { setEditingId(null); setEditTitle(""); setEditSource(""); }}>Hủy</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button variant="ghost" size="icon" onClick={() => startEdit(it)}>Sửa</Button>
+                        <Button variant="ghost" size="icon" className="text-red-600" onClick={() => removeItem(it.id)}>Xóa</Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Icon picker dialog */}
+        <Dialog open={dialogOpenId !== null} onOpenChange={(open) => { if (!open) setDialogOpenId(null); }}>
+          <DialogContent className="max-w-md w-full">
+            <DialogHeader>
+              <DialogTitle>Chọn icon</DialogTitle>
+            </DialogHeader>
+
+            <div className="mt-2">
+              {renderIconPickerContent(dialogOpenId)}
             </div>
-          ))
-        )}
-      </div>
 
-      <div className="text-xs text-muted-foreground">Danh sách sách/tài liệu kèm theo có thể được sắp xếp bằng cách kéo.</div>
-    </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDialogOpenId(null)}>Đóng</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
   );
 };
 
