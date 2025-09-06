@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon } from "lucide-react";
+import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type IncludeItem = {
@@ -193,15 +193,25 @@ const BookIncludes: React.FC = () => {
         <CardTitle>Sách bao gồm</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Add row with icon picker button - updated to be inline and tightly grouped */}
+        {/* Add row with icon picker button - inline and compact */}
         <div className="flex items-center gap-2 mb-3">
-          <Input
-            placeholder="Tên sách / tài nguyên đề xuất"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="flex-1"
-            aria-label="Tên tài nguyên"
-          />
+          <div className="flex items-center gap-2 flex-1">
+            <div className="bi-drag cursor-move text-gray-300 select-none pl-1 pr-1">≡</div>
+
+            <div className="h-9 w-9 rounded-md bg-gray-100 flex items-center justify-center text-gray-700">
+              {React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5" })}
+            </div>
+
+            <Input
+              placeholder="Tên sách / tài nguyên"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="flex-1"
+              aria-label="Tên tài nguyên"
+              onDoubleClick={() => {}} // keep default
+            />
+          </div>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -210,7 +220,8 @@ const BookIncludes: React.FC = () => {
                 aria-label="Chọn icon"
                 title="Chọn icon"
               >
-                {React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5 text-gray-600" })}
+                <span className="sr-only">Chọn icon</span>
+                <div className="h-5 w-5 text-gray-600">{React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5" })}</div>
               </button>
             </TooltipTrigger>
             <TooltipContent>Click để chọn icon</TooltipContent>
@@ -228,19 +239,21 @@ const BookIncludes: React.FC = () => {
               const IconComp = BUILT_IN_ICONS[it.builtInKey ?? "Book"];
               const isEditing = editingId === it.id;
               return (
-                <div key={it.id} className="flex items-start gap-3 border rounded p-3 bg-white dark:bg-gray-800">
-                  <div className="bi-drag cursor-move text-gray-400 select-none pt-1">≡</div>
+                <div
+                  key={it.id}
+                  className="flex items-center gap-3 border rounded p-2 bg-white dark:bg-gray-800 hover:shadow-sm"
+                >
+                  <div className="bi-drag cursor-move text-gray-300 select-none pl-1 pr-1">≡</div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-md bg-gray-100 flex items-center justify-center text-gray-700">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
                           onClick={() => handleOpenIconPicker(it.id)}
-                          className="h-8 w-8 rounded-md flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+                          className="p-1 rounded-md"
                           aria-label="Thay đổi icon"
-                          title="Thay đổi icon"
                         >
-                          <IconComp className="h-4 w-4 text-gray-700" />
+                          <IconComp className="h-5 w-5" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>Click để thay đổi icon</TooltipContent>
@@ -249,40 +262,51 @@ const BookIncludes: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     {isEditing ? (
-                      <div className="grid grid-cols-1 gap-2">
-                        <input
-                          className="w-full border-b px-2 py-1"
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          placeholder="Tiêu đề"
-                        />
-                        <input
-                          className="w-full border-b px-2 py-1"
-                          value={editSource}
-                          onChange={(e) => setEditSource(e.target.value)}
-                          placeholder="Nguồn / Link"
-                        />
-                      </div>
+                      <input
+                        autoFocus
+                        className="w-full border-b border-gray-300 focus:border-gray-500 px-1 py-1 text-sm"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") saveEdit(it.id);
+                          if (e.key === "Escape") {
+                            setEditingId(null);
+                            setEditTitle("");
+                            setEditSource("");
+                          }
+                        }}
+                      />
                     ) : (
-                      <>
-                        <div className="font-medium text-sm truncate">{it.title}</div>
-                        <div className="text-xs text-muted-foreground">{it.source ?? "Không có nguồn"}</div>
-                      </>
+                      <div
+                        className="text-sm truncate cursor-text"
+                        onDoubleClick={() => startEdit(it)}
+                        title="Double-click để chỉnh sửa"
+                      >
+                        {it.title}
+                      </div>
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
                     {isEditing ? (
-                      <>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => saveEdit(it.id)}>Lưu</Button>
-                        <Button variant="outline" size="sm" onClick={() => { setEditingId(null); setEditTitle(""); setEditSource(""); }}>Hủy</Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button variant="ghost" size="icon" onClick={() => startEdit(it)}>Sửa</Button>
-                        <Button variant="ghost" size="icon" className="text-red-600" onClick={() => removeItem(it.id)}>Xóa</Button>
-                      </>
-                    )}
+                      <button
+                        onClick={() => saveEdit(it.id)}
+                        className="h-9 w-9 rounded-md bg-green-600 hover:bg-green-700 flex items-center justify-center text-white"
+                        aria-label="Lưu"
+                        title="Lưu"
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                    ) : null}
+
+                    <button
+                      onClick={() => removeItem(it.id)}
+                      className="text-sm text-red-600 hover:underline ml-2"
+                      aria-label="Xóa"
+                      title="Xóa"
+                    >
+                      Xóa
+                    </button>
                   </div>
                 </div>
               );
