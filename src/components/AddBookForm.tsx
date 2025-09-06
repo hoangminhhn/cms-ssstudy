@@ -12,6 +12,7 @@ import DateRangePicker from './DateRangePicker';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
+  const [category, setCategory] = React.useState<string>("");
 
   return (
     <div className="space-y-6">
@@ -85,13 +86,15 @@ const AddBookForm: React.FC = () => {
             {/* NEW copied field placed beside the original, label changed to "Danh mục" */}
             <div>
               <Label htmlFor="category">Danh mục</Label>
-              <Select>
+              <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger id="category">
                   <SelectValue placeholder="Chọn danh mục" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="category1">Danh mục 1</SelectItem>
-                  <SelectItem value="category2">Danh mục 2</SelectItem>
+                  <SelectItem value="luyen-thi-vao-10">Luyện thi vào 10</SelectItem>
+                  <SelectItem value="lop-10-11">Lớp 10 - Lớp 11</SelectItem>
+                  <SelectItem value="lop-12-luyen-thi-dh">Lớp 12 - Luyện thi ĐH</SelectItem>
+                  <SelectItem value="luyen-thi-dgnl-dgtd">Luyện thi ĐGNL-ĐGTD</SelectItem>
                 </SelectContent>
               </Select>
             </div>
