@@ -97,7 +97,7 @@ const BookIncludes: React.FC = () => {
   const addItem = () => {
     const t = title.trim();
     if (!t) {
-      toast.error("Vui lòng nhập tiêu đề tài nguyên.");
+      toast.error("Vui lòng nhập nội dung");
       return;
     }
     const newIt: IncludeItem = {
