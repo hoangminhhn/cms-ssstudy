@@ -96,9 +96,9 @@ const BookCourseIncludes: React.FC = () => {
   };
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none bg-transparent">
       <CardHeader>
-        <CardTitle className="text-base">Khóa học bao gồm</CardTitle>
+        <CardTitle className="text-xl font-semibold">Khóa học bao gồm</CardTitle>
       </CardHeader>
 
       <CardContent>
