@@ -9,6 +9,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
+import BookHighlights from '@/components/books/BookHighlights';
+import BookIncludes from '@/components/books/BookIncludes';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
@@ -82,7 +84,7 @@ const AddBookForm: React.FC = () => {
               </Select>
             </div>
 
-            {/* NEW copied field placed beside the original, label changed to "Danh mục" */}
+            {/* Copied field placed beside the original, label changed to "Danh mục" */}
             <div>
               <Label htmlFor="category">Danh mục</Label>
               <Select>
@@ -208,6 +210,25 @@ const AddBookForm: React.FC = () => {
           <div className="border rounded-md p-2 min-h-[150px] flex items-center justify-center text-muted-foreground">
             Rich Text Editor Placeholder
           </div>
+        </CardContent>
+      </Card>
+
+      {/* NEW: Book-specific cards placed under "Nội dung" */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Điểm nổi bật của sách</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <BookHighlights />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Tài nguyên / Sách kèm theo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <BookIncludes />
         </CardContent>
       </Card>
 
