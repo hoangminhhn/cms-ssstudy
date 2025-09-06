@@ -9,12 +9,9 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
-import BookCourseIncludes from '@/components/books/BookCourseIncludes';
-import Highlights from '@/components/courses/Highlights';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
-  const [category, setCategory] = React.useState<string>("");
 
   return (
     <div className="space-y-6">
@@ -85,18 +82,16 @@ const AddBookForm: React.FC = () => {
               </Select>
             </div>
 
-            {/* Duplicated field 'Danh mục' */}
+            {/* NEW copied field placed beside the original, label changed to "Danh mục" */}
             <div>
               <Label htmlFor="category">Danh mục</Label>
-              <Select value={category} onValueChange={setCategory}>
+              <Select>
                 <SelectTrigger id="category">
                   <SelectValue placeholder="Chọn danh mục" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="luyen-thi-vao-10">Luyện thi vào 10</SelectItem>
-                  <SelectItem value="lop-10-11">Lớp 10 - Lớp 11</SelectItem>
-                  <SelectItem value="lop-12-luyen-thi-dh">Lớp 12 - Luyện thi ĐH</SelectItem>
-                  <SelectItem value="luyen-thi-dgnl-dgtd">Luyện thi ĐGNL-ĐGTD</SelectItem>
+                  <SelectItem value="category1">Danh mục 1</SelectItem>
+                  <SelectItem value="category2">Danh mục 2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -215,27 +210,6 @@ const AddBookForm: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Insert copied cards (as separate components) below 'Nội dung' */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Wrapped Highlights in a Card with explicit white background */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Thông tin nổi bật</CardTitle>
-          </CardHeader>
-          <CardContent className="bg-white">
-            <Highlights />
-          </CardContent>
-        </Card>
-
-        {/* Use the isolated BookCourseIncludes component */}
-        <Card>
-          <CardHeader />
-          <CardContent>
-            <BookCourseIncludes />
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Footer Buttons */}
       <div className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-800">
