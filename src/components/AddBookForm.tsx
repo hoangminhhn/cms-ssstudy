@@ -226,7 +226,7 @@ const AddBookForm: React.FC = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Tài nguyên / Sách kèm theo</CardTitle>
+            <CardTitle>Sách bao gồm</CardTitle>
           </CardHeader>
           <CardContent>
             <BookIncludes />
