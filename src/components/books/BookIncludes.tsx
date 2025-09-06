@@ -132,7 +132,7 @@ const BookIncludes: React.FC = () => {
   const saveEdit = (id: string) => {
     const t = editTitle.trim();
     if (!t) {
-      toast.error("Tiêu đề không được rỗng.");
+      toast.error("Nội dung không được để trống");
       return;
     }
     setItems((p) => p.map((it) => (it.id === id ? { ...it, title: t, source: editSource.trim() || undefined } : it)));
