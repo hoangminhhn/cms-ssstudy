@@ -193,13 +193,13 @@ const BookIncludes: React.FC = () => {
         <CardTitle>Sách bao gồm</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Add row with icon picker button */}
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_56px_96px] gap-2 items-center mb-3">
+        {/* Add row with icon picker button - updated to be inline and tightly grouped */}
+        <div className="flex items-center gap-2 mb-3">
           <Input
             placeholder="Tên sách / tài nguyên đề xuất"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full"
+            className="flex-1"
             aria-label="Tên tài nguyên"
           />
           <Tooltip>
@@ -210,16 +210,13 @@ const BookIncludes: React.FC = () => {
                 aria-label="Chọn icon"
                 title="Chọn icon"
               >
-                {/* show selectedIconForNew */}
                 {React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5 text-gray-600" })}
               </button>
             </TooltipTrigger>
             <TooltipContent>Click để chọn icon</TooltipContent>
           </Tooltip>
 
-          <div className="flex justify-end">
-            <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
-          </div>
+          <Button className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
         </div>
 
         {/* List */}
