@@ -228,11 +228,9 @@ const AddBookForm: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* CourseIncludes remains as its own card/component */}
+        {/* CourseIncludes remains as its own card/component (title removed) */}
         <Card>
-          <CardHeader>
-            <CardTitle>Khóa học bao gồm</CardTitle>
-          </CardHeader>
+          <CardHeader />
           <CardContent>
             <CourseIncludes />
           </CardContent>
