@@ -193,11 +193,9 @@ const BookIncludes: React.FC = () => {
         <CardTitle>Sách bao gồm</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Add row with icon picker button - inline and compact (redundant icon div removed) */}
+        {/* Add row with icon picker button - inline and compact (drag handle removed from add-row) */}
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center gap-2 flex-1">
-            <div className="bi-drag cursor-move text-gray-300 select-none pl-1 pr-1">≡</div>
-
             <Input
               placeholder="Tên sách / tài nguyên"
               value={title}
