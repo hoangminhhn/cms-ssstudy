@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon, Check } from "lucide-react";
+import { Book, FileText, Clock, FilePlus, Image, Play, Link as LinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type IncludeItem = {
@@ -217,8 +217,7 @@ const BookIncludes: React.FC = () => {
             <TooltipContent>Click để chọn icon</TooltipContent>
           </Tooltip>
 
-          <div className="flex gap-2">
-            <Input placeholder="Nguồn / Nhà xuất bản / Link" value={source} onChange={(e) => setSource(e.target.value)} />
+          <div className="flex justify-end">
             <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={addItem}>Thêm</Button>
           </div>
         </div>
