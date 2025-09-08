@@ -11,6 +11,7 @@ import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
 import BookHighlights from '@/components/books/BookHighlights';
 import BookIncludes from '@/components/books/BookIncludes';
+import { Textarea } from '@/components/ui/textarea';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
@@ -155,6 +156,12 @@ const AddBookForm: React.FC = () => {
               <Label htmlFor="promotion-quantity">Số lượng khuyến mãi</Label>
               <Input id="promotion-quantity" type="number" defaultValue={0} />
             </div>
+          </div>
+
+          {/* NEW: Ghi chú khuyến mãi field */}
+          <div className="col-span-full">
+            <Label htmlFor="promotion-note">Ghi chú khuyến mãi</Label>
+            <Textarea id="promotion-note" placeholder="Nhập nội dung ghi chú" className="mt-2" />
           </div>
         </CardContent>
       </Card>
