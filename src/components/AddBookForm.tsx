@@ -17,8 +17,9 @@ const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
   const [promoNote, setPromoNote] = React.useState<string>("");
 
-  // New state for the added field
+  // New state for the added fields
   const [ownersCount, setOwnersCount] = React.useState<number | "">("");
+  const [teacher, setTeacher] = React.useState<string>("");
 
   return (
     <div className="space-y-6">
@@ -51,8 +52,8 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Adjusted to 5 columns on large screens so we can add the new numeric field next to Danh mục */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Adjusted to 6 columns on large screens so we can add the new teacher field next to Danh mục */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
             <div>
               <Label htmlFor="grade-level">Cấp học</Label>
               <Select>
@@ -105,7 +106,22 @@ const AddBookForm: React.FC = () => {
               </Select>
             </div>
 
-            {/* New field placed beside "Danh mục" */}
+            {/* New teacher select placed next to 'Danh mục' */}
+            <div>
+              <Label htmlFor="teacher">Giáo viên</Label>
+              <Select value={teacher} onValueChange={setTeacher}>
+                <SelectTrigger id="teacher">
+                  <SelectValue placeholder="Chọn giáo viên" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gv1">Giáo viên A</SelectItem>
+                  <SelectItem value="gv2">Giáo viên B</SelectItem>
+                  <SelectItem value="gv3">Giáo viên C</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* New numeric field placed beside Teacher */}
             <div>
               <Label htmlFor="owners-count">Số học viên sở hữu</Label>
               <Input
