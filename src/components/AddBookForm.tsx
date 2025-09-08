@@ -181,18 +181,28 @@ const AddBookForm: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Ensure labels are above inputs: each column uses flex-col so label sits on top */}
           <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
+            <div className="flex flex-col">
               <Label htmlFor="from-date">Từ ngày</Label>
-              <DateRangePicker date={promotionDateRange} setDate={setPromotionDateRange} />
+              <div className="mt-2">
+                <DateRangePicker date={promotionDateRange} setDate={setPromotionDateRange} />
+              </div>
             </div>
-            <div>
+
+            <div className="flex flex-col">
               <Label htmlFor="to-date">Đến ngày</Label>
-              <DateRangePicker date={promotionDateRange} setDate={setPromotionDateRange} />
+              <div className="mt-2">
+                <DateRangePicker date={promotionDateRange} setDate={setPromotionDateRange} />
+              </div>
             </div>
-            <div>
+
+            <div className="flex flex-col">
               <Label htmlFor="promotion-quantity">Số lượng khuyến mãi</Label>
-              <Input id="promotion-quantity" type="number" defaultValue={0} />
+              <div className="mt-2">
+                <Input id="promotion-quantity" type="number" defaultValue={0} />
+              </div>
             </div>
           </div>
 
