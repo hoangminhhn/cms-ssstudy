@@ -159,8 +159,8 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* NEW: Promotion note field - reduced width and centered */}
-          <div className="col-span-full flex justify-center">
+          {/* NEW: Promotion note field - reduced width, left-aligned */}
+          <div className="col-span-full">
             <div className="w-full max-w-2xl">
               <Label htmlFor="promo-note">Ghi chú khuyến mãi</Label>
               <Textarea
