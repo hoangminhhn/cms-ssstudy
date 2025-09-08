@@ -158,10 +158,10 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* NEW: Ghi chú khuyến mãi field */}
+          {/* SHORTENED: Ghi chú khuyến mãi is now a single-line Input instead of a large Textarea */}
           <div className="col-span-full">
             <Label htmlFor="promotion-note">Ghi chú khuyến mãi</Label>
-            <Textarea id="promotion-note" placeholder="Nhập nội dung ghi chú" className="mt-2" />
+            <Input id="promotion-note" placeholder="Ghi chú ngắn (ví dụ: Áp dụng cho 100 khách hàng đầu tiên)" className="mt-2" />
           </div>
         </CardContent>
       </Card>
