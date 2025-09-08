@@ -17,6 +17,9 @@ const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
   const [promoNote, setPromoNote] = React.useState<string>("");
 
+  // New state for the added field
+  const [ownersCount, setOwnersCount] = React.useState<number | "">("");
+
   return (
     <div className="space-y-6">
       {/* Thông tin chung */}
@@ -48,7 +51,8 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Adjusted to 5 columns on large screens so we can add the new numeric field next to Danh mục */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <Label htmlFor="grade-level">Cấp học</Label>
               <Select>
@@ -61,6 +65,7 @@ const AddBookForm: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
             <div>
               <Label htmlFor="subject">Môn học</Label>
               <Select>
@@ -73,6 +78,7 @@ const AddBookForm: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
             <div>
               <Label htmlFor="book-category">Danh mục sách</Label>
               <Select>
@@ -86,7 +92,6 @@ const AddBookForm: React.FC = () => {
               </Select>
             </div>
 
-            {/* Copied field placed beside the original, label changed to "Danh mục" */}
             <div>
               <Label htmlFor="category">Danh mục</Label>
               <Select>
@@ -98,6 +103,22 @@ const AddBookForm: React.FC = () => {
                   <SelectItem value="category2">Danh mục 2</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* New field placed beside "Danh mục" */}
+            <div>
+              <Label htmlFor="owners-count">Số học viên sở hữu</Label>
+              <Input
+                id="owners-count"
+                type="number"
+                min={0}
+                value={ownersCount === "" ? "" : String(ownersCount)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setOwnersCount(v === "" ? "" : Number(v));
+                }}
+                placeholder="Nhập số"
+              />
             </div>
           </div>
 
@@ -159,7 +180,7 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* NEW: Promotion note field - reduced width, left-aligned */}
+          {/* Promotion note field */}
           <div className="col-span-full">
             <div className="w-full max-w-2xl">
               <Label htmlFor="promo-note">Ghi chú khuyến mãi</Label>
@@ -229,7 +250,7 @@ const AddBookForm: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* NEW: Book-specific cards placed under "Nội dung" arranged side-by-side */}
+      {/* Book-specific cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
