@@ -159,16 +159,18 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* NEW: Promotion note field */}
-          <div className="col-span-full">
-            <Label htmlFor="promo-note">Ghi chú khuyến mãi</Label>
-            <Textarea
-              id="promo-note"
-              value={promoNote}
-              onChange={(e) => setPromoNote(e.target.value)}
-              placeholder="Nhập nội dung ghi chú"
-              className="mt-2 min-h-[80px]"
-            />
+          {/* NEW: Promotion note field - reduced width and centered */}
+          <div className="col-span-full flex justify-center">
+            <div className="w-full max-w-2xl">
+              <Label htmlFor="promo-note">Ghi chú khuyến mãi</Label>
+              <Textarea
+                id="promo-note"
+                value={promoNote}
+                onChange={(e) => setPromoNote(e.target.value)}
+                placeholder="Nhập nội dung ghi chú"
+                className="mt-2 min-h-[80px] w-full"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
