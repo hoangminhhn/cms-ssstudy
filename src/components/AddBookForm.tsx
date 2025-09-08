@@ -11,7 +11,6 @@ import { Upload } from 'lucide-react';
 import DateRangePicker from './DateRangePicker';
 import BookHighlights from '@/components/books/BookHighlights';
 import BookIncludes from '@/components/books/BookIncludes';
-import { Textarea } from '@/components/ui/textarea';
 
 const AddBookForm: React.FC = () => {
   const [promotionDateRange, setPromotionDateRange] = React.useState<{ from?: Date; to?: Date } | undefined>(undefined);
@@ -24,14 +23,14 @@ const AddBookForm: React.FC = () => {
           <CardTitle>Thông tin chung</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Image Upload */}
             <div className="col-span-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center min-h-[150px]">
               <Upload className="h-8 w-8 text-gray-400 mb-2" />
               <Button variant="outline" className="bg-orange-500 hover:bg-orange-600 text-white">Thêm hình</Button>
             </div>
             {/* Input Fields */}
-            <div className="col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="book-id">Mã sách</Label>
                 <Input id="book-id" placeholder="Nhập mã sách" />
@@ -47,7 +46,7 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="grade-level">Cấp học</Label>
               <Select>
@@ -98,18 +97,16 @@ const AddBookForm: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-            <div className="sm:col-span-2 md:col-span-1 lg:col-span-1">
-              <div className="flex items-center space-x-2">
-                <Switch id="featured-book" />
-                <Label htmlFor="featured-book">Nổi bật</Label>
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center space-x-2">
+              <Switch id="featured-book" />
+              <Label htmlFor="featured-book">Nổi bật</Label>
             </div>
-            <div className="sm:col-span-2 md:col-span-1 lg:col-span-1">
-              <div className="flex items-center space-x-2">
-                <Switch id="display-book" />
-                <Label htmlFor="display-book">Hiển thị</Label>
-              </div>
+            <div className="flex items-center space-x-2">
+              <Switch id="display-book" />
+              <Label htmlFor="display-book">Hiển thị</Label>
             </div>
           </div>
         </CardContent>
@@ -120,9 +117,7 @@ const AddBookForm: React.FC = () => {
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
         </CardHeader>
-
-        {/* Use 4 columns on md+ */}
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="product-price">Giá sản phẩm</Label>
             <Input id="product-price" placeholder="Nhập giá sản phẩm" />
@@ -147,9 +142,7 @@ const AddBookForm: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-
-          {/* Dates & quantity grouped — full width, internal grid of 3 so they align nicely */}
-          <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="from-date">Từ ngày</Label>
               <DateRangePicker date={promotionDateRange} setDate={setPromotionDateRange} />
@@ -162,12 +155,6 @@ const AddBookForm: React.FC = () => {
               <Label htmlFor="promotion-quantity">Số lượng khuyến mãi</Label>
               <Input id="promotion-quantity" type="number" defaultValue={0} />
             </div>
-          </div>
-
-          {/* Now this textarea occupies 1 column out of 4 on md+, i.e., 1/4 width */}
-          <div className="md:col-span-1">
-            <Label htmlFor="promotion-note">Ghi chú khuyến mãi</Label>
-            <Textarea id="promotion-note" placeholder="Nhập nội dung ghi chú" className="mt-2" />
           </div>
         </CardContent>
       </Card>
