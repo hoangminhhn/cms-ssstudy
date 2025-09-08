@@ -56,18 +56,17 @@ const CourseIncludes: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState<string>("");
 
-  // Initialize Sortable once and protect against runtime errors
+  // Initialize Sortable safely
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
 
     try {
-      // Destroy previous instance if any (safety)
       if (sortableInstanceRef.current && typeof sortableInstanceRef.current.destroy === "function") {
         try {
           sortableInstanceRef.current.destroy();
-        } catch (e) {
-          // swallow cleanup error - we'll try to recreate below
+        } catch {
+          // ignore
         }
         sortableInstanceRef.current = null;
       }
@@ -101,7 +100,7 @@ const CourseIncludes: React.FC = () => {
         if (sortableInstanceRef.current && typeof sortableInstanceRef.current.destroy === "function") {
           sortableInstanceRef.current.destroy();
         }
-      } catch (e) {
+      } catch {
         // swallow cleanup errors
       } finally {
         sortableInstanceRef.current = null;
@@ -293,7 +292,8 @@ const CourseIncludes: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <Label className="whitespace-nowrap">Nội dung</Label>
+              {/* Label text removed visually: keep label element for layout/accessibility but hidden visually */}
+              <Label className="sr-only">Nội dung</Label>
 
               <div className="flex-1 flex items-center gap-2 min-w-0">
                 <Input
@@ -308,15 +308,14 @@ const CourseIncludes: React.FC = () => {
                     <button
                       onClick={() => setDialogOpenId("new")}
                       className="h-9 w-9 rounded-md border flex items-center justify-center bg-white hover:bg-gray-50"
-                      aria-label="Click để thay đổi icon"
-                      title="Click để thay đổi icon"
+                      aria-label="Chọn icon"
+                      title="Chọn icon"
                     >
-                      {React.createElement(BUILT_IN_ICONS[selectedIconForNew], {
-                        className: "h-5 w-5 text-gray-600",
-                      })}
+                      <span className="sr-only">Chọn icon</span>
+                      <div className="h-5 w-5 text-gray-600">{React.createElement(BUILT_IN_ICONS[selectedIconForNew], { className: "h-5 w-5" })}</div>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>click để thay đổi icon</TooltipContent>
+                  <TooltipContent>Click để chọn icon</TooltipContent>
                 </Tooltip>
 
                 <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddCustom}>
