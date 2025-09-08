@@ -47,7 +47,7 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="grade-level">Cấp học</Label>
               <Select>
@@ -98,16 +98,18 @@ const AddBookForm: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center space-x-2">
-              <Switch id="featured-book" />
-              <Label htmlFor="featured-book">Nổi bật</Label>
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-2">
+                <Switch id="featured-book" />
+                <Label htmlFor="featured-book">Nổi bật</Label>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch id="display-book" />
-              <Label htmlFor="display-book">Hiển thị</Label>
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-2">
+                <Switch id="display-book" />
+                <Label htmlFor="display-book">Hiển thị</Label>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -118,7 +120,9 @@ const AddBookForm: React.FC = () => {
         <CardHeader>
           <CardTitle>Giá và khuyến mãi</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        {/* Changed layout: use 3 columns on lg so textarea can occupy 1/3 */}
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="product-price">Giá sản phẩm</Label>
             <Input id="product-price" placeholder="Nhập giá sản phẩm" />
@@ -131,6 +135,7 @@ const AddBookForm: React.FC = () => {
             <Label htmlFor="difference">Chênh lệch</Label>
             <Input id="difference" value="0%" readOnly className="bg-gray-100 dark:bg-gray-800" />
           </div>
+
           <div>
             <Label htmlFor="promotion-time">Chọn thời gian khuyến mãi</Label>
             <Select>
@@ -143,6 +148,8 @@ const AddBookForm: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Dates & quantity grouped — keep as full-width subgrid */}
           <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="from-date">Từ ngày</Label>
@@ -158,8 +165,8 @@ const AddBookForm: React.FC = () => {
             </div>
           </div>
 
-          {/* NEW: Ghi chú khuyến mãi field */}
-          <div className="col-span-full">
+          {/* Make this textarea occupy 1/3 on lg, full width on md/sm */}
+          <div className="md:col-span-2 lg:col-span-1">
             <Label htmlFor="promotion-note">Ghi chú khuyến mãi</Label>
             <Textarea id="promotion-note" placeholder="Nhập nội dung ghi chú" className="mt-2" />
           </div>
