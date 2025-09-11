@@ -14,6 +14,7 @@ interface ExamCategory {
   name: string;
 }
 
+// Mock data for a single category (in a real app, this would come from an API)
 const mockCategoriesData: ExamCategory[] = [
   { id: '1', name: 'Kỳ thi HSA' },
   { id: '2', name: 'Kỳ thi TSA' },
@@ -28,7 +29,7 @@ const displayModeOptions = [
 
 const questionDisplayOptions = [
   { value: 'one-per-screen', label: '1 câu trong màn' },
-  { value: 'list', label: 'Danh sách' },
+  { value: 'list', label: 'Tất cả câu hỏi' }, // updated label
 ];
 
 const timeSettingOptions = [
@@ -77,7 +78,9 @@ const EditExamFormCategory: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!category) return;
-    setCategory({ ...category, [e.target.id]: e.target.value } as ExamCategory);
+    const name = e.currentTarget.name || e.currentTarget.id;
+    if (!name) return;
+    setCategory((prev) => ({ ...(prev as ExamCategory), [name]: e.currentTarget.value }));
   };
 
   const handleSave = () => {
@@ -116,7 +119,7 @@ const EditExamFormCategory: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
             <div>
               <Label htmlFor="name">Tên kỳ thi</Label>
-              <Input id="name" value={category.name} onChange={handleChange} />
+              <Input id="name" name="name" value={category.name} onChange={handleChange} />
             </div>
 
             <div>
