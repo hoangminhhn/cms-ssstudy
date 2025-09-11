@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import ExamPartManager from "@/components/exams/ExamPartManager";
+import ExamPartManager from "@/components/ExamPartManager";
 
 /**
  * EditExamFormCategory
@@ -262,7 +262,7 @@ const EditExamFormCategory: React.FC = () => {
             </CardHeader>
             <CardContent>
               {/* ExamPartManager is kept as-is to preserve functionality */}
-              <ExamPartManager categoryId={category?.id ?? ""} />
+              <ExamPartManager />
             </CardContent>
           </Card>
         </div>
