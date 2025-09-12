@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import WordExamSubPart, { SubPart, QuestionBrief } from './WordExamSubPart';
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -46,71 +47,15 @@ const partsOptionsHSA = [
   { value: 'english', label: 'Tiếng Anh' },
 ];
 
-const partsOptionsTSA = [
-  { value: 'math_thinking', label: 'Tư Duy Toán Học' },
-  { value: 'reading_thinking', label: 'Tư Duy Đọc Hiểu' },
-  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
-];
+const testTypes = ['Không', 'Thi giữa kỳ 1', 'Thi cuối kỳ 1', 'Thi giữa kỳ 2', 'Thi cuối kỳ 2'];
 
-const partsOptionsTotNghiep = [
-  { value: 'multiple_choice', label: 'Trắc Nghiệm' },
-  { value: 'true_false', label: 'Đúng Sai' },
-  { value: 'short_answer', label: 'Trả Lời Ngắn' },
-];
+const classes = ['Lớp 1', 'Lớp 2', 'Lớp 3', 'Lớp 4', 'Lớp 5'];
 
-const partsOptionsVACT = [
-  { value: 'language_usage', label: 'Sử Dụng Ngôn Ngữ' },
-  { value: 'mathematics', label: 'Toán Học' },
-  { value: 'science_thinking', label: 'Tư Duy Khoa Học' },
-];
+const subjects = ['Toán', 'Văn', 'Tiếng Anh', 'Vật lí', 'Sinh học'];
 
-const testTypes = [
-  'Không',
-  'Thi giữa kỳ 1',
-  'Thi cuối kỳ 1',
-  'Thi giữa kỳ 2',
-  'Thi cuối kỳ 2',
-];
+const allowRetryOptions = ['Không cho phép', 'Có'];
 
-const groups = [
-  'Mặc định',
-  'Thi thử',
-];
-
-const classes = [
-  'Lớp 1',
-  'Lớp 2',
-  'Lớp 3',
-  'Lớp 4',
-  'Lớp 5',
-];
-
-const subjects = [
-  'Toán',
-  'Văn',
-  'Tiếng Anh',
-  'Vật lí',
-  'Sinh học',
-];
-
-const allowRetryOptions = [
-  'Không cho phép',
-  'Có',
-];
-
-const cities = [
-  'Chọn thành phố',
-  'Hà Nội',
-  'Hồ Chí Minh',
-  'Đà Nẵng',
-  'Hải Phòng',
-  'Cần Thơ',
-  'Nha Trang',
-  'Huế',
-  'Vũng Tàu',
-  'Quảng Ninh',
-  'Bình Dương',
-];
+const cities = ['Chọn thành phố', 'Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ', 'Nha Trang', 'Huế', 'Vũng Tàu', 'Quảng Ninh', 'Bình Dương'];
 
 interface Question {
   id: string;
@@ -126,6 +71,7 @@ interface ExamPart {
   name: string;
   questions: Question[];
   uploadedFileName?: string;
+  subParts?: SubPart[]; // new: subParts list
 }
 
 const WordExamUpload: React.FC = () => {
@@ -134,16 +80,19 @@ const WordExamUpload: React.FC = () => {
       id: 'part1',
       name: 'Phần 1',
       questions: [],
+      subParts: [],
     },
     {
       id: 'part2',
       name: 'Phần 2',
       questions: [],
+      subParts: [],
     },
     {
       id: 'part3',
       name: 'Phần 3',
       questions: [],
+      subParts: [],
     },
   ]);
 
@@ -152,7 +101,7 @@ const WordExamUpload: React.FC = () => {
   const [examName, setExamName] = React.useState('');
   const [examPeriod, setExamPeriod] = React.useState('');
   const [part, setPart] = React.useState('');
-  const [pdfLink, setPdfLink] = React.useState(''); // New state for PDF link
+  const [pdfLink, setPdfLink] = React.useState('');
   const [testType, setTestType] = React.useState('Không');
   const [group, setGroup] = React.useState('Mặc định');
   const [classLevel, setClassLevel] = React.useState('Lớp 1');
@@ -166,28 +115,24 @@ const WordExamUpload: React.FC = () => {
   if (examPeriod === 'Kỳ thi HSA') {
     partsOptionsSpecific = partsOptionsHSA;
   } else if (examPeriod === 'Kỳ thi TSA') {
-    partsOptionsSpecific = partsOptionsTSA;
-  } else if (examPeriod === 'Kỳ thi Tốt Nghiệp') {
-    partsOptionsSpecific = partsOptionsTotNghiep;
-  } else if (examPeriod === 'Kỳ thi V-ACT') {
-    partsOptionsSpecific = partsOptionsVACT;
+    partsOptionsSpecific = partsOptionsHSA;
   }
 
   const partsOptions = [{ value: 'full', label: 'Đủ 3 Phần' }, ...partsOptionsSpecific];
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
-      prevParts.map((part) => {
-        if (part.id !== partId) return part;
+      prevParts.map((p) => {
+        if (p.id !== partId) return p;
         let updatedQuestions;
         if (questionId) {
           // Update existing question
-          updatedQuestions = part.questions.map((q) => (q.id === questionId ? newQuestion : q));
+          updatedQuestions = p.questions.map((q) => (q.id === questionId ? newQuestion : q));
         } else {
           // Add new question
-          updatedQuestions = [...part.questions, newQuestion];
+          updatedQuestions = [...p.questions, newQuestion];
         }
-        return { ...part, questions: updatedQuestions };
+        return { ...p, questions: updatedQuestions };
       }),
     );
   };
@@ -217,7 +162,6 @@ const WordExamUpload: React.FC = () => {
   };
 
   const handleUploadClick = () => {
-    // Example: add sample questions to all parts
     const now = new Date().toLocaleDateString();
     const newQuestionsPart1: Question[] = [
       {
@@ -270,6 +214,64 @@ const WordExamUpload: React.FC = () => {
     link.click();
     document.body.removeChild(link);
     toast.success(`Đang tải ${fileName}...`);
+  };
+
+  // SubPart handlers (new)
+  const addSubPart = (pId: string, name: string) => {
+    setParts((prev) =>
+      prev.map((p) =>
+        p.id === pId
+          ? {
+              ...p,
+              subParts: [...(p.subParts ?? []), { id: `sp-${Date.now()}`, name, questionIds: [] }],
+            }
+          : p,
+      ),
+    );
+    toast.success('Đã thêm phần thi con.');
+  };
+
+  const editSubPart = (pId: string, spId: string, name: string) => {
+    setParts((prev) => prev.map((p) => (p.id === pId ? { ...p, subParts: (p.subParts ?? []).map((s) => (s.id === spId ? { ...s, name } : s)) } : p)));
+    toast.success('Đã cập nhật tên phần con.');
+  };
+
+  const deleteSubPart = (pId: string, spId: string) => {
+    setParts((prev) =>
+      prev.map((p) =>
+        p.id === pId
+          ? {
+              ...p,
+              subParts: (p.subParts ?? []).filter((s) => s.id !== spId),
+            }
+          : p,
+      ),
+    );
+    toast.success('Đã xóa phần con.');
+  };
+
+  const reorderSubParts = (pId: string, newOrderIds: string[]) => {
+    setParts((prev) =>
+      prev.map((p) => {
+        if (p.id !== pId) return p;
+        const spMap = new Map((p.subParts ?? []).map((s) => [s.id, s]));
+        const newList: SubPart[] = newOrderIds.map((id) => spMap.get(id)).filter(Boolean) as SubPart[];
+        return { ...p, subParts: newList };
+      }),
+    );
+  };
+
+  const assignQuestionsToSubPart = (pId: string, spId: string, qIds: string[]) => {
+    setParts((prev) =>
+      prev.map((p) => {
+        if (p.id !== pId) return p;
+        return {
+          ...p,
+          subParts: (p.subParts ?? []).map((s) => (s.id === spId ? { ...s, questionIds: qIds } : s)),
+        };
+      }),
+    );
+    toast.success('Đã gán câu hỏi cho phần con.');
   };
 
   return (
@@ -395,9 +397,7 @@ const WordExamUpload: React.FC = () => {
                   aria-expanded={openCitySelect}
                   className="w-full justify-between"
                 >
-                  {city
-                    ? cities.find((c) => c === city)
-                    : "Chọn thành phố..."}
+                  {city ? city : "Chọn thành phố..."}
                   <Check className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -415,12 +415,7 @@ const WordExamUpload: React.FC = () => {
                           setOpenCitySelect(false);
                         }}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            city === c ? "opacity-100" : "opacity-0"
-                          )}
-                        />
+                        <Check className={cn("mr-2 h-4 w-4", city === c ? "opacity-100" : "opacity-0")} />
                         {c}
                       </CommandItem>
                     ))}
@@ -440,23 +435,40 @@ const WordExamUpload: React.FC = () => {
         <CardContent className="grid gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
-            <Button
-              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
-              onClick={handleUploadClick}
-            >
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto" onClick={handleUploadClick}>
               <Upload className="mr-2 h-4 w-4" /> Tải lên
             </Button>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 w-full sm:w-auto"
-              onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}
-            >
+            <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto" onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}>
               <Download className="h-4 w-4" /> Tải đề thi mẫu
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
         </CardContent>
       </Card>
+
+      {/* Sub-parts UI per part */}
+      <div className="space-y-6">
+        {parts.map((p) => (
+          <div key={p.id}>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-semibold">{p.name}</h3>
+              <div className="text-sm text-muted-foreground">{(p.subParts ?? []).length} phần con</div>
+            </div>
+
+            <WordExamSubPart
+              partId={p.id}
+              partName={p.name}
+              questions={(p.questions || []).map((q) => ({ id: q.id, title: q.solution, uploadDate: q.uploadDate } as QuestionBrief))}
+              subParts={p.subParts ?? []}
+              onAddSubPart={addSubPart}
+              onEditSubPart={editSubPart}
+              onDeleteSubPart={deleteSubPart}
+              onReorderSubParts={reorderSubParts}
+              onAssignQuestions={assignQuestionsToSubPart}
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Câu hỏi đề thi (Manual Input) */}
       <ManualWordExamQuestions
@@ -469,6 +481,7 @@ const WordExamUpload: React.FC = () => {
             id: `part-${Date.now()}`,
             name: `Phần mặc định ${parts.length + 1}`,
             questions: [],
+            subParts: [],
           };
           setParts((prev) => [...prev, newPart]);
           toast.success('Đã thêm phần thi mặc định.');
@@ -478,11 +491,12 @@ const WordExamUpload: React.FC = () => {
             id: `group-part-${Date.now()}`,
             name: `Phần nhóm chủ đề ${parts.length + 1}`,
             questions: [],
+            subParts: [],
           };
           setParts((prev) => [...prev, newPart]);
           toast.success('Đã thêm phần thi nhóm chủ đề.');
         }}
-        onAddOrUpdateQuestion={handleAddOrUpdateQuestion} // Truyền hàm cập nhật câu hỏi
+        onAddOrUpdateQuestion={handleAddOrUpdateQuestion}
       />
 
       {/* Footer Buttons */}
