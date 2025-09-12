@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Search, ChevronDown, Pencil, Trash2, MoreHorizontal, RefreshCcw, EyeOff, Eye } from 'lucide-react';
+import { Search, ChevronDown, Pencil, Trash2, RefreshCcw, EyeOff, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ExamCategory {
@@ -187,7 +187,7 @@ const ExamCategoryManagement: React.FC = () => {
                   aria-pressed={viewFilter === 'deleted'}
                 >
                   <span>Xóa</span>
-                  <span className={`text-sm ${viewFilter === 'deleted' ? 'text-white' : 'text-muted-foreground'}`}>({countDeleted})</span>
+                  <span className={`text-sm ${viewFilter === 'deleted' ? 'text.white' : 'text-muted-foreground'}`}>({countDeleted})</span>
                 </button>
               </div>
             </div>
@@ -251,12 +251,12 @@ const ExamCategoryManagement: React.FC = () => {
                           </Button>
                         ) : null}
 
-                        {/* Delete / Restore */}
+                        {/* Delete / Restore - trigger uses Trash2 icon now */}
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
+                            <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Hành động">
                               <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
