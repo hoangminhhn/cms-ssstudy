@@ -7,20 +7,23 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Search, ChevronDown, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import { Search, ChevronDown, Pencil, Trash2, MoreHorizontal, RefreshCcw, EyeOff, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import StatusTabs from '@/components/ui/status-tabs';
 
 interface TestCategory {
   id: string;
   name: string;
   lastUpdated: string;
+  hidden?: boolean;
+  deleted?: boolean;
 }
 
 const mockTestCategories: TestCategory[] = [
-  { id: '1', name: 'Thi giữa kỳ 1', lastUpdated: '28/07/2025 10:00' },
-  { id: '2', name: 'Thi cuối kỳ 1', lastUpdated: '27/07/2025 14:30' },
-  { id: '3', name: 'Thi giữa kỳ 2', lastUpdated: '26/07/2025 09:15' },
-  { id: '4', name: 'Thi cuối kỳ 2', lastUpdated: '25/07/2025 16:45' },
+  { id: '1', name: 'Thi giữa kỳ 1', lastUpdated: '28/07/2025 10:00', hidden: false, deleted: false },
+  { id: '2', name: 'Thi cuối kỳ 1', lastUpdated: '27/07/2025 14:30', hidden: false, deleted: false },
+  { id: '3', name: 'Thi giữa kỳ 2', lastUpdated: '26/07/2025 09:15', hidden: true, deleted: false },
+  { id: '4', name: 'Thi cuối kỳ 2', lastUpdated: '25/07/2025 16:45', hidden: false, deleted: true },
 ];
 
 const TestCategoryManagement: React.FC = () => {
@@ -28,20 +31,34 @@ const TestCategoryManagement: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = React.useState(10);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+  const [categories, setCategories] = React.useState<TestCategory[]>(mockTestCategories);
+  const [viewFilter, setViewFilter] = React.useState<'all' | 'hidden' | 'deleted'>('all');
   const navigate = useNavigate();
 
-  const filteredCategories = mockTestCategories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCategories = React.useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    return categories.filter(category => {
+      if (viewFilter === 'all' && category.deleted) return false;
+      if (viewFilter === 'hidden' && !(category.hidden && !category.deleted)) return false;
+      if (viewFilter === 'deleted' && !category.deleted) return false;
+      if (!q) return true;
+      return category.name.toLowerCase().includes(q);
+    });
+  }, [categories, searchTerm, viewFilter]);
 
-  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredCategories.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentCategories = filteredCategories.slice(startIndex, endIndex);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  React.useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(1);
+  }, [totalPages, currentPage]);
+
+  // counts for tabs
+  const countAll = categories.filter(c => !c.deleted).length;
+  const countHidden = categories.filter(c => c.hidden && !c.deleted).length;
+  const countDeleted = categories.filter(c => c.deleted).length;
 
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
@@ -68,6 +85,29 @@ const TestCategoryManagement: React.FC = () => {
     navigate(`/test-categories/edit/${categoryId}`);
   };
 
+  const handleToggleHidden = (id: string) => {
+    setCategories(prev => prev.map(c => c.id === id ? { ...c, hidden: !c.hidden } : c));
+  };
+
+  const handleDeleteOrRestore = (id: string) => {
+    const cat = categories.find(c => c.id === id);
+    if (!cat) return;
+    if (cat.deleted) {
+      // restore
+      setCategories(prev => prev.map(c => c.id === id ? { ...c, deleted: false, hidden: false } : c));
+    } else {
+      // soft-delete
+      setCategories(prev => prev.map(c => c.id === id ? { ...c, deleted: true } : c));
+      setSelectedCategories(prev => prev.filter(sid => sid !== id));
+    }
+  };
+
+  const handlePermanentDelete = (id: string) => {
+    if (!confirm('Xóa vĩnh viễn mục này?')) return;
+    setCategories(prev => prev.filter(c => c.id !== id));
+    setSelectedCategories(prev => prev.filter(sid => sid !== id));
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-6 p-4">
       {/* Left Section: Add New Category Form */}
@@ -91,32 +131,33 @@ const TestCategoryManagement: React.FC = () => {
       <div className="lg:w-2/3">
         <Card>
           <CardHeader>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
               <div className="relative flex-1 w-full sm:w-auto">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Tìm kiếm danh mục bài kiểm tra"
                   className="w-full pl-8"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                 />
               </div>
+
               <div className="flex gap-2 w-full sm:w-auto">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      Hành động hàng loạt <ChevronDown className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Xóa</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
                 <Button className="bg-orange-500 hover:bg-orange-600 text-white">Áp dụng</Button>
               </div>
             </div>
+
+            {/* Status tabs (reusable component) */}
+            <div className="mt-3">
+              <StatusTabs
+                value={viewFilter}
+                counts={{ all: countAll, hidden: countHidden, deleted: countDeleted }}
+                onChange={(v) => { setViewFilter(v); setCurrentPage(1); }}
+              />
+            </div>
           </CardHeader>
+
           <CardContent>
             <Table>
               <TableHeader>
@@ -143,28 +184,65 @@ const TestCategoryManagement: React.FC = () => {
                         onChange={(e) => handleSelectCategory(category.id, e.target.checked)}
                       />
                     </TableCell>
-                    <TableCell className="font-medium">{category.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <span className="truncate">{category.name}</span>
+                        {category.hidden && !category.deleted && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-yellow-100 text-yellow-800">Ẩn</span>
+                        )}
+                        {category.deleted && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-red-100 text-red-700">Đã xóa</span>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>{category.lastUpdated}</TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
+                      <div className="inline-flex items-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => handleEditCategory(category.id)} aria-label={`Chỉnh sửa ${category.name}`}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+
+                        {!category.deleted ? (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleToggleHidden(category.id)}
+                            title={category.hidden ? 'Hiện mục' : 'Ẩn mục'}
+                            aria-label={category.hidden ? `Hiện ${category.name}` : `Ẩn ${category.name}`}
+                          >
+                            {category.hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="flex items-center gap-2" onClick={() => handleEditCategory(category.id)}>
-                            <Pencil className="h-4 w-4" /> Chỉnh sửa
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                            <Trash2 className="h-4 w-4" /> Xóa
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        ) : null}
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Hành động">
+                              <span className="sr-only">Open menu</span>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {!category.deleted ? (
+                              <DropdownMenuItem className="flex items-center gap-2 text-red-600" onClick={() => handleDeleteOrRestore(category.id)}>
+                                <Trash2 className="h-4 w-4" /> Chuyển vào thùng rác
+                              </DropdownMenuItem>
+                            ) : (
+                              <>
+                                <DropdownMenuItem className="flex items-center gap-2" onClick={() => handleDeleteOrRestore(category.id)}>
+                                  <RefreshCcw className="h-4 w-4" /> Khôi phục
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="flex items-center gap-2 text-red-600" onClick={() => handlePermanentDelete(category.id)}>
+                                  <Trash2 className="h-4 w-4" /> Xóa vĩnh viễn
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
+
                 {currentCategories.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
@@ -174,12 +252,13 @@ const TestCategoryManagement: React.FC = () => {
                 )}
               </TableBody>
             </Table>
+
             <div className="flex items-center justify-between py-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 Hiển thị
                 <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
                   <SelectTrigger className="w-[70px] h-8">
-                    <SelectValue placeholder={itemsPerPage} />
+                    <SelectValue placeholder={`${itemsPerPage}`} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="10">10</SelectItem>
@@ -187,8 +266,9 @@ const TestCategoryManagement: React.FC = () => {
                     <SelectItem value="50">50</SelectItem>
                   </SelectContent>
                 </Select>
-                từ {startIndex + 1} đến {Math.min(endIndex, filteredCategories.length)} trong tổng số {filteredCategories.length}
+                từ {filteredCategories.length === 0 ? 0 : startIndex + 1} đến {Math.min(endIndex, filteredCategories.length)} trong tổng số {filteredCategories.length}
               </div>
+
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -196,7 +276,7 @@ const TestCategoryManagement: React.FC = () => {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        if (currentPage > 1) handlePageChange(currentPage - 1);
+                        if (currentPage > 1) setCurrentPage(currentPage - 1);
                       }}
                       className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                     />
@@ -208,7 +288,7 @@ const TestCategoryManagement: React.FC = () => {
                         isActive={currentPage === i + 1}
                         onClick={(e) => {
                           e.preventDefault();
-                          handlePageChange(i + 1);
+                          setCurrentPage(i + 1);
                         }}
                       >
                         {i + 1}
@@ -220,7 +300,7 @@ const TestCategoryManagement: React.FC = () => {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                       }}
                       className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                     />
