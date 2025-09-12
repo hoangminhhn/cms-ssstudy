@@ -103,16 +103,7 @@ const ExamCategoryManagement: React.FC = () => {
                 />
               </div>
               <div className="flex gap-2 w-full sm:w-auto">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      Hành động hàng loạt <ChevronDown className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Xóa</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {/* Removed the 'Hành động hàng loạt' dropdown per request */}
                 <Button className="bg-orange-500 hover:bg-orange-600 text-white">Áp dụng</Button>
               </div>
             </div>
