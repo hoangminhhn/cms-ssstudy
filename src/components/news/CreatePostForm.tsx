@@ -57,6 +57,14 @@ const CreatePostForm: React.FC = () => {
   const [featured, setFeatured] = React.useState(false);
   const fileRef = React.useRef<HTMLInputElement | null>(null);
 
+  // New: subject/class filter toggle + selections
+  const [enableSubjectClassFilter, setEnableSubjectClassFilter] = React.useState<boolean>(false);
+  const [selectedSubject, setSelectedSubject] = React.useState<string>("");
+  const [selectedClass, setSelectedClass] = React.useState<string>("");
+
+  const SUBJECT_OPTIONS = ["Toán", "Văn", "Tiếng Anh", "Vật Lý", "Hóa"];
+  const CLASS_OPTIONS = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12"];
+
   React.useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -87,6 +95,17 @@ const CreatePostForm: React.FC = () => {
       toast.error("Vui lòng chọn danh mục.");
       return false;
     }
+    // If filter enabled, ensure both subject and class selected
+    if (enableSubjectClassFilter) {
+      if (!selectedSubject) {
+        toast.error("Vui lòng chọn môn khi bật bộ lọc môn/lớp.");
+        return false;
+      }
+      if (!selectedClass) {
+        toast.error("Vui lòng chọn lớp khi bật bộ lọc môn/lớp.");
+        return false;
+      }
+    }
     return true;
   };
 
@@ -94,7 +113,7 @@ const CreatePostForm: React.FC = () => {
     if (!validate()) return;
 
     // Build payload (demo). In a real app you'd call an API here.
-    const payload = {
+    const payload: any = {
       id: `post-${Date.now()}`,
       title: title.trim(),
       category,
@@ -106,6 +125,12 @@ const CreatePostForm: React.FC = () => {
       imageName: imageFile?.name ?? null,
       updatedAt: new Date().toISOString(),
     };
+
+    // include subject/class if filter enabled
+    if (enableSubjectClassFilter) {
+      payload.subject = selectedSubject;
+      payload.class = selectedClass;
+    }
 
     console.log("Saving post (demo):", payload);
     toast.success("Đã lưu bài viết (mô phỏng).");
@@ -147,26 +172,48 @@ const CreatePostForm: React.FC = () => {
                 </div>
               </div>
 
+              {/* New: Switch under the category selector (aligned under that column) */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div>
-                  <Label>Hình ảnh</Label>
-                  <div className="flex items-center gap-3">
-                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onImageChange} />
-                    <Button variant="outline" onClick={onPickImage}>Chọn ảnh</Button>
-                    <div className="text-sm text-muted-foreground">{imageFile?.name ?? "Chưa chọn ảnh"}</div>
-                  </div>
-                  {imagePreview && (
-                    <div className="mt-2">
-                      <img src={imagePreview} alt="preview" className="max-h-40 rounded border" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="md:col-span-2">
-                  <Label htmlFor="external">External_link</Label>
-                  <Input id="external" value={externalLink} onChange={(e) => setExternalLink(e.target.value)} placeholder="Link (nếu có)" />
+                <div /> {/* empty column to align under category */}
+                <div /> {/* empty column */}
+                <div className="flex items-center gap-2">
+                  <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
+                  <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
                 </div>
               </div>
+
+              {/* When enabled, show the two selects for subject and class */}
+              {enableSubjectClassFilter && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="subject-select">Môn</Label>
+                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                      <SelectTrigger id="subject-select">
+                        <SelectValue placeholder="Chọn môn" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SUBJECT_OPTIONS.map((s) => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="class-select">Lớp</Label>
+                    <Select value={selectedClass} onValueChange={setSelectedClass}>
+                      <SelectTrigger id="class-select">
+                        <SelectValue placeholder="Chọn lớp" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CLASS_OPTIONS.map((c) => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <Label className="mb-2">Mô tả ngắn</Label>
