@@ -59,8 +59,8 @@ const CreatePostForm: React.FC = () => {
 
   // New: subject/class filter toggle + selections
   const [enableSubjectClassFilter, setEnableSubjectClassFilter] = React.useState<boolean>(false);
-  const [selectedSubject, setSelectedSubject] = React.useState<string>("");
   const [selectedClass, setSelectedClass] = React.useState<string>("");
+  const [selectedSubject, setSelectedSubject] = React.useState<string>("");
 
   const SUBJECT_OPTIONS = ["Toán", "Văn", "Tiếng Anh", "Vật Lý", "Hóa"];
   const CLASS_OPTIONS = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12"];
@@ -95,14 +95,14 @@ const CreatePostForm: React.FC = () => {
       toast.error("Vui lòng chọn danh mục.");
       return false;
     }
-    // If filter enabled, ensure both subject and class selected
+    // If filter enabled, ensure both class and subject selected (class first requirement)
     if (enableSubjectClassFilter) {
-      if (!selectedSubject) {
-        toast.error("Vui lòng chọn môn khi bật bộ lọc môn/lớp.");
+      if (!selectedClass) {
+        toast.error("Vui lòng chọn Lớp khi bật bộ lọc môn/lớp.");
         return false;
       }
-      if (!selectedClass) {
-        toast.error("Vui lòng chọn lớp khi bật bộ lọc môn/lớp.");
+      if (!selectedSubject) {
+        toast.error("Vui lòng chọn Môn khi bật bộ lọc môn/lớp.");
         return false;
       }
     }
@@ -126,10 +126,10 @@ const CreatePostForm: React.FC = () => {
       updatedAt: new Date().toISOString(),
     };
 
-    // include subject/class if filter enabled
+    // include class/subject if filter enabled (class first)
     if (enableSubjectClassFilter) {
-      payload.subject = selectedSubject;
       payload.class = selectedClass;
+      payload.subject = selectedSubject;
     }
 
     console.log("Saving post (demo):", payload);
@@ -146,12 +146,12 @@ const CreatePostForm: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 items-start">
-            {/* Labels column (left) */}
+            {/* Left column placeholder for large screens */}
             <div className="hidden lg:block" />
 
-            {/* Form column (right) */}
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              {/* Top row: Title (span 2 cols on md), Category, and Switch+Class/Subject inline */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                 <div className="md:col-span-2">
                   <Label htmlFor="title">Tiêu đề</Label>
                   <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nhập tiêu đề" />
@@ -170,50 +170,43 @@ const CreatePostForm: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
 
-              {/* New: Switch under the category selector (aligned under that column) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div /> {/* empty column to align under category */}
-                <div /> {/* empty column */}
-                <div className="flex items-center gap-2">
-                  <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
-                  <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
-                </div>
-              </div>
-
-              {/* When enabled, show the two selects for subject and class */}
-              {enableSubjectClassFilter && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="subject-select">Môn</Label>
-                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                      <SelectTrigger id="subject-select">
-                        <SelectValue placeholder="Chọn môn" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SUBJECT_OPTIONS.map((s) => (
-                          <SelectItem key={s} value={s}>{s}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                {/* Switch column: show switch always; when enabled show Class then Subject inline (Class first) */}
+                <div>
+                  <div className="flex items-center justify-end gap-3">
+                    <div className="flex items-center gap-2">
+                      <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
+                      <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
+                    </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="class-select">Lớp</Label>
-                    <Select value={selectedClass} onValueChange={setSelectedClass}>
-                      <SelectTrigger id="class-select">
-                        <SelectValue placeholder="Chọn lớp" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CLASS_OPTIONS.map((c) => (
-                          <SelectItem key={c} value={c}>{c}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {enableSubjectClassFilter && (
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      <Select value={selectedClass} onValueChange={setSelectedClass}>
+                        <SelectTrigger id="class-select">
+                          <SelectValue placeholder="Lớp" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CLASS_OPTIONS.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                        <SelectTrigger id="subject-select">
+                          <SelectValue placeholder="Môn" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SUBJECT_OPTIONS.map((s) => (
+                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div>
                 <Label className="mb-2">Mô tả ngắn</Label>
