@@ -95,7 +95,7 @@ const CreatePostForm: React.FC = () => {
       toast.error("Vui lòng chọn danh mục.");
       return false;
     }
-    // If filter enabled, ensure both class and subject selected (class first requirement)
+    // If filter enabled, ensure both class and subject selected
     if (enableSubjectClassFilter) {
       if (!selectedClass) {
         toast.error("Vui lòng chọn Lớp khi bật bộ lọc môn/lớp.");
@@ -112,7 +112,6 @@ const CreatePostForm: React.FC = () => {
   const handleSave = () => {
     if (!validate()) return;
 
-    // Build payload (demo). In a real app you'd call an API here.
     const payload: any = {
       id: `post-${Date.now()}`,
       title: title.trim(),
@@ -126,7 +125,6 @@ const CreatePostForm: React.FC = () => {
       updatedAt: new Date().toISOString(),
     };
 
-    // include class/subject if filter enabled (class first)
     if (enableSubjectClassFilter) {
       payload.class = selectedClass;
       payload.subject = selectedSubject;
@@ -134,7 +132,6 @@ const CreatePostForm: React.FC = () => {
 
     console.log("Saving post (demo):", payload);
     toast.success("Đã lưu bài viết (mô phỏng).");
-    // After saving go back to list
     navigate("/news?tab=posts");
   };
 
@@ -146,7 +143,6 @@ const CreatePostForm: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 items-start">
-            {/* Left column placeholder for large screens */}
             <div className="hidden lg:block" />
 
             <div className="space-y-4">
@@ -172,24 +168,23 @@ const CreatePostForm: React.FC = () => {
                 </div>
               </div>
 
-              {/* Row 2: Separate row for the switch; when enabled show Class then Subject inline on this row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                {/* left two columns left empty to align switch under category visually */}
-                <div className="md:col-span-2" />
-
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
+              {/* New: Full-width row for switch and, when enabled, the selects (Class then Subject).
+                  On small screens the selects will wrap under the switch; on larger screens they sit inline. */}
+              <div className="w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+                  <div className="flex items-center gap-3">
                     <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
                     <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
                   </div>
 
-                  {/* When enabled, show Class then Subject in the same row next to the switch */}
+                  {/* The selects are placed to the right on larger screens; they appear inline (Class then Subject).
+                      Each select gets a min width so layout remains sensible; on narrow screens they wrap below. */}
                   {enableSubjectClassFilter && (
-                    <div className="ml-4 flex items-center gap-2">
-                      <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                      <div className="w-full sm:w-[180px]">
                         <Label className="sr-only" htmlFor="class-select">Lớp</Label>
                         <Select value={selectedClass} onValueChange={setSelectedClass}>
-                          <SelectTrigger id="class-select" className="min-w-[120px]">
+                          <SelectTrigger id="class-select">
                             <SelectValue placeholder="Lớp" />
                           </SelectTrigger>
                           <SelectContent>
@@ -200,10 +195,10 @@ const CreatePostForm: React.FC = () => {
                         </Select>
                       </div>
 
-                      <div>
+                      <div className="w-full sm:w-[220px]">
                         <Label className="sr-only" htmlFor="subject-select">Môn</Label>
                         <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                          <SelectTrigger id="subject-select" className="min-w-[140px]">
+                          <SelectTrigger id="subject-select">
                             <SelectValue placeholder="Môn" />
                           </SelectTrigger>
                           <SelectContent>
