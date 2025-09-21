@@ -150,8 +150,8 @@ const CreatePostForm: React.FC = () => {
             <div className="hidden lg:block" />
 
             <div className="space-y-4">
-              {/* Top row: Title (span 2 cols on md), Category, and Switch+Class/Subject inline */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+              {/* Row 1: Title and Category */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                 <div className="md:col-span-2">
                   <Label htmlFor="title">Tiêu đề</Label>
                   <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nhập tiêu đề" />
@@ -170,39 +170,49 @@ const CreatePostForm: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                {/* Switch column: show switch always; when enabled show Class then Subject inline (Class first) */}
-                <div>
-                  <div className="flex items-center justify-end gap-3">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
-                      <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
-                    </div>
+              {/* Row 2: Separate row for the switch; when enabled show Class then Subject inline on this row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                {/* left two columns left empty to align switch under category visually */}
+                <div className="md:col-span-2" />
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
+                    <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
                   </div>
 
+                  {/* When enabled, show Class then Subject in the same row next to the switch */}
                   {enableSubjectClassFilter && (
-                    <div className="mt-2 grid grid-cols-2 gap-2">
-                      <Select value={selectedClass} onValueChange={setSelectedClass}>
-                        <SelectTrigger id="class-select">
-                          <SelectValue placeholder="Lớp" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CLASS_OPTIONS.map((c) => (
-                            <SelectItem key={c} value={c}>{c}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    <div className="ml-4 flex items-center gap-2">
+                      <div>
+                        <Label className="sr-only" htmlFor="class-select">Lớp</Label>
+                        <Select value={selectedClass} onValueChange={setSelectedClass}>
+                          <SelectTrigger id="class-select" className="min-w-[120px]">
+                            <SelectValue placeholder="Lớp" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CLASS_OPTIONS.map((c) => (
+                              <SelectItem key={c} value={c}>{c}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                      <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                        <SelectTrigger id="subject-select">
-                          <SelectValue placeholder="Môn" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SUBJECT_OPTIONS.map((s) => (
-                            <SelectItem key={s} value={s}>{s}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div>
+                        <Label className="sr-only" htmlFor="subject-select">Môn</Label>
+                        <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                          <SelectTrigger id="subject-select" className="min-w-[140px]">
+                            <SelectValue placeholder="Môn" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SUBJECT_OPTIONS.map((s) => (
+                              <SelectItem key={s} value={s}>{s}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   )}
                 </div>
