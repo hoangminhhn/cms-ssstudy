@@ -57,8 +57,7 @@ const CreatePostForm: React.FC = () => {
   const [featured, setFeatured] = React.useState(false);
   const fileRef = React.useRef<HTMLInputElement | null>(null);
 
-  // New: subject/class filter toggle + selections
-  const [enableSubjectClassFilter, setEnableSubjectClassFilter] = React.useState<boolean>(false);
+  // Keep selects always visible; no switch required
   const [selectedClass, setSelectedClass] = React.useState<string>("");
   const [selectedSubject, setSelectedSubject] = React.useState<string>("");
 
@@ -95,17 +94,7 @@ const CreatePostForm: React.FC = () => {
       toast.error("Vui lòng chọn danh mục.");
       return false;
     }
-    // If filter enabled, ensure both class and subject selected
-    if (enableSubjectClassFilter) {
-      if (!selectedClass) {
-        toast.error("Vui lòng chọn Lớp khi bật bộ lọc môn/lớp.");
-        return false;
-      }
-      if (!selectedSubject) {
-        toast.error("Vui lòng chọn Môn khi bật bộ lọc môn/lớp.");
-        return false;
-      }
-    }
+    // selects are informational; no strict validation required per request
     return true;
   };
 
@@ -123,12 +112,10 @@ const CreatePostForm: React.FC = () => {
       featured,
       imageName: imageFile?.name ?? null,
       updatedAt: new Date().toISOString(),
+      // keep class/subject if provided (optional)
+      class: selectedClass || undefined,
+      subject: selectedSubject || undefined,
     };
-
-    if (enableSubjectClassFilter) {
-      payload.class = selectedClass;
-      payload.subject = selectedSubject;
-    }
 
     console.log("Saving post (demo):", payload);
     toast.success("Đã lưu bài viết (mô phỏng).");
@@ -168,48 +155,36 @@ const CreatePostForm: React.FC = () => {
                 </div>
               </div>
 
-              {/* New: Full-width row for switch and, when enabled, the selects (Class then Subject).
-                  On small screens the selects will wrap under the switch; on larger screens they sit inline. */}
-              <div className="w-full">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
-                  <div className="flex items-center gap-3">
-                    <Switch checked={enableSubjectClassFilter} onCheckedChange={(v) => setEnableSubjectClassFilter(!!v)} />
-                    <Label className="mb-0">Bật bộ lọc môn/lớp</Label>
+              {/* New full-width label + always visible Class & Subject selects.
+                  They occupy the full width; on small screens they stack, on larger they align inline. */}
+              <div>
+                <Label className="mb-2">Danh mục Lớp/Môn (Chỉ sử dụng cho Lịch Livestream)</Label>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex-1 sm:flex-none sm:w-[180px]">
+                    <Select value={selectedClass} onValueChange={setSelectedClass}>
+                      <SelectTrigger id="class-select">
+                        <SelectValue placeholder="Lớp" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CLASS_OPTIONS.map((c) => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {/* The selects are placed to the right on larger screens; they appear inline (Class then Subject).
-                      Each select gets a min width so layout remains sensible; on narrow screens they wrap below. */}
-                  {enableSubjectClassFilter && (
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-                      <div className="w-full sm:w-[180px]">
-                        <Label className="sr-only" htmlFor="class-select">Lớp</Label>
-                        <Select value={selectedClass} onValueChange={setSelectedClass}>
-                          <SelectTrigger id="class-select">
-                            <SelectValue placeholder="Lớp" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {CLASS_OPTIONS.map((c) => (
-                              <SelectItem key={c} value={c}>{c}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="w-full sm:w-[220px]">
-                        <Label className="sr-only" htmlFor="subject-select">Môn</Label>
-                        <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                          <SelectTrigger id="subject-select">
-                            <SelectValue placeholder="Môn" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {SUBJECT_OPTIONS.map((s) => (
-                              <SelectItem key={s} value={s}>{s}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex-1 sm:flex-none sm:w-[220px]">
+                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                      <SelectTrigger id="subject-select">
+                        <SelectValue placeholder="Môn" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SUBJECT_OPTIONS.map((s) => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
