@@ -9,23 +9,26 @@ import { toast } from "sonner";
 import ModerationStats, { StatItem } from "./moderation/ModerationStats";
 import AuditSearchForm from "./moderation/AuditSearchForm";
 import ViolationStats from "./moderation/ViolationStats";
+import SearchResultsModal, { Report } from "./moderation/SearchResultsModal";
 
 /**
  * ModerationTab: shows top stat tiles (implemented with ModerationStats + StatTile),
  * Section 2: Audit search form (left) + Violation stats (right)
  * Section 3: reports table
+ *
+ * Updated: when AuditSearchForm triggers onSearch, open a modal with results and allow CSV download.
  */
 
-type Report = {
+type ReportInternal = {
   id: string;
   target: string;
   reason: string;
   reportedBy: string;
   time: string;
-  type?: string; // for future filtering
+  type?: string;
 };
 
-const demoReports: Report[] = [
+const demoReports: ReportInternal[] = [
   { id: "rep1", target: "Phòng Toán 10A1", reason: "Nội dung không phù hợp", reportedBy: "hn_user", time: "11:02", type: "flagged" },
   { id: "rep2", target: "Bình luận #234", reason: "Spam", reportedBy: "admin", time: "10:21", type: "pending" },
   { id: "rep3", target: "User xyz", reason: "Từ khóa cấm", reportedBy: "mod1", time: "09:12", type: "banned" },
@@ -33,9 +36,13 @@ const demoReports: Report[] = [
 ];
 
 const ModerationTab: React.FC = () => {
-  const [reports, setReports] = React.useState<Report[]>(demoReports);
+  const [reports, setReports] = React.useState<ReportInternal[]>(demoReports);
   const [selectedStat, setSelectedStat] = React.useState<string | null>(null);
   const [filterCriteria, setFilterCriteria] = React.useState<{ email?: string; room?: string }>({});
+
+  // Modal state for search results
+  const [resultsOpen, setResultsOpen] = React.useState(false);
+  const [modalResults, setModalResults] = React.useState<Report[]>([]);
 
   // compute counts for the tiles (demo logic)
   const counts = {
@@ -67,9 +74,38 @@ const ModerationTab: React.FC = () => {
     toast.info(id ? `Bộ lọc: ${id}` : "Bỏ chọn bộ lọc");
   };
 
+  // Called by AuditSearchForm when user clicks "Tìm kiếm"
   const handleAuditSearch = (filters: { email?: string; room?: string }) => {
     setFilterCriteria(filters);
-    toast.success("Áp dụng bộ lọc Audit (demo).");
+
+    // compute matching results based on current reports and filters
+    const qEmail = filters.email?.toLowerCase() ?? "";
+    const qRoom = filters.room?.toLowerCase() ?? "";
+
+    const matched = reports.filter((r) => {
+      if (qEmail) {
+        if (!(r.reportedBy && r.reportedBy.toLowerCase().includes(qEmail))) return false;
+      }
+      if (qRoom) {
+        if (!(r.target && r.target.toLowerCase().includes(qRoom))) return false;
+      }
+      // if both empty, show nothing (but AuditSearchForm prevents this)
+      return true;
+    });
+
+    // Map to Report type used by modal
+    const mapped: Report[] = matched.map((m) => ({
+      id: m.id,
+      target: m.target,
+      reason: m.reason,
+      reportedBy: m.reportedBy,
+      time: m.time,
+      type: m.type,
+    }));
+
+    setModalResults(mapped);
+    setResultsOpen(true);
+    toast.success(`Tìm thấy ${mapped.length} kết quả.`);
   };
 
   const filteredReports = React.useMemo(() => {
@@ -156,6 +192,9 @@ const ModerationTab: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Search results modal */}
+      <SearchResultsModal open={resultsOpen} onOpenChange={setResultsOpen} results={modalResults} />
     </div>
   );
 };
