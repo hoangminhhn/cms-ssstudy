@@ -57,6 +57,13 @@ const CreatePostForm: React.FC = () => {
   const [featured, setFeatured] = React.useState(false);
   const fileRef = React.useRef<HTMLInputElement | null>(null);
 
+  // Keep selects always visible; no switch required
+  const [selectedClass, setSelectedClass] = React.useState<string>("");
+  const [selectedSubject, setSelectedSubject] = React.useState<string>("");
+
+  const SUBJECT_OPTIONS = ["Toán", "Văn", "Tiếng Anh", "Vật Lý", "Hóa"];
+  const CLASS_OPTIONS = ["Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12"];
+
   React.useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -87,14 +94,14 @@ const CreatePostForm: React.FC = () => {
       toast.error("Vui lòng chọn danh mục.");
       return false;
     }
+    // selects are informational; no strict validation required per request
     return true;
   };
 
   const handleSave = () => {
     if (!validate()) return;
 
-    // Build payload (demo). In a real app you'd call an API here.
-    const payload = {
+    const payload: any = {
       id: `post-${Date.now()}`,
       title: title.trim(),
       category,
@@ -105,11 +112,13 @@ const CreatePostForm: React.FC = () => {
       featured,
       imageName: imageFile?.name ?? null,
       updatedAt: new Date().toISOString(),
+      // keep class/subject if provided (optional)
+      class: selectedClass || undefined,
+      subject: selectedSubject || undefined,
     };
 
     console.log("Saving post (demo):", payload);
     toast.success("Đã lưu bài viết (mô phỏng).");
-    // After saving go back to list
     navigate("/news?tab=posts");
   };
 
@@ -121,11 +130,10 @@ const CreatePostForm: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 items-start">
-            {/* Labels column (left) */}
             <div className="hidden lg:block" />
 
-            {/* Form column (right) */}
             <div className="space-y-4">
+              {/* Row 1: Title and Category */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                 <div className="md:col-span-2">
                   <Label htmlFor="title">Tiêu đề</Label>
@@ -147,24 +155,36 @@ const CreatePostForm: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                <div>
-                  <Label>Hình ảnh</Label>
-                  <div className="flex items-center gap-3">
-                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onImageChange} />
-                    <Button variant="outline" onClick={onPickImage}>Chọn ảnh</Button>
-                    <div className="text-sm text-muted-foreground">{imageFile?.name ?? "Chưa chọn ảnh"}</div>
+              {/* New full-width label + always visible Class & Subject selects.
+                  They occupy the full width; on small screens they stack, on larger they align inline. */}
+              <div>
+                <Label className="mb-2">Danh mục Lớp/Môn (Chỉ sử dụng cho Lịch Livestream)</Label>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex-1 sm:flex-none sm:w-[180px]">
+                    <Select value={selectedClass} onValueChange={setSelectedClass}>
+                      <SelectTrigger id="class-select">
+                        <SelectValue placeholder="Lớp" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CLASS_OPTIONS.map((c) => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  {imagePreview && (
-                    <div className="mt-2">
-                      <img src={imagePreview} alt="preview" className="max-h-40 rounded border" />
-                    </div>
-                  )}
-                </div>
 
-                <div className="md:col-span-2">
-                  <Label htmlFor="external">External_link</Label>
-                  <Input id="external" value={externalLink} onChange={(e) => setExternalLink(e.target.value)} placeholder="Link (nếu có)" />
+                  <div className="flex-1 sm:flex-none sm:w-[220px]">
+                    <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                      <SelectTrigger id="subject-select">
+                        <SelectValue placeholder="Môn" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SUBJECT_OPTIONS.map((s) => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
