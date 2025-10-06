@@ -29,8 +29,9 @@ const statusOptions = [
   { value: "ended", label: "Kết thúc" },
 ];
 
+// Updated label here: use "Khóa học"
 const exampleCourses = [
-  { value: "all", label: "Tất cả khóa/học" },
+  { value: "all", label: "Khóa học" },
   { value: "toan12", label: "Toán 12 2025" },
   { value: "vatly12", label: "Vật lý 12 2025" },
   { value: "hoahoc12", label: "Hóa học 12 2025" },
