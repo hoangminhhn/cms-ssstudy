@@ -11,74 +11,92 @@ import AuditSearchForm from "./moderation/AuditSearchForm";
 import ViolationStats from "./moderation/ViolationStats";
 import SearchResultsModal, { Report } from "./moderation/SearchResultsModal";
 
+import ModerationTabs from "./moderation/ModerationTabs";
+import ModerationList, { ModerationItem } from "./moderation/ModerationList";
+import ViolationHistory, { Violation } from "./moderation/ViolationHistory";
+
 /**
- * ModerationTab: shows top stat tiles (implemented with ModerationStats + StatTile),
- * Section 2: Audit search form (left) + Violation stats (right)
- * Section 3: reports table
+ * ModerationTab updated to render:
+ * - stat tiles
+ * - audit form + violation stats
+ * - section 3 split into ModerationTabs + two-column layout:
+ *    left = ModerationList (cards with actions)
+ *    right = ViolationHistory (selected user)
  *
- * Updated: when AuditSearchForm triggers onSearch, open a modal with results and allow CSV download.
+ * All actions are local/demo (toasts), components are separated for easier maintenance.
  */
 
-type ReportInternal = {
-  id: string;
-  target: string;
-  reason: string;
-  reportedBy: string;
-  time: string;
-  type?: string;
-};
-
-const demoReports: ReportInternal[] = [
-  { id: "rep1", target: "Phòng Toán 10A1", reason: "Nội dung không phù hợp", reportedBy: "hn_user", time: "11:02", type: "flagged" },
-  { id: "rep2", target: "Bình luận #234", reason: "Spam", reportedBy: "admin", time: "10:21", type: "pending" },
-  { id: "rep3", target: "User xyz", reason: "Từ khóa cấm", reportedBy: "mod1", time: "09:12", type: "banned" },
-  { id: "rep4", target: "Bài đăng #55", reason: "Đã được chọn", reportedBy: "mod2", time: "08:02", type: "reviewed" },
+const demoReports = [
+  {
+    id: "r1",
+    name: "Trần Thị Y",
+    email: "user123@example.com",
+    time: "06/10/2025 19:23",
+    reason: "Nội dung không phù hợp",
+    message: "Ai có đáp án bài thi không? Inbox mình nhé",
+    reportedBy: "user123@example.com",
+  },
+  {
+    id: "r2",
+    name: "Lê Văn Z",
+    email: "baduser@example.com",
+    time: "06/10/2025 19:23",
+    reason: "Quấy rối, xúc phạm",
+    message: "Thầy dạy kém quá, không hiểu gì cả!!!",
+    reportedBy: "baduser@example.com",
+  },
+  {
+    id: "r3",
+    name: "Trần Thị Y",
+    email: "user123@example.com",
+    time: "07/10/2025 03:12",
+    reason: "Spam",
+    message: "Nội dung spam...",
+    reportedBy: "user123@example.com",
+  },
 ];
 
 const ModerationTab: React.FC = () => {
-  const [reports, setReports] = React.useState<ReportInternal[]>(demoReports);
+  const [reports, setReports] = React.useState(demoReports);
   const [selectedStat, setSelectedStat] = React.useState<string | null>(null);
-  const [filterCriteria, setFilterCriteria] = React.useState<{ email?: string; room?: string }>({});
 
-  // Modal state for search results
+  // Section 3 specific state
+  const [activeSection, setActiveSection] = React.useState<"flagged" | "violations">("flagged");
+  const [selectedUserEmail, setSelectedUserEmail] = React.useState<string | undefined>(undefined);
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+
+  // modal for audit results from the form
   const [resultsOpen, setResultsOpen] = React.useState(false);
   const [modalResults, setModalResults] = React.useState<Report[]>([]);
 
-  // compute counts for the tiles (demo logic)
-  const counts = {
-    flagged: reports.filter((r) => r.type === "flagged").length || 2,
-    pending: reports.filter((r) => r.type === "pending").length || 3,
-    banned: reports.filter((r) => r.type === "banned").length || 5,
-    reviewed: reports.filter((r) => r.type === "reviewed").length || 0,
-  };
+  // compute counts
+  const flaggedCount = reports.length;
+  const violationsCount = reports.length; // demo; could be different in real app
 
   const statItems: StatItem[] = [
-    { id: "flagged", icon: AlertTriangle, count: counts.flagged, title: "Tin nhắn đánh dấu", subtitle: "Tin nhắn đánh dấu" },
-    { id: "pending", icon: MessageSquare, count: counts.pending, title: "Báo cáo chờ xử lý", subtitle: "Báo cáo chờ xử lý" },
-    { id: "banned", icon: Shield, count: counts.banned, title: "Từ khóa cấm", subtitle: "Từ khóa cấm" },
-    { id: "reviewed", icon: CheckCircle2, count: counts.reviewed, title: "Đã chọn", subtitle: "Đã chọn" },
+    { id: "flagged", icon: AlertTriangle, count: flaggedCount, title: "Tin nhắn đánh dấu", subtitle: "Tin nhắn cần kiểm duyệt" },
+    { id: "pending", icon: MessageSquare, count: 3, title: "Báo cáo chờ xử lý", subtitle: "Báo cáo cần xử lý" },
+    { id: "banned", icon: Shield, count: 5, title: "Từ khóa cấm", subtitle: "Cảnh báo" },
+    { id: "reviewed", icon: CheckCircle2, count: 0, title: "Đã xử lý", subtitle: "Đã duyệt / xóa" },
   ];
 
-  const handleResolve = (id: string) => {
-    setReports((prev) => prev.filter((r) => r.id !== id));
-    toast.success("Đã xử lý báo cáo (demo).");
-  };
-
-  const handleRemove = (id: string) => {
-    setReports((prev) => prev.filter((r) => r.id !== id));
-    toast.success("Đã xóa mục vi phạm (demo).");
-  };
+  // convert reports to ModerationItem for component
+  const modItems: ModerationItem[] = reports.map((r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    time: r.time,
+    reason: r.reason,
+    message: r.message,
+    reportedBy: r.reportedBy,
+  }));
 
   const handleSelectStat = (id: string | null) => {
     setSelectedStat(id);
     toast.info(id ? `Bộ lọc: ${id}` : "Bỏ chọn bộ lọc");
   };
 
-  // Called by AuditSearchForm when user clicks "Tìm kiếm"
   const handleAuditSearch = (filters: { email?: string; room?: string }) => {
-    setFilterCriteria(filters);
-
-    // compute matching results based on current reports and filters
     const qEmail = filters.email?.toLowerCase() ?? "";
     const qRoom = filters.room?.toLowerCase() ?? "";
 
@@ -87,20 +105,18 @@ const ModerationTab: React.FC = () => {
         if (!(r.reportedBy && r.reportedBy.toLowerCase().includes(qEmail))) return false;
       }
       if (qRoom) {
-        if (!(r.target && r.target.toLowerCase().includes(qRoom))) return false;
+        if (!(r.message && r.message.toLowerCase().includes(qRoom))) return false;
       }
-      // if both empty, show nothing (but AuditSearchForm prevents this)
       return true;
     });
 
-    // Map to Report type used by modal
     const mapped: Report[] = matched.map((m) => ({
       id: m.id,
-      target: m.target,
+      target: m.name,
       reason: m.reason,
       reportedBy: m.reportedBy,
       time: m.time,
-      type: m.type,
+      type: undefined,
     }));
 
     setModalResults(mapped);
@@ -108,92 +124,105 @@ const ModerationTab: React.FC = () => {
     toast.success(`Tìm thấy ${mapped.length} kết quả.`);
   };
 
-  const filteredReports = React.useMemo(() => {
-    let list = reports.slice();
-    if (selectedStat) list = list.filter((r) => r.type === selectedStat);
-    if (filterCriteria.email) {
-      const q = filterCriteria.email.toLowerCase();
-      list = list.filter((r) => r.reportedBy.toLowerCase().includes(q));
+  const handleToggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => (checked ? [...prev, id] : prev.filter((p) => p !== id)));
+  };
+
+  const handleSelectUser = (reportedBy?: string) => {
+    setSelectedUserEmail(reportedBy);
+  };
+
+  const handleApprove = (id: string) => {
+    setReports((prev) => prev.filter((r) => r.id !== id));
+    setSelectedIds((prev) => prev.filter((p) => p !== id));
+    toast.success("Đã duyệt (demo).");
+  };
+
+  const handleHide = (id: string) => {
+    setReports((prev) => prev.filter((r) => r.id !== id));
+    setSelectedIds((prev) => prev.filter((p) => p !== id));
+    toast.success("Đã ẩn (demo).");
+  };
+
+  const handleDelete = (id: string) => {
+    setReports((prev) => prev.filter((r) => r.id !== id));
+    setSelectedIds((prev) => prev.filter((p) => p !== id));
+    toast.success("Đã xóa (demo).");
+  };
+
+  const handleBlockUser = (email?: string) => {
+    if (!email) {
+      toast.error("Chưa chọn người dùng.");
+      return;
     }
-    if (filterCriteria.room) {
-      const q = filterCriteria.room.toLowerCase();
-      list = list.filter((r) => r.target.toLowerCase().includes(q));
-    }
-    return list;
-  }, [reports, selectedStat, filterCriteria]);
+    toast.success(`Đã chặn ${email} (demo).`);
+  };
+
+  // build violation list for selected user: for demo, collect reports where reportedBy equals selectedUserEmail
+  const userViolations: Violation[] = React.useMemo(() => {
+    if (!selectedUserEmail) return [];
+    return reports
+      .filter((r) => r.reportedBy === selectedUserEmail)
+      .map((r) => ({
+        id: r.id,
+        reason: r.reason || "Vi phạm",
+        date: r.time || "",
+        room: r.name || "",
+        snippet: r.message ? (r.message.length > 80 ? r.message.slice(0, 80) + "..." : r.message) : "",
+      }));
+  }, [reports, selectedUserEmail]);
+
+  // derive selected user info
+  const selectedUser = React.useMemo(() => {
+    if (!selectedUserEmail) return undefined;
+    const found = reports.find((r) => r.reportedBy === selectedUserEmail);
+    return found ? { name: found.name, email: found.reportedBy } : { name: selectedUserEmail, email: selectedUserEmail };
+  }, [reports, selectedUserEmail]);
 
   return (
     <div className="space-y-6">
-      {/* Section 1: Tiles */}
+      {/* Stat tiles */}
       <ModerationStats items={statItems} onSelect={handleSelectStat} selectedId={selectedStat} />
 
-      {/* Section 2: Audit form (left) + Violation stats (right) */}
+      {/* Audit form + Violation summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          {/* Pass showClear={false} to remove the 'Hủy' button in this context */}
           <AuditSearchForm onSearch={handleAuditSearch} showClear={false} />
         </div>
-
         <div className="lg:col-span-1">
           <ViolationStats />
         </div>
       </div>
 
-      {/* Section 3: Reports table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Kiểm duyệt</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Đối tượng</TableHead>
-                  <TableHead>Lý do</TableHead>
-                  <TableHead>Người báo</TableHead>
-                  <TableHead>Thời gian</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
-                </TableRow>
-              </TableHeader>
+      {/* Section 3: Tab strip + two-column layout */}
+      <div>
+        <ModerationTabs
+          flaggedCount={flaggedCount}
+          violationsCount={violationsCount}
+          active={activeSection}
+          onChange={(v) => setActiveSection(v)}
+        />
 
-              <TableBody>
-                {filteredReports.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell>{r.target}</TableCell>
-                    <TableCell className="max-w-xs truncate">{r.reason}</TableCell>
-                    <TableCell>{r.reportedBy}</TableCell>
-                    <TableCell>{r.time}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="inline-flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleResolve(r.id)} title="Đánh dấu đã xử lý">
-                          <Check className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleRemove(r.id)} className="text-red-600" title="Xóa nội dung">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => toast.info('Mở trang chat (demo)')}>
-                          <MessageSquare className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-                {filteredReports.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="p-8 text-center text-muted-foreground">
-                      Không có báo cáo nào.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <ModerationList
+              items={modItems}
+              selectedIds={selectedIds}
+              onToggleSelect={handleToggleSelect}
+              onSelectUser={handleSelectUser}
+              onApprove={handleApprove}
+              onHide={handleHide}
+              onDelete={handleDelete}
+            />
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Search results modal */}
+          <div className="lg:col-span-1">
+            <ViolationHistory user={selectedUser} violations={userViolations} onBlockUser={handleBlockUser} />
+          </div>
+        </div>
+      </div>
+
+      {/* Modal for search results */}
       <SearchResultsModal open={resultsOpen} onOpenChange={setResultsOpen} results={modalResults} />
     </div>
   );
