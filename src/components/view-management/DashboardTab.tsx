@@ -4,6 +4,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, MessageSquare, Clock, Bell } from "lucide-react";
 import DashboardCharts from "./DashboardCharts";
+import FeaturedRooms from "./FeaturedRooms";
 
 type StatProps = {
   icon: React.ElementType;
@@ -68,8 +69,11 @@ const DashboardTab: React.FC = () => {
         />
       </div>
 
-      {/* Section 2: Charts - moved to a dedicated component for easier maintenance */}
+      {/* Section 2: Charts */}
       <DashboardCharts />
+
+      {/* Section 3: Featured rooms */}
+      <FeaturedRooms />
     </section>
   );
 };
