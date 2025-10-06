@@ -9,12 +9,12 @@ import ModerationTab from "@/components/view-management/ModerationTab";
 import ReportsTab from "@/components/view-management/ReportsTab";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileDown, Settings, ChevronDown } from "lucide-react";
+import { FileDown, Settings } from "lucide-react";
 import { toast } from "sonner";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const ViewManagementPage: React.FC = () => {
   const handleExportCsv = () => {
-    // minimal export: trigger toast — detailed export implemented elsewhere
     toast.success("Xuất CSV (demo).");
   };
 
@@ -23,65 +23,47 @@ const ViewManagementPage: React.FC = () => {
   };
 
   return (
-    <Layout headerTitle='CMS – Quản lý “Xem chung”'>
-      <div className="flex flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold">CMS – Quản lý “Xem chung”</h1>
-            <p className="text-sm text-muted-foreground mt-1">Giám sát phòng, moderation, báo cáo & KPI. Mock data để tích hợp nhanh với API.</p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={handleExportCsv} className="flex items-center gap-2">
-              <FileDown className="h-4 w-4" /> Xuất CSV
-            </Button>
-            <Button onClick={handleOpenConfig} className="flex items-center gap-2 bg-white border">
-              <Settings className="h-4 w-4" /> Cấu hình
-            </Button>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="bg-white rounded-md border p-3">
-          <Tabs defaultValue="dashboard">
-            <TabsList>
-              <TabsTrigger value="dashboard" className="min-w-[160px]">
-                <span className="inline-flex items-center gap-2"><svg className="h-4 w-4" /><span>Dashboard</span></span>
-              </TabsTrigger>
-              <TabsTrigger value="rooms" className="min-w-[160px]">
-                <span className="inline-flex items-center gap-2"><svg className="h-4 w-4" /><span>Danh sách phòng</span></span>
-              </TabsTrigger>
-              <TabsTrigger value="moderation" className="min-w-[160px]">
-                <span className="inline-flex items-center gap-2"><svg className="h-4 w-4" /><span>Moderation</span></span>
-              </TabsTrigger>
-              <TabsTrigger value="reports" className="min-w-[160px]">
-                <span className="inline-flex items-center gap-2"><svg className="h-4 w-4" /><span>Báo cáo</span></span>
-              </TabsTrigger>
-            </TabsList>
-
-            <div className="mt-4">
-              <TabsContent value="dashboard">
-                <DashboardTab />
-              </TabsContent>
-
-              <TabsContent value="rooms">
-                <RoomsTab />
-              </TabsContent>
-
-              <TabsContent value="moderation">
-                <ModerationTab />
-              </TabsContent>
-
-              <TabsContent value="reports">
-                <ReportsTab />
-              </TabsContent>
+    <ErrorBoundary>
+      <Layout headerTitle='CMS – Quản lý “Xem chung”'>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold">CMS – Quản lý “Xem chung”</h1>
+              <p className="text-sm text-muted-foreground mt-1">Giám sát phòng, moderation, báo cáo & KPI. Mock data để tích hợp nhanh với API.</p>
             </div>
-          </Tabs>
-        </div>
-      </div>
 
-      <MadeWithDyad />
-    </Layout>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={handleExportCsv} className="flex items-center gap-2">
+                <FileDown className="h-4 w-4" /> Xuất CSV
+              </Button>
+              <Button onClick={handleOpenConfig} className="flex items-center gap-2 bg-white border">
+                <Settings className="h-4 w-4" /> Cấu hình
+              </Button>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-md border p-3">
+            <Tabs defaultValue="dashboard">
+              <TabsList>
+                <TabsTrigger value="dashboard" className="min-w-[160px]">Dashboard</TabsTrigger>
+                <TabsTrigger value="rooms" className="min-w-[160px]">Danh sách phòng</TabsTrigger>
+                <TabsTrigger value="moderation" className="min-w-[160px]">Moderation</TabsTrigger>
+                <TabsTrigger value="reports" className="min-w-[160px]">Báo cáo</TabsTrigger>
+              </TabsList>
+
+              <div className="mt-4">
+                <TabsContent value="dashboard"><DashboardTab /></TabsContent>
+                <TabsContent value="rooms"><RoomsTab /></TabsContent>
+                <TabsContent value="moderation"><ModerationTab /></TabsContent>
+                <TabsContent value="reports"><ReportsTab /></TabsContent>
+              </div>
+            </Tabs>
+          </div>
+        </div>
+
+        <MadeWithDyad />
+      </Layout>
+    </ErrorBoundary>
   );
 };
 
