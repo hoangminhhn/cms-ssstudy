@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2, Check, MessageSquare } from "lucide-react";
+import { Trash2, Check, MessageSquare, AlertTriangle, Shield, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import ModerationStats, { StatItem } from "./moderation/ModerationStats";
 
