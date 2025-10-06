@@ -230,4 +230,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-export default TestCategoryManagement;
+export default Sidebar;
