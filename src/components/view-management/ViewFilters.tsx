@@ -48,12 +48,15 @@ const ViewFilters: React.FC<Props> = ({ filters, setFilters, onApply, courses, t
 
         <div>
           <Label className="text-sm">Khoá / Bài học</Label>
-          <Select value={filters.course ?? ""} onValueChange={(v) => setFilters({ ...filters, course: v || undefined })}>
+          <Select
+            value={filters.course ?? "all"}
+            onValueChange={(v) => setFilters({ ...filters, course: v === "all" ? undefined : v })}
+          >
             <SelectTrigger>
               <SelectValue placeholder="-- Tất cả --" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">-- Tất cả --</SelectItem>
+              <SelectItem value="all">-- Tất cả --</SelectItem>
               {courses.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
             </SelectContent>
           </Select>
@@ -61,12 +64,15 @@ const ViewFilters: React.FC<Props> = ({ filters, setFilters, onApply, courses, t
 
         <div>
           <Label className="text-sm">Giáo viên / Chủ phòng</Label>
-          <Select value={filters.teacher ?? ""} onValueChange={(v) => setFilters({ ...filters, teacher: v || undefined })}>
+          <Select
+            value={filters.teacher ?? "all"}
+            onValueChange={(v) => setFilters({ ...filters, teacher: v === "all" ? undefined : v })}
+          >
             <SelectTrigger>
               <SelectValue placeholder="-- Tất cả --" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">-- Tất cả --</SelectItem>
+              <SelectItem value="all">-- Tất cả --</SelectItem>
               {teachers.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
             </SelectContent>
           </Select>
