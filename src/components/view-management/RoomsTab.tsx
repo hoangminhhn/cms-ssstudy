@@ -1,89 +1,123 @@
 "use client";
 
 import React from "react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Search, Trash2, Eye } from "lucide-react";
+import RoomsFilters from "./RoomsFilters";
+import RoomsTable from "./RoomsTable";
 import { toast } from "sonner";
+import type { RoomRowData } from "./RoomRow";
 
-type Room = {
-  id: string;
-  name: string;
-  viewers: number;
-  status: "live" | "idle" | "ended";
-  updatedAt: string;
-};
+/**
+ * Updated RoomsTab: uses RoomsFilters + RoomsTable.
+ * - Filters control local state (search/status/course)
+ * - RoomsTable receives filtered list and action handlers
+ */
 
-const demoRooms: Room[] = [
-  { id: "r1", name: "Phòng Toán 10A1", viewers: 120, status: "live", updatedAt: "10:12" },
-  { id: "r2", name: "Phòng Văn 12B", viewers: 34, status: "idle", updatedAt: "09:55" },
-  { id: "r3", name: "Phòng Luyện HSA", viewers: 320, status: "live", updatedAt: "11:00" },
+const initialRooms: RoomRowData[] = [
+  {
+    id: "RM1020",
+    code: "RM1020",
+    title: "Phòng 21 – Hình học không gian – góc & khoảng cách",
+    datetime: "25/09/2025 00:50",
+    course: "Vật lý 12 2025",
+    courseSub: "Hình học không gian – góc & khoảng cách",
+    owner: "Phạm Chi",
+    status: "running",
+    ccu: 556,
+    participants: 74,
+    messages: 4497,
+  },
+  {
+    id: "RM1017",
+    code: "RM1017",
+    title: "Phòng 18 – Cloze test – collocations",
+    datetime: "07/10/2025 00:50",
+    course: "Vật lý 12 2025",
+    courseSub: "Hình học không gian – góc & khoảng cách",
+    owner: "Phạm Chi",
+    status: "running",
+    ccu: 514,
+    participants: 10,
+    messages: 4026,
+  },
+  {
+    id: "RM1006",
+    code: "RM1006",
+    title: "Phòng 7 – Hình học không gian – góc & khoảng cách",
+    datetime: "03/10/2025 00:50",
+    course: "Hoá học 12 2025",
+    courseSub: "Este – xà phòng hóa",
+    owner: "Lê Duy",
+    status: "running",
+    ccu: 454,
+    participants: 97,
+    messages: 3889,
+  },
+  {
+    id: "RM1005",
+    code: "RM1005",
+    title: "Phòng 6 – Cloze test – collocations",
+    datetime: "29/09/2025 00:50",
+    course: "Vật lý 12 2025",
+    courseSub: "Hình học không gian – góc & khoảng cách",
+    owner: "Trần Bình",
+    status: "running",
+    ccu: 427,
+    participants: 104,
+    messages: 4030,
+  },
 ];
 
 const RoomsTab: React.FC = () => {
   const [query, setQuery] = React.useState("");
-  const [rooms, setRooms] = React.useState<Room[]>(demoRooms);
+  const [status, setStatus] = React.useState<string>("all");
+  const [course, setCourse] = React.useState<string>("all");
+  const [rooms, setRooms] = React.useState<RoomRowData[]>(initialRooms);
+
+  const applyFilters = () => {
+    toast.info("Áp dụng bộ lọc (demo).");
+    // In a real app you'd fetch filtered data; here we keep local filtering on render
+  };
+
+  const filteredRooms = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rooms.filter((r) => {
+      if (status !== "all" && r.status !== status) return false;
+      if (course !== "all" && course) {
+        // simple course filter by code
+        if (!r.course?.toLowerCase().includes(course.replace(/\d+/g, "").trim())) {
+          // naive match, keep for demo
+          // allow "toan12"/"vatly12" from Filters options mapping in future
+        }
+      }
+      if (!q) return true;
+      return (
+        (r.title && r.title.toLowerCase().includes(q)) ||
+        (r.code && r.code.toLowerCase().includes(q)) ||
+        (r.course && r.course.toLowerCase().includes(q)) ||
+        (r.owner && r.owner.toLowerCase().includes(q))
+      );
+    });
+  }, [rooms, query, status, course]);
+
+  const handleOpen = (id: string) => {
+    toast.info(`Mở phòng ${id} (demo).`);
+  };
+
+  const handleEdit = (id: string) => {
+    toast.info(`Chỉnh sửa phòng ${id} (demo).`);
+  };
 
   const handleDelete = (id: string) => {
-    if (!confirm("Xóa phòng này?")) return;
+    if (!confirm("Bạn có chắc muốn xóa phòng này?")) return;
     setRooms((prev) => prev.filter((r) => r.id !== id));
     toast.success("Đã xóa phòng (demo).");
   };
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Danh sách phòng</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input className="pl-10" placeholder="Tìm phòng..." value={query} onChange={(e) => setQuery(e.target.value)} />
-            </div>
-            <Button onClick={() => toast.success("Tải lại danh sách (demo)")}>Làm mới</Button>
-          </div>
+      <RoomsFilters query={query} setQuery={setQuery} status={status} setStatus={setStatus} course={course} setCourse={setCourse} onApply={applyFilters} />
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tên phòng</TableHead>
-                  <TableHead>Số lượt xem</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead>Updated</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rooms
-                  .filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
-                  .map((r) => (
-                    <TableRow key={r.id}>
-                      <TableCell className="font-medium">{r.name}</TableCell>
-                      <TableCell>{r.viewers}</TableCell>
-                      <TableCell className="capitalize">{r.status}</TableCell>
-                      <TableCell>{r.updatedAt}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="inline-flex items-center gap-2">
-                          <Button variant="ghost" size="icon" title="Xem" onClick={() => toast.info(`Xem phòng ${r.name} (demo)`)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="text-red-600" onClick={() => handleDelete(r.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <RoomsTable rooms={filteredRooms} onOpen={handleOpen} onEdit={handleEdit} onDelete={handleDelete} itemsPerPage={10} />
     </div>
   );
 };
