@@ -20,7 +20,7 @@ interface AuditSearchFormProps {
   onSearch: (filters: AuditFilters) => void;
 }
 
-const ROOM_OPTIONS = ["Tất cả phòng", "Phòng A", "Phòng B", "Phòng C"];
+const ROOM_OPTIONS = ["Tất cả khóa học", "Khóa Toán 12", "Khóa Vật Lý 12", "Khóa Hóa 12"];
 
 const MESSAGE_STATUS = ["Tất cả tin nhắn", "Đã xử lý", "Chưa xử lý", "Đã đánh dấu"];
 
@@ -33,10 +33,10 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
   const [warning, setWarning] = React.useState<string | null>(null);
 
   const handleSearch = () => {
-    // Require either email/phone or room not default
+    // Require either email/phone or course selection
     if (!email.trim() && (!room || room === ROOM_OPTIONS[0])) {
-      setWarning("⚠️ Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn phòng để tìm kiếm");
-      toast.error("Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn phòng để tìm kiếm");
+      setWarning("⚠️ Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn khóa học để tìm kiếm");
+      toast.error("Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn khóa học để tìm kiếm");
       return;
     }
     setWarning(null);
@@ -63,7 +63,7 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
   return (
     <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-2">Tìm kiếm & Audit tin nhắn</h3>
-      <p className="text-sm text-muted-foreground mb-4">Xem lịch sử chat theo người dùng hoặc phòng cụ thể</p>
+      <p className="text-sm text-muted-foreground mb-4">Xem lịch sử chat theo người dùng hoặc khóa học</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -73,12 +73,12 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-2"
-            aria-label="Email hoặc sđt người dùng"
+            aria-label="Email hoặc số điện thoại người dùng"
           />
         </div>
 
         <div>
-          <Label className="text-sm">Phòng</Label>
+          <Label className="text-sm">Khóa học</Label>
           <Select value={room} onValueChange={(v) => setRoom(v)}>
             <SelectTrigger className="w-full h-10">
               <SelectValue />
@@ -133,7 +133,7 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
         <div className="flex items-center gap-2 font-medium mb-2">💡 Hướng dẫn sử dụng</div>
         <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
           <li><strong>Audit người dùng:</strong> Nhập email hoặc số điện thoại để xem toàn bộ tin nhắn của người đó</li>
-          <li><strong>Xem chat phòng:</strong> Chọn phòng để xem lịch sử chat trong phòng đó</li>
+          <li><strong>Xem chat khóa học:</strong> Chọn khóa học để xem lịch sử chat trong khóa đó</li>
           <li><strong>Khoảng thời gian:</strong> Thêm từ/đến ngày để thu hẹp kết quả</li>
           <li><strong>Trạng thái:</strong> Lọc theo tin nhắn đã vi phạm hoặc đã xử lý</li>
         </ul>
