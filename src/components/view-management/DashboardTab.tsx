@@ -48,7 +48,7 @@ const DashboardTab: React.FC = () => {
           icon={MessageSquare}
           label="Tin nhắn / ngày"
           value={850}
-          meta="Hôm nay (mock)"
+          meta="Hôm nay"
         />
 
         <StatCard
