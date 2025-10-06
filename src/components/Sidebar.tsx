@@ -1,7 +1,7 @@
 // NOTE: This file is based on the existing Sidebar component with a minor removal:
 // - Removed the duplicate NavItem for "Thông báo (chung)" linking to /notifications
 import React from 'react';
-import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon } from 'lucide-react';
+import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import BookSubMenu from './BookSubMenu';
@@ -166,6 +166,14 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'documents' && <DocumentsSubMenu />}
 
+            {/* New item: Quản lý xem chung (placed under Documents) */}
+            <NavItem
+              icon={Eye}
+              label="Quản lý xem chung"
+              to="/view-management"
+              isActive={location.pathname.startsWith('/view-management')}
+            />
+
             {/* Members parent with submenu */}
             <NavItem
               icon={Users}
@@ -222,4 +230,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
+export default TestCategoryManagement;
