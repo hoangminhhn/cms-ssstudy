@@ -6,6 +6,13 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Button } from "@/components/ui/button";
 import { Trash2, Check, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import ModerationStats, { StatItem } from "./moderation/ModerationStats";
+
+/**
+ * ModerationTab: shows top stat tiles (implemented with ModerationStats + StatTile),
+ * allows selecting a tile to set an active filter (visual only for demo),
+ * and displays the reports table below.
+ */
 
 type Report = {
   id: string;
@@ -13,15 +20,34 @@ type Report = {
   reason: string;
   reportedBy: string;
   time: string;
+  type?: string; // for future filtering
 };
 
 const demoReports: Report[] = [
-  { id: "rep1", target: "Phòng Toán 10A1", reason: "Nội dung không phù hợp", reportedBy: "hn_user", time: "11:02" },
-  { id: "rep2", target: "Bình luận #234", reason: "Spam", reportedBy: "admin", time: "10:21" },
+  { id: "rep1", target: "Phòng Toán 10A1", reason: "Nội dung không phù hợp", reportedBy: "hn_user", time: "11:02", type: "flagged" },
+  { id: "rep2", target: "Bình luận #234", reason: "Spam", reportedBy: "admin", time: "10:21", type: "pending" },
+  { id: "rep3", target: "User xyz", reason: "Từ khóa cấm", reportedBy: "mod1", time: "09:12", type: "banned" },
+  { id: "rep4", target: "Bài đăng #55", reason: "Đã được chọn", reportedBy: "mod2", time: "08:02", type: "reviewed" },
 ];
 
 const ModerationTab: React.FC = () => {
   const [reports, setReports] = React.useState<Report[]>(demoReports);
+  const [selectedStat, setSelectedStat] = React.useState<string | null>(null);
+
+  // compute counts for the tiles (demo logic)
+  const counts = {
+    flagged: reports.filter((r) => r.type === "flagged").length || 2,
+    pending: reports.filter((r) => r.type === "pending").length || 3,
+    banned: reports.filter((r) => r.type === "banned").length || 5,
+    reviewed: reports.filter((r) => r.type === "reviewed").length || 0,
+  };
+
+  const statItems: StatItem[] = [
+    { id: "flagged", icon: AlertTriangle, count: counts.flagged, title: "Tin nhắn đánh dấu", subtitle: "Tin nhắn đánh dấu" },
+    { id: "pending", icon: MessageSquare, count: counts.pending, title: "Báo cáo chờ xử lý", subtitle: "Báo cáo chờ xử lý" },
+    { id: "banned", icon: Shield, count: counts.banned, title: "Từ khóa cấm", subtitle: "Từ khóa cấm" },
+    { id: "reviewed", icon: CheckCircle2, count: counts.reviewed, title: "Đã chọn", subtitle: "Đã chọn" },
+  ];
 
   const handleResolve = (id: string) => {
     setReports((prev) => prev.filter((r) => r.id !== id));
@@ -33,8 +59,27 @@ const ModerationTab: React.FC = () => {
     toast.success("Đã xóa mục vi phạm (demo).");
   };
 
+  const handleSelectStat = (id: string | null) => {
+    setSelectedStat(id);
+    toast.info(id ? `Bộ lọc: ${id}` : "Bỏ chọn bộ lọc");
+  };
+
+  const filteredReports = selectedStat ? reports.filter((r) => r.type === selectedStat) : reports;
+
   return (
-    <div>
+    <div className="space-y-6">
+      {/* Section 1: Tiles */}
+      <ModerationStats items={statItems} onSelect={handleSelectStat} selectedId={selectedStat} />
+
+      {/* optional: show active filter pill */}
+      {selectedStat && (
+        <div className="flex items-center gap-2">
+          <div className="px-3 py-1 rounded bg-orange-50 text-orange-700 text-sm">Bộ lọc: {selectedStat}</div>
+          <Button variant="ghost" size="sm" onClick={() => handleSelectStat(null)}>Bỏ lọc</Button>
+        </div>
+      )}
+
+      {/* Section 2: Reports table */}
       <Card>
         <CardHeader>
           <CardTitle>Kiểm duyệt</CardTitle>
@@ -53,7 +98,7 @@ const ModerationTab: React.FC = () => {
               </TableHeader>
 
               <TableBody>
-                {reports.map((r) => (
+                {filteredReports.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell>{r.target}</TableCell>
                     <TableCell className="max-w-xs truncate">{r.reason}</TableCell>
@@ -75,7 +120,7 @@ const ModerationTab: React.FC = () => {
                   </TableRow>
                 ))}
 
-                {reports.length === 0 && (
+                {filteredReports.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={5} className="p-8 text-center text-muted-foreground">
                       Không có báo cáo nào.
