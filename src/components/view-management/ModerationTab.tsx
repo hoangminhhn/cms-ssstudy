@@ -13,6 +13,10 @@ import ModerationList, { ModerationItem } from "./moderation/ModerationList";
 import ViolationHistory, { Violation } from "./moderation/ViolationHistory";
 import ReportList, { ReportListItem } from "./moderation/ReportList";
 
+import { Trash2, Check, MessageSquare, Shield, CheckCircle2 } from "lucide-react";
+// Import AlertTriangle under an alias to avoid any runtime naming issues
+import { AlertTriangle as IconAlertTriangle } from "lucide-react";
+
 /**
  * ModerationTab orchestrates three sections:
  *  - top stat tiles
@@ -97,7 +101,7 @@ const ModerationTab: React.FC = () => {
   const [modalResults, setModalResults] = React.useState<Report[]>([]);
 
   const statItems: StatItem[] = [
-    { id: "flagged", icon: AlertTriangle, count: flaggedItems.length, title: "Tin nhắn đánh dấu", subtitle: "Tin nhắn cần kiểm duyệt" },
+    { id: "flagged", icon: IconAlertTriangle, count: flaggedItems.length, title: "Tin nhắn đánh dấu", subtitle: "Tin nhắn cần kiểm duyệt" },
     { id: "pending", icon: MessageSquare, count: violationItems.length, title: "Báo cáo vi phạm", subtitle: "Báo cáo cần xử lý" },
     { id: "banned", icon: Shield, count: 5, title: "Từ khóa cấm", subtitle: "Cảnh báo" },
     { id: "reviewed", icon: CheckCircle2, count: 0, title: "Đã xử lý", subtitle: "Đã duyệt / xóa" },
