@@ -33,10 +33,10 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
   const [warning, setWarning] = React.useState<string | null>(null);
 
   const handleSearch = () => {
-    // Require either email or room not default
+    // Require either email/phone or room not default
     if (!email.trim() && (!room || room === ROOM_OPTIONS[0])) {
-      setWarning("⚠️ Vui lòng chọn người dùng hoặc phòng để tìm kiếm");
-      toast.error("Vui lòng chọn người dùng hoặc phòng để tìm kiếm");
+      setWarning("⚠️ Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn phòng để tìm kiếm");
+      toast.error("Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn phòng để tìm kiếm");
       return;
     }
     setWarning(null);
@@ -67,8 +67,14 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label className="text-sm">Email người dùng</Label>
-          <Input placeholder="user@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2" />
+          <Label className="text-sm">Email hoặc sđt người dùng</Label>
+          <Input
+            placeholder="nhập email hoặc số điện thoại"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-2"
+            aria-label="Email hoặc sđt người dùng"
+          />
         </div>
 
         <div>
@@ -126,7 +132,7 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
       <div className="mt-4 p-3 rounded border bg-blue-50">
         <div className="flex items-center gap-2 font-medium mb-2">💡 Hướng dẫn sử dụng</div>
         <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-          <li><strong>Audit người dùng:</strong> Nhập email để xem toàn bộ tin nhắn của người đó</li>
+          <li><strong>Audit người dùng:</strong> Nhập email hoặc số điện thoại để xem toàn bộ tin nhắn của người đó</li>
           <li><strong>Xem chat phòng:</strong> Chọn phòng để xem lịch sử chat trong phòng đó</li>
           <li><strong>Khoảng thời gian:</strong> Thêm từ/đến ngày để thu hẹp kết quả</li>
           <li><strong>Trạng thái:</strong> Lọc theo tin nhắn đã vi phạm hoặc đã xử lý</li>
