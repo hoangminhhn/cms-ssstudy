@@ -62,7 +62,7 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch, showClear =
 
   return (
     <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
-      <h3 className="text-lg font-semibold mb-2">Tìm kiếm & Audit tin nhắn</h3>
+      <h3 className="text-lg font-semibold mb-2">Tìm kiếm lịch sử chat</h3>
       <p className="text-sm text-muted-foreground mb-4">Xem lịch sử chat theo người dùng hoặc khóa học</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
