@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, MessageSquare, Clock, Bell } from "lucide-react";
+import DashboardCharts from "./DashboardCharts";
 
 type StatProps = {
   icon: React.ElementType;
@@ -35,7 +36,8 @@ const StatCard: React.FC<StatProps> = ({ icon: Icon, label, value, meta }) => {
 
 const DashboardTab: React.FC = () => {
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
+      {/* Section 1: 4 stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={Play}
@@ -65,6 +67,9 @@ const DashboardTab: React.FC = () => {
           meta="vi phạm"
         />
       </div>
+
+      {/* Section 2: Charts - moved to a dedicated component for easier maintenance */}
+      <DashboardCharts />
     </section>
   );
 };
