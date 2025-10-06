@@ -6,7 +6,6 @@ import AllDocuments from "@/components/Documents/AllDocuments";
 import AddDocument from "@/components/Documents/AddDocument";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import SharedRoomsManagement from "@/pages/SharedRoomsManagement";
 
 const DocumentManagement: React.FC = () => {
   const location = useLocation();
@@ -19,8 +18,6 @@ const DocumentManagement: React.FC = () => {
         return "Tất cả tài liệu";
       case "add-document":
         return "Thêm mới tài liệu";
-      case "shared-rooms":
-        return "Quản lý xem chung";
       default:
         return "Tài liệu";
     }
@@ -32,8 +29,6 @@ const DocumentManagement: React.FC = () => {
         return <AllDocuments />;
       case "add-document":
         return <AddDocument />;
-      case "shared-rooms":
-        return <SharedRoomsManagement />;
       default:
         return <AllDocuments />;
     }
