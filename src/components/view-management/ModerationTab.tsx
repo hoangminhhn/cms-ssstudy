@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Check, MessageSquare, AlertTriangle, Shield, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import ModerationStats, { StatItem } from "./moderation/ModerationStats";
+import AuditSearchForm from "./moderation/AuditSearchForm";
+import ViolationStats from "./moderation/ViolationStats";
 
 /**
  * ModerationTab: shows top stat tiles (implemented with ModerationStats + StatTile),
- * allows selecting a tile to set an active filter (visual only for demo),
- * and displays the reports table below.
+ * Section 2: Audit search form (left) + Violation stats (right)
+ * Section 3: reports table
  */
 
 type Report = {
@@ -33,6 +35,7 @@ const demoReports: Report[] = [
 const ModerationTab: React.FC = () => {
   const [reports, setReports] = React.useState<Report[]>(demoReports);
   const [selectedStat, setSelectedStat] = React.useState<string | null>(null);
+  const [filterCriteria, setFilterCriteria] = React.useState<{ email?: string; room?: string }>({});
 
   // compute counts for the tiles (demo logic)
   const counts = {
@@ -64,22 +67,43 @@ const ModerationTab: React.FC = () => {
     toast.info(id ? `Bộ lọc: ${id}` : "Bỏ chọn bộ lọc");
   };
 
-  const filteredReports = selectedStat ? reports.filter((r) => r.type === selectedStat) : reports;
+  const handleAuditSearch = (filters: { email?: string; room?: string }) => {
+    // Apply simple demo filter: by reportedBy (email) or target (room substring)
+    setFilterCriteria(filters);
+    toast.success("Áp dụng bộ lọc Audit (demo).");
+  };
+
+  const filteredReports = React.useMemo(() => {
+    let list = reports.slice();
+    if (selectedStat) list = list.filter((r) => r.type === selectedStat);
+    if (filterCriteria.email) {
+      const q = filterCriteria.email.toLowerCase();
+      list = list.filter((r) => r.reportedBy.toLowerCase().includes(q));
+    }
+    if (filterCriteria.room) {
+      const q = filterCriteria.room.toLowerCase();
+      list = list.filter((r) => r.target.toLowerCase().includes(q));
+    }
+    return list;
+  }, [reports, selectedStat, filterCriteria]);
 
   return (
     <div className="space-y-6">
       {/* Section 1: Tiles */}
       <ModerationStats items={statItems} onSelect={handleSelectStat} selectedId={selectedStat} />
 
-      {/* optional: show active filter pill */}
-      {selectedStat && (
-        <div className="flex items-center gap-2">
-          <div className="px-3 py-1 rounded bg-orange-50 text-orange-700 text-sm">Bộ lọc: {selectedStat}</div>
-          <Button variant="ghost" size="sm" onClick={() => handleSelectStat(null)}>Bỏ lọc</Button>
+      {/* Section 2: Audit form (left) + Violation stats (right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <AuditSearchForm onSearch={handleAuditSearch} />
         </div>
-      )}
 
-      {/* Section 2: Reports table */}
+        <div className="lg:col-span-1">
+          <ViolationStats />
+        </div>
+      </div>
+
+      {/* Section 3: Reports table */}
       <Card>
         <CardHeader>
           <CardTitle>Kiểm duyệt</CardTitle>
