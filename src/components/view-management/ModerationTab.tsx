@@ -68,7 +68,6 @@ const ModerationTab: React.FC = () => {
   };
 
   const handleAuditSearch = (filters: { email?: string; room?: string }) => {
-    // Apply simple demo filter: by reportedBy (email) or target (room substring)
     setFilterCriteria(filters);
     toast.success("Áp dụng bộ lọc Audit (demo).");
   };
@@ -95,7 +94,8 @@ const ModerationTab: React.FC = () => {
       {/* Section 2: Audit form (left) + Violation stats (right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          <AuditSearchForm onSearch={handleAuditSearch} />
+          {/* Pass showClear={false} to remove the 'Hủy' button in this context */}
+          <AuditSearchForm onSearch={handleAuditSearch} showClear={false} />
         </div>
 
         <div className="lg:col-span-1">

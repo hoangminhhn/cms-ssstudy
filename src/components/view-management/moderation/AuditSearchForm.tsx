@@ -18,13 +18,14 @@ interface AuditFilters {
 
 interface AuditSearchFormProps {
   onSearch: (filters: AuditFilters) => void;
+  showClear?: boolean; // new prop to control visibility of the "Hủy" button
 }
 
 const ROOM_OPTIONS = ["Tất cả khóa học", "Khóa Toán 12", "Khóa Vật Lý 12", "Khóa Hóa 12"];
 
 const MESSAGE_STATUS = ["Tất cả tin nhắn", "Đã xử lý", "Chưa xử lý", "Đã đánh dấu"];
 
-const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
+const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch, showClear = true }) => {
   const [email, setEmail] = React.useState<string>("");
   const [room, setRoom] = React.useState<string>(ROOM_OPTIONS[0]);
   const [from, setFrom] = React.useState<string>("");
@@ -33,7 +34,6 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
   const [warning, setWarning] = React.useState<string | null>(null);
 
   const handleSearch = () => {
-    // Require either email/phone or course selection
     if (!email.trim() && (!room || room === ROOM_OPTIONS[0])) {
       setWarning("⚠️ Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn khóa học để tìm kiếm");
       toast.error("Vui lòng nhập email hoặc số điện thoại người dùng hoặc chọn khóa học để tìm kiếm");
@@ -120,7 +120,11 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch }) => {
         <Button className="flex-1 bg-sky-400 hover:bg-sky-500 text-white" onClick={handleSearch}>
           🔍 Tìm kiếm
         </Button>
-        <Button variant="outline" onClick={handleClear}>Hủy</Button>
+        {showClear && (
+          <Button variant="outline" onClick={handleClear}>
+            Hủy
+          </Button>
+        )}
       </div>
 
       {warning && (
