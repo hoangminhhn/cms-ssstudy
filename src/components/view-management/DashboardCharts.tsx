@@ -17,7 +17,7 @@ import {
 
 /**
  * DashboardCharts
- * - Left: 14-day multi-line trend chart (CCU, Phòng, Tin nhắn) with dual Y axes
+ * - Left: 15-day multi-line trend chart (CCU, Phòng, Tin nhắn) with dual Y axes
  * - Right: Pie chart showing violation distribution
  * This component is self-contained and can be updated independently.
  */
@@ -37,6 +37,7 @@ const lineData = [
   { date: "06/10", ccu: 20, phong: 1, tin: 120 },
   { date: "07/10", ccu: 100, phong: 6, tin: 900 },
   { date: "08/10", ccu: 110, phong: 8, tin: 980 },
+  { date: "09/10", ccu: 95, phong: 4, tin: 880 },
 ];
 
 const pieData = [
@@ -68,7 +69,7 @@ const DashboardCharts: React.FC = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Left: Trend card spanning 2 columns on large screens */}
       <div className="lg:col-span-2 bg-white dark:bg-gray-800 border rounded-lg p-4 shadow-sm">
-        <h3 className="text-lg font-semibold">Xu hướng hoạt động (14 ngày)</h3>
+        <h3 className="text-lg font-semibold">Xu hướng hoạt động (15 ngày)</h3>
         <p className="text-sm text-muted-foreground mt-1">Phòng tạo mới, CCU, tin nhắn</p>
 
         <div className="mt-4" style={{ height: 260 }}>

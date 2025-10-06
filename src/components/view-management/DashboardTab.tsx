@@ -57,7 +57,7 @@ const DashboardTab: React.FC = () => {
           icon={Clock}
           label="Thời lượng TB/phòng"
           value="32 phút"
-          meta="Theo 14 ngày"
+          meta="Theo 15 ngày"
         />
 
         <StatCard
