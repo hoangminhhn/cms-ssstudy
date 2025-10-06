@@ -18,7 +18,6 @@ import OrderManagement from "@/pages/OrderManagement";
 import PromotionManagement from "@/pages/PromotionManagement";
 import NewsPage from "@/pages/NewsPage";
 import NotificationManagement from "@/pages/NotificationManagement";
-import ViewManagement from "@/pages/ViewManagement";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +42,6 @@ const App = () => (
           <Route path="/promotions" element={<PromotionManagement />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/notifications" element={<NotificationManagement />} />
-          <Route path="/view-management" element={<ViewManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
