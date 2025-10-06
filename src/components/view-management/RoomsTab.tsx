@@ -16,11 +16,11 @@ const initialRooms: RoomRowData[] = [
   {
     id: "RM1020",
     code: "RM1020",
-    title: "Phòng 21 – Hình học không gian – góc & khoảng cách",
+    title: "Toán - Tổ hợp & Xác suất: Hoán vị, chỉnh hợp và ứng dụng",
     datetime: "25/09/2025 00:50",
-    course: "Vật lý 12 2025",
-    courseSub: "Hình học không gian – góc & khoảng cách",
-    owner: "Phạm Chi",
+    course: "Toán 12 - Luyện thi ĐH",
+    courseSub: "Tổ hợp & Xác suất",
+    owner: "Thầy Nguyễn",
     status: "running",
     ccu: 556,
     participants: 74,
@@ -29,11 +29,11 @@ const initialRooms: RoomRowData[] = [
   {
     id: "RM1017",
     code: "RM1017",
-    title: "Phòng 18 – Cloze test – collocations",
+    title: "Toán - Hàm số: Tiệm cận, khảo sát đồ thị nâng cao",
     datetime: "07/10/2025 00:50",
-    course: "Vật lý 12 2025",
-    courseSub: "Hình học không gian – góc & khoảng cách",
-    owner: "Phạm Chi",
+    course: "Toán 12 - Luyện thi ĐH",
+    courseSub: "Hàm số & Ứng dụng",
+    owner: "Cô Trần",
     status: "running",
     ccu: 514,
     participants: 10,
@@ -42,11 +42,11 @@ const initialRooms: RoomRowData[] = [
   {
     id: "RM1006",
     code: "RM1006",
-    title: "Phòng 7 – Hình học không gian – góc & khoảng cách",
+    title: "Vật Lý - Điện xoay chiều: Mạch RLC và hiện tượng cộng hưởng",
     datetime: "03/10/2025 00:50",
-    course: "Hoá học 12 2025",
-    courseSub: "Este – xà phòng hóa",
-    owner: "Lê Duy",
+    course: "Vật Lý 12 - Luyện thi ĐH",
+    courseSub: "Điện xoay chiều",
+    owner: "Thầy Phúc",
     status: "running",
     ccu: 454,
     participants: 97,
@@ -55,15 +55,41 @@ const initialRooms: RoomRowData[] = [
   {
     id: "RM1005",
     code: "RM1005",
-    title: "Phòng 6 – Cloze test – collocations",
+    title: "Vật Lý - Dao động & Sóng: Bài toán dao động điều hòa",
     datetime: "29/09/2025 00:50",
-    course: "Vật lý 12 2025",
-    courseSub: "Hình học không gian – góc & khoảng cách",
-    owner: "Trần Bình",
+    course: "Vật Lý 12 - Luyện thi ĐH",
+    courseSub: "Dao động & Sóng",
+    owner: "Thầy Lâm",
     status: "running",
     ccu: 427,
     participants: 104,
     messages: 4030,
+  },
+  {
+    id: "RM1009",
+    code: "RM1009",
+    title: "Hóa Học - Hữu cơ: Este, ancol và phản ứng tạo thành",
+    datetime: "20/09/2025 19:00",
+    course: "Hóa 12 - Luyện thi ĐH",
+    courseSub: "Hữu cơ - Este",
+    owner: "Cô Mai",
+    status: "running",
+    ccu: 338,
+    participants: 5,
+    messages: 2992,
+  },
+  {
+    id: "RM1012",
+    code: "RM1012",
+    title: "Hóa Học - Vật liệu & Polime: Tính chất và điều chế",
+    datetime: "18/09/2025 18:30",
+    course: "Hóa 12 - Luyện thi ĐH",
+    courseSub: "Polime & vật liệu",
+    owner: "Thầy Huy",
+    status: "running",
+    ccu: 290,
+    participants: 111,
+    messages: 3351,
   },
 ];
 
@@ -86,7 +112,6 @@ const RoomsTab: React.FC = () => {
         // simple course filter by code
         if (!r.course?.toLowerCase().includes(course.replace(/\d+/g, "").trim())) {
           // naive match, keep for demo
-          // allow "toan12"/"vatly12" from Filters options mapping in future
         }
       }
       if (!q) return true;
