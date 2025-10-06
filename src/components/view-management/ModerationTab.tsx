@@ -228,6 +228,17 @@ const ModerationTab: React.FC = () => {
     toast.success(`Đã chặn ${email} (demo).`);
   };
 
+  // Derive the moderation items for the left list (fix for undefined modItems)
+  const modItems: ModerationItem[] = flaggedItems.map((r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    time: r.time,
+    reason: r.reason,
+    message: r.message,
+    reportedBy: r.reportedBy,
+  }));
+
   return (
     <div className="space-y-6">
       <ModerationStats items={statItems} onSelect={(id) => setSelectedStat(id)} selectedId={selectedStat} />
