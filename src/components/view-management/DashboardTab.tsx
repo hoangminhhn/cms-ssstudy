@@ -3,7 +3,6 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, MessageSquare, Clock, Bell } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 type StatProps = {
   icon: React.ElementType;
@@ -63,7 +62,7 @@ const DashboardTab: React.FC = () => {
           icon={Bell}
           label="Cảnh báo 24h"
           value={2}
-          meta="Spam/vi phạm"
+          meta="vi phạm"
         />
       </div>
     </section>
