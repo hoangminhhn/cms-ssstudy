@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { FileText, Plus, Server } from 'lucide-react';
+import { FileText, Plus } from 'lucide-react';
 
 interface SubMenuItem {
   id: string;
@@ -13,7 +13,6 @@ interface SubMenuItem {
 const subMenuItems: SubMenuItem[] = [
   { id: 'all-documents', label: 'Tất cả tài liệu', icon: FileText, path: '/documents?tab=all-documents' },
   { id: 'add-document', label: 'Thêm mới tài liệu', icon: Plus, path: '/documents?tab=add-document' },
-  { id: 'shared-rooms', label: 'Quản lý xem chung', icon: Server, path: '/documents?tab=shared-rooms' }, // new
 ];
 
 const DocumentsSubMenu: React.FC = () => {
