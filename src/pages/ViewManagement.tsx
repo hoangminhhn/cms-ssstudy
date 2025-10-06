@@ -54,7 +54,7 @@ const ViewManagementPage: React.FC = () => {
                   Danh sách phòng
                 </TabsTrigger>
                 <TabsTrigger value="moderation" className="min-w-[160px]">
-                  Moderation
+                  Kiểm duyệt
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="min-w-[160px]">
                   Báo cáo

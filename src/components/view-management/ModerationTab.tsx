@@ -37,7 +37,7 @@ const ModerationTab: React.FC = () => {
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>Moderation - Báo cáo</CardTitle>
+          <CardTitle>Kiểm duyệt</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
