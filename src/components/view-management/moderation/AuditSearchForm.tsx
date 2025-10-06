@@ -5,10 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { DateRangePicker } from "@/components/DateRangePicker" as DRPicker; // placeholder import to avoid type errors if unused
 import { toast } from "sonner";
 import { Calendar } from "lucide-react";
-import { DateRangePicker as DR } from "@/components/DateRangePicker";
 
 interface AuditFilters {
   email?: string;
