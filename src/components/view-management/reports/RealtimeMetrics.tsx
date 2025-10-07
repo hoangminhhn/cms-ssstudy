@@ -1,17 +1,18 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BusinessHeader from "@/components/view-management/business/BusinessHeader";
 import BusinessStatsGrid from "@/components/view-management/business/BusinessStatsGrid";
 import BusinessSectionTabs from "@/components/view-management/business/BusinessSectionTabs";
-import RetentionAndValueSection from "./RetentionAndValueSection";
+import RetentionChart from "./RetentionChart";
+import RetentionStatsCards from "./RetentionStatsCards";
+import RetentionInsights from "./RetentionInsights";
 
 /**
  * RealtimeMetrics
- * Adds the requested Section 1 (business overview) using small components.
- * Section 2 (Top Videos / Conversion / ROI) implemented via BusinessSectionTabs.
- * Section 3 (Retention & Value) added as requested underneath Section 2.
+ * - Business card: BusinessHeader + BusinessStatsGrid + BusinessSectionTabs
+ * - Separate Card (below) for Retention & Giá trị học sinh (RetentionChart + stats + insights)
  */
 
 const RealtimeMetrics: React.FC = () => {
@@ -29,9 +30,19 @@ const RealtimeMetrics: React.FC = () => {
 
           {/* Section 2: Tabs - Top Videos / Conversion Funnel / ROI Analysis */}
           <BusinessSectionTabs />
+        </CardContent>
+      </Card>
 
-          {/* Section 3: Retention & Value (chart + stats + insights) */}
-          <RetentionAndValueSection />
+      {/* NEW: Separate Card for Retention & Value (not inside the Business card) */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Retention & Giá trị học sinh</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Use the three components so they remain easy to edit separately */}
+          <RetentionChart />
+          <RetentionStatsCards />
+          <RetentionInsights />
         </CardContent>
       </Card>
 
