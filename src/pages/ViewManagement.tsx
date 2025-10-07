@@ -3,17 +3,28 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import DashboardTab from "@/components/view-management/DashboardTab";
-import RoomsTab from "@/components/view-management/RoomsTab";
-import ModerationTab from "@/components/view-management/ModerationTab";
-import ReportsTab from "@/components/view-management/ReportsTab";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Settings } from "lucide-react";
 import { toast } from "sonner";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
+const NavItem: React.FC<{ to: string; label: string }> = ({ to, label }) => {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `px-3 py-2 rounded-md text-sm font-medium ${isActive ? "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"}`
+      }
+    >
+      {label}
+    </NavLink>
+  );
+};
+
 const ViewManagementPage: React.FC = () => {
+  const location = useLocation();
+
   const handleExportCsv = () => {
     toast.success("Xuất CSV (demo).");
   };
@@ -44,41 +55,25 @@ const ViewManagementPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Submenu */}
           <div className="bg-white rounded-md border p-3">
-            <Tabs defaultValue="dashboard">
-              <TabsList>
-                <TabsTrigger value="dashboard" className="min-w-[160px]">
-                  Dashboard
-                </TabsTrigger>
-                <TabsTrigger value="rooms" className="min-w-[160px]">
-                  Danh sách phòng
-                </TabsTrigger>
-                <TabsTrigger value="moderation" className="min-w-[160px]">
-                  Kiểm duyệt
-                </TabsTrigger>
-                <TabsTrigger value="reports" className="min-w-[160px]">
-                  Báo cáo
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <nav className="flex gap-2 overflow-auto">
+                <NavItem to="/view-management/dashboard" label="Dashboard" />
+                <NavItem to="/view-management/rooms" label="Danh sách phòng" />
+                <NavItem to="/view-management/moderation" label="Kiểm duyệt" />
+                <NavItem to="/view-management/reports" label="Báo cáo" />
+              </nav>
 
-              <div className="mt-4">
-                <TabsContent value="dashboard">
-                  <DashboardTab />
-                </TabsContent>
-
-                <TabsContent value="rooms">
-                  <RoomsTab />
-                </TabsContent>
-
-                <TabsContent value="moderation">
-                  <ModerationTab />
-                </TabsContent>
-
-                <TabsContent value="reports">
-                  <ReportsTab />
-                </TabsContent>
+              <div className="hidden md:block">
+                <div className="text-sm text-muted-foreground">{location.pathname.replace("/view-management/", "") || "dashboard"}</div>
               </div>
-            </Tabs>
+            </div>
+
+            {/* Render child route content here */}
+            <div className="mt-4">
+              <Outlet />
+            </div>
           </div>
         </div>
 

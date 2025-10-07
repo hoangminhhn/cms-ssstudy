@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookManagement from "@/pages/BookManagement";
@@ -19,6 +19,10 @@ import PromotionManagement from "@/pages/PromotionManagement";
 import NewsPage from "@/pages/NewsPage";
 import NotificationManagement from "@/pages/NotificationManagement";
 import ViewManagementPage from "@/pages/ViewManagement";
+import DashboardTab from "@/components/view-management/DashboardTab";
+import RoomsTab from "@/components/view-management/RoomsTab";
+import ModerationTab from "@/components/view-management/ModerationTab";
+import ReportsTab from "@/components/view-management/ReportsTab";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +47,16 @@ const App = () => (
           <Route path="/promotions" element={<PromotionManagement />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/notifications" element={<NotificationManagement />} />
-          <Route path="/view-management" element={<ViewManagementPage />} />
+
+          {/* View Management with child routes replacing the old tabs */}
+          <Route path="/view-management" element={<ViewManagementPage />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardTab />} />
+            <Route path="rooms" element={<RoomsTab />} />
+            <Route path="moderation" element={<ModerationTab />} />
+            <Route path="reports" element={<ReportsTab />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
