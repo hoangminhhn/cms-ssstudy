@@ -1,19 +1,13 @@
 "use client";
 
 import React from "react";
-import RetentionChart from "./RetentionChart";
-import RetentionStats from "./RetentionStats";
+import RetentionTable from "./RetentionTable";
 import FinancialImpactBox from "./FinancialImpactBox";
 
 /**
- * FreemiumRetentionSection
- * Section 3 under "Phân tích Video Miễn phí"
- * - title + top-right pill (summary)
- * - retention chart
- * - three retention stat cards
- * - financial impact box
- *
- * This component groups related pieces so it's easy to replace/extend individually.
+ * FreemiumRetentionSection (table variant)
+ * - Renders a separate retention table (component RetentionTable) as requested.
+ * - Keeps the financial impact box below.
  */
 
 const FreemiumRetentionSection: React.FC = () => {
@@ -31,10 +25,10 @@ const FreemiumRetentionSection: React.FC = () => {
       </div>
 
       <div className="bg-white dark:bg-gray-900 border rounded-lg p-4">
-        <RetentionChart />
-        <div className="mt-4">
-          <RetentionStats />
-        </div>
+        {/* The retention data is intentionally presented as a dedicated table component */}
+        <RetentionTable />
+
+        {/* Keep the financial impact box as explanatory content */}
         <FinancialImpactBox />
       </div>
     </section>
