@@ -1,5 +1,3 @@
-// NOTE: This file is based on the existing Sidebar component with a minor removal:
-// - Removed the duplicate NavItem for "Thông báo (chung)" linking to /notifications
 import React from 'react';
 import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, ShoppingCart, Gift, Newspaper, Bell, Settings, DollarSign, CreditCard, Repeat2, ChevronDown, ChevronUp, FileText as FileTextIcon, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -84,6 +82,8 @@ const Sidebar: React.FC = () => {
       setOpenSubMenu('news');
     } else if (location.pathname.startsWith('/notifications')) {
       setOpenSubMenu('notifications');
+    } else if (location.pathname.startsWith('/view-management')) {
+      setOpenSubMenu('view-management');
     } else {
       setOpenSubMenu(null);
     }
@@ -166,13 +166,71 @@ const Sidebar: React.FC = () => {
             />
             {openSubMenu === 'documents' && <DocumentsSubMenu />}
 
-            {/* New item: Quản lý xem chung (placed under Documents) */}
-            <NavItem
-              icon={Eye}
-              label="Quản lý xem chung"
-              to="/view-management"
-              isActive={location.pathname.startsWith('/view-management')}
-            />
+            {/* Quản lý xem chung parent with submenu links to the four child pages */}
+            <div>
+              <div
+                onClick={() => handleParentClick('view-management')}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 cursor-pointer transition-all",
+                  "text-gray-900 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800",
+                  location.pathname.startsWith('/view-management') && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                )}
+              >
+                <Eye className="h-5 w-5" />
+                Quản lý xem chung
+                {openSubMenu === 'view-management' ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
+              </div>
+
+              {openSubMenu === 'view-management' && (
+                <div className="ml-4 border-l border-gray-200 dark:border-gray-700 pl-2 py-1">
+                  <nav className="grid items-start text-sm font-medium gap-1">
+                    <Link
+                      to="/view-management/dashboard"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        location.pathname === '/view-management/dashboard' && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                      )}
+                    >
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+
+                    <Link
+                      to="/view-management/rooms"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        location.pathname.startsWith('/view-management/rooms') && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                      )}
+                    >
+                      <FileText className="h-4 w-4" />
+                      Danh sách phòng
+                    </Link>
+
+                    <Link
+                      to="/view-management/moderation"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        location.pathname.startsWith('/view-management/moderation') && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                      )}
+                    >
+                      <Shield className="h-4 w-4" />
+                      Kiểm duyệt
+                    </Link>
+
+                    <Link
+                      to="/view-management/reports"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        location.pathname.startsWith('/view-management/reports') && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
+                      )}
+                    >
+                      <FileTextIcon className="h-4 w-4" />
+                      Báo cáo
+                    </Link>
+                  </nav>
+                </div>
+              )}
+            </div>
 
             {/* Members parent with submenu */}
             <NavItem
