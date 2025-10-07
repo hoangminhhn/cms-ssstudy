@@ -5,11 +5,13 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import BusinessHeader from "@/components/view-management/business/BusinessHeader";
 import BusinessStatsGrid from "@/components/view-management/business/BusinessStatsGrid";
 import BusinessSectionTabs from "@/components/view-management/business/BusinessSectionTabs";
+import RetentionAndValueSection from "./RetentionAndValueSection";
 
 /**
  * RealtimeMetrics
  * Adds the requested Section 1 (business overview) using small components.
  * Section 2 (Top Videos / Conversion / ROI) implemented via BusinessSectionTabs.
+ * Section 3 (Retention & Value) added as requested underneath Section 2.
  */
 
 const RealtimeMetrics: React.FC = () => {
@@ -27,6 +29,9 @@ const RealtimeMetrics: React.FC = () => {
 
           {/* Section 2: Tabs - Top Videos / Conversion Funnel / ROI Analysis */}
           <BusinessSectionTabs />
+
+          {/* Section 3: Retention & Value (chart + stats + insights) */}
+          <RetentionAndValueSection />
         </CardContent>
       </Card>
 
