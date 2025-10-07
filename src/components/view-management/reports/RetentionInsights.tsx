@@ -11,8 +11,8 @@ const RetentionInsights: React.FC<{ points?: string[] }> = ({ points }) => {
   ];
 
   return (
-    <div className="mt-4 bg-green-50 border border-green-100 rounded-md p-4">
-      <div className="flex items-center gap-3 mb-2">
+    <>
+      <div className="flex items-center gap-3 mb-2 mt-4">
         <div className="text-green-700 font-semibold">Tác động tài chính</div>
       </div>
 
@@ -21,7 +21,7 @@ const RetentionInsights: React.FC<{ points?: string[] }> = ({ points }) => {
           <li key={i}>{l}</li>
         ))}
       </ul>
-    </div>
+    </>
   );
 };
 
