@@ -8,15 +8,8 @@ import BusinessStatsGrid from "@/components/view-management/business/BusinessSta
 /**
  * RealtimeMetrics
  * Adds the requested Section 1 (business overview) using small components.
+ * RightPill removed per user request.
  */
-
-const RightPill: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div className="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-sm font-medium text-slate-800 dark:text-slate-100">
-      {children}
-    </div>
-  );
-};
 
 const RealtimeMetrics: React.FC = () => {
   return (
@@ -26,7 +19,6 @@ const RealtimeMetrics: React.FC = () => {
           <BusinessHeader
             title="Phân tích Video Miễn phí (Freemium Strategy)"
             subtitle="Đánh giá hiệu quả marketing & conversion"
-            rightPill={<RightPill>18% Conversion</RightPill>}
           />
         </CardHeader>
 
