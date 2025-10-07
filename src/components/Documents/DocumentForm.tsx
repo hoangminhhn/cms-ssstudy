@@ -124,10 +124,11 @@ const DocumentForm: React.FC<DocumentFormProps> = ({
               <Label>Khối lớp</Label>
               <Select value={classLevel} onValueChange={setClassLevel}>
                 <SelectTrigger className="w-full h-10">
-                  <SelectValue placeholder="Chọn khối lớp" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Chọn khối lớp</SelectItem>
+                  {/* Use a non-empty sentinel value for the placeholder to avoid Radix Select error */}
+                  <SelectItem value="none">Chọn khối lớp</SelectItem>
                   <SelectItem value="grade-1">Lớp 1</SelectItem>
                   <SelectItem value="grade-6">Lớp 6</SelectItem>
                   <SelectItem value="grade-10">Lớp 10</SelectItem>

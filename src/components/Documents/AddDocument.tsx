@@ -24,7 +24,8 @@ const AddDocument: React.FC = () => {
   const [content, setContent] = React.useState("");
   const [category, setCategory] = React.useState("");
   const [subject, setSubject] = React.useState("");
-  const [classLevel, setClassLevel] = React.useState("");
+  // default to sentinel "none" instead of empty string to avoid Select empty-value issues
+  const [classLevel, setClassLevel] = React.useState<string>("none");
   // cover
   const [coverPreview, setCoverPreview] = React.useState<string | null>(null);
   // config
