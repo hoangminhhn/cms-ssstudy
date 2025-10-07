@@ -3,22 +3,34 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import FolderSidebar from "@/components/file-management/FolderSidebar";
+import HeaderBar from "@/components/file-management/HeaderBar";
+import FiltersBar from "@/components/file-management/FiltersBar";
+import FileGridEmpty from "@/components/file-management/FileGridEmpty";
 
 const FileManagement: React.FC = () => {
   return (
     <Layout headerTitle="Quản lý tập tin">
-      <div className="flex flex-col gap-6 w-full overflow-x-hidden">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quản lý tập tin</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm text-muted-foreground">
-              Trang quản lý tập tin đã được tạo. Bạn có thể thêm chức năng tải lên, phân loại, tìm kiếm, và quản lý các tệp tại đây. Hiện tại đây là placeholder — hãy cập nhật chức năng cần thiết sau.
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex gap-6 w-full">
+        {/* Left sidebar */}
+        <div className="shrink-0">
+          <FolderSidebar />
+        </div>
+
+        {/* Main content */}
+        <div className="flex-1">
+          <div className="mb-6">
+            <HeaderBar />
+          </div>
+
+          <div className="mb-6">
+            <FiltersBar />
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 border rounded-md min-h-[420px] p-8">
+            <FileGridEmpty />
+          </div>
+        </div>
       </div>
 
       <MadeWithDyad />
