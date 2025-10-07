@@ -4,12 +4,16 @@ import React from "react";
 import TrendRealtimeStats from "./TrendRealtimeStats";
 import ActivityTrendSection from "./ActivityTrendSection";
 import TopVideosAndRoomDistribution from "./TopVideosAndRoomDistribution";
+import TrendInsights from "./TrendInsights";
 
 /**
  * TrendMetrics
- * - Section 1: Real-time stats (implemented in TrendRealtimeStats)
- * - Section 2: Activity trend chart + summary cards (ActivityTrendSection)
+ * - Section 1: Real-time stats (TrendRealtimeStats)
+ * - Section 2: Activity trend (ActivityTrendSection)
  * - Section 3: Top videos + room distribution (TopVideosAndRoomDistribution)
+ * - Section 4: Insights (TrendInsights)
+ *
+ * Each section is a separate component to allow easy updates.
  */
 
 const TrendMetrics: React.FC = () => {
@@ -24,7 +28,10 @@ const TrendMetrics: React.FC = () => {
       {/* Section 3: Top 5 + Room distribution */}
       <TopVideosAndRoomDistribution />
 
-      {/* Placeholder for additional sections (charts, trends) */}
+      {/* Section 4: Insights panel (pale cyan card) */}
+      <TrendInsights />
+
+      {/* Placeholder for additional sections */}
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded border p-4">
           <div className="text-sm text-muted-foreground">Additional trend widgets will be placed here.</div>
