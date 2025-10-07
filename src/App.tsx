@@ -23,6 +23,7 @@ import DashboardTab from "@/components/view-management/DashboardTab";
 import RoomsTab from "@/components/view-management/RoomsTab";
 import ModerationTab from "@/components/view-management/ModerationTab";
 import ReportsTab from "@/components/view-management/ReportsTab";
+import FileManagement from "@/pages/FileManagement";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="rooms" element={<RoomsTab />} />
             <Route path="moderation" element={<ModerationTab />} />
             <Route path="reports" element={<ReportsTab />} />
+            <Route path="files" element={<FileManagement />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
