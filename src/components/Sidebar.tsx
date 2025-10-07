@@ -225,7 +225,7 @@ const Sidebar: React.FC = () => {
                       )}
                     >
                       <FileTextIcon className="h-4 w-4" />
-                      Báo cáo
+                      Báo cáo xem chung
                     </Link>
                   </nav>
                 </div>
