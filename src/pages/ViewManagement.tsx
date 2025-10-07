@@ -60,8 +60,7 @@ const ViewManagementPage: React.FC = () => {
           <div className="bg-white rounded-md border p-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="relative flex-1 w-full md:w-auto">
-                {/* kept the search area for context; submenu links removed */}
-                <div className="text-sm text-muted-foreground">Sidebar contains links to Dashboard / Rooms / Moderation / Reports; submenu tabs removed.</div>
+                {/* submenu links removed */}
               </div>
 
               <div className="hidden md:block">
