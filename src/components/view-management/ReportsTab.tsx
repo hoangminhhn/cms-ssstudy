@@ -9,8 +9,8 @@ import TrendMetrics from "./reports/TrendMetrics";
 /**
  * ReportsTab
  * Shows two tabs:
- *  - "Giá trị kinh doanh / Real-time"  -> RealtimeMetrics component
- *  - "Xu hướng"                        -> TrendMetrics component
+ *  - "Giá trị kinh doanh"  -> RealtimeMetrics component
+ *  - "Real-time và Xu hướng" -> TrendMetrics component
  *
  * Components are kept separate for easier maintenance and future updates.
  */
@@ -25,8 +25,8 @@ const ReportsTab: React.FC = () => {
         <CardContent>
           <Tabs defaultValue="realtime">
             <TabsList className="border-b mb-4">
-              <TabsTrigger value="realtime">Giá trị kinh doanh / Real-time</TabsTrigger>
-              <TabsTrigger value="trend">Xu hướng</TabsTrigger>
+              <TabsTrigger value="realtime">Giá trị kinh doanh</TabsTrigger>
+              <TabsTrigger value="trend">Real-time và Xu hướng</TabsTrigger>
             </TabsList>
 
             <TabsContent value="realtime" className="p-0">
