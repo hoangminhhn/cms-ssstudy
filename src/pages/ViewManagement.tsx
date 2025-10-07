@@ -55,22 +55,21 @@ const ViewManagementPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Submenu */}
+          {/* Submenu area removed per request — sidebar still contains the navigation to these pages */}
+
           <div className="bg-white rounded-md border p-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <nav className="flex gap-2 overflow-auto">
-                <NavItem to="/view-management/dashboard" label="Dashboard" />
-                <NavItem to="/view-management/rooms" label="Danh sách phòng" />
-                <NavItem to="/view-management/moderation" label="Kiểm duyệt" />
-                <NavItem to="/view-management/reports" label="Báo cáo" />
-              </nav>
+              <div className="relative flex-1 w-full md:w-auto">
+                {/* kept the search area for context; submenu links removed */}
+                <div className="text-sm text-muted-foreground">Sidebar contains links to Dashboard / Rooms / Moderation / Reports; submenu tabs removed.</div>
+              </div>
 
               <div className="hidden md:block">
                 <div className="text-sm text-muted-foreground">{location.pathname.replace("/view-management/", "") || "dashboard"}</div>
               </div>
             </div>
 
-            {/* Render child route content here */}
+            {/* Keep Outlet so child routes render as before */}
             <div className="mt-4">
               <Outlet />
             </div>
