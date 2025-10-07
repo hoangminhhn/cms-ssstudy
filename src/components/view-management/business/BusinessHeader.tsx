@@ -1,20 +1,19 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
 
 interface BusinessHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: string; // kept for compatibility, but not used directly
   rightPill?: React.ReactNode;
 }
 
-const BusinessHeader: React.FC<BusinessHeaderProps> = ({ title, subtitle, rightPill }) => {
+const BusinessHeader: React.FC<BusinessHeaderProps> = ({ title, rightPill }) => {
   return (
     <div className="flex items-start justify-between w-full">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-        {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+        <p className="text-sm text-muted-foreground mt-1">Đánh giá hiệu quả phòng xem chung miễn phí</p>
       </div>
 
       {rightPill ? (
