@@ -132,16 +132,6 @@ const AuditSearchForm: React.FC<AuditSearchFormProps> = ({ onSearch, showClear =
           {warning}
         </div>
       )}
-
-      <div className="mt-4 p-3 rounded border bg-blue-50">
-        <div className="flex items-center gap-2 font-medium mb-2">💡 Hướng dẫn sử dụng</div>
-        <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-          <li><strong>Audit người dùng:</strong> Nhập email hoặc số điện thoại để xem toàn bộ tin nhắn của người đó</li>
-          <li><strong>Xem chat khóa học:</strong> Chọn khóa học để xem lịch sử chat trong khóa đó</li>
-          <li><strong>Khoảng thời gian:</strong> Thêm từ/đến ngày để thu hẹp kết quả</li>
-          <li><strong>Trạng thái:</strong> Lọc theo tin nhắn đã vi phạm hoặc đã xử lý</li>
-        </ul>
-      </div>
     </div>
   );
 };
