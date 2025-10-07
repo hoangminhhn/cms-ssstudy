@@ -1,80 +1,99 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
+"use client";
 
-const subjects = ["Toán", "Văn", "Tiếng Anh", "Vật Lý", "Hóa"];
+import React from "react";
+import DocumentForm from "@/components/documents/DocumentForm";
+import CoverUploader from "@/components/documents/CoverUploader";
+import ConfigPanel from "@/components/documents/ConfigPanel";
+import FileDropzone from "@/components/documents/FileDropzone";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MadeWithDyad } from "@/components/made-with-dyad";
+
+/**
+ * Page-level component composes multiple small components:
+ * - left: DocumentForm + FileDropzone
+ * - right: CoverUploader + ConfigPanel
+ *
+ * It keeps the state and passes handlers down to child components.
+ */
 
 const AddDocument: React.FC = () => {
+  // form state
   const [title, setTitle] = React.useState("");
-  const [teacher, setTeacher] = React.useState("");
-  const [subject, setSubject] = React.useState(subjects[0]);
-  const [className, setClassName] = React.useState("");
-  const [fileUrl, setFileUrl] = React.useState("");
-  const handleSave = () => {
-    if (!title.trim()) {
-      toast.error("Vui lòng nhập tiêu đề tài liệu.");
-      return;
-    }
-    toast.success("Tài liệu đã được thêm (demo).");
-    setTitle("");
-    setTeacher("");
-    setClassName("");
-    setFileUrl("");
-    setSubject(subjects[0]);
+  const [slug, setSlug] = React.useState("");
+  const [shortDesc, setShortDesc] = React.useState("");
+  const [content, setContent] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [subject, setSubject] = React.useState("");
+  const [classLevel, setClassLevel] = React.useState("");
+  // cover
+  const [coverPreview, setCoverPreview] = React.useState<string | null>(null);
+  // config
+  const [displayMode, setDisplayMode] = React.useState<string>("free");
+  const [allowFiles, setAllowFiles] = React.useState<boolean>(true);
+  // files attachments
+  const [files, setFiles] = React.useState<File[]>([]);
+
+  const handleCreate = () => {
+    // Demo payload
+    const payload = {
+      title,
+      slug,
+      shortDesc,
+      content,
+      category,
+      subject,
+      classLevel,
+      displayMode,
+      allowFiles,
+      attachments: files.map((f) => ({ name: f.name, size: f.size })),
+      hasCover: !!coverPreview,
+    };
+    // In real app you'd call API; here we just console and toast
+    // eslint-disable-next-line no-console
+    console.log("Create document payload:", payload);
+    alert("Tạo tài liệu (demo). Kiểm tra console để xem payload.");
   };
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Thêm mới tài liệu</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Tên tài liệu</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div>
-              <Label>Giáo viên</Label>
-              <Input value={teacher} onChange={(e) => setTeacher(e.target.value)} />
-            </div>
-            <div>
-              <Label>Môn học</Label>
-              <Select value={subject} onValueChange={setSubject}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {subjects.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Lớp học</Label>
-              <Input value={className} onChange={(e) => setClassName(e.target.value)} />
-            </div>
-            <div className="md:col-span-2">
-              <Label>Link / File</Label>
-              <Input value={fileUrl} onChange={(e) => setFileUrl(e.target.value)} placeholder="Nhập URL hoặc đường dẫn file" />
-            </div>
-            <div className="md:col-span-2">
-              <Label>Mô tả</Label>
-              <Textarea value={""} onChange={() => {}} placeholder="Mô tả (demo)" />
-            </div>
-          </div>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
+        {/* Left column */}
+        <div className="space-y-6">
+          <DocumentForm
+            title={title}
+            setTitle={setTitle}
+            slug={slug}
+            setSlug={setSlug}
+            shortDesc={shortDesc}
+            setShortDesc={setShortDesc}
+            content={content}
+            setContent={setContent}
+            category={category}
+            setCategory={setCategory}
+            subject={subject}
+            setSubject={setSubject}
+            classLevel={classLevel}
+            setClassLevel={setClassLevel}
+          />
 
-          <div className="mt-4 flex justify-end gap-2">
-            <Button variant="outline">HỦY</Button>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>LƯU</Button>
-          </div>
-        </CardContent>
-      </Card>
+          <FileDropzone files={files} setFiles={setFiles} />
+        </div>
+
+        {/* Right column */}
+        <aside className="space-y-4">
+          <CoverUploader coverPreview={coverPreview} setCoverPreview={setCoverPreview} />
+
+          <ConfigPanel
+            displayMode={displayMode}
+            setDisplayMode={setDisplayMode}
+            allowFiles={allowFiles}
+            setAllowFiles={setAllowFiles}
+            onCreate={handleCreate}
+          />
+        </aside>
+      </div>
+
+      <MadeWithDyad />
     </div>
   );
 };
