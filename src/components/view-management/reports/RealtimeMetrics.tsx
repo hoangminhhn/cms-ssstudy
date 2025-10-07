@@ -4,11 +4,12 @@ import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import BusinessHeader from "@/components/view-management/business/BusinessHeader";
 import BusinessStatsGrid from "@/components/view-management/business/BusinessStatsGrid";
+import BusinessSectionTabs from "@/components/view-management/business/BusinessSectionTabs";
 
 /**
  * RealtimeMetrics
  * Adds the requested Section 1 (business overview) using small components.
- * RightPill removed per user request.
+ * Section 2 (Top Videos / Conversion / ROI) implemented via BusinessSectionTabs.
  */
 
 const RealtimeMetrics: React.FC = () => {
@@ -18,12 +19,14 @@ const RealtimeMetrics: React.FC = () => {
         <CardHeader className="pb-0">
           <BusinessHeader
             title="Phân tích Video Miễn phí (Freemium Strategy)"
-            subtitle="Đánh giá hiệu quả marketing & conversion"
           />
         </CardHeader>
 
         <CardContent>
           <BusinessStatsGrid />
+
+          {/* Section 2: Tabs - Top Videos / Conversion Funnel / ROI Analysis */}
+          <BusinessSectionTabs />
         </CardContent>
       </Card>
 
