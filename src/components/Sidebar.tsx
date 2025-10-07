@@ -227,22 +227,18 @@ const Sidebar: React.FC = () => {
                       <FileTextIcon className="h-4 w-4" />
                       Báo cáo xem chung
                     </Link>
-
-                    {/* New link: Quản lý tập tin */}
-                    <Link
-                      to="/view-management/files"
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
-                        location.pathname.startsWith('/view-management/files') && "bg-orange-100 text-orange-600 dark:bg-orange-800 dark:text-orange-50"
-                      )}
-                    >
-                      <FileTextIcon className="h-4 w-4" />
-                      Quản lý tập tin
-                    </Link>
                   </nav>
                 </div>
               )}
             </div>
+
+            {/* Top-level File Management item (sibling of 'Quản lý xem chung') */}
+            <NavItem
+              icon={FileTextIcon}
+              label="Quản lý tập tin"
+              to="/file-management"
+              isActive={location.pathname.startsWith('/file-management')}
+            />
 
             {/* Members parent with submenu */}
             <NavItem

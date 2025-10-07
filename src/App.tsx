@@ -49,15 +49,18 @@ const App = () => (
           <Route path="/news" element={<NewsPage />} />
           <Route path="/notifications" element={<NotificationManagement />} />
 
-          {/* View Management with child routes replacing the old tabs */}
+          {/* View Management with child routes (dashboard, rooms, moderation, reports) */}
           <Route path="/view-management" element={<ViewManagementPage />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardTab />} />
             <Route path="rooms" element={<RoomsTab />} />
             <Route path="moderation" element={<ModerationTab />} />
             <Route path="reports" element={<ReportsTab />} />
-            <Route path="files" element={<FileManagement />} />
+            {/* removed nested files route so FileManagement is a top-level page */}
           </Route>
+
+          {/* File management as top-level route (sibling of View Management) */}
+          <Route path="/file-management" element={<FileManagement />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
