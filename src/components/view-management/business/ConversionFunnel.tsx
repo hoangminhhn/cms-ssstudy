@@ -3,9 +3,12 @@
 import React from "react";
 import FunnelChart, { FunnelDatum } from "./FunnelChart";
 import FunnelStats from "./FunnelStats";
-import RetentionChart from "./RetentionChart";
-import RetentionStats from "./RetentionStats";
-import FinancialImpactBox from "./FinancialImpactBox";
+
+/**
+ * ConversionFunnel (focused)
+ * - only shows the funnel chart and the three conversion stat cards.
+ * - retention and financial commentary have been moved to a separate FreemiumRetentionSection.
+ */
 
 const SAMPLE_DATA: FunnelDatum[] = [
   { name: "Xem video miễn phí", value: 1000, color: "#3b82f6" },
@@ -44,30 +47,6 @@ const ConversionFunnel: React.FC<{ data?: FunnelDatum[] }> = ({ data = SAMPLE_DA
             s34: "mua khóa học",
           }}
         />
-      </div>
-
-      {/* Retention section */}
-      <div className="mt-4 bg-white dark:bg-gray-900 border rounded-lg p-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Retention & Giá trị học sinh</h4>
-            <p className="text-xs text-muted-foreground mt-1">Giữ chân học sinh hiệu quả hơn</p>
-          </div>
-
-          <div>
-            <span className="inline-block bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm">-28% Churn</span>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <RetentionChart />
-        </div>
-
-        <div className="mt-4">
-          <RetentionStats />
-        </div>
-
-        <FinancialImpactBox />
       </div>
     </section>
   );
