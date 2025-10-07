@@ -62,10 +62,6 @@ const ViewManagementPage: React.FC = () => {
               <div className="relative flex-1 w-full md:w-auto">
                 {/* submenu links removed */}
               </div>
-
-              <div className="hidden md:block">
-                <div className="text-sm text-muted-foreground">{location.pathname.replace("/view-management/", "") || "dashboard"}</div>
-              </div>
             </div>
 
             {/* Keep Outlet so child routes render as before */}
