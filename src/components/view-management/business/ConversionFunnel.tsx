@@ -5,9 +5,13 @@ import FunnelChart, { FunnelDatum } from "./FunnelChart";
 import FunnelStats from "./FunnelStats";
 
 /**
- * ConversionFunnel (focused)
- * - only shows the funnel chart and the three conversion stat cards.
- * - retention and financial commentary have been moved to a separate FreemiumRetentionSection.
+ * ConversionFunnel
+ * Composition component that renders:
+ *  - Title
+ *  - FunnelChart (horizontal bars)
+ *  - FunnelStats (three conversion percentage cards)
+ *
+ * Data is provided as sample by default; replace with real metrics as needed.
  */
 
 const SAMPLE_DATA: FunnelDatum[] = [
@@ -34,7 +38,7 @@ const ConversionFunnel: React.FC<{ data?: FunnelDatum[] }> = ({ data = SAMPLE_DA
   const rates = computeRates(data);
 
   return (
-    <section className="space-y-6">
+    <section>
       <h4 className="text-sm font-medium text-gray-800 dark:text-gray-100">Conversion Funnel - Free Users</h4>
 
       <div className="mt-3 bg-white dark:bg-gray-900 border rounded-lg p-4">

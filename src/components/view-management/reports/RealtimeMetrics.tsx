@@ -8,8 +8,8 @@ import BusinessSectionTabs from "@/components/view-management/business/BusinessS
 
 /**
  * RealtimeMetrics
- * Keeps focus on the "Phân tích Video Miễn phí" area (header, stats, tabs).
- * The retention region is intentionally not rendered here; it will be placed separately by the page/container.
+ * Adds the requested Section 1 (business overview) using small components.
+ * Section 2 (Top Videos / Conversion / ROI) implemented via BusinessSectionTabs.
  */
 
 const RealtimeMetrics: React.FC = () => {
@@ -30,7 +30,7 @@ const RealtimeMetrics: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Additional placeholders if needed */}
+      {/* keep the previous placeholders below the new section */}
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded border p-4">
           <div className="text-sm text-muted-foreground">Additional real-time widgets (placeholder)</div>
