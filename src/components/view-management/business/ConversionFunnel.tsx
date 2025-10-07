@@ -3,16 +3,9 @@
 import React from "react";
 import FunnelChart, { FunnelDatum } from "./FunnelChart";
 import FunnelStats from "./FunnelStats";
-
-/**
- * ConversionFunnel
- * Composition component that renders:
- *  - Title
- *  - FunnelChart (horizontal bars)
- *  - FunnelStats (three conversion percentage cards)
- *
- * Data is provided as sample by default; replace with real metrics as needed.
- */
+import RetentionChart from "./RetentionChart";
+import RetentionStats from "./RetentionStats";
+import FinancialImpactBox from "./FinancialImpactBox";
 
 const SAMPLE_DATA: FunnelDatum[] = [
   { name: "Xem video miễn phí", value: 1000, color: "#3b82f6" },
@@ -38,7 +31,7 @@ const ConversionFunnel: React.FC<{ data?: FunnelDatum[] }> = ({ data = SAMPLE_DA
   const rates = computeRates(data);
 
   return (
-    <section>
+    <section className="space-y-6">
       <h4 className="text-sm font-medium text-gray-800 dark:text-gray-100">Conversion Funnel - Free Users</h4>
 
       <div className="mt-3 bg-white dark:bg-gray-900 border rounded-lg p-4">
@@ -51,6 +44,30 @@ const ConversionFunnel: React.FC<{ data?: FunnelDatum[] }> = ({ data = SAMPLE_DA
             s34: "mua khóa học",
           }}
         />
+      </div>
+
+      {/* Retention section */}
+      <div className="mt-4 bg-white dark:bg-gray-900 border rounded-lg p-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Retention & Giá trị học sinh</h4>
+            <p className="text-xs text-muted-foreground mt-1">Giữ chân học sinh hiệu quả hơn</p>
+          </div>
+
+          <div>
+            <span className="inline-block bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm">-28% Churn</span>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <RetentionChart />
+        </div>
+
+        <div className="mt-4">
+          <RetentionStats />
+        </div>
+
+        <FinancialImpactBox />
       </div>
     </section>
   );
