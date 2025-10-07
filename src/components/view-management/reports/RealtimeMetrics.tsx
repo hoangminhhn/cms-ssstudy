@@ -5,15 +5,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import BusinessHeader from "@/components/view-management/business/BusinessHeader";
 import BusinessStatsGrid from "@/components/view-management/business/BusinessStatsGrid";
 import BusinessSectionTabs from "@/components/view-management/business/BusinessSectionTabs";
-import FreemiumRetentionSection from "@/components/view-management/business/FreemiumRetentionSection";
 
 /**
  * RealtimeMetrics
- * Composition:
- *  - BusinessHeader
- *  - BusinessStatsGrid
- *  - BusinessSectionTabs  (Section 2)
- *  - FreemiumRetentionSection (Section 3)
+ * Keeps focus on the "Phân tích Video Miễn phí" area (header, stats, tabs).
+ * The retention region is intentionally not rendered here; it will be placed separately by the page/container.
  */
 
 const RealtimeMetrics: React.FC = () => {
@@ -31,13 +27,10 @@ const RealtimeMetrics: React.FC = () => {
 
           {/* Section 2: Tabs - Top Videos / Conversion Funnel / ROI Analysis */}
           <BusinessSectionTabs />
-
-          {/* Section 3: Retention & Financial impact (moved here as requested) */}
-          <FreemiumRetentionSection />
         </CardContent>
       </Card>
 
-      {/* keep the previous placeholders below the new sections */}
+      {/* Additional placeholders if needed */}
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded border p-4">
           <div className="text-sm text-muted-foreground">Additional real-time widgets (placeholder)</div>
