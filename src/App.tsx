@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookManagement from "@/pages/BookManagement";
+import BookIdManagement from "@/pages/BookIdManagement";
 import ExamManagement from "@/pages/ExamManagement";
 import WordExamUploadPage from "@/pages/WordExamUploadPage";
 import ScoreReportPage from "@/pages/ScoreReportPage";
@@ -36,6 +37,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/books" element={<BookManagement />} />
+          <Route path="/books-id" element={<BookIdManagement />} />
           <Route path="/exams" element={<ExamManagement />} />
           <Route path="/word-exam-upload" element={<WordExamUploadPage />} />
           <Route path="/score-reports/:examId" element={<ScoreReportPage />} />

@@ -3,6 +3,7 @@ import { Home, Book, FileText, LayoutDashboard, GraduationCap, File, Users, Shop
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
 import BookSubMenu from './BookSubMenu';
+import BookIdSubMenu from './BookIdSubMenu';
 import ExamSubMenu from './ExamSubMenu';
 import WordExamSubMenu from './WordExamSubMenu';
 import CourseSubMenu from './CourseSubMenu';
@@ -64,7 +65,9 @@ const Sidebar: React.FC = () => {
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (location.pathname.startsWith('/books')) {
+    if (location.pathname.startsWith('/books-id')) {
+      setOpenSubMenu('books');
+    } else if (location.pathname.startsWith('/books')) {
       setOpenSubMenu('books');
     } else if (location.pathname.startsWith('/exams')) {
       setOpenSubMenu('exams');
@@ -110,11 +113,12 @@ const Sidebar: React.FC = () => {
               icon={Book}
               label="Sách"
               onClick={() => handleParentClick('books')}
-              isActive={location.pathname.startsWith('/books')}
+              isActive={location.pathname.startsWith('/books') || location.pathname.startsWith('/books-id')}
               hasSubMenu
               isSubMenuOpen={openSubMenu === 'books'}
             />
             {openSubMenu === 'books' && <BookSubMenu />}
+            {openSubMenu === 'books' && <BookIdSubMenu />}
 
             <NavItem icon={FileText} label="Mã form" to="/forms" isActive={location.pathname === '/forms'} />
             
