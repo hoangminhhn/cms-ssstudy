@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import BookTable from '@/components/BookTable';
+import BooksList from '@/components/books/BooksList';
+import BooksToolbar from '@/components/books/BooksToolbar';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,8 +9,8 @@ import { ChevronRight } from 'lucide-react';
 import AddBookForm from '@/components/AddBookForm';
 import BookCategoryManagement from '@/components/BookCategoryManagement';
 import AddBookCategory from '@/components/AddBookCategory';
-import BookReviews from '@/components/BookReviews'; // NEW import
-import AddBookReview from '@/components/AddBookReview'; // NEW import
+import BookReviews from '@/components/BookReviews';
+import AddBookReview from '@/components/AddBookReview';
 
 const BookManagement: React.FC = () => {
   const location = useLocation();
@@ -19,7 +20,12 @@ const BookManagement: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'all-books':
-        return <BookTable />;
+        return (
+          <>
+            <BooksToolbar onSearch={() => { /* optional: lift search state */ }} />
+            <BooksList />
+          </>
+        );
       case 'add-book':
         return <AddBookForm />;
       case 'book-categories':
@@ -27,11 +33,16 @@ const BookManagement: React.FC = () => {
       case 'add-category':
         return <AddBookCategory />;
       case 'book-reviews':
-        return <BookReviews />; // NEW: render BookReviews here
+        return <BookReviews />;
       case 'add-review':
-        return <AddBookReview />; // NEW: render AddBookReview here
+        return <AddBookReview />;
       default:
-        return <BookTable />;
+        return (
+          <>
+            <BooksToolbar onSearch={() => { /* optional */ }} />
+            <BooksList />
+          </>
+        );
     }
   };
 
