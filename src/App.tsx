@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookManagement from "@/pages/BookManagement";
 import BookIdManagement from "@/pages/BookIdManagement";
+import BookIdDetail from "@/pages/BookIdDetail";
 import ExamManagement from "@/pages/ExamManagement";
 import WordExamUploadPage from "@/pages/WordExamUploadPage";
 import ScoreReportPage from "@/pages/ScoreReportPage";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/books" element={<BookManagement />} />
           <Route path="/books-id" element={<BookIdManagement />} />
+          <Route path="/books-id/:bookId" element={<BookIdDetail />} />
           <Route path="/exams" element={<ExamManagement />} />
           <Route path="/word-exam-upload" element={<WordExamUploadPage />} />
           <Route path="/score-reports/:examId" element={<ScoreReportPage />} />
@@ -58,7 +60,6 @@ const App = () => (
             <Route path="rooms" element={<RoomsTab />} />
             <Route path="moderation" element={<ModerationTab />} />
             <Route path="reports" element={<ReportsTab />} />
-            {/* removed nested files route so FileManagement is a top-level page */}
           </Route>
 
           {/* File management as top-level route (sibling of View Management) */}
