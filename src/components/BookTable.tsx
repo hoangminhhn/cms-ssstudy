@@ -112,7 +112,7 @@ const BookTable: React.FC = () => {
               <TableRow key={book.id}>
                 <TableCell><Input type="checkbox" /></TableCell>
                 <TableCell className="font-medium">
-                  <button className="text-left text-sm text-blue-600 hover:underline" onClick={() => navigate(`/books-id/${book.id}`)}>
+                  <button className="text-left text-sm text-blue-600 hover:underline" onClick={() => navigate(`/books/${book.id}`)}>
                     {book.name}
                   </button>
                 </TableCell>

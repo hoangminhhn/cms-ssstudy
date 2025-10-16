@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import BookManagement from "@/pages/BookManagement";
 import BookIdManagement from "@/pages/BookIdManagement";
 import BookIdDetail from "@/pages/BookIdDetail";
+import BookDetail from "@/pages/BookDetail";
 import ExamManagement from "@/pages/ExamManagement";
 import WordExamUploadPage from "@/pages/WordExamUploadPage";
 import ScoreReportPage from "@/pages/ScoreReportPage";
@@ -38,6 +39,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/books" element={<BookManagement />} />
+          <Route path="/books/:bookId" element={<BookDetail />} />
           <Route path="/books-id" element={<BookIdManagement />} />
           <Route path="/books-id/:bookId" element={<BookIdDetail />} />
           <Route path="/exams" element={<ExamManagement />} />
