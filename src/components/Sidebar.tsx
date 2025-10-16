@@ -65,8 +65,9 @@ const Sidebar: React.FC = () => {
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    // Open the correct submenu based on path
     if (location.pathname.startsWith('/books-id')) {
-      setOpenSubMenu('books');
+      setOpenSubMenu('books-id');
     } else if (location.pathname.startsWith('/books')) {
       setOpenSubMenu('books');
     } else if (location.pathname.startsWith('/exams')) {
@@ -109,16 +110,27 @@ const Sidebar: React.FC = () => {
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <NavItem icon={Home} label="Trang chủ" to="/" isActive={location.pathname === '/'} />
             
+            {/* Books parent */}
             <NavItem
               icon={Book}
               label="Sách"
               onClick={() => handleParentClick('books')}
-              isActive={location.pathname.startsWith('/books') || location.pathname.startsWith('/books-id')}
+              isActive={location.pathname.startsWith('/books') && !location.pathname.startsWith('/books-id')}
               hasSubMenu
               isSubMenuOpen={openSubMenu === 'books'}
             />
             {openSubMenu === 'books' && <BookSubMenu />}
-            {openSubMenu === 'books' && <BookIdSubMenu />}
+
+            {/* Book ID as its own parent below Books */}
+            <NavItem
+              icon={Book}
+              label="Sách ID"
+              onClick={() => handleParentClick('books-id')}
+              isActive={location.pathname.startsWith('/books-id')}
+              hasSubMenu
+              isSubMenuOpen={openSubMenu === 'books-id'}
+            />
+            {openSubMenu === 'books-id' && <BookIdSubMenu />}
 
             <NavItem icon={FileText} label="Mã form" to="/forms" isActive={location.pathname === '/forms'} />
             
