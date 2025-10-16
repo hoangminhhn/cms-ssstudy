@@ -1,39 +1,19 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import BookTable from '@/components/BookTable';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { useLocation } from 'react-router-dom';
+import BookIdToolbar from '@/components/bookid/BookIdToolbar';
+import BookIdList from '@/components/bookid/BookIdList';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import AddBookForm from '@/components/AddBookForm';
-import BookCategoryManagement from '@/components/BookCategoryManagement';
-import AddBookCategory from '@/components/AddBookCategory';
-import BookReviews from '@/components/BookReviews';
-import AddBookReview from '@/components/AddBookReview';
 
 const BookIdManagement: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const activeTab = searchParams.get('tab') || 'all-books-id'; // Default to 'all-books-id'
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'all-books-id':
-        return <BookTable />;
-      case 'add-book-id':
-        return <AddBookForm />;
-      case 'book-categories-id':
-        return <BookCategoryManagement />;
-      case 'add-category-id':
-        return <AddBookCategory />;
-      case 'book-reviews-id':
-        return <BookReviews />;
-      case 'add-review-id':
-        return <AddBookReview />;
-      default:
-        return <BookTable />;
-    }
-  };
+  // Local search handler (could be extended to fetch data)
+  const [searchQuery, setSearchQuery] = React.useState<string>("");
 
   return (
     <Layout headerTitle="Quản lý Sách ID">
@@ -55,7 +35,15 @@ const BookIdManagement: React.FC = () => {
           </div>
         </div>
 
-        {renderContent()}
+        {/* Toolbar specific to Book ID module */}
+        <div>
+          <BookIdToolbar initialQuery={searchQuery} onSearch={(q) => setSearchQuery(q)} />
+        </div>
+
+        {/* Dedicated list for Book ID module */}
+        <div>
+          <BookIdList query={searchQuery} />
+        </div>
       </div>
       <MadeWithDyad />
     </Layout>
