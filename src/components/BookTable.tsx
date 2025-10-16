@@ -9,6 +9,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Filter, Search, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { useNavigate } from 'react-router-dom';
 
 interface Book {
   id: string;
@@ -29,6 +30,7 @@ const mockBooks: Book[] = [
 const BookTable: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(20);
+  const navigate = useNavigate();
 
   const totalPages = Math.ceil(mockBooks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -109,7 +111,11 @@ const BookTable: React.FC = () => {
             {currentBooks.map((book) => (
               <TableRow key={book.id}>
                 <TableCell><Input type="checkbox" /></TableCell>
-                <TableCell className="font-medium">{book.name}</TableCell>
+                <TableCell className="font-medium">
+                  <button className="text-left text-sm text-blue-600 hover:underline" onClick={() => navigate(`/books-id/${book.id}`)}>
+                    {book.name}
+                  </button>
+                </TableCell>
                 <TableCell>{book.subject}</TableCell>
                 <TableCell>{book.price}</TableCell>
                 <TableCell>{book.order}</TableCell>
