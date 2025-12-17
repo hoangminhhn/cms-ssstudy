@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import PracticeConfig from '@/components/word-exam/PracticeConfig';
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -112,6 +115,15 @@ const cities = [
   'Bình Dương',
 ];
 
+const sampleQuestions = [
+  {
+    id: "q1",
+    correctAnswer: "A",
+    solution: "Ví dụ lời giải",
+    uploadDate: "01/01/2025",
+  },
+];
+
 interface Question {
   id: string;
   correctAnswer: string;
@@ -173,7 +185,7 @@ const WordExamUpload: React.FC = () => {
     partsOptionsSpecific = partsOptionsVACT;
   }
 
-  const partsOptions = [{ value: 'full', label: 'Đủ 3 Phần' }, ...partsOptionsSpecific];
+  const partsOptionsList = [{ value: 'full', label: 'Đủ 3 Phần' }, ...partsOptionsSpecific];
 
   const handleAddOrUpdateQuestion = (partId: string, questionId: string | null, newQuestion: Question) => {
     setParts((prevParts) =>
@@ -217,7 +229,6 @@ const WordExamUpload: React.FC = () => {
   };
 
   const handleUploadClick = () => {
-    // Example: add sample questions to all parts
     const now = new Date().toLocaleDateString();
     const newQuestionsPart1: Question[] = [
       {
@@ -245,17 +256,17 @@ const WordExamUpload: React.FC = () => {
     ];
 
     setParts((prevParts) =>
-      prevParts.map((part) => {
-        if (part.id === 'part1') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart1] };
+      prevParts.map((p) => {
+        if (p.id === 'part1') {
+          return { ...p, questions: [...p.questions, ...newQuestionsPart1] };
         }
-        if (part.id === 'part2') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart2] };
+        if (p.id === 'part2') {
+          return { ...p, questions: [...p.questions, ...newQuestionsPart2] };
         }
-        if (part.id === 'part3') {
-          return { ...part, questions: [...part.questions, ...newQuestionsPart3] };
+        if (p.id === 'part3') {
+          return { ...p, questions: [...p.questions, ...newQuestionsPart3] };
         }
-        return part;
+        return p;
       }),
     );
 
@@ -280,7 +291,6 @@ const WordExamUpload: React.FC = () => {
           <CardTitle>Thông tin đề thi</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4">
-          {/* Row 1: Mã đề thi/Tên đề thi/ Kỳ thi / Phần thi/ Đề thi pdf */}
           <div className="col-span-1">
             <Label htmlFor="exam-code">Mã đề thi</Label>
             <Input id="exam-code" value={examCode} disabled />
@@ -309,7 +319,7 @@ const WordExamUpload: React.FC = () => {
                 <SelectValue placeholder="Chọn phần thi" />
               </SelectTrigger>
               <SelectContent>
-                {partsOptions.map((opt) => (
+                {partsOptionsList.map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                 ))}
               </SelectContent>
@@ -320,7 +330,6 @@ const WordExamUpload: React.FC = () => {
             <Input id="pdf-link" value={pdfLink} onChange={(e) => setPdfLink(e.target.value)} placeholder="Nhập URL PDF" />
           </div>
 
-          {/* Row 2: Loại bài kiểm tra/Nhóm đề/Lớp/Môn học/ Cho phép làm lại/Thành phố */}
           <div className="col-span-1">
             <Label htmlFor="test-type">Loại bài kiểm tra</Label>
             <Select value={testType} onValueChange={setTestType}>
@@ -341,11 +350,13 @@ const WordExamUpload: React.FC = () => {
                 <SelectValue placeholder="Chọn nhóm đề" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Mặc định">Mặc định</SelectItem>
-                <SelectItem value="Thi thử">Thi thử</SelectItem>
+                {groups.map((g) => (
+                  <SelectItem key={g} value={g}>{g}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
+
           <div className="col-span-1">
             <Label htmlFor="class-level">Lớp</Label>
             <Select value={classLevel} onValueChange={setClassLevel}>
@@ -359,6 +370,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="col-span-2">
             <Label htmlFor="subject">Môn học</Label>
             <Select value={subject} onValueChange={setSubject}>
@@ -372,6 +384,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="col-span-1">
             <Label htmlFor="allow-retry">Cho phép làm lại</Label>
             <Select value={allowRetry} onValueChange={setAllowRetry}>
@@ -385,6 +398,7 @@ const WordExamUpload: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="col-span-2">
             <Label htmlFor="city">Thành phố</Label>
             <Popover open={openCitySelect} onOpenChange={setOpenCitySelect}>
@@ -432,7 +446,7 @@ const WordExamUpload: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Tải lên file Word và tải đề thi mẫu */}
+      {/* Tải lên file Word */}
       <Card>
         <CardHeader>
           <CardTitle>Tải lên file Word</CardTitle>
@@ -440,25 +454,31 @@ const WordExamUpload: React.FC = () => {
         <CardContent className="grid gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Input id="word-file-upload" type="file" accept=".doc,.docx" className="flex-1 max-w-md" />
-            <Button
-              className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto"
-              onClick={handleUploadClick}
-            >
-              <Upload className="mr-2 h-4 w-4" /> Tải lên
-            </Button>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 w-full sm:w-auto"
-              onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}
-            >
-              <Download className="h-4 w-4" /> Tải đề thi mẫu
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+                onClick={handleUploadClick}
+              >
+                <Upload className="mr-2 h-4 w-4" /> Tải lên
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => handleDownloadSample('sample-tot-nghiep.docx')}
+              >
+                <Download className="h-4 w-4" /> Đề mẫu
+              </Button>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">Chỉ chấp nhận các định dạng .doc, .docx</p>
+
+          {/* Show PracticeConfig only when group is 'Thi thử' */}
+          {group === 'Thi thử' && (
+            <PracticeConfig />
+          )}
         </CardContent>
       </Card>
 
-      {/* Câu hỏi đề thi (Manual Input) */}
+      {/* Manual questions */}
       <ManualWordExamQuestions
         parts={parts}
         onDeleteAll={handleDeleteAll}
@@ -482,7 +502,7 @@ const WordExamUpload: React.FC = () => {
           setParts((prev) => [...prev, newPart]);
           toast.success('Đã thêm phần thi nhóm chủ đề.');
         }}
-        onAddOrUpdateQuestion={handleAddOrUpdateQuestion} // Truyền hàm cập nhật câu hỏi
+        onAddOrUpdateQuestion={handleAddOrUpdateQuestion}
       />
 
       {/* Footer Buttons */}
