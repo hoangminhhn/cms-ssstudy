@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 const generatePassword = (len = 8) => {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -46,10 +45,9 @@ const PracticeConfig: React.FC = () => {
                   type="datetime-local"
                   value={openAt}
                   onChange={(e) => setOpenAt(e.target.value)}
-                  className="pr-10"
+                  className="pr-3"
                   aria-label="Mở đề"
                 />
-                <CalendarIcon className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
               </div>
             </div>
 
@@ -60,10 +58,9 @@ const PracticeConfig: React.FC = () => {
                   type="datetime-local"
                   value={closeAt}
                   onChange={(e) => setCloseAt(e.target.value)}
-                  className="pr-10"
+                  className="pr-3"
                   aria-label="Đóng đề"
                 />
-                <CalendarIcon className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -80,7 +77,6 @@ const PracticeConfig: React.FC = () => {
                   <SelectContent>
                     <SelectItem value="Kết quả: Ngay sau khi nộp">Kết quả: Ngay sau khi nộp</SelectItem>
                     <SelectItem value="Kết quả: Sau khi đóng đề">Kết quả: Sau khi đóng đề</SelectItem>
-                    {/* "Kết quả: Sau khi chấm" removed per request */}
                   </SelectContent>
                 </Select>
 
@@ -91,7 +87,6 @@ const PracticeConfig: React.FC = () => {
                   <SelectContent>
                     <SelectItem value="Đáp án: Sau khi đóng đề">Đáp án: Sau khi đóng đề</SelectItem>
                     <SelectItem value="Đáp án: Sau khi nộp bài">Đáp án: Sau khi nộp bài</SelectItem>
-                    {/* "Không hiển thị" removed and "Sau khi chấm" renamed to "Sau khi nộp bài" */}
                   </SelectContent>
                 </Select>
               </div>
@@ -147,7 +142,7 @@ const PracticeConfig: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
   );
 };
