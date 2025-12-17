@@ -80,7 +80,7 @@ const PracticeConfig: React.FC = () => {
                   <SelectContent>
                     <SelectItem value="Kết quả: Ngay sau khi nộp">Kết quả: Ngay sau khi nộp</SelectItem>
                     <SelectItem value="Kết quả: Sau khi đóng đề">Kết quả: Sau khi đóng đề</SelectItem>
-                    <SelectItem value="Kết quả: Sau khi chấm">Kết quả: Sau khi chấm</SelectItem>
+                    {/* "Kết quả: Sau khi chấm" removed per request */}
                   </SelectContent>
                 </Select>
 
@@ -90,8 +90,8 @@ const PracticeConfig: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Đáp án: Sau khi đóng đề">Đáp án: Sau khi đóng đề</SelectItem>
-                    <SelectItem value="Đáp án: Sau khi chấm">Đáp án: Sau khi chấm</SelectItem>
-                    <SelectItem value="Đáp án: Không hiển thị">Đáp án: Không hiển thị</SelectItem>
+                    <SelectItem value="Đáp án: Sau khi nộp bài">Đáp án: Sau khi nộp bài</SelectItem>
+                    {/* "Không hiển thị" removed and "Sau khi chấm" renamed to "Sau khi nộp bài" */}
                   </SelectContent>
                 </Select>
               </div>
