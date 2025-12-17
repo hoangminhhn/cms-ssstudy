@@ -16,7 +16,7 @@ const generatePassword = (len = 8) => {
 };
 
 const PracticeConfig: React.FC = () => {
-  const [enabled, setEnabled] = React.useState<boolean>(true); // re-introduced toggle state
+  const [enabled, setEnabled] = React.useState<boolean>(true);
   const [openAt, setOpenAt] = React.useState<string>("");
   const [closeAt, setCloseAt] = React.useState<string>("");
   const [resultPolicy, setResultPolicy] = React.useState<string>("Kết quả: Ngay sau khi nộp");
@@ -30,13 +30,24 @@ const PracticeConfig: React.FC = () => {
     toast.success("Đã tạo mật khẩu.");
   };
 
+  const handleRequirePasswordChange = (v: boolean) => {
+    if (!v) {
+      // turning off: clear password and hide inner controls
+      setPassword("");
+      setRequirePassword(false);
+      toast.info("Yêu cầu mật khẩu đã tắt — các tuỳ chọn mật khẩu đã được ẩn.");
+    } else {
+      setRequirePassword(true);
+      toast.info("Yêu cầu mật khẩu đã bật — vui lòng nhập hoặc tạo mật khẩu.");
+    }
+  };
+
   return (
     <div className="w-full mt-4">
       <div className="rounded-lg border bg-white dark:bg-gray-800 p-4">
         <div className="flex items-center justify-between gap-4">
           <h3 className="text-lg font-semibold">Cấu hình luyện đề thực chiến</h3>
 
-          {/* Re-introduced simple on/off switch aligned to the right */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Bật</span>
             <Switch checked={enabled} onCheckedChange={(v) => setEnabled(!!v)} />
@@ -114,10 +125,11 @@ const PracticeConfig: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={requirePassword}
-                      onChange={(e) => setRequirePassword(e.target.checked)}
+                      onChange={(e) => handleRequirePasswordChange(e.target.checked)}
                       className="sr-only"
+                      aria-label="Yêu cầu mật khẩu"
                     />
-                    <span className="w-9 h-5 bg-gray-200 rounded-full relative inline-block">
+                    <span className={`w-9 h-5 rounded-full relative inline-block ${requirePassword ? "bg-green-400" : "bg-gray-200"}`}>
                       <span
                         className={`absolute left-0 top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
                           requirePassword ? "translate-x-4" : "translate-x-0"
@@ -129,24 +141,29 @@ const PracticeConfig: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-3 space-y-2">
-                <div>
-                  <Label className="text-xs">Mật khẩu</Label>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Mật khẩu"
-                      className="flex-1"
-                      aria-label="Mật khẩu"
-                    />
-                    <Button variant="outline" onClick={handleGenerate}>
-                      Tạo
-                    </Button>
+              {/* If requirePassword is false => hide inner controls */}
+              {requirePassword ? (
+                <div className="mt-3 space-y-2">
+                  <div>
+                    <Label className="text-xs">Mật khẩu</Label>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Mật khẩu"
+                        className="flex-1"
+                        aria-label="Mật khẩu"
+                      />
+                      <Button variant="outline" onClick={handleGenerate}>
+                        Tạo
+                      </Button>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-2">Bạn có thể thay đổi mật khẩu bất cứ lúc nào.</div>
                   </div>
-                  <div className="text-xs text-muted-foreground mt-2">Bạn có thể thay đổi mật khẩu bất cứ lúc nào.</div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-3 text-sm text-muted-foreground italic">Các tuỳ chọn mật khẩu đã bị ẩn.</div>
+              )}
             </div>
           </div>
         </div>
