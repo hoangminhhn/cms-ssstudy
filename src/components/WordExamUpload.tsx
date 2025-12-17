@@ -11,12 +11,13 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Upload, Download } from 'lucide-react';
-import ManualWordExamQuestions from './ManualWordExamQuestions';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ManualWordExamQuestions from './ManualWordExamQuestions';
+import PracticeConfig from './word-exam/PracticeConfig'; // <-- added import
 
 const sampleFiles = [
   { label: 'Đề thi tốt nghiệp', fileName: 'sample-tot-nghiep.docx' },
@@ -429,6 +430,13 @@ const WordExamUpload: React.FC = () => {
               </PopoverContent>
             </Popover>
           </div>
+
+          {/* Conditional: show PracticeConfig inside this same card when group === 'Thi thử' */}
+          {group === 'Thi thử' && (
+            <div className="col-span-full mt-2">
+              <PracticeConfig />
+            </div>
+          )}
         </CardContent>
       </Card>
 
