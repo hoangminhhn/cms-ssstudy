@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Calendar } from "lucide-react";
 
 const generatePassword = (len = 8) => {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -21,6 +22,28 @@ const PracticeConfig: React.FC = () => {
   const [answerPolicy, setAnswerPolicy] = React.useState<string>("Đáp án: Sau khi đóng đề");
   const [requirePassword, setRequirePassword] = React.useState<boolean>(true);
   const [password, setPassword] = React.useState<string>("");
+
+  // refs to the wrappers so we can find the actual native input inside the Input component
+  const openWrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const closeWrapperRef = React.useRef<HTMLDivElement | null>(null);
+
+  const focusToggleOnWrapper = (wrapper: HTMLDivElement | null) => {
+    if (!wrapper) return;
+    const nativeInput = wrapper.querySelector<HTMLInputElement>('input[type="datetime-local"]');
+    if (!nativeInput) return;
+    // toggle focus: if focused -> blur, else focus
+    if (document.activeElement === nativeInput) {
+      nativeInput.blur();
+    } else {
+      nativeInput.focus();
+      // for some browsers focusing programmatically may not open picker; try to dispatch a click as well
+      try {
+        nativeInput.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   const handleGenerate = () => {
     const p = generatePassword(8);
@@ -40,27 +63,43 @@ const PracticeConfig: React.FC = () => {
           <div className="space-y-3">
             <div>
               <Label className="text-sm">Mở đề</Label>
-              <div className="relative mt-2">
+              <div ref={openWrapperRef} className="relative mt-2">
                 <Input
                   type="datetime-local"
                   value={openAt}
                   onChange={(e) => setOpenAt(e.target.value)}
-                  className="pr-3"
+                  className="pr-10"
                   aria-label="Mở đề"
                 />
+                <button
+                  type="button"
+                  onClick={() => focusToggleOnWrapper(openWrapperRef.current)}
+                  aria-label="Mở/đóng chọn thời gian Mở đề"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                </button>
               </div>
             </div>
 
             <div>
               <Label className="text-sm">Đóng đề</Label>
-              <div className="relative mt-2">
+              <div ref={closeWrapperRef} className="relative mt-2">
                 <Input
                   type="datetime-local"
                   value={closeAt}
                   onChange={(e) => setCloseAt(e.target.value)}
-                  className="pr-3"
+                  className="pr-10"
                   aria-label="Đóng đề"
                 />
+                <button
+                  type="button"
+                  onClick={() => focusToggleOnWrapper(closeWrapperRef.current)}
+                  aria-label="Mở/đóng chọn thời gian Đóng đề"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                </button>
               </div>
             </div>
           </div>
