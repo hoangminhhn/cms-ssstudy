@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 const generatePassword = (len = 8) => {
@@ -15,6 +16,7 @@ const generatePassword = (len = 8) => {
 };
 
 const PracticeConfig: React.FC = () => {
+  const [enabled, setEnabled] = React.useState<boolean>(true); // re-introduced toggle state
   const [openAt, setOpenAt] = React.useState<string>("");
   const [closeAt, setCloseAt] = React.useState<string>("");
   const [resultPolicy, setResultPolicy] = React.useState<string>("Kết quả: Ngay sau khi nộp");
@@ -33,6 +35,12 @@ const PracticeConfig: React.FC = () => {
       <div className="rounded-lg border bg-white dark:bg-gray-800 p-4">
         <div className="flex items-center justify-between gap-4">
           <h3 className="text-lg font-semibold">Cấu hình luyện đề thực chiến</h3>
+
+          {/* Re-introduced simple on/off switch aligned to the right */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Bật</span>
+            <Switch checked={enabled} onCheckedChange={(v) => setEnabled(!!v)} />
+          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
