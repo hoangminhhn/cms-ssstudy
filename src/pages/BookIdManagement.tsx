@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import { MadeWithDyad } from '@/components/made-with-dyad';
@@ -6,6 +8,7 @@ import BookIdToolbar from '@/components/bookid/BookIdToolbar';
 import BookIdList from '@/components/bookid/BookIdList';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import AddBookForm from '@/components/AddBookForm'; // reuse the existing AddBookForm for Sách ID
 
 const BookIdManagement: React.FC = () => {
   const location = useLocation();
@@ -15,8 +18,21 @@ const BookIdManagement: React.FC = () => {
   // Local search handler (could be extended to fetch data)
   const [searchQuery, setSearchQuery] = React.useState<string>("");
 
+  const getHeaderTitle = () => {
+    switch (activeTab) {
+      case 'all-books-id':
+        return 'Sách ID — Danh sách';
+      case 'add-book-id':
+        return 'Sách ID — Thêm sách';
+      case 'book-categories-id':
+        return 'Sách ID — Danh mục';
+      default:
+        return 'Quản lý Sách ID';
+    }
+  };
+
   return (
-    <Layout headerTitle="Quản lý Sách ID">
+    <Layout headerTitle={getHeaderTitle()}>
       <div className="flex flex-col gap-6 w-full overflow-x-hidden">
         {/* Mobile content - placeholder for submenu sheet/drawer */}
         <div className="lg:hidden w-full overflow-x-hidden">
@@ -35,15 +51,25 @@ const BookIdManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Toolbar specific to Book ID module */}
-        <div>
-          <BookIdToolbar initialQuery={searchQuery} onSearch={(q) => setSearchQuery(q)} />
-        </div>
+        {/* Toolbar or form depending on activeTab */}
+        {activeTab === 'add-book-id' ? (
+          <div>
+            {/* Render the exact same AddBookForm used by the Books module */}
+            <AddBookForm />
+          </div>
+        ) : (
+          <>
+            {/* Toolbar specific to Book ID module */}
+            <div>
+              <BookIdToolbar initialQuery={searchQuery} onSearch={(q) => setSearchQuery(q)} />
+            </div>
 
-        {/* Dedicated list for Book ID module */}
-        <div>
-          <BookIdList query={searchQuery} />
-        </div>
+            {/* Dedicated list for Book ID module */}
+            <div>
+              <BookIdList query={searchQuery} />
+            </div>
+          </>
+        )}
       </div>
       <MadeWithDyad />
     </Layout>
