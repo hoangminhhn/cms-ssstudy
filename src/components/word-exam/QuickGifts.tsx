@@ -8,6 +8,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Label } from '@/components/ui/label';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 
 const examPeriods = [
   'Tất cả kỳ thi',
@@ -90,6 +91,11 @@ const QuickGifts: React.FC = () => {
     toast.info(`Chỉnh sửa ${id} (demo).`);
   };
 
+  const handleToggleStatus = (id: string, on: boolean) => {
+    setGifts((prev) => prev.map((g) => (g.id === id ? { ...g, status: on ? 'Đang hoạt động' : 'Đã tắt' } : g)));
+    toast.success(`Đã ${on ? 'bật' : 'tắt'} trạng thái (demo).`);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -164,7 +170,15 @@ const QuickGifts: React.FC = () => {
                   <tr key={g.id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-3">{g.name}</td>
                     <td className="p-3">{g.period}</td>
-                    <td className="p-3">{g.status}</td>
+                    <td className="p-3">
+                      <div className="flex items-center">
+                        <Switch
+                          checked={g.status === 'Đang hoạt động'}
+                          onCheckedChange={(v) => handleToggleStatus(g.id, !!v)}
+                          aria-label={`Trạng thái ${g.name}`}
+                        />
+                      </div>
+                    </td>
                     <td className="p-3">{g.createdAt}</td>
                     <td className="p-3 text-right">
                       <div className="inline-flex items-center gap-2">
