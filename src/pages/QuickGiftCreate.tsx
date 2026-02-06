@@ -29,9 +29,12 @@ const ICON_OPTIONS: { key: IconKey; label: string; comp: React.ComponentType<any
 
 const QuickGiftCreate: React.FC = () => {
   const [examPeriod, setExamPeriod] = React.useState<string>(EXAM_PERIODS[0]);
-  const [giftName, setGiftName] = React.useState<string>(""); // NEW: Tên quà tặng
+  const [giftName, setGiftName] = React.useState<string>(""); // Tên quà tặng
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
+
+  // status switch (new)
+  const [status, setStatus] = React.useState<boolean>(true);
 
   // Label fields
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
@@ -68,9 +71,9 @@ const QuickGiftCreate: React.FC = () => {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Top row with four columns: Tên quà tặng / Kỳ thi / CTA / Url */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* NEW: Tên quà tặng field (first column) */}
+            {/* Top row with five columns: Tên quà tặng / Kỳ thi / CTA / Url / Trạng thái */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Tên quà tặng */}
               <div>
                 <Label htmlFor="gift-name" className="text-sm">Tên quà tặng</Label>
                 <Input
@@ -131,6 +134,21 @@ const QuickGiftCreate: React.FC = () => {
                   placeholder="https://"
                   className="mt-2"
                 />
+              </div>
+
+              {/* NEW: Trạng thái switch positioned at end of first row */}
+              <div>
+                <Label className="text-sm">Trạng thái</Label>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <span className="text-sm text-gray-700 dark:text-gray-200">Trạng thái</span>
+                  <div className="ml-auto">
+                    <Switch
+                      checked={status}
+                      onCheckedChange={(v) => setStatus(!!v)}
+                      aria-label="Trạng thái quà tặng"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
