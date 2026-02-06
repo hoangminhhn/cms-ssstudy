@@ -45,6 +45,9 @@ const QuickGiftCreate: React.FC = () => {
   const [iconDialogOpen, setIconDialogOpen] = React.useState<boolean>(false);
   const [iconDialogTarget, setIconDialogTarget] = React.useState<"cta" | "label">("label");
 
+  // Status switch in header
+  const [statusEnabled, setStatusEnabled] = React.useState<boolean>(true);
+
   const handleOpenIconDialog = (target: "cta" | "label") => {
     setIconDialogTarget(target);
     setIconDialogOpen(true);
@@ -61,12 +64,19 @@ const QuickGiftCreate: React.FC = () => {
     setIconDialogOpen(false);
   };
 
-  const handlePreview = () => {
-    toast.success("Xem trước (demo): " + ctaText);
-  };
-
   const handleSave = () => {
     // In real app you'd submit to API. Here just demo toast.
+    const payload = {
+      examPeriod,
+      ctaText,
+      destinationUrl,
+      ctaIcon: selectedCtaIcon,
+      hasLabel,
+      labelIcon: selectedLabelIcon,
+      labelContent,
+      statusEnabled,
+    };
+    console.log("Saving quick gift (demo) payload:", payload);
     toast.success("Đã lưu (demo).");
   };
 
@@ -74,7 +84,7 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          {/* Updated header: title on left, action buttons on right in their own row */}
+          {/* Header: title left, Status Switch right */}
           <CardHeader>
             <div className="flex items-center justify-between w-full gap-4">
               <div>
@@ -82,9 +92,9 @@ const QuickGiftCreate: React.FC = () => {
                 <div className="text-sm text-muted-foreground">Điền thông tin cơ bản cho quà tặng</div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Button variant="outline" onClick={handlePreview}>Xem trước</Button>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>Lưu</Button>
+              <div className="flex items-center gap-3">
+                <span className="text-sm">Trạng thái</span>
+                <Switch checked={statusEnabled} onCheckedChange={(v) => setStatusEnabled(!!v)} />
               </div>
             </div>
           </CardHeader>
@@ -192,6 +202,16 @@ const QuickGiftCreate: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Footer row with Save / Cancel */}
+        <div className="flex justify-end gap-2 mt-4">
+          <Button variant="outline" onClick={() => { toast.info("Hủy (demo)."); }}>
+            Hủy
+          </Button>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>
+            Lưu
+          </Button>
+        </div>
       </div>
 
       {/* Icon picker dialog */}
