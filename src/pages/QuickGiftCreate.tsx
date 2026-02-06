@@ -135,7 +135,7 @@ const QuickGiftCreate: React.FC = () => {
     const reward = rewardInput.trim();
 
     if (!Number.isFinite(min) || !Number.isFinite(max)) {
-      toast.error("Min và Max phải là số hợp lệ.");
+      toast.error("Từ và Đến phải là số hợp lệ.");
       return;
     }
     if (min < 0 || max < 0) {
@@ -143,7 +143,7 @@ const QuickGiftCreate: React.FC = () => {
       return;
     }
     if (min > max) {
-      toast.error("Min không được lớn hơn Max.");
+      toast.error("Từ không được lớn hơn Đến.");
       return;
     }
     if (!reward) {
@@ -389,12 +389,12 @@ const QuickGiftCreate: React.FC = () => {
               </div>
 
               <div>
-                <Label className="text-xs">Min điểm</Label>
+                <Label className="text-xs">Từ</Label>
                 <Input value={minInput} onChange={(e) => setMinInput(e.target.value)} placeholder="0" />
               </div>
 
               <div>
-                <Label className="text-xs">Max điểm</Label>
+                <Label className="text-xs">Đến</Label>
                 <Input value={maxInput} onChange={(e) => setMaxInput(e.target.value)} placeholder="100" />
               </div>
 
