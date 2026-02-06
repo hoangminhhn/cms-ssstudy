@@ -61,7 +61,6 @@ const QuickGifts: React.FC = () => {
       if (status !== statusOptions[0] && g.status !== status) return false;
       if (!qq) return true;
       return (
-        g.id.toLowerCase().includes(qq) ||
         g.name.toLowerCase().includes(qq)
       );
     });
@@ -143,12 +142,11 @@ const QuickGifts: React.FC = () => {
           </div>
         </div>
 
-        {/* Results table */}
+        {/* Results table (without ID column) */}
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>
               <tr className="text-left text-sm text-orange-600 border-b">
-                <th className="p-3 w-[120px]">Mã</th>
                 <th className="p-3">Tên quà tặng</th>
                 <th className="p-3">Kỳ thi</th>
                 <th className="p-3">Trạng thái</th>
@@ -159,12 +157,11 @@ const QuickGifts: React.FC = () => {
             <tbody>
               {pageItems.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">Không có bản ghi.</td>
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Không có bản ghi.</td>
                 </tr>
               ) : (
                 pageItems.map((g) => (
                   <tr key={g.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-3 font-medium">{g.id}</td>
                     <td className="p-3">{g.name}</td>
                     <td className="p-3">{g.period}</td>
                     <td className="p-3">{g.status}</td>
