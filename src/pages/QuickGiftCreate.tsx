@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tag, FileText, BookOpen, ImagePlus, Trash2 } from "lucide-react";
+import { Tag, FileText, BookOpen, ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 const EXAM_PERIODS = [
@@ -293,35 +293,7 @@ const QuickGiftCreate: React.FC = () => {
               </div>
             </div>
 
-            {/* Banner upload (page-level) */}
-            <div>
-              <Label className="text-sm">Banner (toàn quà tặng)</Label>
-              <div className="mt-2 flex items-center gap-3">
-                <input ref={bannerRef} type="file" accept="image/*" className="hidden" onChange={onBannerChange} />
-                <div
-                  className="h-24 w-64 rounded border-dashed border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center cursor-pointer bg-gray-50 dark:bg-gray-900"
-                  onClick={onPickBanner}
-                  role="button"
-                >
-                  {bannerPreview ? (
-                    // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                    <img src={bannerPreview} alt="banner preview" className="h-full object-contain" />
-                  ) : (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <ImagePlus className="h-5 w-5" /> Chọn banner
-                    </div>
-                  )}
-                </div>
-
-                {bannerPreview && (
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outline" onClick={() => removeBanner()} className="flex items-center gap-2">
-                      <Trash2 className="h-4 w-4" /> Xóa
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* Page-level banner removed per request */}
 
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-3">
