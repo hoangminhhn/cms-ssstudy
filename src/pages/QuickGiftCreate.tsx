@@ -32,22 +32,29 @@ const QuickGiftCreate: React.FC = () => {
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
 
-  // New: label switch + icon + content
+  // Label fields
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
-  const [selectedIcon, setSelectedIcon] = React.useState<IconKey>("Tag");
+  const [selectedLabelIcon, setSelectedLabelIcon] = React.useState<IconKey>("Tag");
   const [labelContent, setLabelContent] = React.useState<string>("");
 
-  // Dialog state for icon picker
-  const [iconDialogOpen, setIconDialogOpen] = React.useState<boolean>(false);
-  const [iconDialogTarget, setIconDialogTarget] = React.useState<"new" | "existing">("new"); // future-proofing
+  // CTA icon
+  const [selectedCtaIcon, setSelectedCtaIcon] = React.useState<IconKey>("Tag");
 
-  const handleOpenIconDialog = (target: "new" | "existing" = "new") => {
+  // Dialog state for icon picker: target can be 'cta' or 'label'
+  const [iconDialogOpen, setIconDialogOpen] = React.useState<boolean>(false);
+  const [iconDialogTarget, setIconDialogTarget] = React.useState<"cta" | "label">("label");
+
+  const handleOpenIconDialog = (target: "cta" | "label") => {
     setIconDialogTarget(target);
     setIconDialogOpen(true);
   };
 
   const handleSelectIcon = (key: IconKey) => {
-    setSelectedIcon(key);
+    if (iconDialogTarget === "cta") {
+      setSelectedCtaIcon(key);
+    } else {
+      setSelectedLabelIcon(key);
+    }
     setIconDialogOpen(false);
   };
 
@@ -80,13 +87,23 @@ const QuickGiftCreate: React.FC = () => {
 
               <div>
                 <Label htmlFor="cta-text" className="text-sm">CTA (nút hiển thị)</Label>
-                <Input
-                  id="cta-text"
-                  value={ctaText}
-                  onChange={(e) => setCtaText(e.target.value)}
-                  placeholder="Nhận lì xì"
-                  className="mt-2"
-                />
+                <div className="mt-2 flex items-center gap-2">
+                  <Input
+                    id="cta-text"
+                    value={ctaText}
+                    onChange={(e) => setCtaText(e.target.value)}
+                    placeholder="Nhận lì xì"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleOpenIconDialog("cta")}
+                    className="h-10 w-10 rounded-md border bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50"
+                    aria-label="Chọn icon CTA"
+                    title="Chọn icon CTA"
+                  >
+                    {React.createElement(ICON_OPTIONS.find((i) => i.key === selectedCtaIcon)!.comp, { className: "h-4 w-4" })}
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -119,14 +136,14 @@ const QuickGiftCreate: React.FC = () => {
                       <div className="mt-2">
                         <button
                           type="button"
-                          onClick={() => handleOpenIconDialog("new")}
+                          onClick={() => handleOpenIconDialog("label")}
                           className="w-full h-10 flex items-center gap-3 px-3 border rounded-md bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
                           aria-label="Chọn icon cho nhãn"
                         >
                           <span className="flex items-center gap-2">
-                            {React.createElement(ICON_OPTIONS.find((i) => i.key === selectedIcon)!.comp, { className: "h-4 w-4" })}
+                            {React.createElement(ICON_OPTIONS.find((i) => i.key === selectedLabelIcon)!.comp, { className: "h-4 w-4" })}
                           </span>
-                          <span className="text-sm truncate">{ICON_OPTIONS.find((i) => i.key === selectedIcon)!.label}</span>
+                          <span className="text-sm truncate">{ICON_OPTIONS.find((i) => i.key === selectedLabelIcon)!.label}</span>
                         </button>
                       </div>
                     </div>
@@ -150,7 +167,7 @@ const QuickGiftCreate: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Placeholder area for the rest of the page — you can describe additional fields below */}
+        {/* Placeholder area for the rest of the page */}
         <div className="mt-6 min-h-[240px] border-dashed border rounded-md flex items-center justify-center bg-white dark:bg-gray-800">
           <div className="text-center p-6">
             <h2 className="text-lg font-semibold mb-2">Trang trống</h2>
