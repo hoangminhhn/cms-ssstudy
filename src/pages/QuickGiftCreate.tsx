@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Tag, FileText, BookOpen } from "lucide-react";
 
 const EXAM_PERIODS = [
   "Kỳ thi HSA",
@@ -15,10 +17,23 @@ const EXAM_PERIODS = [
   "Kỳ thi V-ACT",
 ];
 
+type IconKey = "Tag" | "FileText" | "BookOpen";
+
+const ICON_OPTIONS: { key: IconKey; label: string; comp: React.ComponentType<any> }[] = [
+  { key: "Tag", label: "Tag", comp: Tag },
+  { key: "FileText", label: "File", comp: FileText },
+  { key: "BookOpen", label: "Sách", comp: BookOpen },
+];
+
 const QuickGiftCreate: React.FC = () => {
   const [examPeriod, setExamPeriod] = React.useState<string>(EXAM_PERIODS[0]);
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
+
+  // New: label switch + icon + content
+  const [hasLabel, setHasLabel] = React.useState<boolean>(false);
+  const [selectedIcon, setSelectedIcon] = React.useState<IconKey>("Tag");
+  const [labelContent, setLabelContent] = React.useState<string>("");
 
   return (
     <Layout headerTitle="Tạo quà tặng mới">
@@ -28,7 +43,7 @@ const QuickGiftCreate: React.FC = () => {
             <CardTitle>Thông tin nhanh</CardTitle>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="space-y-4">
             {/* Top row with three columns: Kỳ thi / CTA / Url */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
@@ -69,6 +84,57 @@ const QuickGiftCreate: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Second row: switch for label and conditional fields */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+              <div className="flex items-center gap-3">
+                <Switch checked={hasLabel} onCheckedChange={(v) => setHasLabel(!!v)} />
+                <Label className="mb-0">Nhãn làm bài tập</Label>
+              </div>
+
+              {/* When enabled show icon selector + content input spanning remaining columns */}
+              <div className="md:col-span-2">
+                {hasLabel ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm">Icon</Label>
+                    </div>
+
+                    <div className="sm:col-span-1">
+                      <Select value={selectedIcon} onValueChange={(v) => setSelectedIcon(v as IconKey)}>
+                        <SelectTrigger className="w-full h-10">
+                          <div className="flex items-center gap-2">
+                            <SelectValue />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ICON_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.key} value={opt.key}>
+                              <div className="flex items-center gap-2">
+                                {React.createElement(opt.comp, { className: "h-4 w-4" })}
+                                <span>{opt.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <Label className="text-sm">Nội dung nhãn</Label>
+                      <Input
+                        value={labelContent}
+                        onChange={(e) => setLabelContent(e.target.value)}
+                        placeholder="Nhập nội dung nhãn..."
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">Bật để thêm nhãn hiển thị trên CTA.</div>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -77,7 +143,7 @@ const QuickGiftCreate: React.FC = () => {
           <div className="text-center p-6">
             <h2 className="text-lg font-semibold mb-2">Trang trống</h2>
             <p className="text-sm text-muted-foreground">
-              Hàng đầu tiên đã được tạo. Hãy mô tả phần nội dung tiếp theo bạn muốn thêm.
+              Hàng đầu tiên và nhãn đã được tạo. Vui lòng mô tả phần nội dung tiếp theo bạn muốn thêm.
             </p>
           </div>
         </div>
