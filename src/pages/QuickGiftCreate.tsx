@@ -46,7 +46,7 @@ const QuickGiftCreate: React.FC = () => {
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
 
-  // Tên quà tặng as plain text field (replaced previous file input)
+  // Tên quà tặng as plain text field
   const [giftName, setGiftName] = React.useState<string>("");
 
   // Banner for whole gift (page-level)
@@ -150,7 +150,7 @@ const QuickGiftCreate: React.FC = () => {
       return;
     }
     if (!reward) {
-      toast.error("Vui lòng nhập phần thưởng.");
+      toast.error("Vui lòng nhập voucher.");
       return;
     }
 
@@ -204,7 +204,7 @@ const QuickGiftCreate: React.FC = () => {
   // Remove banner attached to an existing rule
   const removeRuleBanner = (id: string) => {
     setRules((prev) => prev.map((r) => (r.id === id ? { ...r, banner: null } : r)));
-    toast.success("Đã xóa banner của quy tắc.");
+    toast.success("Đã xóa banner voucher.");
   };
 
   const handleSave = () => {
@@ -213,7 +213,7 @@ const QuickGiftCreate: React.FC = () => {
       ctaText,
       destinationUrl,
       banner: !!bannerPreview,
-      giftName: giftName || null, // now includes the text field
+      giftName: giftName || null,
       ctaIcon: selectedCtaIcon === "None" ? null : selectedCtaIcon,
       hasLabel,
       labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
@@ -362,7 +362,7 @@ const QuickGiftCreate: React.FC = () => {
             <div className="flex items-center justify-between w-full">
               <div>
                 <CardTitle className="m-0 text-lg">Quy tắc thưởng theo điểm</CardTitle>
-                <div className="text-sm text-muted-foreground">Định nghĩa phần thưởng theo khoảng điểm</div>
+                <div className="text-sm text-muted-foreground">Định nghĩa voucher theo khoảng điểm</div>
               </div>
               <div className="text-sm text-muted-foreground">Quản lý quy tắc</div>
             </div>
@@ -386,17 +386,17 @@ const QuickGiftCreate: React.FC = () => {
                 <Input value={maxInput} onChange={(e) => setMaxInput(e.target.value)} placeholder="100" />
               </div>
 
-              {/* rule banner upload in inputs row */}
+              {/* rule banner upload in inputs row -> label changed */}
               <div>
-                <Label className="text-xs">Banner quy tắc</Label>
+                <Label className="text-xs">Banner voucher</Label>
                 <div className="mt-2 flex items-center gap-2">
                   <input ref={ruleBannerRef} type="file" accept="image/*" className="hidden" onChange={onRuleBannerChange} />
                   <button
                     type="button"
                     onClick={onPickRuleBanner}
                     className="h-10 w-10 rounded-md border bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50"
-                    title="Chọn banner cho quy tắc"
-                    aria-label="Chọn banner cho quy tắc"
+                    title="Chọn banner voucher"
+                    aria-label="Chọn banner voucher"
                   >
                     <ImagePlus className="h-4 w-4" />
                   </button>
@@ -421,7 +421,7 @@ const QuickGiftCreate: React.FC = () => {
                 <thead>
                   <tr className="text-sm text-orange-600 border-b">
                     <th className="p-3">Voucher</th>
-                    <th className="p-3">Banner</th>
+                    <th className="p-3">Banner voucher</th>
                     <th className="p-3 w-[140px]">Khoảng điểm</th>
                     <th className="p-3 text-center w-[90px]">Kích hoạt</th>
                     <th className="p-3 text-right w-[160px]">Thao tác</th>
@@ -456,7 +456,7 @@ const QuickGiftCreate: React.FC = () => {
                                   Thay đổi
                                 </button>
                                 <button className="text-xs text-red-600" onClick={() => removeRuleBanner(r.id)}>
-                                  Xóa banner
+                                  Xóa banner voucher
                                 </button>
                               </div>
                             </div>
