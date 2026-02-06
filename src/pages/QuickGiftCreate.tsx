@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tag, FileText, BookOpen } from "lucide-react";
+import { Tag, FileText, BookOpen, ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 const EXAM_PERIODS = [
@@ -38,12 +38,17 @@ type RewardRule = {
   max: number;
   reward: string;
   active: boolean;
+  banner?: string | null; // data URL preview for the rule banner
 };
 
 const QuickGiftCreate: React.FC = () => {
   const [examPeriod, setExamPeriod] = React.useState<string>(EXAM_PERIODS[0]);
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
+
+  // Banner for whole gift (page-level)
+  const bannerRef = React.useRef<HTMLInputElement | null>(null);
+  const [bannerPreview, setBannerPreview] = React.useState<string | null>(null);
 
   // Label fields
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
@@ -67,6 +72,19 @@ const QuickGiftCreate: React.FC = () => {
   const [rewardInput, setRewardInput] = React.useState<string>("");
   const [editingId, setEditingId] = React.useState<string | null>(null);
 
+  // Per-rule banner temp storage for add/edit row
+  const ruleBannerRef = React.useRef<HTMLInputElement | null>(null);
+  const [ruleBannerPreview, setRuleBannerPreview] = React.useState<string | null>(null);
+
+  const resetRuleInputs = () => {
+    setMinInput("");
+    setMaxInput("");
+    setRewardInput("");
+    setEditingId(null);
+    setRuleBannerPreview(null);
+    if (ruleBannerRef.current) ruleBannerRef.current.value = "";
+  };
+
   const handleOpenIconDialog = (target: "cta" | "label") => {
     setIconDialogTarget(target);
     setIconDialogOpen(true);
@@ -83,29 +101,32 @@ const QuickGiftCreate: React.FC = () => {
     setIconDialogOpen(false);
   };
 
-  const handleSave = () => {
-    // In real app you'd submit to API. Here just demo toast.
-    const payload = {
-      examPeriod,
-      ctaText,
-      destinationUrl,
-      ctaIcon: selectedCtaIcon === "None" ? null : selectedCtaIcon,
-      hasLabel,
-      labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
-      labelContent,
-      statusEnabled,
-      rules,
-    };
-    console.log("Saving quick gift (demo) payload:", payload);
-    toast.success("Đã lưu (demo).");
+  // Banner handlers (page-level)
+  const onPickBanner = () => bannerRef.current?.click();
+  const onBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => setBannerPreview(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+  const removeBanner = () => {
+    setBannerPreview(null);
+    if (bannerRef.current) bannerRef.current.value = "";
   };
 
-  // Rules management
-  const resetRuleInputs = () => {
-    setMinInput("");
-    setMaxInput("");
-    setRewardInput("");
-    setEditingId(null);
+  // Per-rule banner handlers
+  const onPickRuleBanner = () => ruleBannerRef.current?.click();
+  const onRuleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => setRuleBannerPreview(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+  const removeRuleBannerTemp = () => {
+    setRuleBannerPreview(null);
+    if (ruleBannerRef.current) ruleBannerRef.current.value = "";
   };
 
   const handleAddOrUpdateRule = () => {
@@ -131,19 +152,29 @@ const QuickGiftCreate: React.FC = () => {
     }
 
     if (editingId) {
-      setRules((prev) => prev.map((r) => (r.id === editingId ? { ...r, min, max, reward } : r)));
+      setRules((prev) =>
+        prev.map((r) =>
+          r.id === editingId ? { ...r, min, max, reward, banner: ruleBannerPreview ?? r.banner ?? null } : r,
+        ),
+      );
       toast.success("Đã cập nhật quy tắc.");
     } else {
-      // ensure no overlap simple check
       const overlap = rules.some((r) => !(max < r.min || min > r.max));
       if (overlap) {
-        // allow but warn
         toast.info("Lưu quy tắc; lưu ý có trùng khoảng điểm với quy tắc khác.");
       }
-      const newRule: RewardRule = { id: `rule-${Date.now()}`, min, max, reward, active: true };
+      const newRule: RewardRule = {
+        id: `rule-${Date.now()}`,
+        min,
+        max,
+        reward,
+        active: true,
+        banner: ruleBannerPreview ?? null,
+      };
       setRules((prev) => [...prev, newRule].sort((a, b) => a.min - b.min));
       toast.success("Đã thêm quy tắc.");
     }
+
     resetRuleInputs();
   };
 
@@ -154,6 +185,7 @@ const QuickGiftCreate: React.FC = () => {
     setMinInput(String(r.min));
     setMaxInput(String(r.max));
     setRewardInput(r.reward);
+    setRuleBannerPreview(r.banner ?? null);
   };
 
   const handleDeleteRule = (id: string) => {
@@ -166,11 +198,33 @@ const QuickGiftCreate: React.FC = () => {
     setRules((prev) => prev.map((r) => (r.id === id ? { ...r, active: !r.active } : r)));
   };
 
+  // Remove banner attached to an existing rule
+  const removeRuleBanner = (id: string) => {
+    setRules((prev) => prev.map((r) => (r.id === id ? { ...r, banner: null } : r)));
+    toast.success("Đã xóa banner của quy tắc.");
+  };
+
+  const handleSave = () => {
+    const payload = {
+      examPeriod,
+      ctaText,
+      destinationUrl,
+      banner: !!bannerPreview,
+      ctaIcon: selectedCtaIcon === "None" ? null : selectedCtaIcon,
+      hasLabel,
+      labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
+      labelContent,
+      statusEnabled,
+      rules,
+    };
+    console.log("Saving quick gift (demo) payload:", payload);
+    toast.success("Đã lưu (demo).");
+  };
+
   return (
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6 space-y-6">
         <Card>
-          {/* Header: title left, Status Switch right */}
           <CardHeader>
             <div className="flex items-center justify-between w-full gap-4">
               <div>
@@ -207,7 +261,6 @@ const QuickGiftCreate: React.FC = () => {
               <div>
                 <Label htmlFor="cta-text" className="text-sm">CTA (nút hiển thị)</Label>
                 <div className="mt-2 flex items-center gap-2">
-                  {/* ICON FIRST: before the input */}
                   <button
                     type="button"
                     onClick={() => handleOpenIconDialog("cta")}
@@ -240,7 +293,36 @@ const QuickGiftCreate: React.FC = () => {
               </div>
             </div>
 
-            {/* Second row: switch for label and conditional fields */}
+            {/* Banner upload (page-level) */}
+            <div>
+              <Label className="text-sm">Banner (toàn quà tặng)</Label>
+              <div className="mt-2 flex items-center gap-3">
+                <input ref={bannerRef} type="file" accept="image/*" className="hidden" onChange={onBannerChange} />
+                <div
+                  className="h-24 w-64 rounded border-dashed border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center cursor-pointer bg-gray-50 dark:bg-gray-900"
+                  onClick={onPickBanner}
+                  role="button"
+                >
+                  {bannerPreview ? (
+                    // eslint-disable-next-line jsx-a11y/img-redundant-alt
+                    <img src={bannerPreview} alt="banner preview" className="h-full object-contain" />
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <ImagePlus className="h-5 w-5" /> Chọn banner
+                    </div>
+                  )}
+                </div>
+
+                {bannerPreview && (
+                  <div className="flex flex-col gap-2">
+                    <Button variant="outline" onClick={() => removeBanner()} className="flex items-center gap-2">
+                      <Trash2 className="h-4 w-4" /> Xóa
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-3">
                 <Switch checked={hasLabel} onCheckedChange={(v) => setHasLabel(!!v)} />
@@ -251,10 +333,8 @@ const QuickGiftCreate: React.FC = () => {
               <div>
                 {hasLabel ? (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    {/* Icon selector */}
                     <div className="flex-shrink-0 w-full sm:w-48">
                       <Label className="text-sm block mb-1">Icon</Label>
-
                       <div className="mt-2">
                         <button
                           type="button"
@@ -270,7 +350,6 @@ const QuickGiftCreate: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Label content */}
                     <div className="flex-1">
                       <Label className="text-sm block mb-1">Nội dung nhãn</Label>
                       <Input
@@ -289,7 +368,7 @@ const QuickGiftCreate: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Reward rules with reward as first column and input first */}
+        {/* Reward rules with per-rule banner */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between w-full">
@@ -302,7 +381,7 @@ const QuickGiftCreate: React.FC = () => {
           </CardHeader>
 
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
               {/* Reward first */}
               <div className="sm:col-span-2">
                 <Label className="text-xs">Phần thưởng</Label>
@@ -319,7 +398,30 @@ const QuickGiftCreate: React.FC = () => {
                 <Input value={maxInput} onChange={(e) => setMaxInput(e.target.value)} placeholder="100" />
               </div>
 
-              <div className="sm:col-span-4 flex gap-2 mt-2">
+              {/* rule banner upload in inputs row */}
+              <div>
+                <Label className="text-xs">Banner quy tắc</Label>
+                <div className="mt-2 flex items-center gap-2">
+                  <input ref={ruleBannerRef} type="file" accept="image/*" className="hidden" onChange={onRuleBannerChange} />
+                  <button
+                    type="button"
+                    onClick={onPickRuleBanner}
+                    className="h-10 w-10 rounded-md border bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50"
+                    title="Chọn banner cho quy tắc"
+                    aria-label="Chọn banner cho quy tắc"
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                  </button>
+                  {ruleBannerPreview && (
+                    <div className="h-10 w-20 border rounded overflow-hidden">
+                      {/* eslint-disable-next-line jsx-a11y/img-redundant-alt */}
+                      <img src={ruleBannerPreview} alt="rule banner preview" className="h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="sm:col-span-5 flex gap-2 mt-2">
                 <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddOrUpdateRule}>
                   {editingId ? "Cập nhật" : "Thêm quy tắc"}
                 </Button>
@@ -331,7 +433,8 @@ const QuickGiftCreate: React.FC = () => {
                 <thead>
                   <tr className="text-sm text-orange-600 border-b">
                     <th className="p-3">Phần thưởng</th>
-                    <th className="p-3 w-[120px]">Khoảng điểm</th>
+                    <th className="p-3">Banner</th>
+                    <th className="p-3 w-[140px]">Khoảng điểm</th>
                     <th className="p-3 text-center w-[90px]">Kích hoạt</th>
                     <th className="p-3 text-right w-[160px]">Thao tác</th>
                   </tr>
@@ -339,12 +442,41 @@ const QuickGiftCreate: React.FC = () => {
                 <tbody>
                   {rules.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="p-8 text-center text-muted-foreground">Chưa có quy tắc nào.</td>
+                      <td colSpan={5} className="p-8 text-center text-muted-foreground">Chưa có quy tắc nào.</td>
                     </tr>
                   ) : (
                     rules.map((r) => (
                       <tr key={r.id} className="hover:bg-gray-50">
                         <td className="p-3 font-medium">{r.reward}</td>
+
+                        <td className="p-3">
+                          {r.banner ? (
+                            <div className="flex items-center gap-2">
+                              <div className="h-10 w-24 overflow-hidden rounded border">
+                                {/* eslint-disable-next-line jsx-a11y/img-redundant-alt */}
+                                <img src={r.banner} alt="rule banner" className="h-full object-cover" />
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <button
+                                  className="text-xs text-muted-foreground hover:underline"
+                                  onClick={() => {
+                                    // set this rule into edit mode with its banner loaded
+                                    handleEditRule(r.id);
+                                    setRuleBannerPreview(r.banner ?? null);
+                                  }}
+                                >
+                                  Thay đổi
+                                </button>
+                                <button className="text-xs text-red-600" onClick={() => removeRuleBanner(r.id)}>
+                                  Xóa banner
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground">Chưa có</div>
+                          )}
+                        </td>
+
                         <td className="p-3">{r.min} - {r.max}</td>
                         <td className="p-3 text-center">
                           <Switch checked={r.active} onCheckedChange={() => toggleRuleActive(r.id)} />
@@ -404,8 +536,6 @@ const QuickGiftCreate: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <MadeWithDyad />
     </Layout>
   );
 };
