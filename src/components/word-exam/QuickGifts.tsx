@@ -79,7 +79,7 @@ const QuickGifts: React.FC = () => {
           <div className="md:col-span-3 flex items-center gap-2 justify-end">
             <Button variant="outline" onClick={handleSearch}>Tìm kiếm</Button>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2" onClick={handleCreate}>
-              <Plus className="h-4 w-4" /> Tạo lì xì mới
+              <Plus className="h-4 w-4" /> Tạo quà tặng mới
             </Button>
           </div>
         </div>
