@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
+import { useNavigate } from 'react-router-dom';
 
 const examPeriods = [
   'Tất cả kỳ thi',
@@ -46,6 +47,7 @@ const SAMPLE_GIFTS: QuickGift[] = [
 ];
 
 const QuickGifts: React.FC = () => {
+  const navigate = useNavigate();
   const [q, setQ] = React.useState('');
   const [period, setPeriod] = React.useState(examPeriods[0]);
   const [status, setStatus] = React.useState(statusOptions[0]);
@@ -61,9 +63,7 @@ const QuickGifts: React.FC = () => {
       if (period !== examPeriods[0] && g.period !== period) return false;
       if (status !== statusOptions[0] && g.status !== status) return false;
       if (!qq) return true;
-      return (
-        g.name.toLowerCase().includes(qq)
-      );
+      return g.name.toLowerCase().includes(qq);
     });
   }, [gifts, q, period, status]);
 
@@ -75,11 +75,6 @@ const QuickGifts: React.FC = () => {
   React.useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [totalPages, page]);
-
-  const handleCreate = () => {
-    // Placeholder create flow
-    toast.info('Tạo quà tặng mới (demo).');
-  };
 
   const handleDelete = (id: string) => {
     if (!confirm('Bạn có chắc muốn xóa quà tặng này?')) return;
@@ -118,7 +113,9 @@ const QuickGifts: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 {examPeriods.map((p) => (
-                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                  <SelectItem key={p} value={p}>
+                    {p}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -132,23 +129,25 @@ const QuickGifts: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
           <div className="md:col-span-3 flex items-center gap-2 justify-end">
-            <Button variant="outline" onClick={() => { setPage(1); /* keep filters */ }}>
+            <Button variant="outline" onClick={() => { setPage(1); }}>
               Tìm kiếm
             </Button>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2" onClick={handleCreate}>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2" onClick={() => navigate('/quick-gifts/new')}>
               <Plus className="h-4 w-4" /> Tạo quà tặng mới
             </Button>
           </div>
         </div>
 
-        {/* Results table (without ID column) */}
+        {/* Results table */}
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>

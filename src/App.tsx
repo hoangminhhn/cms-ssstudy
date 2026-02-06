@@ -27,6 +27,7 @@ import RoomsTab from "@/components/view-management/RoomsTab";
 import ModerationTab from "@/components/view-management/ModerationTab";
 import ReportsTab from "@/components/view-management/ReportsTab";
 import FileManagement from "@/pages/FileManagement";
+import QuickGiftCreate from "@/pages/QuickGiftCreate"; // <-- new import
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,9 @@ const App = () => (
           <Route path="/promotions" element={<PromotionManagement />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/notifications" element={<NotificationManagement />} />
+
+          {/* Quick gift create route */}
+          <Route path="/quick-gifts/new" element={<QuickGiftCreate />} />
 
           {/* View Management with child routes (dashboard, rooms, moderation, reports) */}
           <Route path="/view-management" element={<ViewManagementPage />}>
