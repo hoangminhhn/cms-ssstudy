@@ -7,7 +7,7 @@ import BookIdSubMenu from './BookIdSubMenu';
 import ExamSubMenu from './ExamSubMenu';
 import WordExamSubMenu from './WordExamSubMenu';
 import CourseSubMenu from './CourseSubMenu';
-import DocumentsSubMenu from './Documents/DocumentsSubMenu';
+import DocumentsSubMenu from './documents/DocumentsSubMenu';
 import MembersSubMenu from './members/MembersSubMenu';
 import OrdersSubMenu from './OrdersSubMenu';
 import NewsSubMenu from './news/NewsSubMenu';
