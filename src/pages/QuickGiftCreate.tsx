@@ -423,14 +423,13 @@ const QuickGiftCreate: React.FC = () => {
                     <th className="p-3">Voucher</th>
                     <th className="p-3">Banner voucher</th>
                     <th className="p-3 w-[140px]">Khoảng điểm</th>
-                    <th className="p-3 text-center w-[90px]">Kích hoạt</th>
                     <th className="p-3 text-right w-[160px]">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rules.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-muted-foreground">Chưa có quy tắc nào.</td>
+                      <td colSpan={4} className="p-8 text-center text-muted-foreground">Chưa có quy tắc nào.</td>
                     </tr>
                   ) : (
                     rules.map((r) => (
@@ -466,9 +465,7 @@ const QuickGiftCreate: React.FC = () => {
                         </td>
 
                         <td className="p-3">{r.min} - {r.max}</td>
-                        <td className="p-3 text-center">
-                          <Switch checked={r.active} onCheckedChange={() => toggleRuleActive(r.id)} />
-                        </td>
+
                         <td className="p-3 text-right">
                           <div className="inline-flex gap-2">
                             <Button variant="ghost" onClick={() => handleEditRule(r.id)}>Sửa</Button>
