@@ -3,7 +3,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -29,12 +29,8 @@ const ICON_OPTIONS: { key: IconKey; label: string; comp: React.ComponentType<any
 
 const QuickGiftCreate: React.FC = () => {
   const [examPeriod, setExamPeriod] = React.useState<string>(EXAM_PERIODS[0]);
-  const [giftName, setGiftName] = React.useState<string>(""); // Tên quà tặng
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
-
-  // status switch (now shown in header)
-  const [status, setStatus] = React.useState<boolean>(true);
 
   // Label fields
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
@@ -66,37 +62,13 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          {/* Header: enforce single non-wrapping row so title stays left and switch stays right */}
-          <CardHeader className="flex items-center justify-between gap-4 flex-nowrap whitespace-nowrap px-6 py-4">
-            <div className="flex-1 min-w-0">
-              <div className="text-lg font-semibold text-left truncate">Thông tin nhanh</div>
-            </div>
-
-            <div className="flex-shrink-0 flex items-center gap-3">
-              <div className="text-sm text-muted-foreground mr-2">Trạng thái</div>
-              <Switch
-                checked={status}
-                onCheckedChange={(v) => setStatus(!!v)}
-                aria-label="Trạng thái quà tặng"
-              />
-            </div>
+          <CardHeader>
+            <CardTitle>Thông tin nhanh</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Top row with four columns: Tên quà tặng / Kỳ thi / CTA / Url */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Tên quà tặng */}
-              <div>
-                <Label htmlFor="gift-name" className="text-sm">Tên quà tặng</Label>
-                <Input
-                  id="gift-name"
-                  value={giftName}
-                  onChange={(e) => setGiftName(e.target.value)}
-                  placeholder="Nhập tên quà tặng"
-                  className="mt-2"
-                />
-              </div>
-
+            {/* Top row with three columns: Kỳ thi / CTA / Url */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="exam-period" className="text-sm">Kỳ thi</Label>
                 <Select value={examPeriod} onValueChange={(v) => setExamPeriod(v)}>
@@ -116,7 +88,7 @@ const QuickGiftCreate: React.FC = () => {
               <div>
                 <Label htmlFor="cta-text" className="text-sm">CTA (nút hiển thị)</Label>
                 <div className="mt-2 flex items-center gap-2">
-                  {/* ICON FIRST: button before the input */}
+                  {/* ICON FIRST: moved before the input as requested */}
                   <button
                     type="button"
                     onClick={() => handleOpenIconDialog("cta")}
