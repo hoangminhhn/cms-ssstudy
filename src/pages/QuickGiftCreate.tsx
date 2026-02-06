@@ -46,6 +46,22 @@ const QuickGiftCreate: React.FC = () => {
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
 
+  // New: gift file (Tên quà tặng)
+  const giftFileRef = React.useRef<HTMLInputElement | null>(null);
+  const [giftFile, setGiftFile] = React.useState<File | null>(null);
+  const onPickGiftFile = () => giftFileRef.current?.click();
+  const onGiftFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    if (!f) return;
+    setGiftFile(f);
+    toast.success("Đã chọn file Tên quà tặng (preview).");
+  };
+  const removeGiftFile = () => {
+    setGiftFile(null);
+    if (giftFileRef.current) giftFileRef.current.value = "";
+    toast.info("Đã xóa file Tên quà tặng.");
+  };
+
   // Banner for whole gift (page-level)
   const bannerRef = React.useRef<HTMLInputElement | null>(null);
   const [bannerPreview, setBannerPreview] = React.useState<string | null>(null);
@@ -210,6 +226,7 @@ const QuickGiftCreate: React.FC = () => {
       ctaText,
       destinationUrl,
       banner: !!bannerPreview,
+      giftFileName: giftFile?.name ?? null,
       ctaIcon: selectedCtaIcon === "None" ? null : selectedCtaIcon,
       hasLabel,
       labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
@@ -240,8 +257,31 @@ const QuickGiftCreate: React.FC = () => {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Top row with three columns: Kỳ thi / CTA / Url */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Top row with four columns: Tên quà tặng (file) / Kỳ thi / CTA / Url */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* NEW: Tên quà tặng (file) as first column */}
+              <div>
+                <Label className="text-sm">Tên quà tặng (file)</Label>
+                <div className="mt-2 flex items-center gap-2">
+                  <input ref={giftFileRef} type="file" accept="*" className="hidden" onChange={onGiftFileChange} />
+                  <button
+                    type="button"
+                    onClick={onPickGiftFile}
+                    className="h-10 px-3 rounded-md border bg-white dark:bg-gray-800 flex items-center gap-2 hover:bg-gray-50"
+                    aria-label="Chọn file tên quà tặng"
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                    <span className="text-sm">{giftFile ? giftFile.name : "Chọn file"}</span>
+                  </button>
+                  {giftFile && (
+                    <Button variant="outline" onClick={removeGiftFile}>
+                      Xóa
+                    </Button>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-2">Tùy chọn: tải file mô tả hoặc danh sách tên quà tặng.</div>
+              </div>
+
               <div>
                 <Label htmlFor="exam-period" className="text-sm">Kỳ thi</Label>
                 <Select value={examPeriod} onValueChange={(v) => setExamPeriod(v)}>
@@ -292,8 +332,6 @@ const QuickGiftCreate: React.FC = () => {
                 />
               </div>
             </div>
-
-            {/* Page-level banner removed per request */}
 
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-3">
