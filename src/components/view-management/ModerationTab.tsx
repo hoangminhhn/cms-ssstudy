@@ -216,19 +216,18 @@ const ModerationTab: React.FC = () => {
 
   const selectedUser = React.useMemo(() => {
     if (!selectedUserEmail) return undefined;
-    const found = [...flaggedItems, ...violationItems].find((x: any) => (x.reportedBy === selectedUserEmail) || (x.reporterEmail === selectedUserEmail));
-    return found ? { name: (found.reporterName ?? found.name ?? selectedUserEmail), email: selectedUserEmail } : { name: selectedUserEmail, email: selectedUserEmail };
+    // find either a flagged item where reportedBy matches or a violation where reporterEmail matches
+    const foundFlagged = flaggedItems.find((f) => f.reportedBy === selectedUserEmail);
+    if (foundFlagged) {
+      return { name: foundFlagged.name ?? selectedUserEmail, email: selectedUserEmail };
+    }
+    const foundViolation = violationItems.find((v) => v.reporterEmail === selectedUserEmail);
+    if (foundViolation) {
+      return { name: foundViolation.reporterName ?? selectedUserEmail, email: selectedUserEmail };
+    }
+    return { name: selectedUserEmail, email: selectedUserEmail };
   }, [selectedUserEmail, flaggedItems, violationItems]);
 
-  const handleBlockUser = (email?: string) => {
-    if (!email) {
-      toast.error("Chưa chọn người dùng.");
-      return;
-    }
-    toast.success(`Đã chặn ${email} (demo).`);
-  };
-
-  // Derive the moderation items for the left list (fix for undefined modItems)
   const modItems: ModerationItem[] = flaggedItems.map((r) => ({
     id: r.id,
     name: r.name,
@@ -280,7 +279,13 @@ const ModerationTab: React.FC = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <ViolationHistory user={selectedUser} violations={userViolations} onBlockUser={handleBlockUser} />
+            <ViolationHistory user={selectedUser} violations={userViolations} onBlockUser={(email) => {
+              if (!email) {
+                toast.error("Chưa chọn người dùng.");
+                return;
+              }
+              toast.success(`Đã chặn ${email} (demo).`);
+            }} />
           </div>
         </div>
       </div>

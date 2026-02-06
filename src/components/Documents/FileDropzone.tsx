@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface FileDropzoneProps {
   files: File[];
-  setFiles: (f: File[]) => void;
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>; // accept updater
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({ files, setFiles }) => {

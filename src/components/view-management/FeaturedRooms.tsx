@@ -2,7 +2,6 @@
 
 import React from "react";
 import RoomCard from "./RoomCard";
-import { Grid } from "@/components/ui/grid";
 import { toast } from "sonner";
 
 /**

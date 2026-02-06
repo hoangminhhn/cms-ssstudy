@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import DocumentForm from "@/components/documents/DocumentForm";
-import CoverUploader from "@/components/documents/CoverUploader";
-import ConfigPanel from "@/components/documents/ConfigPanel";
-import FileDropzone from "@/components/documents/FileDropzone";
+import DocumentForm from "@/components/Documents/DocumentForm";
+import CoverUploader from "@/components/Documents/CoverUploader";
+import ConfigPanel from "@/components/Documents/ConfigPanel";
+import FileDropzone from "@/components/Documents/FileDropzone";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 

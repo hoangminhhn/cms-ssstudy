@@ -18,6 +18,10 @@ export interface RoomRowData {
   ccu?: number;
   participants?: number;
   messages?: number;
+  // added optional fields used elsewhere
+  grade?: string;
+  subject?: string;
+  teacher?: string;
 }
 
 interface RoomRowProps {
