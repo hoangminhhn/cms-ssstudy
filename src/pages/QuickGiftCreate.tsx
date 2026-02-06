@@ -88,12 +88,7 @@ const QuickGiftCreate: React.FC = () => {
               <div>
                 <Label htmlFor="cta-text" className="text-sm">CTA (nút hiển thị)</Label>
                 <div className="mt-2 flex items-center gap-2">
-                  <Input
-                    id="cta-text"
-                    value={ctaText}
-                    onChange={(e) => setCtaText(e.target.value)}
-                    placeholder="Nhận lì xì"
-                  />
+                  {/* ICON FIRST: moved before the input as requested */}
                   <button
                     type="button"
                     onClick={() => handleOpenIconDialog("cta")}
@@ -103,6 +98,14 @@ const QuickGiftCreate: React.FC = () => {
                   >
                     {React.createElement(ICON_OPTIONS.find((i) => i.key === selectedCtaIcon)!.comp, { className: "h-4 w-4" })}
                   </button>
+
+                  <Input
+                    id="cta-text"
+                    value={ctaText}
+                    onChange={(e) => setCtaText(e.target.value)}
+                    placeholder="Nhận lì xì"
+                    className="flex-1"
+                  />
                 </div>
               </div>
 
