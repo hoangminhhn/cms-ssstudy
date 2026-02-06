@@ -2,8 +2,8 @@ import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useLocation } from "react-router-dom";
-import AllDocuments from "@/components/Documents/AllDocuments";
-import AddDocument from "@/components/Documents/AddDocument";
+import AllDocuments from "@/components/documents/AllDocuments";
+import AddDocument from "@/components/documents/AddDocument";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
