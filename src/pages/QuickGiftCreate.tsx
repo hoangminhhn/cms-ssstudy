@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tag, FileText, BookOpen } from "lucide-react";
+import { toast } from "sonner";
 
 const EXAM_PERIODS = [
   "Kỳ thi HSA",
@@ -52,18 +53,40 @@ const QuickGiftCreate: React.FC = () => {
   const handleSelectIcon = (key: IconKey) => {
     if (iconDialogTarget === "cta") {
       setSelectedCtaIcon(key);
+      toast.success("Đã chọn icon cho CTA (demo).");
     } else {
       setSelectedLabelIcon(key);
+      toast.success("Đã chọn icon cho nhãn (demo).");
     }
     setIconDialogOpen(false);
+  };
+
+  const handlePreview = () => {
+    toast.success("Xem trước (demo): " + ctaText);
+  };
+
+  const handleSave = () => {
+    // In real app you'd submit to API. Here just demo toast.
+    toast.success("Đã lưu (demo).");
   };
 
   return (
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
+          {/* Updated header: title on left, action buttons on right in their own row */}
           <CardHeader>
-            <CardTitle>Thông tin nhanh</CardTitle>
+            <div className="flex items-center justify-between w-full gap-4">
+              <div>
+                <CardTitle className="m-0 text-lg">Thông tin nhanh</CardTitle>
+                <div className="text-sm text-muted-foreground">Điền thông tin cơ bản cho quà tặng</div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button variant="outline" onClick={handlePreview}>Xem trước</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleSave}>Lưu</Button>
+              </div>
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-4">
@@ -88,7 +111,7 @@ const QuickGiftCreate: React.FC = () => {
               <div>
                 <Label htmlFor="cta-text" className="text-sm">CTA (nút hiển thị)</Label>
                 <div className="mt-2 flex items-center gap-2">
-                  {/* ICON FIRST: moved before the input as requested */}
+                  {/* ICON FIRST: before the input */}
                   <button
                     type="button"
                     onClick={() => handleOpenIconDialog("cta")}
@@ -128,11 +151,11 @@ const QuickGiftCreate: React.FC = () => {
                 <Label className="mb-0">Nhãn làm bài tập</Label>
               </div>
 
-              {/* When enabled show icon selector + content input in one row on >=sm */}
+              {/* When enabled show icon selector + content input */}
               <div>
                 {hasLabel ? (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    {/* Icon selector (fixed width) */}
+                    {/* Icon selector */}
                     <div className="flex-shrink-0 w-full sm:w-48">
                       <Label className="text-sm block mb-1">Icon</Label>
 
@@ -151,7 +174,7 @@ const QuickGiftCreate: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Label content (flex-1 to fill remaining space) */}
+                    {/* Label content */}
                     <div className="flex-1">
                       <Label className="text-sm block mb-1">Nội dung nhãn</Label>
                       <Input
@@ -169,16 +192,6 @@ const QuickGiftCreate: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Placeholder area for the rest of the page */}
-        <div className="mt-6 min-h-[240px] border-dashed border rounded-md flex items-center justify-center bg-white dark:bg-gray-800">
-          <div className="text-center p-6">
-            <h2 className="text-lg font-semibold mb-2">Trang trống</h2>
-            <p className="text-sm text-muted-foreground">
-              Hàng đầu tiên và nhãn đã được tạo. Vui lòng mô tả phần nội dung tiếp theo bạn muốn thêm.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Icon picker dialog */}
