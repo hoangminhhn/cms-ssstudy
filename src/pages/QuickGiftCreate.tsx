@@ -20,9 +20,13 @@ const EXAM_PERIODS = [
   "Kỳ thi V-ACT",
 ];
 
-type IconKey = "Tag" | "FileText" | "BookOpen";
+// Small component shown when 'Không' is selected
+const NoneIcon: React.FC = () => <span className="text-xs text-muted-foreground">Không</span>;
+
+type IconKey = "None" | "Tag" | "FileText" | "BookOpen";
 
 const ICON_OPTIONS: { key: IconKey; label: string; comp: React.ComponentType<any> }[] = [
+  { key: "None", label: "Không", comp: NoneIcon },
   { key: "Tag", label: "Tag", comp: Tag },
   { key: "FileText", label: "File", comp: FileText },
   { key: "BookOpen", label: "Sách", comp: BookOpen },
@@ -35,11 +39,11 @@ const QuickGiftCreate: React.FC = () => {
 
   // Label fields
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
-  const [selectedLabelIcon, setSelectedLabelIcon] = React.useState<IconKey>("Tag");
+  const [selectedLabelIcon, setSelectedLabelIcon] = React.useState<IconKey>("None");
   const [labelContent, setLabelContent] = React.useState<string>("");
 
   // CTA icon
-  const [selectedCtaIcon, setSelectedCtaIcon] = React.useState<IconKey>("Tag");
+  const [selectedCtaIcon, setSelectedCtaIcon] = React.useState<IconKey>("None");
 
   // Dialog state for icon picker: target can be 'cta' or 'label'
   const [iconDialogOpen, setIconDialogOpen] = React.useState<boolean>(false);
@@ -56,10 +60,10 @@ const QuickGiftCreate: React.FC = () => {
   const handleSelectIcon = (key: IconKey) => {
     if (iconDialogTarget === "cta") {
       setSelectedCtaIcon(key);
-      toast.success("Đã chọn icon cho CTA (demo).");
+      toast.success(key === "None" ? "Đã chọn: Không dùng icon cho CTA" : "Đã chọn icon cho CTA (demo).");
     } else {
       setSelectedLabelIcon(key);
-      toast.success("Đã chọn icon cho nhãn (demo).");
+      toast.success(key === "None" ? "Đã chọn: Không dùng icon cho nhãn" : "Đã chọn icon cho nhãn (demo).");
     }
     setIconDialogOpen(false);
   };
@@ -70,9 +74,9 @@ const QuickGiftCreate: React.FC = () => {
       examPeriod,
       ctaText,
       destinationUrl,
-      ctaIcon: selectedCtaIcon,
+      ctaIcon: selectedCtaIcon === "None" ? null : selectedCtaIcon,
       hasLabel,
-      labelIcon: selectedLabelIcon,
+      labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
       labelContent,
       statusEnabled,
     };
