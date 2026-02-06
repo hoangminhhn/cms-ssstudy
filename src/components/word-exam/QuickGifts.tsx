@@ -45,7 +45,7 @@ const QuickGifts: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
           <div className="md:col-span-5">
             <Label className="text-sm mb-1">Từ khóa</Label>
-            <Input placeholder="Nhập từ khóa tìm kiếm..." value={q} onChange={(e) => setQ(e.target.value)} />
+            <Input placeholder="Tìm kiếm..." value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
 
           <div className="md:col-span-3">
