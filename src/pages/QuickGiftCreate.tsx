@@ -3,7 +3,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -66,10 +66,11 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          {/* Header: title left (flex-1) and status switch right (flex-shrink-0) on one row */}
-          <CardHeader className="flex items-center justify-between gap-4">
+          {/* Header: ensure single row (no wrap), title left, switch right */}
+          <CardHeader className="flex items-center justify-between gap-4 flex-nowrap px-6 py-4">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg font-semibold truncate">Thông tin nhanh</CardTitle>
+              {/* use a plain element with truncate to avoid centering or wrapping */}
+              <div className="text-lg font-semibold text-left truncate">Thông tin nhanh</div>
             </div>
 
             <div className="flex-shrink-0 flex items-center gap-3">
