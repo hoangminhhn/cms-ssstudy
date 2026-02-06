@@ -68,8 +68,27 @@ const QuickGiftCreate: React.FC = () => {
   // Status switch in header
   const [statusEnabled, setStatusEnabled] = React.useState<boolean>(true);
 
-  // Reward rules
-  const [rules, setRules] = React.useState<RewardRule[]>([]);
+  // Reward rules — start with two demo rows: 5 - 6.5 and 6.6 - 10
+  const [rules, setRules] = React.useState<RewardRule[]>(
+    [
+      {
+        id: "rule-demo-1",
+        min: 5,
+        max: 6.5,
+        reward: "Voucher 20k",
+        active: true,
+        banner: null,
+      },
+      {
+        id: "rule-demo-2",
+        min: 6.6,
+        max: 10,
+        reward: "Voucher 50k",
+        active: true,
+        banner: null,
+      },
+    ]
+  );
   const [minInput, setMinInput] = React.useState<string>("");
   const [maxInput, setMaxInput] = React.useState<string>("");
   const [rewardInput, setRewardInput] = React.useState<string>("");
