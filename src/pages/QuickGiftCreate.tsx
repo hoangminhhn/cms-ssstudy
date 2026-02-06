@@ -289,7 +289,7 @@ const QuickGiftCreate: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* New: Reward rules table under the general info - reward moved to first column */}
+        {/* Reward rules with reward as first column and input first */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between w-full">
@@ -303,7 +303,7 @@ const QuickGiftCreate: React.FC = () => {
 
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-              {/* Reward moved first */}
+              {/* Reward first */}
               <div className="sm:col-span-2">
                 <Label className="text-xs">Phần thưởng</Label>
                 <Input value={rewardInput} onChange={(e) => setRewardInput(e.target.value)} placeholder="Ví dụ: Voucher 50k" />
@@ -323,7 +323,6 @@ const QuickGiftCreate: React.FC = () => {
                 <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddOrUpdateRule}>
                   {editingId ? "Cập nhật" : "Thêm quy tắc"}
                 </Button>
-                <Button variant="outline" onClick={() => resetRuleInputs()}>Bỏ chọn</Button>
               </div>
             </div>
 
@@ -331,7 +330,6 @@ const QuickGiftCreate: React.FC = () => {
               <table className="min-w-full">
                 <thead>
                   <tr className="text-sm text-orange-600 border-b">
-                    {/* Reward column first */}
                     <th className="p-3">Phần thưởng</th>
                     <th className="p-3 w-[120px]">Khoảng điểm</th>
                     <th className="p-3 text-center w-[90px]">Kích hoạt</th>
