@@ -41,6 +41,9 @@ interface ExamConfig {
     mode: "sequential" | "custom";
     perItemStart?: Record<string, number>;
   };
+  // New: gift config
+  giftEnabled?: boolean;
+  selectedGiftId?: string | null;
 }
 
 interface ExamConfigModalProps {
@@ -65,6 +68,17 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
   const [totalTimeMinutes, setTotalTimeMinutes] = React.useState<number>(60);
   const [perPartTimes, setPerPartTimes] = React.useState<Record<string, number>>(initialPerPartTimes);
   const [partNames, setPartNames] = React.useState<Record<string, string>>(initialPartNames);
+
+  // New: gift state & demo data
+  const [giftEnabled, setGiftEnabled] = React.useState<boolean>(false);
+  const demoGifts = React.useMemo(
+    () => [
+      { id: "gift-1", label: "Lì xì đề ngắn" },
+      { id: "gift-2", label: "Lì xì đề dài" },
+    ],
+    [],
+  );
+  const [selectedGiftId, setSelectedGiftId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -106,6 +120,8 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
       totalTimeMinutes,
       perPartTimes,
       updatedPartNames: partNames,
+      giftEnabled: giftEnabled,
+      selectedGiftId: giftEnabled ? selectedGiftId : null,
     };
     if (onSave) onSave(config);
     console.log("Exam config saved:", config);
@@ -227,6 +243,71 @@ const ExamConfigModal: React.FC<ExamConfigModalProps> = ({ isOpen, onClose, part
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* New: Gift switch + selectable demo gifts */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Quà tặng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium">Kích hoạt quà tặng</div>
+                  <div className="text-sm text-muted-foreground">Bật để cho phép gán quà tặng cho đề thi</div>
+                </div>
+                <div>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={giftEnabled}
+                      onChange={(e) => {
+                        setGiftEnabled(!!e.target.checked);
+                        if (!e.target.checked) setSelectedGiftId(null);
+                      }}
+                      className="sr-only"
+                      aria-label="Kích hoạt quà tặng"
+                    />
+                    <span className={`w-11 h-6 relative inline-block rounded-full ${giftEnabled ? "bg-green-400" : "bg-gray-200"}`}>
+                      <span
+                        className={`absolute left-0 top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${giftEnabled ? "translate-x-5" : "translate-x-0"}`}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                {giftEnabled ? (
+                  <div>
+                    <div className="text-sm font-medium mb-2">Danh sách quà tặng (demo)</div>
+                    <div className="grid gap-2">
+                      {[
+                        { id: "gift-1", label: "Lì xì đề ngắn" },
+                        { id: "gift-2", label: "Lì xì đề dài" },
+                      ].map((g) => (
+                        <label key={g.id} className="flex items-center gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="exam-gift"
+                            checked={selectedGiftId === g.id}
+                            onChange={() => setSelectedGiftId(g.id)}
+                            className="h-4 w-4"
+                          />
+                          <div className="flex-1">
+                            <div className="font-medium">{g.label}</div>
+                            <div className="text-xs text-muted-foreground">Mô tả ngắn cho {g.label}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="mt-2 text-xs text-muted-foreground">Chọn một quà tặng để gán cho đề thi khi kích hoạt.</div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">Quà tặng chưa được kích hoạt.</div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
