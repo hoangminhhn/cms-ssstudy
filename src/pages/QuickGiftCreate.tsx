@@ -370,9 +370,9 @@ const QuickGiftCreate: React.FC = () => {
 
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
-              {/* Reward first */}
+              {/* Voucher first (label changed) */}
               <div className="sm:col-span-2">
-                <Label className="text-xs">Phần thưởng</Label>
+                <Label className="text-xs">Voucher</Label>
                 <Input value={rewardInput} onChange={(e) => setRewardInput(e.target.value)} placeholder="Ví dụ: Voucher 50k" />
               </div>
 
@@ -420,7 +420,7 @@ const QuickGiftCreate: React.FC = () => {
               <table className="min-w-full">
                 <thead>
                   <tr className="text-sm text-orange-600 border-b">
-                    <th className="p-3">Phần thưởng</th>
+                    <th className="p-3">Voucher</th>
                     <th className="p-3">Banner</th>
                     <th className="p-3 w-[140px]">Khoảng điểm</th>
                     <th className="p-3 text-center w-[90px]">Kích hoạt</th>
