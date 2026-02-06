@@ -66,10 +66,9 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          {/* Header: ensure single row (no wrap), title left, switch right */}
-          <CardHeader className="flex items-center justify-between gap-4 flex-nowrap px-6 py-4">
+          {/* Header: enforce single non-wrapping row so title stays left and switch stays right */}
+          <CardHeader className="flex items-center justify-between gap-4 flex-nowrap whitespace-nowrap px-6 py-4">
             <div className="flex-1 min-w-0">
-              {/* use a plain element with truncate to avoid centering or wrapping */}
               <div className="text-lg font-semibold text-left truncate">Thông tin nhanh</div>
             </div>
 
