@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Tag, FileText, BookOpen } from "lucide-react";
 
 const EXAM_PERIODS = [
@@ -34,6 +36,20 @@ const QuickGiftCreate: React.FC = () => {
   const [hasLabel, setHasLabel] = React.useState<boolean>(false);
   const [selectedIcon, setSelectedIcon] = React.useState<IconKey>("Tag");
   const [labelContent, setLabelContent] = React.useState<string>("");
+
+  // Dialog state for icon picker
+  const [iconDialogOpen, setIconDialogOpen] = React.useState<boolean>(false);
+  const [iconDialogTarget, setIconDialogTarget] = React.useState<"new" | "existing">("new"); // future-proofing
+
+  const handleOpenIconDialog = (target: "new" | "existing" = "new") => {
+    setIconDialogTarget(target);
+    setIconDialogOpen(true);
+  };
+
+  const handleSelectIcon = (key: IconKey) => {
+    setSelectedIcon(key);
+    setIconDialogOpen(false);
+  };
 
   return (
     <Layout headerTitle="Tạo quà tặng mới">
@@ -92,30 +108,27 @@ const QuickGiftCreate: React.FC = () => {
                 <Label className="mb-0">Nhãn làm bài tập</Label>
               </div>
 
-              {/* When enabled show icon selector + content input in a single row on >=sm */}
+              {/* When enabled show icon selector + content input in one row on >=sm */}
               <div>
                 {hasLabel ? (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* Icon selector (fixed width) */}
                     <div className="flex-shrink-0 w-full sm:w-48">
                       <Label className="text-sm block mb-1">Icon</Label>
-                      <Select value={selectedIcon} onValueChange={(v) => setSelectedIcon(v as IconKey)}>
-                        <SelectTrigger className="w-full h-10">
-                          <div className="flex items-center gap-2">
-                            <SelectValue />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ICON_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.key} value={opt.key}>
-                              <div className="flex items-center gap-2">
-                                {React.createElement(opt.comp, { className: "h-4 w-4" })}
-                                <span>{opt.label}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+
+                      <div className="mt-2">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenIconDialog("new")}
+                          className="w-full h-10 flex items-center gap-3 px-3 border rounded-md bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+                          aria-label="Chọn icon cho nhãn"
+                        >
+                          <span className="flex items-center gap-2">
+                            {React.createElement(ICON_OPTIONS.find((i) => i.key === selectedIcon)!.comp, { className: "h-4 w-4" })}
+                          </span>
+                          <span className="text-sm truncate">{ICON_OPTIONS.find((i) => i.key === selectedIcon)!.label}</span>
+                        </button>
+                      </div>
                     </div>
 
                     {/* Label content (flex-1 to fill remaining space) */}
@@ -147,6 +160,36 @@ const QuickGiftCreate: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Icon picker dialog */}
+      <Dialog open={iconDialogOpen} onOpenChange={(open) => setIconDialogOpen(open)}>
+        <DialogContent className="max-w-sm w-full">
+          <DialogHeader>
+            <DialogTitle>Chọn icon</DialogTitle>
+          </DialogHeader>
+
+          <div className="p-3">
+            <div className="grid grid-cols-3 gap-3">
+              {ICON_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => handleSelectIcon(opt.key)}
+                  className="flex flex-col items-center gap-2 p-3 border rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                  aria-label={`Chọn icon ${opt.label}`}
+                >
+                  {React.createElement(opt.comp, { className: "h-6 w-6" })}
+                  <span className="text-xs">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIconDialogOpen(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <MadeWithDyad />
     </Layout>
