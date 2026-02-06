@@ -32,6 +32,14 @@ const ICON_OPTIONS: { key: IconKey; label: string; comp: React.ComponentType<any
   { key: "BookOpen", label: "Sách", comp: BookOpen },
 ];
 
+type RewardRule = {
+  id: string;
+  min: number;
+  max: number;
+  reward: string;
+  active: boolean;
+};
+
 const QuickGiftCreate: React.FC = () => {
   const [examPeriod, setExamPeriod] = React.useState<string>(EXAM_PERIODS[0]);
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
@@ -51,6 +59,13 @@ const QuickGiftCreate: React.FC = () => {
 
   // Status switch in header
   const [statusEnabled, setStatusEnabled] = React.useState<boolean>(true);
+
+  // Reward rules
+  const [rules, setRules] = React.useState<RewardRule[]>([]);
+  const [minInput, setMinInput] = React.useState<string>("");
+  const [maxInput, setMaxInput] = React.useState<string>("");
+  const [rewardInput, setRewardInput] = React.useState<string>("");
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const handleOpenIconDialog = (target: "cta" | "label") => {
     setIconDialogTarget(target);
@@ -79,14 +94,81 @@ const QuickGiftCreate: React.FC = () => {
       labelIcon: selectedLabelIcon === "None" ? null : selectedLabelIcon,
       labelContent,
       statusEnabled,
+      rules,
     };
     console.log("Saving quick gift (demo) payload:", payload);
     toast.success("Đã lưu (demo).");
   };
 
+  // Rules management
+  const resetRuleInputs = () => {
+    setMinInput("");
+    setMaxInput("");
+    setRewardInput("");
+    setEditingId(null);
+  };
+
+  const handleAddOrUpdateRule = () => {
+    const min = Number(minInput);
+    const max = Number(maxInput);
+    const reward = rewardInput.trim();
+
+    if (!Number.isFinite(min) || !Number.isFinite(max)) {
+      toast.error("Min và Max phải là số hợp lệ.");
+      return;
+    }
+    if (min < 0 || max < 0) {
+      toast.error("Giá trị phải >= 0.");
+      return;
+    }
+    if (min > max) {
+      toast.error("Min không được lớn hơn Max.");
+      return;
+    }
+    if (!reward) {
+      toast.error("Vui lòng nhập phần thưởng.");
+      return;
+    }
+
+    if (editingId) {
+      setRules((prev) => prev.map((r) => (r.id === editingId ? { ...r, min, max, reward } : r)));
+      toast.success("Đã cập nhật quy tắc.");
+    } else {
+      // ensure no overlap simple check
+      const overlap = rules.some((r) => !(max < r.min || min > r.max));
+      if (overlap) {
+        // allow but warn
+        toast.info("Lưu quy tắc; lưu ý có trùng khoảng điểm với quy tắc khác.");
+      }
+      const newRule: RewardRule = { id: `rule-${Date.now()}`, min, max, reward, active: true };
+      setRules((prev) => [...prev, newRule].sort((a, b) => a.min - b.min));
+      toast.success("Đã thêm quy tắc.");
+    }
+    resetRuleInputs();
+  };
+
+  const handleEditRule = (id: string) => {
+    const r = rules.find((x) => x.id === id);
+    if (!r) return;
+    setEditingId(id);
+    setMinInput(String(r.min));
+    setMaxInput(String(r.max));
+    setRewardInput(r.reward);
+  };
+
+  const handleDeleteRule = (id: string) => {
+    if (!confirm("Bạn có chắc muốn xóa quy tắc này?")) return;
+    setRules((prev) => prev.filter((r) => r.id !== id));
+    toast.success("Đã xóa quy tắc.");
+  };
+
+  const toggleRuleActive = (id: string) => {
+    setRules((prev) => prev.map((r) => (r.id === id ? { ...r, active: !r.active } : r)));
+  };
+
   return (
     <Layout headerTitle="Tạo quà tặng mới">
-      <div className="max-w-5xl mx-auto w-full p-6">
+      <div className="max-w-5xl mx-auto w-full p-6 space-y-6">
         <Card>
           {/* Header: title left, Status Switch right */}
           <CardHeader>
@@ -203,6 +285,78 @@ const QuickGiftCreate: React.FC = () => {
                   <div className="text-sm text-muted-foreground">Bật để thêm nhãn hiển thị trên CTA.</div>
                 )}
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* New: Reward rules table under the general info */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between w-full">
+              <div>
+                <CardTitle className="m-0 text-lg">Quy tắc thưởng theo điểm</CardTitle>
+                <div className="text-sm text-muted-foreground">Định nghĩa phần thưởng theo khoảng điểm</div>
+              </div>
+              <div className="text-sm text-muted-foreground">Quản lý quy tắc</div>
+            </div>
+          </CardHeader>
+
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+              <div>
+                <Label className="text-xs">Min điểm</Label>
+                <Input value={minInput} onChange={(e) => setMinInput(e.target.value)} placeholder="0" />
+              </div>
+              <div>
+                <Label className="text-xs">Max điểm</Label>
+                <Input value={maxInput} onChange={(e) => setMaxInput(e.target.value)} placeholder="100" />
+              </div>
+              <div className="sm:col-span-1">
+                <Label className="text-xs">Phần thưởng</Label>
+                <Input value={rewardInput} onChange={(e) => setRewardInput(e.target.value)} placeholder="Ví dụ: Voucher 50k" />
+              </div>
+              <div className="flex gap-2">
+                <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddOrUpdateRule}>
+                  {editingId ? "Cập nhật" : "Thêm quy tắc"}
+                </Button>
+                <Button variant="outline" onClick={() => resetRuleInputs()}>Bỏ chọn</Button>
+              </div>
+            </div>
+
+            <div className="mt-4 overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="text-sm text-orange-600 border-b">
+                    <th className="p-3 w-[120px]">Khoảng điểm</th>
+                    <th className="p-3">Phần thưởng</th>
+                    <th className="p-3 text-center w-[90px]">Kích hoạt</th>
+                    <th className="p-3 text-right w-[160px]">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rules.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="p-8 text-center text-muted-foreground">Chưa có quy tắc nào.</td>
+                    </tr>
+                  ) : (
+                    rules.map((r) => (
+                      <tr key={r.id} className="hover:bg-gray-50">
+                        <td className="p-3 font-medium">{r.min} - {r.max}</td>
+                        <td className="p-3">{r.reward}</td>
+                        <td className="p-3 text-center">
+                          <Switch checked={r.active} onCheckedChange={() => toggleRuleActive(r.id)} />
+                        </td>
+                        <td className="p-3 text-right">
+                          <div className="inline-flex gap-2">
+                            <Button variant="ghost" onClick={() => handleEditRule(r.id)}>Sửa</Button>
+                            <Button variant="ghost" className="text-red-600" onClick={() => handleDeleteRule(r.id)}>Xóa</Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>
