@@ -289,7 +289,7 @@ const QuickGiftCreate: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* New: Reward rules table under the general info */}
+        {/* New: Reward rules table under the general info - reward moved to first column */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between w-full">
@@ -303,19 +303,23 @@ const QuickGiftCreate: React.FC = () => {
 
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+              {/* Reward moved first */}
+              <div className="sm:col-span-2">
+                <Label className="text-xs">Phần thưởng</Label>
+                <Input value={rewardInput} onChange={(e) => setRewardInput(e.target.value)} placeholder="Ví dụ: Voucher 50k" />
+              </div>
+
               <div>
                 <Label className="text-xs">Min điểm</Label>
                 <Input value={minInput} onChange={(e) => setMinInput(e.target.value)} placeholder="0" />
               </div>
+
               <div>
                 <Label className="text-xs">Max điểm</Label>
                 <Input value={maxInput} onChange={(e) => setMaxInput(e.target.value)} placeholder="100" />
               </div>
-              <div className="sm:col-span-1">
-                <Label className="text-xs">Phần thưởng</Label>
-                <Input value={rewardInput} onChange={(e) => setRewardInput(e.target.value)} placeholder="Ví dụ: Voucher 50k" />
-              </div>
-              <div className="flex gap-2">
+
+              <div className="sm:col-span-4 flex gap-2 mt-2">
                 <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={handleAddOrUpdateRule}>
                   {editingId ? "Cập nhật" : "Thêm quy tắc"}
                 </Button>
@@ -327,8 +331,9 @@ const QuickGiftCreate: React.FC = () => {
               <table className="min-w-full">
                 <thead>
                   <tr className="text-sm text-orange-600 border-b">
-                    <th className="p-3 w-[120px]">Khoảng điểm</th>
+                    {/* Reward column first */}
                     <th className="p-3">Phần thưởng</th>
+                    <th className="p-3 w-[120px]">Khoảng điểm</th>
                     <th className="p-3 text-center w-[90px]">Kích hoạt</th>
                     <th className="p-3 text-right w-[160px]">Thao tác</th>
                   </tr>
@@ -341,8 +346,8 @@ const QuickGiftCreate: React.FC = () => {
                   ) : (
                     rules.map((r) => (
                       <tr key={r.id} className="hover:bg-gray-50">
-                        <td className="p-3 font-medium">{r.min} - {r.max}</td>
-                        <td className="p-3">{r.reward}</td>
+                        <td className="p-3 font-medium">{r.reward}</td>
+                        <td className="p-3">{r.min} - {r.max}</td>
                         <td className="p-3 text-center">
                           <Switch checked={r.active} onCheckedChange={() => toggleRuleActive(r.id)} />
                         </td>
