@@ -66,11 +66,11 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          <CardHeader className="flex items-center justify-between">
-            <CardTitle>Thông tin nhanh</CardTitle>
+          {/* Ensure single-row header: title left, switch right */}
+          <CardHeader className="flex items-center justify-between flex-nowrap">
+            <CardTitle className="text-lg font-semibold text-left">Thông tin nhanh</CardTitle>
 
-            {/* STATUS SWITCH moved into the header to sit on the same row as the title */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ml-4">
               <div className="text-sm text-muted-foreground mr-2">Trạng thái</div>
               <Switch
                 checked={status}
