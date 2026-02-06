@@ -14,12 +14,12 @@ import { Textarea } from "@/components/ui/textarea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import SortableJS from "sortablejs";
-import CourseIncludes from "../courses/CourseIncludes"; // fixed relative path
-import Highlights from "./Highlights";
-import OtherInfo from "./OtherInfo";
+import CourseIncludes from "@/components/courses/CourseIncludes"; // fixed path
+import Highlights from "@/components/lessons/Highlights"; // fixed path
+import OtherInfo from "@/components/courses/OtherInfo"; // fixed path
 
 const AddClass: React.FC = () => {
-  // ... kept same as before (omitted for brevity) ...
+  // Minimal state for demo highlights management, pairing with SortableJS
   interface HighlightItem {
     id: string;
     text: string;
@@ -139,6 +139,13 @@ const AddClass: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
+
+            {/* Reuse CourseIncludes and OtherInfo components in UI */}
+            <div className="grid grid-cols-1 gap-4">
+              <CourseIncludes />
+              <Highlights />
+              <OtherInfo />
             </div>
           </div>
         </CardContent>
