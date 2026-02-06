@@ -9,6 +9,7 @@ import WordExamUpload from '@/components/WordExamUpload';
 import ExamCategoryManagement from '@/components/ExamCategoryManagement';
 import EditExamFormCategory from '@/components/EditExamFormCategory'; // Import the new component
 import TestCategoryManagement from '@/components/TestCategoryManagement'; // Import new test category management
+import QuickGifts from '@/components/word-exam/QuickGifts'; // New quick gifts placeholder
 
 const WordExamUploadPage: React.FC = () => {
   const location = useLocation();
@@ -28,6 +29,8 @@ const WordExamUploadPage: React.FC = () => {
         return 'Danh mục bài kiểm tra';
       case 'edit-category':
         return `Chỉnh sửa danh mục #${categoryId}`;
+      case 'quick-gifts':
+        return 'Quà tặng nhanh';
       default:
         return 'Quản lý đề thi Word';
     }
@@ -45,6 +48,8 @@ const WordExamUploadPage: React.FC = () => {
         return <TestCategoryManagement />;
       case 'edit-category':
         return <EditExamFormCategory />; // Render the new component here
+      case 'quick-gifts':
+        return <QuickGifts />;
       default:
         return <ExamTable />;
     }
