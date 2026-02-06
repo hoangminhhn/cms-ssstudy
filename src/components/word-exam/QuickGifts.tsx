@@ -43,7 +43,7 @@ const QuickGifts: React.FC = () => {
       <CardContent>
         {/* Filter row */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-          <div className="md:col-span-5">
+          <div className="md:col-span-4">
             <Label className="text-sm mb-1">Từ khóa</Label>
             <Input placeholder="Tìm kiếm..." value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
@@ -76,7 +76,7 @@ const QuickGifts: React.FC = () => {
             </Select>
           </div>
 
-          <div className="md:col-span-2 flex items-center gap-2 justify-end">
+          <div className="md:col-span-3 flex items-center gap-2 justify-end">
             <Button variant="outline" onClick={handleSearch}>Tìm kiếm</Button>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2" onClick={handleCreate}>
               <Plus className="h-4 w-4" /> Tạo lì xì mới
