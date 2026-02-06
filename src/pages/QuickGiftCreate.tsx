@@ -33,7 +33,7 @@ const QuickGiftCreate: React.FC = () => {
   const [ctaText, setCtaText] = React.useState<string>("Nhận lì xì");
   const [destinationUrl, setDestinationUrl] = React.useState<string>("");
 
-  // status switch (new)
+  // status switch (now shown in header)
   const [status, setStatus] = React.useState<boolean>(true);
 
   // Label fields
@@ -66,13 +66,23 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex items-center justify-between">
             <CardTitle>Thông tin nhanh</CardTitle>
+
+            {/* STATUS SWITCH moved into the header to sit on the same row as the title */}
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-muted-foreground mr-2">Trạng thái</div>
+              <Switch
+                checked={status}
+                onCheckedChange={(v) => setStatus(!!v)}
+                aria-label="Trạng thái quà tặng"
+              />
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Top row with five columns: Tên quà tặng / Kỳ thi / CTA / Url / Trạng thái */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* Top row with four columns: Tên quà tặng / Kỳ thi / CTA / Url */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Tên quà tặng */}
               <div>
                 <Label htmlFor="gift-name" className="text-sm">Tên quà tặng</Label>
@@ -134,21 +144,6 @@ const QuickGiftCreate: React.FC = () => {
                   placeholder="https://"
                   className="mt-2"
                 />
-              </div>
-
-              {/* NEW: Trạng thái switch positioned at end of first row */}
-              <div>
-                <Label className="text-sm">Trạng thái</Label>
-                <div className="mt-2 flex items-center justify-between gap-3">
-                  <span className="text-sm text-gray-700 dark:text-gray-200">Trạng thái</span>
-                  <div className="ml-auto">
-                    <Switch
-                      checked={status}
-                      onCheckedChange={(v) => setStatus(!!v)}
-                      aria-label="Trạng thái quà tặng"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
 
