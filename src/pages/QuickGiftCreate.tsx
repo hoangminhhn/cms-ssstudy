@@ -3,7 +3,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -66,21 +66,17 @@ const QuickGiftCreate: React.FC = () => {
     <Layout headerTitle="Tạo quà tặng mới">
       <div className="max-w-5xl mx-auto w-full p-6">
         <Card>
-          {/* Header: title at left, switch at right on same row */}
           <CardHeader className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg md:text-2xl font-semibold leading-none">Thêm lì xì mới</h2>
-            </div>
+            <CardTitle>Thông tin nhanh</CardTitle>
 
+            {/* STATUS SWITCH moved into the header to sit on the same row as the title */}
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600 dark:text-gray-300">Trạng thái</span>
-              <div className="flex items-center">
-                <Switch
-                  checked={status}
-                  onCheckedChange={(v) => setStatus(!!v)}
-                  aria-label="Trạng thái quà tặng"
-                />
-              </div>
+              <div className="text-sm text-muted-foreground mr-2">Trạng thái</div>
+              <Switch
+                checked={status}
+                onCheckedChange={(v) => setStatus(!!v)}
+                aria-label="Trạng thái quà tặng"
+              />
             </div>
           </CardHeader>
 
