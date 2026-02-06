@@ -86,21 +86,19 @@ const QuickGiftCreate: React.FC = () => {
             </div>
 
             {/* Second row: switch for label and conditional fields */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+            <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-3">
                 <Switch checked={hasLabel} onCheckedChange={(v) => setHasLabel(!!v)} />
                 <Label className="mb-0">Nhãn làm bài tập</Label>
               </div>
 
-              {/* When enabled show icon selector + content input spanning remaining columns */}
-              <div className="md:col-span-2">
+              {/* When enabled show icon selector + content input in a single row on >=sm */}
+              <div>
                 {hasLabel ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-sm">Icon</Label>
-                    </div>
-
-                    <div className="sm:col-span-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    {/* Icon selector (fixed width) */}
+                    <div className="flex-shrink-0 w-full sm:w-48">
+                      <Label className="text-sm block mb-1">Icon</Label>
                       <Select value={selectedIcon} onValueChange={(v) => setSelectedIcon(v as IconKey)}>
                         <SelectTrigger className="w-full h-10">
                           <div className="flex items-center gap-2">
@@ -120,13 +118,14 @@ const QuickGiftCreate: React.FC = () => {
                       </Select>
                     </div>
 
-                    <div className="sm:col-span-3">
-                      <Label className="text-sm">Nội dung nhãn</Label>
+                    {/* Label content (flex-1 to fill remaining space) */}
+                    <div className="flex-1">
+                      <Label className="text-sm block mb-1">Nội dung nhãn</Label>
                       <Input
                         value={labelContent}
                         onChange={(e) => setLabelContent(e.target.value)}
                         placeholder="Nhập nội dung nhãn..."
-                        className="mt-2"
+                        className="mt-2 w-full"
                       />
                     </div>
                   </div>
